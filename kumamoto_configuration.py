@@ -1,4 +1,4 @@
-import numpy as np
+import numpy
 import math
 import cmath
 import matplotlib.pyplot
@@ -9,6 +9,9 @@ path = '/home/deleplanque/Documents/back_proj/en_cours'
 dossier_seisme = '20160414212600'
 path1 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.kik'
 path2 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.knt'
+path_results = path + '/results/' + dossier_seisme
+os.makedirs(path_results)
+
 list_fichier1 = os.listdir(path1)
 list_fichier2 = os.listdir(path2)
 list_fichier1 = [a for a in list_fichier1 if ('ps.gz' in a) == False]
@@ -93,6 +96,21 @@ for fichier in list_fichier2:
     data.close()
 
 print info_stations
+
+#print position des stations
+
+lat_sta = [a[8] for a in info_stations]
+long_sta = [a[9] for a in info_stations]
+del lat_sta[0]
+del long_sta[0]
+
+os.chdir(path_results)
+
+fig_pos_sta, ax_pos_sta = matplotlib.pyplot.subplots(1, 1)
+ax_pos_sta.set_xlabel('Long.')
+ax_pos_sta.set_ylabel('Lat.')
+ax_pos_sta.plot(long_sta, lat_sta, marker='o', linestyle='none')
+fig_pos_sta.savefig('map_stations.pdf')
 
 #recuperation position faille
 
