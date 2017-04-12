@@ -96,6 +96,15 @@ for fichier in list_fichier2:
                          ))
     data.close()
 
+#recuperation position faille
+
+strike = 234
+dip = 64
+l_fault = 40
+w_fault = 15
+lat_fault = [32.65, 32.86]
+long_fault = [130.72, 131.07]
+
 #print position des stations
 
 lat_sta = [a[8] for a in info_stations]
@@ -120,13 +129,20 @@ m = Basemap(projection='merc',
 	    resolution='h'
 	   )
 x, y = m(long_sta, lat_sta)
+x_fault, y_fault = m(long_fault, lat_fault)
 m.drawcoastlines(linewidth=0.2)
 m.fillcontinents('yellow')
 m.drawparallels(np.arange(30, 38, 2), labels=[1, 0, 0, 0], linewidth=0)
 m.drawmeridians(np.arange(128, 141, 2), labels=[0, 0, 0, 1], linewidth=0)
+ax_pos_sta.plot(x_fault,
+		y_fault,
+		color='green',
+		linewidth = 0.3,
+		zorder=1
+	       )
 ax_pos_sta.scatter(x,
 		   y,
-		   3,
+		   2,
 		   marker='^',
 		   color=color_sta,
 		   zorder=2
@@ -135,7 +151,7 @@ for i in range(len(code_sta)):
     ax_pos_sta.text(x[i],
 		    y[i],
 		    code_sta[i],
-		    fontsize=3,
+		    fontsize=2,
 		    ha='center',
 		    va='bottom',
 		    zorder=3
