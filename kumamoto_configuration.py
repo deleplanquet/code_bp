@@ -8,11 +8,17 @@ from mpl_toolkits.basemap import Basemap
 
 #fonctions
 
+#normalisation
+def norm(vect):
+    Norm = math.sqrt(vect[0]*vect[0] + vect[1]*vect[1] + vect[2]*vect[2])
+    return [vect[0]/Norm, vect[1]/Norm, vect[2]/Norm]
+
 #rotation 3d d'angle theta et d'axe passant par l'origine porte par le vecteur (a, b, c) de norme 1, repere orthonormal direct
 def rotation(u, theta, OM):
-    a = OM[0]
-    b = OM[1]
-    c = OM[2]
+    """ attention OM unitaire """
+    a = norm(OM)[0]
+    b = norm(OM)[1]
+    c = norm(OM)[2]
     radian = theta*math.pi/180
     #coefficients de la matrice de rotation
     mat = array([[a*a + (1 - a*a)*math.cos(radian),
@@ -29,7 +35,19 @@ def rotation(u, theta, OM):
 		  [u[1]],
 		  [u[2]]])
     #rotation du vecteur u de theta autour de OM
-    return dot(mat, vect)
+    vect_rot = dot(mat, vect)
+    return (vect_rot[0][0], vect_rot[1][0], vect_rot[2][0])
+
+def milieu(lat1, long1, lat2, long2):
+    rlat1 = lat1*math.pi/180
+    rlong1 = long1*math.pi/180
+    rlat2 = lat2*math.pi/180
+    rlong2 = long2*math.pi/180
+    xx = math.cos(rlat1)*math.cos(rlong1) + math.cos(rlat2)*math.cos(rlong2)
+    yy = math.cos(rlat1)*math.sin(rlong1) + math.cos(rlat2)*math.sin(rlong2)
+    zz = math.sin(rlat1) + math.sin(rlat2)
+    return [math.asin(zz/math.sqrt(xx*xx + yy*yy + zz*zz))*180./math.pi,
+	    math.acos(xx/math.sqrt(xx*xx + yy*yy))*180./math.pi]
 
 #recuperation position stations
 path = '/home/deleplanque/Documents/back_proj/en_cours'
@@ -183,6 +201,12 @@ fig_pos_sta.savefig('map_stations.pdf')
 
 #calcul matrice temps de trajet
 
+lat_cen_fault, long_cen_fault = milieu(lat_fault[0], long_fault[0], lat_fault[1], long_fault[1])
+dir_cen_fault = [math.cos(lat_cen_fault)*math.cos(long_cen_fault), math.cos(lat_cen_fault)*math.sin(long_cen_fault), math.sin(lat_cen_fault)]
+vect_nord = rotation(dir_cen_fault, 90, [math.sin(long_cen_fault), -math.cos(long_cen_fault), 0])
+vect_strike = rotation(vect_nord, strike, dir_cen_fault)
+vect_perp_strike = rotation(vect_nord, strike-90, dir_cen_fault)
+vect_dir_fault = rotation(vect_perp_strike, 180-dip, vect_strike)
 
 #ARF figures
 
