@@ -1,9 +1,35 @@
 import numpy as np
+from pylab import *
 import math
 import cmath
 import matplotlib.pyplot as plt
 import os
 from mpl_toolkits.basemap import Basemap
+
+#fonctions
+
+#rotation 3d d'angle theta et d'axe passant par l'origine porte par le vecteur (a, b, c) de norme 1, repere orthonormal direct
+def rotation(u, theta, OM):
+    a = OM[0]
+    b = OM[1]
+    c = OM[2]
+    radian = theta*math.pi/180
+    #coefficients de la matrice de rotation
+    mat = array([[a*a + (1 - a*a)*math.cos(radian),
+		  a*b*(1 - math.cos(radian)) - c*math.sin(radian),
+		  a*c*(1 - math.cos(radian)) + b*math.sin(radian)],
+		 [a*b*(1 - math.cos(radian)) + c*math.sin(radian),
+		  b*b + (1 - b*b)*math.cos(radian),
+		  b*c*(1 - math.cos(radian)) - a*math.sin(radian)],
+		 [a*c*(1 - math.cos(radian)) - b*math.sin(radian),
+		  b*c*(1 - math.cos(radian)) + a*math.sin(radian),
+		  c*c + (1 - c*c)*math.cos(radian)]])
+    #rearrangement du vecteur auquel on applique la rotation
+    vect = array([[u[0]],
+		  [u[1]],
+		  [u[2]]])
+    #rotation du vecteur u de theta autour de OM
+    return dot(mat, vect)
 
 #recuperation position stations
 path = '/home/deleplanque/Documents/back_proj/en_cours'
@@ -37,8 +63,7 @@ info_stations = [('Origin Date',
 		  'Scale Factor',
 		  'Max. Acc. (gal)',
 		  'Last Correction Date',
-		  'Last Correction Time'
-		 )]
+		  'Last Correction Time')]
 
 for fichier in list_fichier1:
     data = open(path1 + '/' + fichier, 'r')
@@ -64,8 +89,7 @@ for fichier in list_fichier1:
                           info[13].split(' ')[6],
                           float(info[14].split(' ')[5]),
                           info[15].split(' ')[4],
-                          info[15].split(' ')[5]
-			 ))
+                          info[15].split(' ')[5]))
     data.close()
 
 for fichier in list_fichier2:
@@ -92,8 +116,7 @@ for fichier in list_fichier2:
                           info[13].split(' ')[6],
                           float(info[14].split(' ')[5]),
                           info[15].split(' ')[4],
-                          info[15].split(' ')[5]
-                         ))
+                          info[15].split(' ')[5]))
     data.close()
 
 #recuperation position faille
@@ -158,9 +181,8 @@ for i in range(len(code_sta)):
 		   )
 fig_pos_sta.savefig('map_stations.pdf')
 
-#recuperation position faille
-
 #calcul matrice temps de trajet
+
 
 #ARF figures
 
