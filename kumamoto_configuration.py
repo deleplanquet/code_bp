@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 import os
 from mpl_toolkits.basemap import Basemap
 
+#constantes
+R_Earth = 6400
+v_s = 6./math.sqrt(3)
+
 #fonctions
 
 #normalisation
@@ -71,7 +75,20 @@ def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
     return grill_fault
 
 #calcul de la matrice des tps de trajet pour une station
-#def trav_time(station, fault)
+def trav_time(station, fault):
+    r_sta = R_Earth + station[2]/1000
+    rlat_sta = station[0]*math.pi/180
+    rlong_sta = station[1]*math.pi/180
+    x_sta = r_sta*math.cos(rlat_sta)*math.cos(rlong_sta)
+    y_sta = r_sta*math.cos(rlat_sta)*math.sin(rlong_sta)
+    z_sta = r_sta*math.sin(rlat_sta)
+    mat_time = np.zeros((len(fault[:, 0, 0]), len(fault[0, :, 0])))
+    for a in range(len(fault[:, 0, 0])):
+    	for b in range(len(fault[0 , :, 0])):
+    	    mat_time[a, b] = math.sqrt(pow(x_sta - fault[a, b, 0], 2)
+					+ pow(y_sta - fault[a, b, 1], 2)
+					+ pow(z_sta - fault[a, b, 2], 2))/v_s
+    return mat_time
 
 #recuperation position stations
 path = '/home/deleplanque/Documents/back_proj/en_cours'
@@ -191,7 +208,7 @@ m = Basemap(projection='merc',
 	    llcrnrlat=30,
 	    urcrnrlon=140,
 	    urcrnrlat=37,
-	    resolution='h'
+	    resolution='i'
 	   )
 x, y = m(long_sta, lat_sta)
 x_fault, y_fault = m(long_fault, lat_fault)
@@ -232,9 +249,12 @@ vect_strike = rotation(vect_nord, strike, dir_cen_fault)
 vect_perp_strike = rotation(vect_nord, strike-90, dir_cen_fault)
 vect_dir_fault = rotation(vect_perp_strike, 180-dip, vect_strike)
 
-#calcul matrice temps de trajet
+coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(rotation(vect_dir_fault, 90, vect_strike)), 1., 1.)
 
-print(fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(rotation(vect_dir_fault, 90, vect_strike)), 1., 1.))
+#calcul matrice tps de trajet
+
+print(info_stations[1][7])
+print(trav_time([info_stations[1][8], info_stations[1][9], info_stations[1][10]], coord_fault))
 
 #ARF figures
 
