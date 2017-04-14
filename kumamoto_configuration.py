@@ -20,6 +20,15 @@ def d2r(angle):
 def r2d(angle):
     return angle*180/math.pi
 
+#conversion coordonnees geographiques -> cartesien
+def geo2cart(r, lat, lon):
+    rlat = d2r(lat)
+    rlon = d2r(lon)
+    xx = r*math.cos(rlat)*math.cos(rlon)
+    yy = r*math.cos(rlat)*math.sin(rlon)
+    zz = r*math.sin(rlat)
+    return [xx, yy, zz]
+
 #normalisation
 def norm(vect):
     Norm = math.sqrt(vect[0]*vect[0] + vect[1]*vect[1] + vect[2]*vect[2])
@@ -52,26 +61,17 @@ def rotation(u, theta, OM):
 
 #bissectrice en 3d
 def milieu(lat1, long1, lat2, long2):
-    rlat1 = d2r(lat1)
-    rlong1 = d2r(long1)
-    rlat2 = d2r(lat2)
-    rlong2 = d2r(long2)
-    xx = math.cos(rlat1)*math.cos(rlong1) + math.cos(rlat2)*math.cos(rlong2)
-    yy = math.cos(rlat1)*math.sin(rlong1) + math.cos(rlat2)*math.sin(rlong2)
-    zz = math.sin(rlat1) + math.sin(rlat2)
-    return [r2d(math.asin(zz/math.sqrt(xx*xx + yy*yy + zz*zz))),
-	    r2d(math.acos(xx/math.sqrt(xx*xx + yy*yy)))]
+    x1, y1, z1 = geo2cart(1, lat1, long1)
+    x2, y2, z2 = geo2cart(1, lat2, long2)
+    x_m = x1 + x2
+    y_m = y1 + y2
+    z_m = z1 + z2
+    return [r2d(math.asin(z_m/math.sqrt(x_m*x_m + y_m*y_m + z_m*z_m))),
+	    r2d(math.acos(x_m/math.sqrt(x_m*x_m + y_m*y_m)))]
 
 #calcul de la matrice des tps de trajet pour une station
 def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
-    rad = cen_fault[0]
-    rlat = d2r(cen_fault[1])
-    rlong = d2r(cen_fault[2])
-    x_cf = rad*math.cos(rlat)*math.cos(rlong)
-    y_cf = rad*math.cos(rlat)*math.sin(rlong)
-    z_cf = rad*math.sin(rlat)
-    print(cen_fault)
-    print(x_cf, y_cf, z_cf)
+    x_cf, y_cf, z_cf = geo2cart(cen_fault[0], cen_fault[1], cen_fault[2])
     x_fault = np.arange(-length/2/pasx, length/2/pasx)
     y_fault = np.arange(0, width/pasy)
     grill_fault = np.zeros((len(x_fault), len(y_fault), 3))
@@ -84,12 +84,7 @@ def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
 
 #calcul de la matrice des tps de trajet pour une station
 def trav_time(station, fault):
-    r_sta = R_Earth + station[2]/1000
-    rlat_sta = d2r(station[0])
-    rlong_sta = d2r(station[1])
-    x_sta = r_sta*math.cos(rlat_sta)*math.cos(rlong_sta)
-    y_sta = r_sta*math.cos(rlat_sta)*math.sin(rlong_sta)
-    z_sta = r_sta*math.sin(rlat_sta)
+    x_sta, y_sta, z_sta = geo2cart(R_Earth + station[0]/1000, station[1], station[2])
     mat_time = np.zeros((len(fault[:, 0, 0]), len(fault[0, :, 0])))
     for a in range(len(fault[:, 0, 0])):
     	for b in range(len(fault[0 , :, 0])):
@@ -262,7 +257,7 @@ coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, nor
 #calcul matrice tps de trajet
 
 print(info_stations[1][7])
-print(trav_time([info_stations[1][8], info_stations[1][9], info_stations[1][10]], coord_fault))
+print(trav_time([info_stations[1][10], info_stations[1][8], info_stations[1][9]], coord_fault))
 
 #ARF figures
 
