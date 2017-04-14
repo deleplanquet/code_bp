@@ -38,6 +38,7 @@ def rotation(u, theta, OM):
     vect_rot = dot(mat, vect)
     return (vect_rot[0][0], vect_rot[1][0], vect_rot[2][0])
 
+#bissectrice en 3d
 def milieu(lat1, long1, lat2, long2):
     rlat1 = lat1*math.pi/180
     rlong1 = long1*math.pi/180
@@ -48,6 +49,29 @@ def milieu(lat1, long1, lat2, long2):
     zz = math.sin(rlat1) + math.sin(rlat2)
     return [math.asin(zz/math.sqrt(xx*xx + yy*yy + zz*zz))*180./math.pi,
 	    math.acos(xx/math.sqrt(xx*xx + yy*yy))*180./math.pi]
+
+#calcul de la matrice des tps de trajet pour une station
+def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
+    rad = cen_fault[0]
+    rlat = cen_fault[1]*math.pi/180
+    rlong = cen_fault[2]*math.pi/180
+    x_cf = rad*math.cos(rlat)*math.cos(rlong)
+    y_cf = rad*math.cos(rlat)*math.sin(rlong)
+    z_cf = rad*math.sin(rlat)
+    print(cen_fault)
+    print(x_cf, y_cf, z_cf)
+    x_fault = np.arange(-length/2/pasx, length/2/pasx)
+    y_fault = np.arange(0, width/pasy)
+    grill_fault = np.zeros((len(x_fault), len(y_fault), 3))
+    for a in range(len(x_fault)):
+    	for b in range(len(y_fault)):
+    	    grill_fault[a, b, 0] = x_cf + a*pasx*u_strike[0] + b*pasy*u_dip[0]
+    	    grill_fault[a, b, 1] = y_cf + a*pasx*u_strike[1] + b*pasy*u_dip[1]
+    	    grill_fault[a, b, 2] = z_cf + a*pasx*u_strike[2] + b*pasy*u_dip[2]
+    return grill_fault
+
+#calcul de la matrice des tps de trajet pour une station
+#def trav_time(station, fault)
 
 #recuperation position stations
 path = '/home/deleplanque/Documents/back_proj/en_cours'
@@ -199,7 +223,7 @@ for i in range(len(code_sta)):
 		   )
 fig_pos_sta.savefig('map_stations.pdf')
 
-#calcul matrice temps de trajet
+#placement de la faille
 
 lat_cen_fault, long_cen_fault = milieu(lat_fault[0], long_fault[0], lat_fault[1], long_fault[1])
 dir_cen_fault = [math.cos(lat_cen_fault)*math.cos(long_cen_fault), math.cos(lat_cen_fault)*math.sin(long_cen_fault), math.sin(lat_cen_fault)]
@@ -207,6 +231,10 @@ vect_nord = rotation(dir_cen_fault, 90, [math.sin(long_cen_fault), -math.cos(lon
 vect_strike = rotation(vect_nord, strike, dir_cen_fault)
 vect_perp_strike = rotation(vect_nord, strike-90, dir_cen_fault)
 vect_dir_fault = rotation(vect_perp_strike, 180-dip, vect_strike)
+
+#calcul matrice temps de trajet
+
+print(fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(rotation(vect_dir_fault, 90, vect_strike)), 1., 1.))
 
 #ARF figures
 
