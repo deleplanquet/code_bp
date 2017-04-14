@@ -12,6 +12,14 @@ v_s = 6./math.sqrt(3)
 
 #fonctions
 
+#conversion angle degre -> radian
+def d2r(angle):
+    return angle*math.pi/180
+
+#conversion angle radian -> degre
+def r2d(angle):
+    return angle*180/math.pi
+
 #normalisation
 def norm(vect):
     Norm = math.sqrt(vect[0]*vect[0] + vect[1]*vect[1] + vect[2]*vect[2])
@@ -23,7 +31,7 @@ def rotation(u, theta, OM):
     a = norm(OM)[0]
     b = norm(OM)[1]
     c = norm(OM)[2]
-    radian = theta*math.pi/180
+    radian = d2r(theta)
     #coefficients de la matrice de rotation
     mat = array([[a*a + (1 - a*a)*math.cos(radian),
 		  a*b*(1 - math.cos(radian)) - c*math.sin(radian),
@@ -44,21 +52,21 @@ def rotation(u, theta, OM):
 
 #bissectrice en 3d
 def milieu(lat1, long1, lat2, long2):
-    rlat1 = lat1*math.pi/180
-    rlong1 = long1*math.pi/180
-    rlat2 = lat2*math.pi/180
-    rlong2 = long2*math.pi/180
+    rlat1 = d2r(lat1)
+    rlong1 = d2r(long1)
+    rlat2 = d2r(lat2)
+    rlong2 = d2r(long2)
     xx = math.cos(rlat1)*math.cos(rlong1) + math.cos(rlat2)*math.cos(rlong2)
     yy = math.cos(rlat1)*math.sin(rlong1) + math.cos(rlat2)*math.sin(rlong2)
     zz = math.sin(rlat1) + math.sin(rlat2)
-    return [math.asin(zz/math.sqrt(xx*xx + yy*yy + zz*zz))*180./math.pi,
-	    math.acos(xx/math.sqrt(xx*xx + yy*yy))*180./math.pi]
+    return [r2d(math.asin(zz/math.sqrt(xx*xx + yy*yy + zz*zz))),
+	    r2d(math.acos(xx/math.sqrt(xx*xx + yy*yy)))]
 
 #calcul de la matrice des tps de trajet pour une station
 def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
     rad = cen_fault[0]
-    rlat = cen_fault[1]*math.pi/180
-    rlong = cen_fault[2]*math.pi/180
+    rlat = d2r(cen_fault[1])
+    rlong = d2r(cen_fault[2])
     x_cf = rad*math.cos(rlat)*math.cos(rlong)
     y_cf = rad*math.cos(rlat)*math.sin(rlong)
     z_cf = rad*math.sin(rlat)
@@ -77,8 +85,8 @@ def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
 #calcul de la matrice des tps de trajet pour une station
 def trav_time(station, fault):
     r_sta = R_Earth + station[2]/1000
-    rlat_sta = station[0]*math.pi/180
-    rlong_sta = station[1]*math.pi/180
+    rlat_sta = d2r(station[0])
+    rlong_sta = d2r(station[1])
     x_sta = r_sta*math.cos(rlat_sta)*math.cos(rlong_sta)
     y_sta = r_sta*math.cos(rlat_sta)*math.sin(rlong_sta)
     z_sta = r_sta*math.sin(rlat_sta)
