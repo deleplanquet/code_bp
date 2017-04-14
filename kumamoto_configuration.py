@@ -256,10 +256,37 @@ coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, nor
 
 #calcul matrice tps de trajet
 
-print(info_stations[1][7])
-print(trav_time([info_stations[1][10], info_stations[1][8], info_stations[1][9]], coord_fault))
+travt = []
+for i in range(len(code_sta)):
+    travt.append(trav_time([info_stations[1][10], info_stations[1][8], info_stations[1][9]], coord_fault))
 
 #ARF figures
+
+frq_lst = [0.1, 0.2, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+ARF_complex = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), len(frq_lst)), dtype=complex)
+ARF = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), len(frq_lst)))
+
+for ixf in range(len(coord_fault[:, 0, 0])):
+    for iyf in range(len(coord_fault[0, :, 0])):
+    	for freq in range(len(frq_lst)):
+    	    for ista in range(len(code_sta)):
+    	    	ARF_complex[ixf, iyf, freq] = ARF_complex[ixf, iyf, freq] + cmath.exp(2*math.pi*1j*frq_lst[freq]*(travt[ista][ixf, iyf] - travt[ista][10, 10]))
+    	ARF[ixf, iyf, freq] = pow(abs(ARF_complex[ixf, iyf, freq]/len(frq_lst)), 2)
+
+fig_ARF, ax_ARF = plt.subplots(2, 5)
+for freq in range(len(frq_lst)):
+    ax_ARF[freq//5, freq%5].set_title(str(frq_lst[freq]) + 'Hz')
+    ax_ARF[freq//5, freq%5].set_xlabel('k')
+    ax_ARF[freq//5, freq%5].set_ylabel('l')
+    ax_ARF[freq//5, freq%5].imshow(ARF[:, :, freq], cmap='jet', interpolation='none', origin = 'lower')
+
+    fig_ARF_unique, ax_ARF_unique = plt.subplots(1, 1)
+    ax_ARF_unique.set_xlabel('k')
+    ax_ARF_unique.set_ylabel('l')
+    ax_ARF_unique.imshow(ARF[:, :, freq], cmap='jet', interpolation='none', origin='lower')
+    fig_ARF_unique.savefig('ARF_' + str(frq_lst[freq]) + 'Hz.pdf')
+
+fig_ARF.savefig('ARF.pdf')
 
 #stacks
 
