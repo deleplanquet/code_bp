@@ -196,10 +196,12 @@ lat_sta = [a[8] for a in info_stations]
 long_sta = [a[9] for a in info_stations]
 color_sta = ['b' if a[6] == 'KiK-net' else 'r' for a in info_stations]
 code_sta = [a[7] for a in info_stations]
+dep_sta = [a[10] for a in info_stations]
 del lat_sta[0]
 del long_sta[0]
 del color_sta[0]
 del code_sta[0]
+del dep_sta[0]
 
 os.chdir(path_results)
 
@@ -257,8 +259,8 @@ coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, nor
 #calcul matrice tps de trajet
 
 travt = []
-for i in range(len(code_sta)):
-    travt.append(trav_time([info_stations[1][10], info_stations[1][8], info_stations[1][9]], coord_fault))
+for ista in range(len(code_sta)):
+    travt.append(trav_time([dep_sta[ista], lat_sta[ista], long_sta[ista]], coord_fault))
 
 #ARF figures
 
@@ -270,8 +272,10 @@ for ixf in range(len(coord_fault[:, 0, 0])):
     for iyf in range(len(coord_fault[0, :, 0])):
     	for freq in range(len(frq_lst)):
     	    for ista in range(len(code_sta)):
-    	    	ARF_complex[ixf, iyf, freq] = ARF_complex[ixf, iyf, freq] + cmath.exp(2*math.pi*1j*frq_lst[freq]*(travt[ista][ixf, iyf] - travt[ista][10, 10]))
-    	ARF[ixf, iyf, freq] = pow(abs(ARF_complex[ixf, iyf, freq]/len(frq_lst)), 2)
+    	    	ARF_complex[ixf, iyf, freq] = ARF_complex[ixf, iyf, freq] + cmath.exp(2*math.pi*1j*frq_lst[freq]*(travt[ista][ixf, iyf] - travt[ista][20, 7]))
+    	    ARF[ixf, iyf, freq] = pow(abs(ARF_complex[ixf, iyf, freq]/len(code_sta)), 2)
+
+print(ARF[:, :, 0])
 
 fig_ARF, ax_ARF = plt.subplots(2, 5)
 for freq in range(len(frq_lst)):
@@ -289,5 +293,7 @@ for freq in range(len(frq_lst)):
 fig_ARF.savefig('ARF.pdf')
 
 #stacks
+
+
 
 #plots
