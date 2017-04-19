@@ -96,7 +96,7 @@ def trav_time(station, fault):
 
 #recuperation position stations
 path = '/home/deleplanque/Documents/back_proj/en_cours'
-dossier_seisme = '20160414212600'
+dossier_seisme = '20160416094800'
 path1 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.kik'
 path2 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.knt'
 path_results = path + '/results/' + dossier_seisme
@@ -182,6 +182,8 @@ for fichier in list_fichier2:
                           info[15].split(' ')[5]))
     data.close()
 
+print('     recuperation position stations ok')
+
 #recuperation position faille
 
 strike = 234
@@ -200,7 +202,9 @@ for i in range(len(info_stations)):
     	nw_info.append(info_stations[i])
     	list_code_sta.append(info_stations[i][7])
 
-#print position des stations
+print('     extraction des stations ok')
+
+#map avec les stations et la faille
 
 #used_list = info_stations
 used_list = nw_info
@@ -258,6 +262,8 @@ for i in range(len(code_sta)):
 		   )
 fig_pos_sta.savefig('map_stations.pdf')
 
+print('     map avec stations et faille ok')
+
 #placement de la faille
 
 lat_cen_fault, long_cen_fault = milieu(lat_fault[0], long_fault[0], lat_fault[1], long_fault[1])
@@ -269,11 +275,15 @@ vect_dir_fault = rotation(vect_perp_strike, 180-dip, vect_strike)
 
 coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(rotation(vect_dir_fault, 90, vect_strike)), 1., 1.)
 
+print('     localisation de la faille en volume ok')
+
 #calcul matrice tps de trajet
 
 travt = []
 for ista in range(len(code_sta)):
     travt.append(trav_time([dep_sta[ista], lat_sta[ista], long_sta[ista]], coord_fault))
+
+print('     matrice tps de trajet ok')
 
 #ARF figures
 
@@ -303,6 +313,8 @@ for freq in range(len(frq_lst)):
 
 fig_ARF.savefig('ARF.pdf')
 
+print('     figures ARF ok')
+
 #stacks
 
 f_ech = 1./50
@@ -331,6 +343,9 @@ for ista in range(len(code_sta)):
     	    for it in range(len(time)):
     	    	if travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it*f_ech > 0 and travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it*f_ech < 9.8:
     	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it*f_ech)
+    print('     ', code_sta[ista], str(ista + 1) + '/' + str(len(code_sta)))
+
+print('     stacks ok')
 
 #plots
 
@@ -353,7 +368,7 @@ for jk in range(l_fault):
 ax_bptr.set_xlim(0, 20)
 fig_bptr.savefig('bp_traces.pdf')
 
-
+print('     figures bp ok')
 
 
 
