@@ -5,6 +5,7 @@ import cmath
 import matplotlib.pyplot as plt
 import os
 from mpl_toolkits.basemap import Basemap
+from scipy import interpolate
 
 #constantes
 R_Earth = 6400
@@ -268,14 +269,12 @@ frq_lst = [0.1, 0.2, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 ARF_complex = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), len(frq_lst)), dtype=complex)
 ARF = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), len(frq_lst)))
 
-for ixf in range(len(coord_fault[:, 0, 0])):
-    for iyf in range(len(coord_fault[0, :, 0])):
+for ixf in range(l_fault):
+    for iyf in range(w_fault):
     	for freq in range(len(frq_lst)):
     	    for ista in range(len(code_sta)):
     	    	ARF_complex[ixf, iyf, freq] = ARF_complex[ixf, iyf, freq] + cmath.exp(2*math.pi*1j*frq_lst[freq]*(travt[ista][ixf, iyf] - travt[ista][20, 7]))
     	    ARF[ixf, iyf, freq] = pow(abs(ARF_complex[ixf, iyf, freq]/len(code_sta)), 2)
-
-print(ARF[:, :, 0])
 
 fig_ARF, ax_ARF = plt.subplots(2, 5)
 for freq in range(len(frq_lst)):
@@ -294,6 +293,67 @@ fig_ARF.savefig('ARF.pdf')
 
 #stacks
 
+time = np.arange(0, 10, 1./50)
+signal = np.zeros((len(time)))
+for i in range(50):
+    signal[200+i] = 1 - i/50
 
+f = interpolate.interp1d(time, signal)
+
+fig_signal, ax_signal = plt.subplots(1, 1)
+ax_signal.set_xlabel('time (s)')
+ax_signal.plot(time, signal)
+fig_signal.savefig('signal.pdf')
+
+x_source = 20
+y_source = 7
+stack = np.zeros((l_fault, w_fault, 20000))
+print(len(stack))
+print(len(stack[0, 0, :]))
+
+for ista in range(len(code_sta)):
+#for ista in range(10):
+    for ixf in range(l_fault):
+    	for iyf in range(w_fault):
+    	    for it in range(len(time)):
+    	    	if travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/50 > 0 and travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/50 < 9.8:
+    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/50)
+    	    	#stack[ixf, iyf, int(travt[ista][x_source, y_source] - travt[ista][ixf, iyf] + time(it) + 1000)] = stack[ixf, iyf, int(travt[ista][x_source, y_source] - travt[ista][ixf, iyf] + time(it) + 1000)] + f(time(it))
+    print(ista)
+
+for ij in range(80):
+    m = 25*ij
+    fig_bp, ax_bp = plt.subplots(1, 1)
+    ax_bp.set_xlabel('x')
+    ax_bp.set_ylabel('y')
+    cax_bp = ax_bp.imshow(stack[:, :, m], cmap='bwr', interpolation='none')
+    fig_bp.savefig('bp_fig' + str(m) + '.png')
+
+ttime = np.arange(0, len(stack[0, 0, :]))
+ttime = ttime*1./50
+
+print(len(ttime))
+print(len(stack))
+
+fig_bptr, ax_bptr = plt.subplots(1, 1)
+ax_bptr.set_xlabel('time (s)')
+for jk in range(l_fault):
+    ax_bptr.plot(ttime, stack[jk, 7, :] + jk - l_fault/2)
+fig_bptr.savefig('bp_traces_fig.pdf')
 
 #plots
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
