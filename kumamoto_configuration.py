@@ -191,13 +191,25 @@ w_fault = 15
 lat_fault = [32.65, 32.86]
 long_fault = [130.72, 131.07]
 
+#extraction des stations (pas de redondance)
+
+nw_info = [info_stations[0]]
+list_code_sta = [info_stations[0][7]]
+for i in range(len(info_stations)):
+    if (info_stations[i][7] in list_code_sta) == False:
+    	nw_info.append(info_stations[i])
+    	list_code_sta.append(info_stations[i][7])
+
 #print position des stations
 
-lat_sta = [a[8] for a in info_stations]
-long_sta = [a[9] for a in info_stations]
-color_sta = ['b' if a[6] == 'KiK-net' else 'r' for a in info_stations]
-code_sta = [a[7] for a in info_stations]
-dep_sta = [a[10] for a in info_stations]
+#used_list = info_stations
+used_list = nw_info
+
+lat_sta = [a[8] for a in used_list]
+long_sta = [a[9] for a in used_list]
+color_sta = ['b' if a[6] == 'KiK-net' else 'r' for a in used_list]
+code_sta = [a[7] for a in used_list]
+dep_sta = [a[10] for a in used_list]
 del lat_sta[0]
 del long_sta[0]
 del color_sta[0]
@@ -293,10 +305,12 @@ fig_ARF.savefig('ARF.pdf')
 
 #stacks
 
-time = np.arange(0, 10, 1./50)
+f_ech = 1./50
+
+time = np.arange(0, 10, f_ech)
 signal = np.zeros((len(time)))
-for i in range(50):
-    signal[200+i] = 1 - i/50
+for i in range(int(1/f_ech)):
+    signal[int(4/f_ech) + i] = 1 - i*f_ech
 
 f = interpolate.interp1d(time, signal)
 
@@ -307,19 +321,18 @@ fig_signal.savefig('signal.pdf')
 
 x_source = 20
 y_source = 7
+
 stack = np.zeros((l_fault, w_fault, 20000))
-print(len(stack))
-print(len(stack[0, 0, :]))
 
 for ista in range(len(code_sta)):
 #for ista in range(10):
     for ixf in range(l_fault):
     	for iyf in range(w_fault):
     	    for it in range(len(time)):
-    	    	if travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/50 > 0 and travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/50 < 9.8:
-    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/50)
-    	    	#stack[ixf, iyf, int(travt[ista][x_source, y_source] - travt[ista][ixf, iyf] + time(it) + 1000)] = stack[ixf, iyf, int(travt[ista][x_source, y_source] - travt[ista][ixf, iyf] + time(it) + 1000)] + f(time(it))
-    print(ista)
+    	    	if travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it*f_ech > 0 and travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it*f_ech < 9.8:
+    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it*f_ech)
+
+#plots
 
 for ij in range(80):
     m = 25*ij
@@ -327,21 +340,18 @@ for ij in range(80):
     ax_bp.set_xlabel('x')
     ax_bp.set_ylabel('y')
     cax_bp = ax_bp.imshow(stack[:, :, m], cmap='bwr', interpolation='none')
-    fig_bp.savefig('bp_fig' + str(m) + '.png')
+    n = m*f_ech
+    fig_bp.savefig('bp_' + str(n) + 's.png')
 
 ttime = np.arange(0, len(stack[0, 0, :]))
-ttime = ttime*1./50
-
-print(len(ttime))
-print(len(stack))
+ttime = ttime*f_ech
 
 fig_bptr, ax_bptr = plt.subplots(1, 1)
 ax_bptr.set_xlabel('time (s)')
 for jk in range(l_fault):
-    ax_bptr.plot(ttime, stack[jk, 7, :] + jk - l_fault/2)
-fig_bptr.savefig('bp_traces_fig.pdf')
-
-#plots
+    ax_bptr.plot(ttime, stack[jk, 7, :] + 4*jk - 4*l_fault/2)
+ax_bptr.set_xlim(0, 20)
+fig_bptr.savefig('bp_traces.pdf')
 
 
 
