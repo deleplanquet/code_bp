@@ -98,7 +98,7 @@ def trav_time(station, fault):
 print('     recuperation position stations')
 
 path = '/home/deleplanque/Documents/back_proj/en_cours'
-dossier_seisme = '20160416131700'
+dossier_seisme = '20160414212600'
 path1 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.kik'
 path2 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.knt'
 path_results = path + '/results/' + dossier_seisme
@@ -340,11 +340,6 @@ for i in range(f_ech):
 
 f = interpolate.interp1d(time, signal)
 
-fig_signal, ax_signal = plt.subplots(1, 1)
-ax_signal.set_xlabel('time (s)')
-ax_signal.plot(time, signal)
-fig_signal.savefig('signal.pdf')
-
 stack = np.zeros((l_fault, w_fault, 20000))
 
 for ista in range(len(code_sta)):
@@ -357,14 +352,14 @@ for ista in range(len(code_sta)):
     	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(code_sta)*f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech)
 
 #plots
-print('     figures bp')
+print('     figures bp synthetique')
 
 for ij in range(100):
     m = 5*ij
     fig_bp, ax_bp = plt.subplots(1, 1)
     ax_bp.set_xlabel('x')
     ax_bp.set_ylabel('y')
-    cax_bp = ax_bp.imshow(stack[:, :, m], cmap='jet', interpolation='none')
+    cax_bp = ax_bp.imshow(stack[:, :, m], cmap='jet', vmin=stack[:, :, :].min(), vmax=stack[:, :, :].max(), interpolation='none')
     fig_bp.savefig('bp_' + str(m) + '_' + str(f_ech) + 'Hz.png')
 
 ttime = np.arange(0, len(stack[0, 0, :]))
@@ -378,7 +373,7 @@ for jk in range(l_fault):
 ax_bptr.set_xlim(0, 20)
 fig_bptr.savefig('bp_traces.pdf')
 
-print('     figures stationnaire')
+print('     figures bp stationnaire')
 
 time_cos = np.arange(0, 2*f_ech/f_cos)
 time_cos = time_cos/f_ech
