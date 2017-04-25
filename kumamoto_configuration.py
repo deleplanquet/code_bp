@@ -95,8 +95,10 @@ def trav_time(station, fault):
     return mat_time
 
 #recuperation position stations
+print('     recuperation position stations')
+
 path = '/home/deleplanque/Documents/back_proj/en_cours'
-dossier_seisme = '20160416094800'
+dossier_seisme = '20160416131700'
 path1 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.kik'
 path2 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.knt'
 path_results = path + '/results/' + dossier_seisme
@@ -182,18 +184,18 @@ for fichier in list_fichier2:
                           info[15].split(' ')[5]))
     data.close()
 
-print('     recuperation position stations ok')
-
 #recuperation position faille
 
 strike = 234
-dip = 64
+#dip = 64
+dip = 90
 l_fault = 40
 w_fault = 15
 lat_fault = [32.65, 32.86]
 long_fault = [130.72, 131.07]
 
 #extraction des stations (pas de redondance)
+print('     extraction des stations')
 
 nw_info = [info_stations[0]]
 list_code_sta = [info_stations[0][7]]
@@ -202,9 +204,8 @@ for i in range(len(info_stations)):
     	nw_info.append(info_stations[i])
     	list_code_sta.append(info_stations[i][7])
 
-print('     extraction des stations ok')
-
 #map avec les stations et la faille
+print('     map avec stations et faille')
 
 #used_list = info_stations
 used_list = nw_info
@@ -262,9 +263,8 @@ for i in range(len(code_sta)):
 		   )
 fig_pos_sta.savefig('map_stations.pdf')
 
-print('     map avec stations et faille ok')
-
 #placement de la faille
+print('     localisation de la faille en volume')
 
 lat_cen_fault, long_cen_fault = milieu(lat_fault[0], long_fault[0], lat_fault[1], long_fault[1])
 dir_cen_fault = [math.cos(lat_cen_fault)*math.cos(long_cen_fault), math.cos(lat_cen_fault)*math.sin(long_cen_fault), math.sin(lat_cen_fault)]
@@ -275,17 +275,15 @@ vect_dir_fault = rotation(vect_perp_strike, 180-dip, vect_strike)
 
 coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(rotation(vect_dir_fault, 90, vect_strike)), 1., 1.)
 
-print('     localisation de la faille en volume ok')
-
 #calcul matrice tps de trajet
+print('     matrice tps de trajet')
 
 travt = []
 for ista in range(len(code_sta)):
     travt.append(trav_time([dep_sta[ista], lat_sta[ista], long_sta[ista]], coord_fault))
 
-print('     matrice tps de trajet ok')
-
 #ARF figures
+print('     figures ARF')
 
 frq_lst = [0.1, 0.2, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 ARF_complex = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), len(frq_lst)), dtype=complex)
@@ -313,16 +311,32 @@ for freq in range(len(frq_lst)):
 
 fig_ARF.savefig('ARF.pdf')
 
-print('     figures ARF ok')
+#signal stationnaire
+print('     stacks stationnaire')
+
+f_ech = 50
+f_cos = 2
+ph_cos = 0 #phase du cos en degre
+
+x_source = 20
+y_source = 7
+
+stack_cos = np.zeros((l_fault, w_fault, int(2*f_ech/f_cos)))
+
+for ista in range(len(code_sta)):
+    print('     ', code_sta[ista], str(ista + 1) + '/' + str(len(code_sta)))
+    for ixf in range(l_fault):
+    	for iyf in range(w_fault):
+    	    for it in range(int(2*f_ech/f_cos)):
+    	    	stack_cos[ixf, iyf, it] = stack_cos[ixf, iyf, it] + 1./len(code_sta)*math.cos(d2r(ph_cos) + 2*math.pi*f_cos*(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech))
 
 #stacks
+print('     stacks synthetique')
 
-f_ech = 1./50
-
-time = np.arange(0, 10, f_ech)
+time = np.arange(0, 10, 1./f_ech)
 signal = np.zeros((len(time)))
-for i in range(int(1/f_ech)):
-    signal[int(4/f_ech) + i] = 1 - i*f_ech
+for i in range(f_ech):
+    signal[int(4*f_ech) + i] = 1 - i/f_ech
 
 f = interpolate.interp1d(time, signal)
 
@@ -331,46 +345,60 @@ ax_signal.set_xlabel('time (s)')
 ax_signal.plot(time, signal)
 fig_signal.savefig('signal.pdf')
 
-x_source = 20
-y_source = 7
-
 stack = np.zeros((l_fault, w_fault, 20000))
 
 for ista in range(len(code_sta)):
 #for ista in range(10):
+    print('     ', code_sta[ista], str(ista + 1) + '/' + str(len(code_sta)))
     for ixf in range(l_fault):
     	for iyf in range(w_fault):
     	    for it in range(len(time)):
-    	    	if travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it*f_ech > 0 and travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it*f_ech < 9.8:
-    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it*f_ech)
-    print('     ', code_sta[ista], str(ista + 1) + '/' + str(len(code_sta)))
-
-print('     stacks ok')
+    	    	if travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech > 0 and travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech < 9.8:
+    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(code_sta)*f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech)
 
 #plots
+print('     figures bp')
 
-for ij in range(80):
-    m = 25*ij
+for ij in range(100):
+    m = 5*ij
     fig_bp, ax_bp = plt.subplots(1, 1)
     ax_bp.set_xlabel('x')
     ax_bp.set_ylabel('y')
-    cax_bp = ax_bp.imshow(stack[:, :, m], cmap='bwr', interpolation='none')
-    n = m*f_ech
-    fig_bp.savefig('bp_' + str(n) + 's.png')
+    cax_bp = ax_bp.imshow(stack[:, :, m], cmap='jet', interpolation='none')
+    fig_bp.savefig('bp_' + str(m) + '_' + str(f_ech) + 'Hz.png')
 
 ttime = np.arange(0, len(stack[0, 0, :]))
-ttime = ttime*f_ech
+ttime = ttime/f_ech
 
 fig_bptr, ax_bptr = plt.subplots(1, 1)
 ax_bptr.set_xlabel('time (s)')
+ax_bptr.plot(time, signal - l_fault)
 for jk in range(l_fault):
-    ax_bptr.plot(ttime, stack[jk, 7, :] + 4*jk - 4*l_fault/2)
+    ax_bptr.plot(ttime, stack[jk, 7, :] + jk - l_fault/2)
 ax_bptr.set_xlim(0, 20)
 fig_bptr.savefig('bp_traces.pdf')
 
-print('     figures bp ok')
+print('     figures stationnaire')
 
+time_cos = np.arange(0, 2*f_ech/f_cos)
+time_cos = time_cos/f_ech
+signal_cos = np.zeros((len(time_cos)))
+for i in range(len(signal_cos)):
+    signal_cos[i] = math.cos(2*math.pi*f_cos*time_cos[i] + d2r(ph_cos))
 
+fig_cos, ax_cos = plt.subplots(1, 1)
+ax_cos.set_xlabel('time (s)')
+ax_cos.plot(time_cos, signal_cos - l_fault)
+#ax_cos.plot(time_cos, math.cos(2*math.pi*f_cos*time_cos + d2r(ph_cos)) - l_fault)
+for jk in range(l_fault):
+    ax_cos.plot(time_cos, stack_cos[jk, 7, :] + jk - l_fault/2)
+fig_cos.savefig('bp_cos_traces.pdf')
+
+fig_bp_cos, ax_bp_cos = plt.subplots(1, 1)
+ax_bp_cos.set_xlabel('x')
+ax_bp_cos.set_ylabel('y')
+cax_bp_cos = ax_bp_cos.imshow(stack_cos[:, :, 0], cmap='jet', interpolation='none')
+fig_bp_cos.savefig('bp_cos_' + str(f_cos) + '_Hz.pdf')
 
 
 
