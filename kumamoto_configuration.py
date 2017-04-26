@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import os
 from mpl_toolkits.basemap import Basemap
 from scipy import interpolate
+from scipy.signal import hilbert
+from obspy import read
+from obspy.signal.util import smooth
 
 #constantes
 R_Earth = 6400
@@ -98,7 +101,7 @@ def trav_time(station, fault):
 print('     recuperation position stations')
 
 path = '/home/deleplanque/Documents/back_proj/en_cours'
-dossier_seisme = '20160414212600'
+dossier_seisme = '20160416131700'
 path1 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.kik'
 path2 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.knt'
 path_results = path + '/results/' + dossier_seisme
@@ -128,7 +131,8 @@ info_stations = [('Origin Date',
 		  'Scale Factor',
 		  'Max. Acc. (gal)',
 		  'Last Correction Date',
-		  'Last Correction Time')]
+		  'Last Correction Time',
+		  'File Name')]
 
 for fichier in list_fichier1:
     data = open(path1 + '/' + fichier, 'r')
@@ -154,7 +158,8 @@ for fichier in list_fichier1:
                           info[13].split(' ')[6],
                           float(info[14].split(' ')[5]),
                           info[15].split(' ')[4],
-                          info[15].split(' ')[5]))
+                          info[15].split(' ')[5],
+    			  fichier))
     data.close()
 
 for fichier in list_fichier2:
@@ -181,7 +186,8 @@ for fichier in list_fichier2:
                           info[13].split(' ')[6],
                           float(info[14].split(' ')[5]),
                           info[15].split(' ')[4],
-                          info[15].split(' ')[5]))
+                          info[15].split(' ')[5],
+    			  fichier))
     data.close()
 
 #recuperation position faille
@@ -262,6 +268,41 @@ for i in range(len(code_sta)):
 		    zorder=3
 		   )
 fig_pos_sta.savefig('map_stations.pdf')
+
+#envelope
+print('     envelopes')
+
+for ista in range(len(code_sta) - 1):
+    if used_list[ista + 1][6] == 'KiK-net':
+    	os.chdir(path1)
+    else:
+    	os.chdir(path2)
+    print('     ', used_list[ista + 1][20])
+    st = read(used_list[ista + 1][20])
+    st = st.detrend(type='constant')
+    sig_brut = st[0]
+    sig_filt = sig_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
+    envelop_signal = hilbert(sig_filt)
+    envelop_signal = abs(envelop_signal)
+    envelop_smoothed = smooth(envelop_signal, 20)
+    print('     ', sig_brut)
+    print('     ', envelop_signal)
+
+    fs = float(used_list[ista + 1][13].replace('Hz', ''))
+    duration = used_list[ista + 1][14]
+    print('     ', fs, duration)
+    print('     ', type(fs), type(duration))
+
+    t = np.arange(int(fs*duration))/fs
+    print('     ', len(t), len(sig_brut), len(envelop_signal), len(envelop_smoothed))
+
+    os.chdir(path_results)
+
+    fig_hilb, ax_hilb = plt.subplots(1, 1)
+    ax_hilb.set_xlabel('time (s)')
+    ax_hilb.plot(t, sig_brut, linewidth=0.5, color='black')
+    ax_hilb.plot(t, envelop_smoothed, linewidth=1, color='red')
+    fig_hilb.savefig('envelope_' + str(code_sta[ista]) + '.pdf')
 
 #placement de la faille
 print('     localisation de la faille en volume')
