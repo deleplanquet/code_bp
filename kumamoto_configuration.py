@@ -113,84 +113,6 @@ list_fichier2 = os.listdir(path2)
 list_fichier1 = [a for a in list_fichier1 if ('ps.gz' in a) == False]
 list_fichier2 = [a for a in list_fichier2 if ('ps.gz' in a) == False]
 
-#info_stations = [('Origin Date',
-#		  'Origin Time',
-#		  'Lat.',
-#		  'Long.',
-#		  'Depth (km)',
-#		  'Mag.',
-#		  'Network',
-#		  'Station Code',
-#		  'Station Lat.',
-#		  'Station Long.',
-#		  'Station Height (m)',
-#		  'Record Date',
-#		  'Record Time',
-#		  'Sampling Freq (Hz)',
-#		  'Duration Time (s)',
-#		  'Dir.',
-#		  'Scale Factor',
-#		  'Max. Acc. (gal)',
-#		  'Last Correction Date',
-#		  'Last Correction Time',
-#		  'File Name')]
-
-for fichier in list_fichier1:
-    data = open(path1 + '/' + fichier, 'r')
-    contenu = data.read()
-    info = contenu.split('Memo')[0]
-    info = info.split('\n')
-    info_stations.append((info[0].split(' ')[8],
-                          info[0].split(' ')[9],
-                          float(info[1].split(' ')[14]),
-                          float(info[2].split(' ')[13]),
-		          float(info[3].split(' ')[8]),
-		          float(info[4].split(' ')[14]),
-		          'KiK-net',
-		          info[5].split(' ')[7],
-		          float(info[6].split(' ')[7]),
-		          float(info[7].split(' ')[6]),
-		          float(info[8].split(' ')[2]),
-                          info[9].split(' ')[8],
-                          info[9].split(' ')[9],
-                          info[10].split(' ')[2],
-                          float(info[11].split(' ')[3]),
-                          info[12].split(' ')[14],
-                          info[13].split(' ')[6],
-                          float(info[14].split(' ')[5]),
-                          info[15].split(' ')[4],
-                          info[15].split(' ')[5],
-    			  fichier))
-    data.close()
-
-for fichier in list_fichier2:
-    date = open(path2 + '/' + fichier, 'r')
-    contenu = date.read()
-    info = contenu.split('Memo')[0]
-    info = info.split('\n')
-    info_stations.append((info[0].split(' ')[8],
-                          info[0].split(' ')[9],
-                          float(info[1].split(' ')[14]),
-                          float(info[2].split(' ')[13]),
-                          float(info[3].split(' ')[8]),
-                          float(info[4].split(' ')[14]),
-                          'K-NET',
-                          info[5].split(' ')[7],
-                          float(info[6].split(' ')[7]),
-                          float(info[7].split(' ')[6]),
-                          float(info[8].split(' ')[2]),
-                          info[9].split(' ')[8],
-                          info[9].split(' ')[9],
-                          info[10].split(' ')[2],
-                          float(info[11].split(' ')[3]),
-                          info[12].split(' ')[14],
-                          info[13].split(' ')[6],
-                          float(info[14].split(' ')[5]),
-                          info[15].split(' ')[4],
-                          info[15].split(' ')[5],
-    			  fichier))
-    data.close()
-
 #recuperation position faille
 
 strike = 234
@@ -201,73 +123,72 @@ w_fault = 15
 lat_fault = [32.65, 32.86]
 long_fault = [130.72, 131.07]
 
-#extraction des stations (pas de redondance)
-print('     extraction des stations')
-
-nw_info = [info_stations[0]]
-list_code_sta = [info_stations[0][7]]
-for i in range(len(info_stations)):
-    if (info_stations[i][7] in list_code_sta) == False:
-    	nw_info.append(info_stations[i])
-    	list_code_sta.append(info_stations[i][7])
-
 #map avec les stations et la faille
 print('     map avec stations et faille')
 
-#used_list = info_stations
-used_list = nw_info
-
-lat_sta = [a[8] for a in used_list]
-long_sta = [a[9] for a in used_list]
-color_sta = ['b' if a[6] == 'KiK-net' else 'r' for a in used_list]
-code_sta = [a[7] for a in used_list]
-dep_sta = [a[10] for a in used_list]
-del lat_sta[0]
-del long_sta[0]
-del color_sta[0]
-del code_sta[0]
-del dep_sta[0]
-
-os.chdir(path_results)
+os.chdir(path2)
 
 fig_pos_sta, ax_pos_sta = plt.subplots(1, 1)
-#ax_pos_sta.set_xlabel('Long.')
-#ax_pos_sta.set_ylabel('Lat.')
 m = Basemap(projection='merc',
-	    llcrnrlon=128,
-	    llcrnrlat=30,
-	    urcrnrlon=140,
-	    urcrnrlat=37,
-	    resolution='i'
-	   )
-x, y = m(long_sta, lat_sta)
+    	    llcrnrlon=128,
+    	    llcrnrlat=30,
+    	    urcrnrlon=140,
+    	    urcrnrlat=37,
+    	    resolution='i')
 x_fault, y_fault = m(long_fault, lat_fault)
 m.drawcoastlines(linewidth=0.2)
 m.fillcontinents('yellow')
 m.drawparallels(np.arange(30, 38, 2), labels=[1, 0, 0, 0], linewidth=0)
 m.drawmeridians(np.arange(128, 141, 2), labels=[0, 0, 0, 1], linewidth=0)
 ax_pos_sta.plot(x_fault,
-		y_fault,
-		color='green',
-		linewidth = 0.3,
-		zorder=1
-	       )
-ax_pos_sta.scatter(x,
-		   y,
-		   2,
-		   marker='^',
-		   color=color_sta,
-		   zorder=2
-		  )
-for i in range(len(code_sta)):
-    ax_pos_sta.text(x[i],
-		    y[i],
-		    code_sta[i],
-		    fontsize=2,
-		    ha='center',
-		    va='bottom',
-		    zorder=3
-		   )
+                y_fault,
+                color='green',
+                linewidth = 0.3,
+                zorder=1)
+
+os.chdir(path1)
+for fichier in list_fichier1:
+    st = read(fichier)
+    tr = st[0]
+    if tr.stats.channel == 'Z':
+    	print(fichier)
+    	x_sta, y_sta = m(tr.stats.knet.stlo, tr.stats.knet.stla)
+    	ax_pos_sta.scatter(x_sta,
+    	    	    	   y_sta,
+    	    	    	   2,
+    	    	    	   marker='^',
+    	    	    	   color='red',
+    	    	    	   zorder=2)
+    	ax_pos_sta.text(x_sta,
+    	    	    	y_sta,
+    	    	    	tr.stats.station,
+    	    	    	fontsize=2,
+    	    	    	ha='center',
+    	    	    	va='bottom',
+    	    	    	zorder=3)
+
+os.chdir(path2)
+for fichier in list_fichier2:
+    st = read(fichier)
+    tr = st[0]
+    if tr.stats.channel == 'Z':
+    	print(fichier)
+    	x_sta, y_sta = m(tr.stats.knet.stlo, tr.stats.knet.stla)
+    	ax_pos_sta.scatter(x_sta,
+    	    	    	   y_sta,
+    	    	    	   2,
+    	    	    	   marker='^',
+    	    	    	   color='blue',
+    	    	    	   zorder=2)
+    	ax_pos_sta.text(x_sta,
+    	    	    	y_sta,
+    	    	    	tr.stats.station,
+    	    	    	fontsize=2,
+    	    	    	ha='center',
+    	    	    	va='bottom',
+    	    	    	zorder=3)
+
+os.chdir(path_results)
 fig_pos_sta.savefig('map_stations.pdf')
 
 #envelope
