@@ -9,6 +9,7 @@ from scipy import interpolate
 from scipy.signal import hilbert
 from obspy import read
 from obspy.signal.util import smooth
+from scipy import ndimage
 
 #constantes
 R_Earth = 6400
@@ -193,8 +194,8 @@ for fichier in list_fichier2:
 #recuperation position faille
 
 strike = 234
-#dip = 64
-dip = 90
+dip = 64
+#dip = 90
 l_fault = 40
 w_fault = 15
 lat_fault = [32.65, 32.86]
@@ -285,16 +286,11 @@ for ista in range(len(code_sta) - 1):
     envelop_signal = hilbert(sig_filt)
     envelop_signal = abs(envelop_signal)
     envelop_smoothed = smooth(envelop_signal, 20)
-    print('     ', sig_brut)
-    print('     ', envelop_signal)
 
     fs = float(used_list[ista + 1][13].replace('Hz', ''))
     duration = used_list[ista + 1][14]
-    print('     ', fs, duration)
-    print('     ', type(fs), type(duration))
 
     t = np.arange(int(fs*duration))/fs
-    print('     ', len(t), len(sig_brut), len(envelop_signal), len(envelop_smoothed))
 
     os.chdir(path_results)
 
@@ -308,13 +304,17 @@ for ista in range(len(code_sta) - 1):
 print('     localisation de la faille en volume')
 
 lat_cen_fault, long_cen_fault = milieu(lat_fault[0], long_fault[0], lat_fault[1], long_fault[1])
-dir_cen_fault = [math.cos(lat_cen_fault)*math.cos(long_cen_fault), math.cos(lat_cen_fault)*math.sin(long_cen_fault), math.sin(lat_cen_fault)]
-vect_nord = rotation(dir_cen_fault, 90, [math.sin(long_cen_fault), -math.cos(long_cen_fault), 0])
-vect_strike = rotation(vect_nord, strike, dir_cen_fault)
-vect_perp_strike = rotation(vect_nord, strike-90, dir_cen_fault)
-vect_dir_fault = rotation(vect_perp_strike, 180-dip, vect_strike)
+dir_cen_fault = [math.cos(d2r(lat_cen_fault))*math.cos(d2r(long_cen_fault)), math.cos(d2r(lat_cen_fault))*math.sin(d2r(long_cen_fault)), math.sin(d2r(lat_cen_fault))]
+vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(long_cen_fault)), -math.cos(d2r(long_cen_fault)), 0])
+vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
+vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
+vect_dip = rotation(vect_perp_strike, dip, vect_strike)
 
-coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(rotation(vect_dir_fault, 90, vect_strike)), 1., 1.)
+coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(vect_dip), 1., 1.)
+
+print(lat_cen_fault, long_cen_fault)
+print(dir_cen_fault, vect_nord)
+print(norm(vect_strike), norm(vect_dip))
 
 #calcul matrice tps de trajet
 print('     matrice tps de trajet')
@@ -337,17 +337,20 @@ for ixf in range(l_fault):
     	    	ARF_complex[ixf, iyf, freq] = ARF_complex[ixf, iyf, freq] + cmath.exp(2*math.pi*1j*frq_lst[freq]*(travt[ista][ixf, iyf] - travt[ista][20, 7]))
     	    ARF[ixf, iyf, freq] = pow(abs(ARF_complex[ixf, iyf, freq]/len(code_sta)), 2)
 
+for freq in range(len(frq_lst)):
+    ARF[0, 0, freq] = 1
+
 fig_ARF, ax_ARF = plt.subplots(2, 5)
 for freq in range(len(frq_lst)):
     ax_ARF[freq//5, freq%5].set_title(str(frq_lst[freq]) + 'Hz')
     ax_ARF[freq//5, freq%5].set_xlabel('k')
     ax_ARF[freq//5, freq%5].set_ylabel('l')
-    ax_ARF[freq//5, freq%5].imshow(ARF[:, :, freq], cmap='jet', interpolation='none', origin = 'lower')
+    ax_ARF[freq//5, freq%5].imshow(ndimage.rotate(ARF[:, :, freq], strike), cmap='jet', interpolation='none', origin = 'lower')
 
     fig_ARF_unique, ax_ARF_unique = plt.subplots(1, 1)
     ax_ARF_unique.set_xlabel('k')
     ax_ARF_unique.set_ylabel('l')
-    ax_ARF_unique.imshow(ARF[:, :, freq], cmap='jet', interpolation='none', origin='lower')
+    ax_ARF_unique.imshow(ndimage.rotate(ARF[:, :, freq], strike), cmap='jet', interpolation='none', origin='lower')
     fig_ARF_unique.savefig('ARF_' + str(frq_lst[freq]) + 'Hz.pdf')
 
 fig_ARF.savefig('ARF.pdf')
@@ -371,6 +374,9 @@ for ista in range(len(code_sta)):
     	    for it in range(int(2*f_ech/f_cos)):
     	    	stack_cos[ixf, iyf, it] = stack_cos[ixf, iyf, it] + 1./len(code_sta)*math.cos(d2r(ph_cos) + 2*math.pi*f_cos*(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech))
 
+for it in range(int(2*f_ech/f_cos)):
+    stack_cos[0, 0, it] = 1
+
 #stacks
 print('     stacks synthetique')
 
@@ -392,6 +398,9 @@ for ista in range(len(code_sta)):
     	    	if travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech > 0 and travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech < 9.8:
     	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(code_sta)*f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech)
 
+for it in range(len(time)):
+    stack[0, 0, it] = 1
+
 #plots
 print('     figures bp synthetique')
 
@@ -400,7 +409,7 @@ for ij in range(100):
     fig_bp, ax_bp = plt.subplots(1, 1)
     ax_bp.set_xlabel('x')
     ax_bp.set_ylabel('y')
-    cax_bp = ax_bp.imshow(stack[:, :, m], cmap='jet', vmin=stack[:, :, :].min(), vmax=stack[:, :, :].max(), interpolation='none')
+    cax_bp = ax_bp.imshow(ndimage.rotate(stack[:, :, m], strike), cmap='jet', vmin=stack[:, :, :].min(), vmax=stack[:, :, :].max(), interpolation='none', origin='lower')
     fig_bp.savefig('bp_' + str(m) + '_' + str(f_ech) + 'Hz.png')
 
 ttime = np.arange(0, len(stack[0, 0, :]))
@@ -433,7 +442,7 @@ fig_cos.savefig('bp_cos_traces.pdf')
 fig_bp_cos, ax_bp_cos = plt.subplots(1, 1)
 ax_bp_cos.set_xlabel('x')
 ax_bp_cos.set_ylabel('y')
-cax_bp_cos = ax_bp_cos.imshow(stack_cos[:, :, 0], cmap='jet', interpolation='none')
+cax_bp_cos = ax_bp_cos.imshow(ndimage.rotate(stack_cos[:, :, 0], strike), cmap='jet', interpolation='none', origin='lower')
 fig_bp_cos.savefig('bp_cos_' + str(f_cos) + '_Hz.pdf')
 
 
