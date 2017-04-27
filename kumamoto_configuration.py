@@ -135,33 +135,33 @@ info_stations = [('Origin Date',
 		  'Last Correction Time',
 		  'File Name')]
 
-for fichier in list_fichier1:
-    data = open(path1 + '/' + fichier, 'r')
-    contenu = data.read()
-    info = contenu.split('Memo')[0]
-    info = info.split('\n')
-    info_stations.append((info[0].split(' ')[8],
-                          info[0].split(' ')[9],
-                          float(info[1].split(' ')[14]),
-                          float(info[2].split(' ')[13]),
-		          float(info[3].split(' ')[8]),
-		          float(info[4].split(' ')[14]),
-		          'KiK-net',
-		          info[5].split(' ')[7],
-		          float(info[6].split(' ')[7]),
-		          float(info[7].split(' ')[6]),
-		          float(info[8].split(' ')[2]),
-                          info[9].split(' ')[8],
-                          info[9].split(' ')[9],
-                          info[10].split(' ')[2],
-                          float(info[11].split(' ')[3]),
-                          info[12].split(' ')[14],
-                          info[13].split(' ')[6],
-                          float(info[14].split(' ')[5]),
-                          info[15].split(' ')[4],
-                          info[15].split(' ')[5],
-    			  fichier))
-    data.close()
+#for fichier in list_fichier1:
+#    data = open(path1 + '/' + fichier, 'r')
+#    contenu = data.read()
+#    info = contenu.split('Memo')[0]
+#    info = info.split('\n')
+#    info_stations.append((info[0].split(' ')[8],
+#                          info[0].split(' ')[9],
+#                          float(info[1].split(' ')[14]),
+#                          float(info[2].split(' ')[13]),
+#		          float(info[3].split(' ')[8]),
+#		          float(info[4].split(' ')[14]),
+#		          'KiK-net',
+#		          info[5].split(' ')[7],
+#		          float(info[6].split(' ')[7]),
+#		          float(info[7].split(' ')[6]),
+#		          float(info[8].split(' ')[2]),
+#                          info[9].split(' ')[8],
+#                          info[9].split(' ')[9],
+#                          info[10].split(' ')[2],
+#                          float(info[11].split(' ')[3]),
+#                          info[12].split(' ')[14],
+#                          info[13].split(' ')[6],
+#                          float(info[14].split(' ')[5]),
+#                          info[15].split(' ')[4],
+#                          info[15].split(' ')[5],
+#    			  fichier))
+#    data.close()
 
 for fichier in list_fichier2:
     date = open(path2 + '/' + fichier, 'r')
