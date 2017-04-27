@@ -113,27 +113,27 @@ list_fichier2 = os.listdir(path2)
 list_fichier1 = [a for a in list_fichier1 if ('ps.gz' in a) == False]
 list_fichier2 = [a for a in list_fichier2 if ('ps.gz' in a) == False]
 
-info_stations = [('Origin Date',
-		  'Origin Time',
-		  'Lat.',
-		  'Long.',
-		  'Depth (km)',
-		  'Mag.',
-		  'Network',
-		  'Station Code',
-		  'Station Lat.',
-		  'Station Long.',
-		  'Station Height (m)',
-		  'Record Date',
-		  'Record Time',
-		  'Sampling Freq (Hz)',
-		  'Duration Time (s)',
-		  'Dir.',
-		  'Scale Factor',
-		  'Max. Acc. (gal)',
-		  'Last Correction Date',
-		  'Last Correction Time',
-		  'File Name')]
+#info_stations = [('Origin Date',
+#		  'Origin Time',
+#		  'Lat.',
+#		  'Long.',
+#		  'Depth (km)',
+#		  'Mag.',
+#		  'Network',
+#		  'Station Code',
+#		  'Station Lat.',
+#		  'Station Long.',
+#		  'Station Height (m)',
+#		  'Record Date',
+#		  'Record Time',
+#		  'Sampling Freq (Hz)',
+#		  'Duration Time (s)',
+#		  'Dir.',
+#		  'Scale Factor',
+#		  'Max. Acc. (gal)',
+#		  'Last Correction Date',
+#		  'Last Correction Time',
+#		  'File Name')]
 
 for fichier in list_fichier1:
     data = open(path1 + '/' + fichier, 'r')
@@ -337,9 +337,6 @@ for ixf in range(l_fault):
     	    	ARF_complex[ixf, iyf, freq] = ARF_complex[ixf, iyf, freq] + cmath.exp(2*math.pi*1j*frq_lst[freq]*(travt[ista][ixf, iyf] - travt[ista][20, 7]))
     	    ARF[ixf, iyf, freq] = pow(abs(ARF_complex[ixf, iyf, freq]/len(code_sta)), 2)
 
-for freq in range(len(frq_lst)):
-    ARF[0, 0, freq] = 1
-
 fig_ARF, ax_ARF = plt.subplots(2, 5)
 for freq in range(len(frq_lst)):
     ax_ARF[freq//5, freq%5].set_title(str(frq_lst[freq]) + 'Hz')
@@ -374,9 +371,6 @@ for ista in range(len(code_sta)):
     	    for it in range(int(2*f_ech/f_cos)):
     	    	stack_cos[ixf, iyf, it] = stack_cos[ixf, iyf, it] + 1./len(code_sta)*math.cos(d2r(ph_cos) + 2*math.pi*f_cos*(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech))
 
-for it in range(int(2*f_ech/f_cos)):
-    stack_cos[0, 0, it] = 1
-
 #stacks
 print('     stacks synthetique')
 
@@ -397,9 +391,6 @@ for ista in range(len(code_sta)):
     	    for it in range(len(time)):
     	    	if travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech > 0 and travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech < 9.8:
     	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(code_sta)*f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech)
-
-for it in range(len(time)):
-    stack[0, 0, it] = 1
 
 #plots
 print('     figures bp synthetique')
