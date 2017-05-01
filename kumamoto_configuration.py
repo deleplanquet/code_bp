@@ -108,6 +108,12 @@ path2 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.knt
 path_results = path + '/results/' + dossier_seisme
 os.makedirs(path_results)
 
+path_map = path_results + '/map'
+path_env = path_results + '/envelop'
+
+os.makedirs(path_map)
+os.makedirs(path_env)
+
 list_fichier1 = os.listdir(path1)
 list_fichier2 = os.listdir(path2)
 list_fichier1 = [a for a in list_fichier1 if ('ps.gz' in a) == False]
@@ -150,8 +156,7 @@ os.chdir(path1)
 for fichier in list_fichier1:
     st = read(fichier)
     tr = st[0]
-    if tr.stats.channel == 'Z':
-    	print(fichier)
+    if tr.stats.channel == 'NS1':
     	x_sta, y_sta = m(tr.stats.knet.stlo, tr.stats.knet.stla)
     	ax_pos_sta.scatter(x_sta,
     	    	    	   y_sta,
@@ -171,8 +176,7 @@ os.chdir(path2)
 for fichier in list_fichier2:
     st = read(fichier)
     tr = st[0]
-    if tr.stats.channel == 'Z':
-    	print(fichier)
+    if tr.stats.channel == 'NS':
     	x_sta, y_sta = m(tr.stats.knet.stlo, tr.stats.knet.stla)
     	ax_pos_sta.scatter(x_sta,
     	    	    	   y_sta,
@@ -188,38 +192,51 @@ for fichier in list_fichier2:
     	    	    	va='bottom',
     	    	    	zorder=3)
 
-os.chdir(path_results)
+os.chdir(path_map)
 fig_pos_sta.savefig('map_stations.pdf')
 
 #envelope
 print('     envelopes')
 
-for ista in range(len(code_sta) - 1):
-    if used_list[ista + 1][6] == 'KiK-net':
-    	os.chdir(path1)
-    else:
-    	os.chdir(path2)
-    print('     ', used_list[ista + 1][20])
-    st = read(used_list[ista + 1][20])
-    st = st.detrend(type='constant')
-    sig_brut = st[0]
-    sig_filt = sig_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
-    envelop_signal = hilbert(sig_filt)
-    envelop_signal = abs(envelop_signal)
-    envelop_smoothed = smooth(envelop_signal, 20)
+for fichier in list_fichier1:
+    os.chdir(path1)
+    st = read(fichier)
+    if st[0].stats.channel == 'NS1':
+    	st = st.detrend(type='constant') #retirer la moyenne
+    	tr_brut = st[0]
+    	tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
+    	envelop = abs(hilbert(tr_filt))
+    	env_smoothed = smooth(envelop, 20)
 
-    fs = float(used_list[ista + 1][13].replace('Hz', ''))
-    duration = used_list[ista + 1][14]
+    	t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
+    	
+    	os.chdir(path_env)
 
-    t = np.arange(int(fs*duration))/fs
+    	fig_env, ax_env = plt.subplots(1, 1)
+    	ax_env.set_xlabel('time (s)')
+    	ax_env.plot(t, tr_brut, linewidth=0.2, color='black')
+    	ax_env.plot(t, env_smoothed, linewidth=1, color='red')
+    	fig_env.savefig('envelope_' + str(st[0].stats.station) + '.pdf')
 
-    os.chdir(path_results)
+for fichier in list_fichier2:
+    os.chdir(path2)
+    st = read(fichier)
+    if st[0].stats.channel == 'NS':
+    	st = st.detrend(type='constant')
+    	tr_brut = st[0]
+    	tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
+    	envelop = abs(hilbert(tr_filt))
+    	env_smoothed = smooth(envelop, 20)
 
-    fig_hilb, ax_hilb = plt.subplots(1, 1)
-    ax_hilb.set_xlabel('time (s)')
-    ax_hilb.plot(t, sig_brut, linewidth=0.5, color='black')
-    ax_hilb.plot(t, envelop_smoothed, linewidth=1, color='red')
-    fig_hilb.savefig('envelope_' + str(code_sta[ista]) + '.pdf')
+    	t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
+
+    	os.chdir(path_env)
+
+    	fig_env, ax_env = plt.subplots(1, 1)
+    	ax_env.set_xlabel('time (s)')
+    	ax_env.plot(t, tr_brut, linewidth=0.2, color='black')
+    	ax_env.plot(t, env_smoothed, linewidth=1, color='red')
+    	fig_env.savefig('envelope_' + str(st[0].stats.station) + '.pdf')
 
 #placement de la faille
 print('     localisation de la faille en volume')
