@@ -92,7 +92,7 @@ def trav_time(station, fault):
     x_sta, y_sta, z_sta = geo2cart(R_Earth + station[0]/1000, station[1], station[2])
     mat_time = np.zeros((len(fault[:, 0, 0]), len(fault[0, :, 0])))
     for a in range(len(fault[:, 0, 0])):
-    	for b in range(len(fault[0 , :, 0])):
+    	for b in range(len(fault[0, :, 0])):
     	    mat_time[a, b] = math.sqrt(pow(x_sta - fault[a, b, 0], 2)
 					+ pow(y_sta - fault[a, b, 1], 2)
 					+ pow(z_sta - fault[a, b, 2], 2))/v_s
@@ -103,23 +103,41 @@ print('     recuperation position stations')
 
 path = '/home/deleplanque/Documents/back_proj/en_cours'
 dossier_seisme = '20160416131700'
-path1 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.kik'
-path2 = path + '/data_kumamoto/' + dossier_seisme + '/' + dossier_seisme + '.knt'
+path_data = path + '/data_kumamoto/' + dossier_seisme
+path1 = path_data + '/' + dossier_seisme + '.kik'
+path2 = path_data + '/' + dossier_seisme + '.knt'
 path_results = path + '/results/' + dossier_seisme
 os.makedirs(path_results)
 
 path_map = path_results + '/map'
 path_env = path_results + '/envelop'
 path_ARF = path_results + '/ARF'
+path_bp_syn = path_results + '/bp_synthetique'
+path_bp_cos = path_results + '/bp_stationnaire'
 
 os.makedirs(path_map)
 os.makedirs(path_env)
 os.makedirs(path_ARF)
+os.makedirs(path_bp_syn)
+os.makedirs(path_bp_cos)
 
 list_fichier1 = os.listdir(path1)
 list_fichier2 = os.listdir(path2)
 list_fichier1 = [a for a in list_fichier1 if ('ps.gz' in a) == False]
 list_fichier2 = [a for a in list_fichier2 if ('ps.gz' in a) == False]
+
+list_file_used = []
+
+os.chdir(path1)
+for fichier in list_fichier1:
+    st = read(fichier)
+    if st[0].stats.channel == 'NS1':
+    	list_file_used.append([dossier_seisme + '.kik/' + fichier, 'kik'])
+os.chdir(path2)
+for fichier in list_fichier2:
+    st = read(fichier)
+    if st[0].stats.channel == 'NS':
+    	list_file_used.append([dossier_seisme + '.knt/' + fichier, 'knt'])
 
 #recuperation position faille
 
@@ -133,8 +151,6 @@ long_fault = [130.72, 131.07]
 
 #map avec les stations et la faille
 print('     map avec stations et faille')
-
-os.chdir(path2)
 
 fig_pos_sta, ax_pos_sta = plt.subplots(1, 1)
 m = Basemap(projection='merc',
@@ -154,45 +170,27 @@ ax_pos_sta.plot(x_fault,
                 linewidth = 0.3,
                 zorder=1)
 
-os.chdir(path1)
-for fichier in list_fichier1:
-    st = read(fichier)
-    tr = st[0]
-    if tr.stats.channel == 'NS1':
-    	x_sta, y_sta = m(tr.stats.knet.stlo, tr.stats.knet.stla)
-    	ax_pos_sta.scatter(x_sta,
-    	    	    	   y_sta,
-    	    	    	   2,
-    	    	    	   marker='^',
-    	    	    	   color='red',
-    	    	    	   zorder=2)
-    	ax_pos_sta.text(x_sta,
-    	    	    	y_sta,
-    	    	    	tr.stats.station,
-    	    	    	fontsize=2,
-    	    	    	ha='center',
-    	    	    	va='bottom',
-    	    	    	zorder=3)
-
-os.chdir(path2)
-for fichier in list_fichier2:
-    st = read(fichier)
-    tr = st[0]
-    if tr.stats.channel == 'NS':
-    	x_sta, y_sta = m(tr.stats.knet.stlo, tr.stats.knet.stla)
-    	ax_pos_sta.scatter(x_sta,
-    	    	    	   y_sta,
-    	    	    	   2,
-    	    	    	   marker='^',
-    	    	    	   color='blue',
-    	    	    	   zorder=2)
-    	ax_pos_sta.text(x_sta,
-    	    	    	y_sta,
-    	    	    	tr.stats.station,
-    	    	    	fontsize=2,
-    	    	    	ha='center',
-    	    	    	va='bottom',
-    	    	    	zorder=3)
+os.chdir(path_data)
+for fichier in list_file_used:
+    st = read(fichier[0])
+    x_sta, y_sta = m(st[0].stats.knet.stlo, st[0].stats.knet.stla)
+    if fichier[1] == 'kik':
+    	couleur = 'red'
+    else:
+    	couleur = 'blue'
+    ax_pos_sta.scatter(x_sta,
+    	    	       y_sta,
+    	    	       2,
+    	    	       marker='^',
+    	    	       color=couleur,
+    	    	       zorder=2)
+    ax_pos_sta.text(x_sta,
+    	    	    y_sta,
+    	    	    st[0].stats.station,
+    	    	    fontsize=2,
+    	    	    ha='center',
+    	    	    va='bottom',
+    	    	    zorder=3)
 
 os.chdir(path_map)
 fig_pos_sta.savefig('map_stations.pdf')
@@ -200,45 +198,24 @@ fig_pos_sta.savefig('map_stations.pdf')
 #envelope
 print('     envelopes')
 
-for fichier in list_fichier1:
-    os.chdir(path1)
-    st = read(fichier)
-    if st[0].stats.channel == 'NS1':
-    	st = st.detrend(type='constant') #retirer la moyenne
-    	tr_brut = st[0]
-    	tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
-    	envelop = abs(hilbert(tr_filt))
-    	env_smoothed = smooth(envelop, 20)
+for fichier in list_file_used:
+    os.chdir(path_data)
+    st = read(fichier[0])
+    st = st.detrend(type='constant') #retirer la moyenne
+    tr_brut = st[0]
+    tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
+    envelop = abs(hilbert(tr_filt))
+    env_smoothed = smooth(envelop, 20)
 
-    	t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
-    	
-    	os.chdir(path_env)
+    t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
 
-    	fig_env, ax_env = plt.subplots(1, 1)
-    	ax_env.set_xlabel('time (s)')
-    	ax_env.plot(t, tr_brut, linewidth=0.2, color='black')
-    	ax_env.plot(t, env_smoothed, linewidth=1, color='red')
-    	fig_env.savefig('envelope_' + str(st[0].stats.station) + '.pdf')
+    os.chdir(path_env)
 
-for fichier in list_fichier2:
-    os.chdir(path2)
-    st = read(fichier)
-    if st[0].stats.channel == 'NS':
-    	st = st.detrend(type='constant')
-    	tr_brut = st[0]
-    	tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
-    	envelop = abs(hilbert(tr_filt))
-    	env_smoothed = smooth(envelop, 20)
-
-    	t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
-
-    	os.chdir(path_env)
-
-    	fig_env, ax_env = plt.subplots(1, 1)
-    	ax_env.set_xlabel('time (s)')
-    	ax_env.plot(t, tr_brut, linewidth=0.2, color='black')
-    	ax_env.plot(t, env_smoothed, linewidth=1, color='red')
-    	fig_env.savefig('envelope_' + str(st[0].stats.station) + '.pdf')
+    fig_env, ax_env = plt.subplots(1, 1)
+    ax_env.set_xlabel('time (s)')
+    ax_env.plot(t, tr_brut, linewidth=0.2, color='black')
+    ax_env.plot(t, env_smoothed, linewidth=1, color='red')
+    fig_env.savefig('envelope_' + str(st[0].stats.station) + '.pdf')
 
 #placement de la faille
 print('     localisation de la faille en volume')
@@ -257,17 +234,10 @@ print('     matrice tps de trajet')
 
 travt = []
 
-os.chdir(path1)
-for fichier in list_fichier1:
-    st = read(fichier)
-    if st[0].stats.channel == 'NS1':
-    	travt.append(trav_time([st[0].stats.knet.stel, st[0].stats.knet.stla, st[0].stats.knet.stlo], coord_fault))
-
-os.chdir(path2)
-for fichier in list_fichier2:
-    st = read(fichier)
-    if st[0].stats.channel == 'NS':
-    	travt.append(trav_time([st[0].stats.knet.stel, st[0].stats.knet.stla, st[0].stats.knet.stlo], coord_fault))
+os.chdir(path_data)
+for fichier in list_file_used:
+    st = read(fichier[0])
+    travt.append(trav_time([st[0].stats.knet.stel, st[0].stats.knet.stla, st[0].stats.knet.stlo], coord_fault))
 
 #ARF figures
 print('     figures ARF')
@@ -279,9 +249,9 @@ ARF = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), len(frq_ls
 for ixf in range(l_fault):
     for iyf in range(w_fault):
     	for freq in range(len(frq_lst)):
-    	    for ista in range(len(travt)):
+    	    for ista in range(len(list_file_used)):
     	    	ARF_complex[ixf, iyf, freq] = ARF_complex[ixf, iyf, freq] + cmath.exp(2*math.pi*1j*frq_lst[freq]*(travt[ista][ixf, iyf] - travt[ista][20, 7]))
-    	    ARF[ixf, iyf, freq] = pow(abs(ARF_complex[ixf, iyf, freq]/len(travt)), 2)
+    	    ARF[ixf, iyf, freq] = pow(abs(ARF_complex[ixf, iyf, freq]/len(list_file_used)), 2)
 
 os.chdir(path_ARF)
 
@@ -312,12 +282,12 @@ y_source = 7
 
 stack_cos = np.zeros((l_fault, w_fault, int(2*f_ech/f_cos)))
 
-for ista in range(len(code_sta)):
-    print('     ', code_sta[ista], str(ista + 1) + '/' + str(len(code_sta)))
+for ista in range(len(list_file_used)):
+    print('     ', list_file_used[ista][0], str(ista + 1) + '/' + str(len(list_file_used)))
     for ixf in range(l_fault):
     	for iyf in range(w_fault):
     	    for it in range(int(2*f_ech/f_cos)):
-    	    	stack_cos[ixf, iyf, it] = stack_cos[ixf, iyf, it] + 1./len(code_sta)*math.cos(d2r(ph_cos) + 2*math.pi*f_cos*(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech))
+    	    	stack_cos[ixf, iyf, it] = stack_cos[ixf, iyf, it] + 1./len(list_file_used)*math.cos(d2r(ph_cos) + 2*math.pi*f_cos*(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech))
 
 #stacks
 print('     stacks synthetique')
@@ -325,23 +295,25 @@ print('     stacks synthetique')
 time = np.arange(0, 10, 1./f_ech)
 signal = np.zeros((len(time)))
 for i in range(f_ech):
-    signal[int(4*f_ech) + i] = 1 - i/f_ech
+    signal[int(4*f_ech) + i] = 1 - i/f_ech #signal de 10 sec echantillone a f_ech avec un triangle d'amplitude 1 de largeur 1 sec
 
 f = interpolate.interp1d(time, signal)
 
 stack = np.zeros((l_fault, w_fault, 20000))
 
-for ista in range(len(code_sta)):
+for ista in range(len(list_file_used)):
 #for ista in range(10):
-    print('     ', code_sta[ista], str(ista + 1) + '/' + str(len(code_sta)))
+    print('     ', list_file_used[ista][0], str(ista + 1) + '/' + str(len(list_file_used)))
     for ixf in range(l_fault):
     	for iyf in range(w_fault):
     	    for it in range(len(time)):
     	    	if travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech > 0 and travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech < 9.8:
-    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(code_sta)*f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech)
+    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech)
 
 #plots
 print('     figures bp synthetique')
+
+os.chdir(path_bp_syn)
 
 for ij in range(100):
     m = 5*ij
@@ -363,6 +335,8 @@ ax_bptr.set_xlim(0, 20)
 fig_bptr.savefig('bp_traces.pdf')
 
 print('     figures bp stationnaire')
+
+os.chdir(path_bp_cos)
 
 time_cos = np.arange(0, 2*f_ech/f_cos)
 time_cos = time_cos/f_ech
