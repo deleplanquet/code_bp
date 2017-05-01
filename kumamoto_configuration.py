@@ -110,9 +110,11 @@ os.makedirs(path_results)
 
 path_map = path_results + '/map'
 path_env = path_results + '/envelop'
+path_ARF = path_results + '/ARF'
 
 os.makedirs(path_map)
 os.makedirs(path_env)
+os.makedirs(path_ARF)
 
 list_fichier1 = os.listdir(path1)
 list_fichier2 = os.listdir(path2)
@@ -250,16 +252,22 @@ vect_dip = rotation(vect_perp_strike, dip, vect_strike)
 
 coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(vect_dip), 1., 1.)
 
-print(lat_cen_fault, long_cen_fault)
-print(dir_cen_fault, vect_nord)
-print(norm(vect_strike), norm(vect_dip))
-
 #calcul matrice tps de trajet
 print('     matrice tps de trajet')
 
 travt = []
-for ista in range(len(code_sta)):
-    travt.append(trav_time([dep_sta[ista], lat_sta[ista], long_sta[ista]], coord_fault))
+
+os.chdir(path1)
+for fichier in list_fichier1:
+    st = read(fichier)
+    if st[0].stats.channel == 'NS1':
+    	travt.append(trav_time([st[0].stats.knet.stel, st[0].stats.knet.stla, st[0].stats.knet.stlo], coord_fault))
+
+os.chdir(path2)
+for fichier in list_fichier2:
+    st = read(fichier)
+    if st[0].stats.channel == 'NS':
+    	travt.append(trav_time([st[0].stats.knet.stel, st[0].stats.knet.stla, st[0].stats.knet.stlo], coord_fault))
 
 #ARF figures
 print('     figures ARF')
@@ -271,9 +279,11 @@ ARF = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), len(frq_ls
 for ixf in range(l_fault):
     for iyf in range(w_fault):
     	for freq in range(len(frq_lst)):
-    	    for ista in range(len(code_sta)):
+    	    for ista in range(len(travt)):
     	    	ARF_complex[ixf, iyf, freq] = ARF_complex[ixf, iyf, freq] + cmath.exp(2*math.pi*1j*frq_lst[freq]*(travt[ista][ixf, iyf] - travt[ista][20, 7]))
-    	    ARF[ixf, iyf, freq] = pow(abs(ARF_complex[ixf, iyf, freq]/len(code_sta)), 2)
+    	    ARF[ixf, iyf, freq] = pow(abs(ARF_complex[ixf, iyf, freq]/len(travt)), 2)
+
+os.chdir(path_ARF)
 
 fig_ARF, ax_ARF = plt.subplots(2, 5)
 for freq in range(len(frq_lst)):
