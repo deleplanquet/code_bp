@@ -4,6 +4,7 @@ import math
 import cmath
 import matplotlib.pyplot as plt
 import os
+import sys
 from mpl_toolkits.basemap import Basemap
 from scipy import interpolate
 from scipy.signal import hilbert
@@ -101,8 +102,12 @@ def trav_time(station, fault):
 #recuperation position stations
 print('     recuperation position stations')
 
+dossier_seisme = sys.argv[1]
+dossier_seisme = dossier_seisme[0:-1]
+print('     ', dossier_seisme)
+
 path = '/media/deleplanque/Lexar'
-dossier_seisme = '20160416131700'
+#dossier_seisme = '20160427070700'
 path_data = path + '/Data/Kumamoto/' + dossier_seisme
 path1 = path_data + '/' + dossier_seisme + '.kik'
 path2 = path_data + '/' + dossier_seisme + '.knt'
