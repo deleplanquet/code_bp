@@ -101,12 +101,12 @@ def trav_time(station, fault):
 #recuperation position stations
 print('     recuperation position stations')
 
-path = '/home/deleplanque/Documents/back_proj/en_cours'
+path = '/media/deleplanque/Lexar'
 dossier_seisme = '20160416131700'
-path_data = path + '/data_kumamoto/' + dossier_seisme
+path_data = path + '/Data/Kumamoto/' + dossier_seisme
 path1 = path_data + '/' + dossier_seisme + '.kik'
 path2 = path_data + '/' + dossier_seisme + '.knt'
-path_results = path + '/results/' + dossier_seisme
+path_results = path + '/Results/Kumamoto/' + dossier_seisme
 os.makedirs(path_results)
 
 path_map = path_results + '/map'
@@ -191,6 +191,14 @@ for fichier in list_file_used:
     	    	    ha='center',
     	    	    va='bottom',
     	    	    zorder=3)
+
+x_epi, y_epi = m(st[0].stats.knet.evlo, st[0].stats.knet.evla)
+ax_pos_sta.scatter(x_epi,
+    	    	   y_epi,
+    	    	   5,
+    	    	   marker='*',
+    	    	   color='green',
+    	    	   zorder=4)
 
 os.chdir(path_map)
 fig_pos_sta.savefig('map_stations.pdf')
