@@ -17,10 +17,7 @@ if os.path.isdir(str(dossier)) == False:
 path_dossier = path_data + '/' + str(dossier) + '/' + str(dossier) + str(ext)
 
 list_fichiers = os.listdir(path_dossier)
-if ext == '.kik':
-    list_fichiers = [a for a in list_fichiers if '.NS2' in a]
-else:
-    list_fichiers = [a for a in list_fichiers if '.UD' in a]
+list_fichiers = [a for a in list_fichiers if ('ps.gz' in a) == False]
 
 for fichier in list_fichiers:
     os.chdir(path_dossier)
