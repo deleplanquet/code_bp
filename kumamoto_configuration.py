@@ -211,6 +211,11 @@ fig_pos_sta.savefig('map_stations.pdf')
 #envelope
 print('     envelopes')
 
+fig_env_all, ax_env_all = plt.subplots(1, 1)
+ax_env_all.set_xlabel('time (s)')
+
+cpt = 0
+
 for fichier in list_file_used:
     os.chdir(path_data)
     st = read(fichier[0])
@@ -229,6 +234,12 @@ for fichier in list_file_used:
     ax_env.plot(t, tr_brut, linewidth=0.2, color='black')
     ax_env.plot(t, env_smoothed, linewidth=1, color='red')
     fig_env.savefig('envelope_' + str(st[0].stats.station) + '.pdf')
+
+    ax_env_all.plot(t, env_smoothed + cpt, linewidth=0.5)
+
+    cpt = cpt + 2000
+
+fig_env_all.savefig('envelope_all.pdf')
 
 #placement de la faille
 print('     localisation de la faille en volume')
