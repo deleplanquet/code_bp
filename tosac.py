@@ -2,6 +2,7 @@
 import sys
 from obspy import read
 import os
+import obspy.io.sac
 
 path_data = '/localstorage/deleplanque/Data/Kumamoto'
 path_sac = '/localstorage/deleplanque/Data/Kumamoto_sac'
@@ -21,10 +22,7 @@ list_fichiers = [a for a in list_fichiers if ('ps.gz' in a) == False]
 
 for fichier in list_fichiers:
     os.chdir(path_dossier)
-    st = read(fichier)
+    tr = read(fichier)[0]
+    tr.stats.sac = tr.stats.knet
     os.chdir(path_sac + '/' + str(dossier))
-    st.write(fichier + '.sac', format='SAC')
-    st2 = read(fichier + '.sac')
-    st2[0].stats.sac.stla = st[0].stats.knet.stla
-    st2[0].stats.sac.stlo = st[0].stats.knet.stlo
-    st2[0].stats.sac.stel = st[0].stats.knet.stel
+    tr.write(fichier + '.sac', format='SAC')
