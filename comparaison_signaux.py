@@ -6,6 +6,8 @@ from obspy import read
 import numpy as np
 import os
 
+print('test')
+
 path = '/localstorage/deleplanque/'
 path_data = path + '/Data/Kumamoto_sac'
 
