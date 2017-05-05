@@ -6,41 +6,30 @@ from obspy import read
 import numpy as np
 import os
 
-path = '/media/deleplanque/Lexar'
-path_data = path + '/Data/Kumamoto'
+path = '/localstorage/deleplanque/'
+path_data = path + '/Data/Kumamoto_sac'
 
 path_results = path + '/Results/Kumamoto'
 
 list_dossier = os.listdir(path_data)
-list_dossier = [a for a in list_dossier if ('.tar' in a) == False]
 
 list_fichier = []
 
 for dossier in list_dossier:
-    cpt = cpt + 1
     print('     ', dossier, str(list_dossier.index(dossier) + 1), '/', len(list_dossier))
-    path_fichier = path_data + '/' + str(dossier) + '/' + str(dossier) + '.kik'
+    path_fichier = path_data + '/' + str(dossier)
     os.chdir(path_fichier)
-    list_fichier_temp = os.listdir(path_fichier)
-    list_fichier_temp = [a for a in list_fichier_temp if ('ps.gz' in a) == False]
-    list_fichier_temp2 = []
-    for fichier in list_fichier_temp:
+    list_fichier_dossier = os.listdir(path_fichier)
+    list_fichier_temp = []
+    for fichier in list_fichier_dossier:
     	st = read(fichier)
     	if st[0].stats.knet.mag >= 5:
     	    break
-    	if st[0].stats.channel == 'NS1':
-    	    list_fichier_temp2.append([fichier, 'kik'])
-    path_fichier = path_data + '/' + str(dossier) + '/' + str(dossier) + '.knt'
-    os.chdir(path_fichier)
-    list_fichier_temp = os.listdir(path_fichier)
-    list_fichier_temp = [a for a in list_fichier_temp if ('ps.gz' in a) == False]
-    for fichier in list_fichier_temp:
-    	st = read(fichier)
-    	if st[0].stats.knet.mag >= 5:
-    	    break
-    	if st[0].stats.channel == 'NS':
-    	    list_fichier_temp2.append([fichier, 'knt'])
-    list_fichier.append(list_fichier_temp2)
+    	if st[0].stats.channel == 'UD2':
+    	    list_fichier_temp.append(fichier)
+    	if st[0].stats.channel == 'UD':
+    	    list_fichier_temp.append(fichier)
+    list_fichier.append(list_fichier_temp)
 
 lat_fault = [32.65, 32.86]
 long_fault = [130.72, 131.07]
@@ -67,11 +56,12 @@ ax.plot(x_fault,
     	linewidth = 0.3,
     	zorder = 1)
 
-for fichier in list_fichier:
-    if fichier != []:
-    	os.chdir(path_data + '/' + str(list_dossier[list_fichier.index(fichier)]) + '/' + str(list_dossier[list_fichier.index(fichier)]) + '.' + fichier[0][1])
-    	st = read(fichier[0][0])
-    	x_epi, y_epi = m(st[0].stats.knet.evlo, st[0].stats.knet.evla)
+for seisme in list_fichier:
+    if seisme != []:
+    	path_seisme = path_data + '/' + str(list_dossier[list_fichier.index(seisme)])
+    	os.chdir(path_seisme)
+    	st = read(seisme[0])
+    	x_epi, y_epi = m(st[0].stats.sac.evlo, st[0].sac.knet.evla)
     	ax.scatter(x_epi,
     	    	   y_epi,
     	    	   3,
@@ -80,7 +70,7 @@ for fichier in list_fichier:
     	    	   zorder = 2)
     	ax.text(x_epi,
     	    	y_epi,
-    	    	list_dossier[list_fichier.index(fichier)],
+    	    	list_dossier[list_fichier.index(seisme)],
     	    	fontsize=2,
     	    	ha='center',
     	    	va='bottom',
@@ -92,16 +82,17 @@ fig.savefig('map.pdf')
 list_station = []
 list_seisme = []
 
-for fichier in list_fichier:
-    if fichier != []:
-    	for station in fichier:
-    	    print('     ', station[0])
-    	    os.chdir(path_data + '/' + str(list_dossier[list_fichier.index(fichier)]) + '/' + str(list_dossier[list_fichier.index(fichier)]) + '.' + station[1])
-    	    st = read(station[0])
-    	    if ([st[0].stats.station, station[1]] in list_station) == False:
+for seisme in list_fichier:
+    if seisme != []:
+    	for station in seisme:
+    	    print('     ', station
+    	    path = path_data + ''/ + str(list_dossier[list_fichier.index(seisme)])
+    	    os.chdir(path_seisme)
+    	    st = read(station)
+    	    if (st[0].stats.station in list_station) == False:
     	    	list_station.append([st[0].stats.station, station[1]])
     	    	list_seisme.append([list_dossier[list_fichier.index(fichier)]])
-    	    else:
+    	    if:
     	    	list_seisme[list_station.index([st[0].stats.station, station[1]])].append(list_dossier[list_fichier.index(fichier)])
 
 for station in list_station:
