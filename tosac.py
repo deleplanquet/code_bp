@@ -21,6 +21,10 @@ list_fichiers = [a for a in list_fichiers if ('ps.gz' in a) == False]
 
 for fichier in list_fichiers:
     os.chdir(path_dossier)
-    tr = read(fichier)[0]
+    st = read(fichier)
     os.chdir(path_sac + '/' + str(dossier))
-    tr.write(fichier + '.sac', format='SAC')
+    st.write(fichier + '.sac', format='SAC')
+    st2 = read(fichier + '.sac')
+    st2[0].stats.sac.stla = st[0].stats.knet.stla
+    st2[0].stats.sac.stlo = st[0].stats.knet.stlo
+    st2[0].stats.sac.stel = st[0].stats.knet.stel
