@@ -103,16 +103,16 @@ def trav_time(station, fault):
 print('     recuperation position stations')
 
 dossier_seisme = sys.argv[1]
-dossier_seisme = dossier_seisme[0:-1]
+#dossier_seisme = dossier_seisme[0:-1]
 print('     ', dossier_seisme)
 
-path = '/media/deleplanque/Lexar'
-#dossier_seisme = '20160427070700'
-path_data = path + '/Data/Kumamoto/' + dossier_seisme
-path1 = path_data + '/' + dossier_seisme + '.kik'
-path2 = path_data + '/' + dossier_seisme + '.knt'
+path = '/localstorage/deleplanque'
+path_data = path + '/Data/Kumamoto_sac/' + dossier_seisme
+#path1 = path_data + '/' + dossier_seisme + '.kik'
+#path2 = path_data + '/' + dossier_seisme + '.knt'
 path_results = path + '/Results/Kumamoto/' + dossier_seisme
-os.makedirs(path_results)
+if os.path.isdir(path_results) == False:
+    os.makedirs(path_results)
 
 path_map = path_results + '/map'
 path_env = path_results + '/envelop'
@@ -120,29 +120,21 @@ path_ARF = path_results + '/ARF'
 path_bp_syn = path_results + '/bp_synthetique'
 path_bp_cos = path_results + '/bp_stationnaire'
 
-os.makedirs(path_map)
-os.makedirs(path_env)
-os.makedirs(path_ARF)
-os.makedirs(path_bp_syn)
-os.makedirs(path_bp_cos)
+if os.path.isdir(path_map) == False:
+    os.makedirs(path_map)
+if os.path.isdir(path_env) == False:
+    os.makedirs(path_env)
+if os.path.isdir(path_ARF) == False:
+    os.makedirs(path_ARF)
+if os.path.isdir(path_bp_syn) == False:
+    os.makedirs(path_bp_syn)
+if os.path.isdir(path_bp_cos) == False:
+    os.makedirs(path_bp_cos)
 
-list_fichier1 = os.listdir(path1)
-list_fichier2 = os.listdir(path2)
-list_fichier1 = [a for a in list_fichier1 if ('ps.gz' in a) == False]
-list_fichier2 = [a for a in list_fichier2 if ('ps.gz' in a) == False]
+list_fichier = os.listdir(path_data)
+list_fichier = [a for a in list_fichier if (('UD' in a) or ('UD2' in a)) == True]
 
-list_file_used = []
-
-os.chdir(path1)
-for fichier in list_fichier1:
-    st = read(fichier)
-    if st[0].stats.channel == 'NS1':
-    	list_file_used.append([dossier_seisme + '.kik/' + fichier, 'kik'])
-os.chdir(path2)
-for fichier in list_fichier2:
-    st = read(fichier)
-    if st[0].stats.channel == 'NS':
-    	list_file_used.append([dossier_seisme + '.knt/' + fichier, 'knt'])
+list_file_used = list_fichier
 
 #recuperation position faille
 
@@ -177,9 +169,9 @@ ax_pos_sta.plot(x_fault,
 
 os.chdir(path_data)
 for fichier in list_file_used:
-    st = read(fichier[0])
-    x_sta, y_sta = m(st[0].stats.knet.stlo, st[0].stats.knet.stla)
-    if fichier[1] == 'kik':
+    st = read(fichier)
+    x_sta, y_sta = m(st[0].stats.sac.stlo, st[0].stats.sac.stla)
+    if st[0].stats.channel == 'UD2':
     	couleur = 'red'
     else:
     	couleur = 'blue'
@@ -197,7 +189,7 @@ for fichier in list_file_used:
     	    	    va='bottom',
     	    	    zorder=3)
 
-x_epi, y_epi = m(st[0].stats.knet.evlo, st[0].stats.knet.evla)
+x_epi, y_epi = m(st[0].stats.sac.evlo, st[0].stats.sac.evla)
 ax_pos_sta.scatter(x_epi,
     	    	   y_epi,
     	    	   5,
@@ -218,7 +210,7 @@ cpt = 0
 
 for fichier in list_file_used:
     os.chdir(path_data)
-    st = read(fichier[0])
+    st = read(fichier)
     st = st.detrend(type='constant') #retirer la moyenne
     tr_brut = st[0]
     tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
@@ -260,8 +252,8 @@ travt = []
 
 os.chdir(path_data)
 for fichier in list_file_used:
-    st = read(fichier[0])
-    travt.append(trav_time([st[0].stats.knet.stel, st[0].stats.knet.stla, st[0].stats.knet.stlo], coord_fault))
+    st = read(fichier)
+    travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], coord_fault))
 
 #ARF figures
 print('     figures ARF')
@@ -307,7 +299,7 @@ y_source = 7
 stack_cos = np.zeros((l_fault, w_fault, int(2*f_ech/f_cos)))
 
 for ista in range(len(list_file_used)):
-    print('     ', list_file_used[ista][0], str(ista + 1) + '/' + str(len(list_file_used)))
+    print('     ', list_file_used[ista], str(ista + 1) + '/' + str(len(list_file_used)))
     for ixf in range(l_fault):
     	for iyf in range(w_fault):
     	    for it in range(int(2*f_ech/f_cos)):
@@ -327,7 +319,7 @@ stack = np.zeros((l_fault, w_fault, 20000))
 
 for ista in range(len(list_file_used)):
 #for ista in range(10):
-    print('     ', list_file_used[ista][0], str(ista + 1) + '/' + str(len(list_file_used)))
+    print('     ', list_file_used[ista], str(ista + 1) + '/' + str(len(list_file_used)))
     for ixf in range(l_fault):
     	for iyf in range(w_fault):
     	    for it in range(len(time)):
