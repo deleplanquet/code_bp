@@ -6,10 +6,8 @@ from obspy import read
 import numpy as np
 import os
 
-print('test')
-
 path = '/localstorage/deleplanque/'
-path_data = path + '/Data/Kumamoto_sac'
+path_data = path + 'Data/Kumamoto_sac'
 
 path_results = path + '/Results/Kumamoto'
 
@@ -25,12 +23,13 @@ for dossier in list_dossier:
     list_fichier_temp = []
     for fichier in list_fichier_dossier:
     	st = read(fichier)
-    	if st[0].stats.knet.mag >= 5:
+    	if st[0].stats.sac.mag >= 5:
     	    break
-    	if st[0].stats.channel == 'UD2':
-    	    list_fichier_temp.append(fichier)
-    	if st[0].stats.channel == 'UD':
-    	    list_fichier_temp.append(fichier)
+    	else:
+    	    if st[0].stats.channel == 'UD2':
+    	    	list_fichier_temp.append(fichier)
+    	    if st[0].stats.channel == 'UD':
+    	    	list_fichier_temp.append(fichier)
     list_fichier.append(list_fichier_temp)
 
 lat_fault = [32.65, 32.86]
@@ -63,7 +62,7 @@ for seisme in list_fichier:
     	path_seisme = path_data + '/' + str(list_dossier[list_fichier.index(seisme)])
     	os.chdir(path_seisme)
     	st = read(seisme[0])
-    	x_epi, y_epi = m(st[0].stats.sac.evlo, st[0].sac.knet.evla)
+    	x_epi, y_epi = m(st[0].stats.sac.evlo, st[0].stats.sac.evla)
     	ax.scatter(x_epi,
     	    	   y_epi,
     	    	   3,
@@ -74,8 +73,8 @@ for seisme in list_fichier:
     	    	y_epi,
     	    	list_dossier[list_fichier.index(seisme)],
     	    	fontsize=2,
-    	    	ha='center',
-    	    	va='bottom',
+    	    	ha='left',
+    	    	va='center',
     	    	zorder=3)
 
 os.chdir(path_results + '/Station_par_station')
@@ -86,32 +85,31 @@ list_seisme = []
 
 for seisme in list_fichier:
     if seisme != []:
+    	print('     ', str(list_dossier[list_fichier.index(seisme)]))
     	for station in seisme:
-    	    print('     ', station
-    	    path = path_data + ''/ + str(list_dossier[list_fichier.index(seisme)])
-    	    os.chdir(path_seisme)
+    	    path = path_data + '/' + str(list_dossier[list_fichier.index(seisme)])
+    	    os.chdir(path)
     	    st = read(station)
     	    if (st[0].stats.station in list_station) == False:
-    	    	list_station.append([st[0].stats.station, station[1]])
-    	    	list_seisme.append([list_dossier[list_fichier.index(fichier)]])
-    	    if:
-    	    	list_seisme[list_station.index([st[0].stats.station, station[1]])].append(list_dossier[list_fichier.index(fichier)])
+    	    	list_station.append(st[0].stats.station)
+    	    	list_seisme.append([list_dossier[list_fichier.index(seisme)]])
+    	    else:
+    	    	list_seisme[list_station.index(st[0].stats.station)].append(list_dossier[list_fichier.index(seisme)])
 
 for station in list_station:
-    path_stabsta = path_results + '/Station_par_station/' + str(station[0])
+    path_stabsta = path_results + '/Station_par_station/' + str(station)
     if os.path.isdir(path_stabsta) == False:
     	os.makedirs(path_stabsta)
     fig2, ax2 = plt.subplots(1, 1)
     ax2.set_xlabel('time (s)')
     cppt = 0
     for seisme in list_seisme[list_station.index(station)]:
-    	print(station[0], seisme)
-    	path_seisme = path_data + '/' + str(seisme) + '/' + str(seisme) + '.' + station[1]
+    	path_seisme = path_data + '/' + str(seisme)
     	os.chdir(path_seisme)
-    	if station[1] == 'kik':
-    	    st = read(station[0] + '*NS1')
-    	else:
-    	    st = read(station[0] + '*NS')
+    	st = read(station + '*UD*.sac')
+    	if st[0].stats.channel == 'UD1':
+    	    st = read(station + '*UD2.sac')
+    	print('     ', station, st[0].stats.channel, seisme)
     	st = st.detrend(type='constant')
     	tr_brut = st[0]
     	tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
@@ -124,7 +122,7 @@ for station in list_station:
     	ax2.plot(t, env_smoothed + cppt, linewidth=1)
     	cppt = cppt + 500
     os.chdir(path_stabsta)
-    fig2.savefig('envelop' + str(station[0]) + '.pdf')
+    fig2.savefig('envelop_' + str(station) + '.pdf')
 
 
 
