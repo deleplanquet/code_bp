@@ -106,10 +106,9 @@ dossier_seisme = sys.argv[1]
 #dossier_seisme = dossier_seisme[0:-1]
 print('     ', dossier_seisme)
 
-path = '/localstorage/deleplanque'
+#path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_sac/' + dossier_seisme
-#path1 = path_data + '/' + dossier_seisme + '.kik'
-#path2 = path_data + '/' + dossier_seisme + '.knt'
 path_results = path + '/Results/Kumamoto/' + dossier_seisme
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
