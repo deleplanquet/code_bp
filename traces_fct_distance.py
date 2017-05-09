@@ -28,6 +28,13 @@ def dist(la1, lo1, el1, la2, lo2, el2):
     x2, y2, z2 = geo2cart(R_Earth + el2, la2, lo2)
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
+#normalisation
+def norm(vect):
+    norm_v = 0
+    for a in vect:
+        norm_v = norm_v + a*a
+    return [30*a/pow(norm_v, 0.5) for a in vect]
+
 list_dossier = ['20160417054100', '20160415015900', '20160416074900', '20160416131700', '20160415124600', '20160416220600']
 
 path = '/localstorage/deleplanque'
@@ -48,24 +55,25 @@ for dossier in list_dossier:
 
     for fichier in list_fichier:
     	st = read(fichier)
+    	st = st.detrend(type = 'constant')
     	tstart = st[0].stats.starttime + st[0].stats.sac.t0 - 15
     	tend = tstart + 50
-    	st[0].trim(tstart, tend)
-    	st = st.detrend(type = 'constant')
-    	st.normalize()
+    	st[0].trim(tstart, tend, pad=True, fill_value=0)
     	tr_brut = st[0]
     	tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
-    	envelop = abs(hilbert(tr_filt))
-    	env_smoothed = smooth(envelop, 20)
+    	#envelop = abs(hilbert(tr_filt))
+    	#env_smoothed = smooth(envelop, 20)
+    	squared_tr = [a**2 for a in tr_filt]
+    	env_smoothed = smooth(squared_tr, 20)
 
     	t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
 
     	ordo = dist(st[0].stats.sac.stla, st[0].stats.sac.stlo, 0.001*st[0].stats.sac.stel, st[0].stats.sac.evla, st[0].stats.sac.evlo, -st[0].stats.sac.evdp)
 
-    	ax.plot(t, 5*env_smoothed + ordo, linewidth = 0.2)
+    	ax.plot(t, norm(env_smoothed) + ordo, linewidth = 0.2)
     	ax.text(40, ordo, st[0].stats.station)
 
-    	ax2.plot(t, 5*env_smoothed + ordo, linewidth = 0.2)
+    	ax2.plot(t, norm(env_smoothed) + ordo, linewidth = 0.2)
     	ax2.text(40, ordo, st[0].stats.station)
 
     os.chdir(path_results)
