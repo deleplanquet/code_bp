@@ -28,8 +28,12 @@ def dist(la1, lo1, el1, la2, lo2, el2):
     x2, y2, z2 = geo2cart(R_Earth + el2, la2, lo2)
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
-name_dossier = '20160415015900'
+#name_dossier = '20160415015900'
 #name_dossier = '20160417054100'
+#name_dossier = '20160416074900'
+#name_dossier = '20160416131700'
+#name_dossier = '20160415124600'
+name_dossier = '20160416220600'
 
 path = '/localstorage/deleplanque'
 #path = '/Users/deleplanque/Documents'
@@ -38,12 +42,24 @@ path_results = path + '/Results'
 
 os.chdir(path_data)
 
-st1 = read('KMMH161604150159.UD2.sac')
-st2 = read('KMMH031604150159.UD2.sac')
-st3 = read('FKOH101604150159.UD2.sac')
+#st1 = read('KMMH161604150159.UD2.sac')
+#st2 = read('KMMH031604150159.UD2.sac')
+#st3 = read('FKOH101604150159.UD2.sac')
 #st1 = read('KMM0111604170541.UD.sac')
 #st2 = read('MYZ0201604170541.UD.sac')
 #st3 = read('MYZH081604170541.UD2.sac')
+#st1 = read('KMMH031604160749.UD2.sac')
+#st2 = read('KMM0021604160749.UD.sac')
+#st3 = read('FKO0161604160749.UD.sac')
+#st1 = read('KMMH161604161317.UD2.sac')
+#st2 = read('KMM0091604161317.UD.sac')
+#st3 = read('MYZ0011604161317.UD.sac')
+#st1 = read('KMM0091604151246.UD.sac')
+#st2 = read('MYZ0201604151246.UD.sac')
+#st3 = read('MYZH051604151246.UD2.sac')
+st1 = read('KMM0061604162206.UD.sac')
+st2 = read('KMMH141604162206.UD2.sac')
+st3 = read('KMMH121604162206.UD2.sac')
 t1start = st1[0].stats.starttime + st1[0].stats.sac.t0 - 15
 t2start = st2[0].stats.starttime + st2[0].stats.sac.t0 - 15
 t3start = st3[0].stats.starttime + st3[0].stats.sac.t0 - 15
