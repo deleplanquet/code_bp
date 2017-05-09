@@ -106,7 +106,7 @@ def dist(la1, lo1, el1, la2, lo2, el2):
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
 #normalisation avec max = 1
-def norm1(vect)
+def norm1(vect):
     return [a/vect.max() for a in vect]
 
 #recuperation position stations
@@ -126,7 +126,7 @@ if os.path.isdir(path_results) == False:
 path_map = path_results + '/map'
 path_env = path_results + '/envelop'
 path_ARF = path_results + '/ARF'
-path_bp_syn = path_results + '/bp_synthetique'
+path_bp_env = path_results + '/bp_envelop'
 path_bp_cos = path_results + '/bp_stationnaire'
 
 if os.path.isdir(path_map) == False:
@@ -135,8 +135,8 @@ if os.path.isdir(path_env) == False:
     os.makedirs(path_env)
 if os.path.isdir(path_ARF) == False:
     os.makedirs(path_ARF)
-if os.path.isdir(path_bp_syn) == False:
-    os.makedirs(path_bp_syn)
+if os.path.isdir(path_bp_env) == False:
+    os.makedirs(path_bp_env)
 if os.path.isdir(path_bp_cos) == False:
     os.makedirs(path_bp_cos)
 
@@ -227,7 +227,7 @@ for fichier in list_file_used:
     #envelop = abs(hilbert(tr_filt))
     #env_smoothed = smooth(envelop, 20)
     squared_tr = [a**2 for a in tr_filt]
-    env_smoothed = smooth(envelop, 20)
+    env_smoothed = smooth(squared_tr, 20)
 
     t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
     ordo = dist(st[0].stats.sac.stla, st[0].stats.sac.stlo, 0.001*st[0].stats.sac.stel, st[0].stats.sac.evla, st[0].stats.sac.evlo, -st[0].stats.sac.evdp)
@@ -319,14 +319,15 @@ for ista in range(len(list_file_used)):
 #stacks
 print('     stacks envelop')
 
+os.chdir(path_data)
 stack = np.zeros((l_fault, w_fault, 20000))
 
 for station in list_file_used:
     st = read(station)
     st = st.detrend(type = 'constant')
-    #tstart = st[0].starttime + st[0].stats.sac.t0 - 15
-    #tend = tstart + 50
-    #st[0].trim(tstart, tend, pad=True, fill_value=0)
+    tstart = st[0].stats.starttime + st[0].stats.sac.t0 - 15
+    tend = tstart + 50
+    st[0].trim(tstart, tend, pad=True, fill_value=0)
     tr_brut = st[0]
     tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
     squared_tr = [a**2 for a in tr_filt]
@@ -338,16 +339,16 @@ for station in list_file_used:
     ista = list_file_used.index(station)
     print('     ', station, str(ista + 1), '/', len(list_file_used))
 
-    for ixf in range(w_fault):
+    for ixf in range(l_fault):
     	for iyf in range(w_fault):
-    	    for it in range(len(time)):
-    	    	if travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech > 0 and travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech < 9.8:
-    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech)
+    	    for it in range(len(t)):
+    	    	if travt[ista][ixf, iyf] + it/tr_brut.stats.sampling_rate > 10 and travt[ista][ixf, iyf] + it/tr_brut.stats.sampling_rate < 19.8:
+    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(travt[ista][ixf, iyf] + it/tr_brut.stats.sampling_rate)
 
 #plots
 print('     figures bp envelop')
 
-os.chdir(path_bp_syn)
+os.chdir(path_bp_env)
 
 for ij in range(100):
     m = 5*ij
@@ -362,7 +363,6 @@ ttime = ttime/f_ech
 
 fig_bptr, ax_bptr = plt.subplots(1, 1)
 ax_bptr.set_xlabel('time (s)')
-ax_bptr.plot(time, signal - l_fault)
 for jk in range(l_fault):
     ax_bptr.plot(ttime, stack[jk, 7, :] + jk - l_fault/2)
 ax_bptr.set_xlim(0, 20)
