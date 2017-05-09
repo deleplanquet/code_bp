@@ -23,7 +23,7 @@ for dossier in list_dossier:
     list_fichier_temp = []
     for fichier in list_fichier_dossier:
     	st = read(fichier)
-    	if st[0].stats.sac.mag >= 3.7 or st[0].stats.sac.mag <= 3.5:
+    	if st[0].stats.sac.mag >= 3.8 or st[0].stats.sac.mag <= 3.5:
     	    print(st[0].stats.sac.mag)
     	    break
     	else:
