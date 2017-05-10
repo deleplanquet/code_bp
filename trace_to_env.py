@@ -9,28 +9,28 @@ import matplotlib.pyplot as plt
 def norm1(vect):
     return [a/vect.max() for a in vect]
 
-path = '/localstorage/deleplanque'
-#path = '/Users/deleplanque/Documents'
+#path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_sac/20160414224700'
 path_plots = path + '/LaTeX/Poster_jpgu_2017'
 
 list_sta = ['FKO0141604142247.EW.sac', 'FKO0141604142247.NS.sac', 'FKO0141604142247.UD.sac']
 
 fig_brute, ax_brute = plt.subplots(3, 1)#, sharex = True)
-#ax_brute.set_xlabel('Time (s)')
-#ax_brute.set_ylabel('Amplitude')
+ax_brute[2].set_xlabel('Time (s)')
+ax_brute[1].set_ylabel('Amplitude')
 
 fig_filtree, ax_filtree = plt.subplots(3, 1)#, sharex = True)
-#ax_filtree.set_xlabel('Time (s)')
-#ax_filtree.set_ylabel('Amplitude')
+ax_filtree[2].set_xlabel('Time (s)')
+ax_filtree[1].set_ylabel('Amplitude')
 
 fig_filt_sqr, ax_filt_sqr = plt.subplots(3, 1)#, sharex = True)
-#ax_filt_sqr.set_xlabel('Time (s)')
-#ax_filt_sqr.set_ylabel('Amplitude')
+ax_filt_sqr[2].set_xlabel('Time (s)')
+ax_filt_sqr[1].set_ylabel('Amplitude')
 
 fig_env_norm, ax_env_norm = plt.subplots(3, 1)#, sharex = True)
-#ax_env_norm.set_xlabel('Time (s)')
-#ax_env_norm.set_ylabel('Normalized amplitude')
+ax_env_norm[2].set_xlabel('Time (s)')
+ax_env_norm[1].set_ylabel('Normalized amplitude')
 
 os.chdir(path_data)
 for station in list_sta:
@@ -45,17 +45,14 @@ for station in list_sta:
     env_smoothed = norm1(smooth(squared_tr, 20))
 
     t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
-    print('boubou')
     #traces brute, filtree, au carre, smoothee
     ista = list_sta.index(station)
-    print(50/(abs(1.1*tr_brut.max()) + abs(1.1*tr_brut.max())))
     ax_brute[ista].plot(t, tr_brut)#, aspect = 50)#, aspect = 50/(abs(1.1*tr_brut.max()) + abs(1.1*tr_brut.max())))
     ax_filtree[ista].plot(t, tr_filt)#, aspect = 50)#, aspect = 50/(abs(1.1*tr_filt.max()) + abs(1.1*tr_filt.max())))
     ax_filt_sqr[ista].plot(t, squared_tr)#, aspect = 50)#, aspect = 50/(abs(1.1*squared_tr.max()) + abs(1.1*squared_tr.max())))
     ax_env_norm[ista].plot(t, env_smoothed)#, aspect = 50)#, aspect = 50/(abs(1.1*env_smoothed.max()) + abs(1.1*env_smoothed.max())))
 
 os.chdir(path_plots)
-print('baba')
 #ax_brute.set_aspect('auto')
 fig_brute.savefig('tr_brute.pdf')
 
