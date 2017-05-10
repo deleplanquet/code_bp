@@ -2,41 +2,39 @@ from obspy import read
 from obspy.signal.util import smooth
 import numpy as np
 import os
-from mpl_toolkits.axes_grid1 import AxesGrid
+#from mpl_toolkits.axes_grid1 import ImageGrid
 import matplotlib.pyplot as plt
 
 #normalisation
 def norm1(vect):
-    norm_v = 0
-    for a in vect:
-        norm_v = norm_v + a*a
-    return [a/pow(norm_v, 0.5) for a in vect]
+    return [a/vect.max() for a in vect]
 
-path = '/Users/deleplanque/Documents'
+path = '/localstorage/deleplanque'
+#path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_sac/20160414224700'
 path_plots = path + '/LaTeX/Poster_jpgu_2017'
 
 list_sta = ['FKO0141604142247.EW.sac', 'FKO0141604142247.NS.sac', 'FKO0141604142247.UD.sac']
 
-fig_brute, ax_brute = plt.subplots(3, sharex = True)
+fig_brute, ax_brute = plt.subplots(3, 1)#, sharex = True)
 #ax_brute.set_xlabel('Time (s)')
 #ax_brute.set_ylabel('Amplitude')
-grid_brute = AxesGrid(fig_brute, 143, nrows_ncols = (1, 3), axes_pad = 0.1, label_mode = '1', share_all = True)
+#grid_brute = ImageGrid(fig_brute, 111, nrows_ncols = (3, 1), axes_pad = 0.0, label_mode = '1')
 
-fig_filtree, ax_filtree = plt.subplots(3, sharex = True)
+fig_filtree, ax_filtree = plt.subplots(3, 1)#, sharex = True)
 #ax_filtree.set_xlabel('Time (s)')
 #ax_filtree.set_ylabel('Amplitude')
-grid_filtree = AxesGrid(fig_filtree, 143, nrows_ncols = (1, 3), axes_pad = 0.1, label_mode = '1', share_all = True)
+#grid_filtree = ImageGrid(fig_filtree, 111, nrows_ncols = (3, 1), axes_pad = 0.0, label_mode = '1')
 
-fig_filt_sqr, ax_filt_sqr = plt.subplots(3, sharex = True)
+fig_filt_sqr, ax_filt_sqr = plt.subplots(3, 1)#, sharex = True)
 #ax_filt_sqr.set_xlabel('Time (s)')
 #ax_filt_sqr.set_ylabel('Amplitude')
-grid_filt_sqr = AxesGrid(fig_filt_sqr, 143, nrows_ncols = (1, 3), axes_pad = 0.1, label_mode = '1', share_all = True)
+#grid_filt_sqr = ImageGrid(fig_filt_sqr, 111, nrows_ncols = (3, 1), axes_pad = 0.0, label_mode = '1')
 
-fig_env_norm, ax_env_norm = plt.subplots(3, sharex = True)
+fig_env_norm, ax_env_norm = plt.subplots(3, 1)#, sharex = True)
 #ax_env_norm.set_xlabel('Time (s)')
 #ax_env_norm.set_ylabel('Normalized amplitude')
-grid_env_norm = AxesGrid(fig_env_norm, 143, nrows_ncols = (1, 3), axes_pad = 0.1, label_mode = '1', share_all = True)
+#grid_env_norm = ImageGrid(fig_env_norm, 111, nrows_ncols = (3, 1), axes_pad = 0.0, label_mode = '1')
 
 os.chdir(path_data)
 for station in list_sta:
@@ -54,24 +52,32 @@ for station in list_sta:
     print('boubou')
     #traces brute, filtree, au carre, smoothee
     ista = list_sta.index(station)
-
-    grid_brute[ista].plot(t, tr_brut)
-    grid_filtree[ista].plot(t, tr_filt)
-    grid_filt_sqr[ista].plot(t, squared_tr)
-    grid_env_norm[ista].plot(t, env_smoothed)
+    print(50/(abs(1.1*tr_brut.max()) + abs(1.1*tr_brut.max())))
+    #grid_brute[ista].plot(t, tr_brut)#, aspect = 50)#, aspect = 50/(abs(1.1*tr_brut.max()) + abs(1.1*tr_brut.max())))
+    #grid_filtree[ista].plot(t, tr_filt)#, aspect = 50)#, aspect = 50/(abs(1.1*tr_filt.max()) + abs(1.1*tr_filt.max())))
+    #grid_filt_sqr[ista].plot(t, squared_tr)#, aspect = 50)#, aspect = 50/(abs(1.1*squared_tr.max()) + abs(1.1*squared_tr.max())))
+    #grid_env_norm[ista].plot(t, env_smoothed)#, aspect = 50)#, aspect = 50/(abs(1.1*env_smoothed.max()) + abs(1.1*env_smoothed.max())))
+    ax_brute[ista].plot(t, tr_brut)#, aspect = 50)#, aspect = 50/(abs(1.1*tr_brut.max()) + abs(1.1*tr_brut.max())))
+    ax_filtree[ista].plot(t, tr_filt)#, aspect = 50)#, aspect = 50/(abs(1.1*tr_filt.max()) + abs(1.1*tr_filt.max())))
+    ax_filt_sqr[ista].plot(t, squared_tr)#, aspect = 50)#, aspect = 50/(abs(1.1*squared_tr.max()) + abs(1.1*squared_tr.max())))
+    ax_env_norm[ista].plot(t, env_smoothed)#, aspect = 50)#, aspect = 50/(abs(1.1*env_smoothed.max()) + abs(1.1*env_smoothed.max())))
 
 os.chdir(path_plots)
 print('baba')
 #grid_brute.axes_llc.set_yticks([-2, 0, 2])
+#ax_brute.set_aspect('auto')
 fig_brute.savefig('tr_brute.pdf')
 
 #grid_filtree.axes_llc.set_yticks([-2, 0, 2])
+#ax_filtree.set_aspect('auto')
 fig_filtree.savefig('tr_filt.pdf')
 
 #grid_filt_sqr.axes_llc.set_yticks([-2, 0, 2])
+#ax_filt_sqr.set_aspect('auto')
 fig_filt_sqr.savefig('tr_filt_sqr.pdf')
 
 #grid_env_norm.axes_llc.set_yticks([-2, 0, 2])
+#ax_env_norm.set_aspect('auto')
 fig_env_norm.savefig('env_norm.pdf')
 
 
