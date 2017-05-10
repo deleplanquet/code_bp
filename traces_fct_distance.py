@@ -1,10 +1,10 @@
 from obspy import read
 import math
 import os
-import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import hilbert
 from obspy.signal.util import smooth
+import matplotlib.pyplot as plt
 
 #constantes
 R_Earth = 6400
@@ -30,7 +30,8 @@ def dist(la1, lo1, el1, la2, lo2, el2):
 
 list_dossier = ['20160417054100', '20160415015900', '20160416074900', '20160416131700', '20160415124600', '20160416220600']
 
-path = '/localstorage/deleplanque'
+#path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_sac'
 path_results = path + '/Results'
 
