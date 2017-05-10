@@ -107,7 +107,7 @@ def dist(la1, lo1, el1, la2, lo2, el2):
 
 #normalisation avec max = 1
 def norm1(vect):
-    return [a/vect.max() for a in vect]
+    return [10*a/vect.max() for a in vect]
 
 #recuperation position stations
 print('     recuperation position stations')
@@ -322,6 +322,9 @@ print('     stacks envelop')
 os.chdir(path_data)
 stack = np.zeros((l_fault, w_fault, 20000))
 
+st = read(list_file_used[0])
+tstart_ref = st[0].stats.starttime + st[0].stats.sac.t0 - 15
+
 for station in list_file_used:
     st = read(station)
     st = st.detrend(type = 'constant')
@@ -342,15 +345,16 @@ for station in list_file_used:
     for ixf in range(l_fault):
     	for iyf in range(w_fault):
     	    for it in range(len(t)):
-    	    	if travt[ista][ixf, iyf] + it/tr_brut.stats.sampling_rate > 10 and travt[ista][ixf, iyf] + it/tr_brut.stats.sampling_rate < 19.8:
-    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(travt[ista][ixf, iyf] + it/tr_brut.stats.sampling_rate)
+    	    	tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[ista][0, 0] + it/tr_brut.stats.sampling_rate
+    	    	if tshift > 0 and tshift < t[-1]:
+    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
 #plots
 print('     figures bp envelop')
 
 os.chdir(path_bp_env)
 
-for ij in range(100):
+for ij in range(200):
     m = 5*ij
     fig_bp, ax_bp = plt.subplots(1, 1)
     ax_bp.set_xlabel('x')
