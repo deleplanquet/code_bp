@@ -28,12 +28,19 @@ def dist(la1, lo1, el1, la2, lo2, el2):
     x2, y2, z2 = geo2cart(R_Earth + el2, la2, lo2)
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
-#name_dossier = '20160415015900'
+#normalisation
+def norm(vect):
+    norm_v = 0
+    for a in vect:
+    	norm_v = norm_v + a*a
+    return [30*a/pow(norm_v, 0.5) for a in vect]
+
+name_dossier = '20160415015900'
 #name_dossier = '20160417054100'
 #name_dossier = '20160416074900'
 #name_dossier = '20160416131700'
 #name_dossier = '20160415124600'
-name_dossier = '20160416220600'
+#name_dossier = '20160416220600'
 
 path = '/localstorage/deleplanque'
 #path = '/Users/deleplanque/Documents'
@@ -42,71 +49,41 @@ path_results = path + '/Results'
 
 os.chdir(path_data)
 
-#st1 = read('KMMH161604150159.UD2.sac')
-#st2 = read('KMMH031604150159.UD2.sac')
-#st3 = read('FKOH101604150159.UD2.sac')
-#st1 = read('KMM0111604170541.UD.sac')
-#st2 = read('MYZ0201604170541.UD.sac')
-#st3 = read('MYZH081604170541.UD2.sac')
-#st1 = read('KMMH031604160749.UD2.sac')
-#st2 = read('KMM0021604160749.UD.sac')
-#st3 = read('FKO0161604160749.UD.sac')
-#st1 = read('KMMH161604161317.UD2.sac')
-#st2 = read('KMM0091604161317.UD.sac')
-#st3 = read('MYZ0011604161317.UD.sac')
-#st1 = read('KMM0091604151246.UD.sac')
-#st2 = read('MYZ0201604151246.UD.sac')
-#st3 = read('MYZH051604151246.UD2.sac')
-st1 = read('KMM0061604162206.UD.sac')
-st2 = read('KMMH141604162206.UD2.sac')
-st3 = read('KMMH121604162206.UD2.sac')
-t1start = st1[0].stats.starttime + st1[0].stats.sac.t0 - 15
-t2start = st2[0].stats.starttime + st2[0].stats.sac.t0 - 15
-t3start = st3[0].stats.starttime + st3[0].stats.sac.t0 - 15
-t1end = t1start + 50
-t2end = t1start + 50
-t3end = t3start + 50
-st1[0].trim(t1start, t1end)
-st2[0].trim(t2start, t2end)
-st3[0].trim(t3start, t3end)
-st1 = st1.detrend(type='constant')
-st2 = st2.detrend(type='constant')
-st3 = st3.detrend(type='constant')
-st1.normalize()
-st2.normalize()
-st3.normalize()
-tr1_brut = st1[0]
-tr2_brut = st2[0]
-tr3_brut = st3[0]
-tr1_filt = tr1_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
-tr2_filt = tr2_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
-tr3_filt = tr3_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
-envelop1 = abs(hilbert(tr1_filt))
-envelop2 = abs(hilbert(tr2_filt))
-envelop3 = abs(hilbert(tr3_filt))
-env1_smoothed = smooth(envelop1, 20)
-env2_smoothed = smooth(envelop2, 20)
-env3_smoothed = smooth(envelop3, 20)
-
-t1 = np.arange(tr1_brut.stats.npts)/tr1_brut.stats.sampling_rate
-t2 = np.arange(tr2_brut.stats.npts)/tr2_brut.stats.sampling_rate
-t3 = np.arange(tr3_brut.stats.npts)/tr3_brut.stats.sampling_rate
-
-ord1 = dist(st1[0].stats.sac.stla, st1[0].stats.sac.stlo, 0.001*st1[0].stats.sac.stel, st1[0].stats.sac.evla, st1[0].stats.sac.evlo, -st1[0].stats.sac.evdp)
-ord2 = dist(st2[0].stats.sac.stla, st2[0].stats.sac.stlo, 0.001*st2[0].stats.sac.stel, st2[0].stats.sac.evla, st2[0].stats.sac.evlo, -st2[0].stats.sac.evdp)
-ord3 = dist(st3[0].stats.sac.stla, st3[0].stats.sac.stlo, 0.001*st3[0].stats.sac.stel, st3[0].stats.sac.evla, st3[0].stats.sac.evlo, -st3[0].stats.sac.evdp)
+list_station = ['KMMH161604150159.UD2.sac', 'KMMH031604150159.UD2.sac', 'FKOH101604150159.UD2.sac']
+#list_station = ['KMM0111604170541.UD.sac', 'MYZ0201604170541.UD.sac', 'MYZH081604170541.UD2.sac']
+#list_station = ['KMMH031604160749.UD2.sac', 'KMM0021604160749.UD.sac', 'FKO0161604160749.UD.sac']
+#list_station = ['KMMH161604161317.UD2.sac', 'KMM0091604161317.UD.sac', 'MYZ0011604161317.UD.sac']
+#list_station = ['KMM0091604151246.UD.sac', 'MYZ0201604151246.UD.sac', 'MYZH051604151246.UD2.sac']
+#list_station = ['KMM0061604162206.UD.sac', 'KMMH141604162206.UD2.sac', 'KMMH121604162206.UD2.sac']
 
 fig, ax = plt.subplots(1, 1)
 ax.set_xlabel('Time (s)')
-ax.plot(t1, 20*env1_smoothed + ord1, linewidth=0.2)
-ax.plot(t2, 20*env2_smoothed + ord2, linewidth=0.2)
-ax.plot(t3, 20*env3_smoothed + ord3, linewidth=0.2)
-ax.axvline(15)
 
-#ax.text(0, 0, name_dossier)
-ax.text(40, ord1, st1[0].stats.station)
-ax.text(40, ord2, st2[0].stats.station)
-ax.text(40, ord3, st3[0].stats.station)
+for station in list_station:
+    st = read(station)
+    st = st.detrend(type='constant')
+    tstart = st[0].stats.starttime + st[0].stats.sac.t0 - 15
+    print(st[0].stats.sac.b)
+    tend = tstart + 50
+    st[0].trim(tstart, tend, pad=True, fill_value=0)
+    tr_brut = st[0]
+    tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
+    envelop = abs(hilbert(tr_filt))
+    env_smoothed2 = smooth(envelop, 20)
+    squared_tr = [a**2 for a in tr_filt]
+    env_smoothed = smooth(squared_tr, 20)
+
+    t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
+
+    ordo = dist(st[0].stats.sac.stla, st[0].stats.sac.stlo, 0.001*st[0].stats.sac.stel, st[0].stats.sac.evla, st[0].stats.sac.evlo, -st[0].stats.sac.evdp)
+
+    #ax.plot(t, tr_brut, color='black')
+    ax.plot(t, norm(env_smoothed) + ordo, linewidth=0.2, color='blue')
+    ax.plot(t, norm(env_smoothed2) + ordo, linewidth=0.2, color='red')
+    ax.axvline(15)
+
+    #ax.text(0, 0, name_dossier)
+    ax.text(40, ordo, st[0].stats.station)
 
 os.chdir(path_results)
 fig.savefig(name_dossier + '.pdf')
