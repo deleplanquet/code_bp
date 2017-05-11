@@ -5,12 +5,12 @@ import cmath
 import matplotlib.pyplot as plt
 import os
 import sys
-from mpl_toolkits.basemap import Basemap
 from scipy import interpolate
 from scipy.signal import hilbert
 from obspy import read
 from obspy.signal.util import smooth
 from scipy import ndimage
+#from mpl_toolkits.basemap import Basemap
 
 #constantes
 R_Earth = 6400
@@ -116,8 +116,8 @@ dossier_seisme = sys.argv[1]
 #dossier_seisme = dossier_seisme[0:-1]
 print('     ', dossier_seisme)
 
-path = '/localstorage/deleplanque'
-#path = '/Users/deleplanque/Documents'
+#path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_sac/' + dossier_seisme
 path_results = path + '/Results/Kumamoto/' + dossier_seisme
 if os.path.isdir(path_results) == False:
