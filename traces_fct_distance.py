@@ -36,9 +36,12 @@ def norm(vect):
     return [30*a/pow(norm_v, 0.5) for a in vect]
 
 list_dossier = ['20160417054100', '20160415015900', '20160416074900', '20160416131700', '20160415124600', '20160416220600']
+#list_dossier = ['20160415072000']
+#list_dossier = ['20160416080200']
+#list_dossier = ['20160414230200']
 
-#path = '/localstorage/deleplanque'
-path = '/Users/deleplanque/Documents'
+path = '/localstorage/deleplanque'
+#path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_sac'
 path_results = path + '/Results'
 
