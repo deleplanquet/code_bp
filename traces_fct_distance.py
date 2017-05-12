@@ -35,18 +35,20 @@ def norm(vect):
         norm_v = norm_v + a*a
     return [30*a/pow(norm_v, 0.5) for a in vect]
 
-list_dossier = ['20160417054100', '20160415015900', '20160416074900', '20160416131700', '20160415124600', '20160416220600']
+#list_dossier = ['20160417054100', '20160415015900', '20160416074900', '20160416131700', '20160415124600', '20160416220600']
+list_dossier = ['20160416080200', '20160415072000']
 #list_dossier = ['20160415072000']
 #list_dossier = ['20160416080200']
 #list_dossier = ['20160414230200']
 
-path = '/localstorage/deleplanque'
-#path = '/Users/deleplanque/Documents'
+#path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_sac'
 path_results = path + '/Results'
 
 fig, ax = plt.subplots(1, 1)
 ax.set_xlabel('Time (s)')
+ax.set_ylabel('Distance from the hypocenter (km)')
 
 for dossier in list_dossier:
     print(dossier)
@@ -56,6 +58,7 @@ for dossier in list_dossier:
 
     fig2, ax2 = plt.subplots(1, 1)
     ax2.set_xlabel('Time (s)')
+    ax2.set_ylabel('Distance from the hypocenter (km)')
 
     for fichier in list_fichier:
     	st = read(fichier)
@@ -75,10 +78,10 @@ for dossier in list_dossier:
     	ordo = dist(st[0].stats.sac.stla, st[0].stats.sac.stlo, 0.001*st[0].stats.sac.stel, st[0].stats.sac.evla, st[0].stats.sac.evlo, -st[0].stats.sac.evdp)
 
     	ax.plot(t, norm(env_smoothed) + ordo, linewidth = 0.2)
-    	ax.text(40, ordo, st[0].stats.station)
+    	ax.text(40, ordo, st[0].stats.station, fontsize = 3)
 
     	ax2.plot(t, norm(env_smoothed) + ordo, linewidth = 0.2)
-    	ax2.text(40, ordo, st[0].stats.station)
+    	ax2.text(40, ordo, st[0].stats.station, fontsize = 3)
 
     os.chdir(path_results)
     ax2.axvline(15)

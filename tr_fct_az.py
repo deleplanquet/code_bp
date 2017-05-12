@@ -88,13 +88,14 @@ def dist(pt1, pt2):
 
 list_dossier = ['20160416080200', '20160415072000']#, '20160414230200']
 
-path = '/localstorage/deleplanque'
-#path = '/Users/deleplanque/Documents'
+#path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_sac'
 path_results = path + '/Results'
 
 fig, ax = plt.subplots(1, 1)
 ax.set_xlabel('Time (s)')
+ax.set_ylabel('Azimuth (deg)')
 
 for dossier in list_dossier:
     print(dossier)
@@ -104,6 +105,7 @@ for dossier in list_dossier:
 
     fig2, ax2 = plt.subplots(1, 1)
     ax2.set_xlabel('Time (s)')
+    ax2.set_ylabel('Azimuth (deg)')
 
     for fichier in list_fichier:
         st = read(fichier)

@@ -42,8 +42,8 @@ name_dossier = '20160415015900'
 #name_dossier = '20160415124600'
 #name_dossier = '20160416220600'
 
-path = '/localstorage/deleplanque'
-#path = '/Users/deleplanque/Documents'
+#path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_sac/' + name_dossier
 path_results = path + '/Results'
 
@@ -58,6 +58,7 @@ list_station = ['KMMH161604150159.UD2.sac', 'KMMH031604150159.UD2.sac', 'FKOH101
 
 fig, ax = plt.subplots(1, 1)
 ax.set_xlabel('Time (s)')
+ax.set_ylabel('Distance from the hypocenter (km)')
 
 for station in list_station:
     st = read(station)

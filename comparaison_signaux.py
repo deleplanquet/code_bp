@@ -6,12 +6,15 @@ from obspy import read
 import numpy as np
 import os
 
-path = '/localstorage/deleplanque/'
+#path = '/localstorage/deleplanque/'
+path = '/Users/deleplanque/Documents/'
 path_data = path + 'Data/Kumamoto_sac'
 
 path_results = path + '/Results/Kumamoto'
 
 list_dossier = os.listdir(path_data)
+list_dossier = [a for a in list_dossier if (a == '.DS_Store') == False]
+print(list_dossier)
 
 list_fichier = []
 
