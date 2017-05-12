@@ -7,10 +7,6 @@ import sys
 #from mpl_toolkits.axes_grid1 import ImageGrid
 import matplotlib.pyplot as plt
 
-#normalisation
-def norm1(vect):
-    return [a/vect.max() for a in vect]
-
 dossier = sys.argv[1]
 
 #path = '/localstorage/deleplanque'
@@ -33,7 +29,7 @@ for station in list_fich:
     st.detrend(type = 'constant')
     tr = st[0].filter('bandpass', freqmin = 0.2, freqmax = 10, corners = 4, zerophase = True)
     tr = [a**2 for a in tr]
-    tr = np.asarray(norm1(smooth(tr, 20)))
+    tr = np.asarray(smooth(tr, 20))
     tr = Trace(tr, st[0].stats)
     os.chdir(path_env_dossier)
     tr.write('env_' + station, format = 'SAC')
