@@ -86,11 +86,12 @@ def dist(pt1, pt2):
     x2, y2, z2 = geo2cart(pt2)
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
-list_dossier = ['20160416080200', '20160415072000']#, '20160414230200']
+#list_dossier = ['20160416080200']#, '20160415072000']#, '20160414230200']
+list_dossier = ['20160415072000']
 
 #path = '/localstorage/deleplanque'
 path = '/Users/deleplanque/Documents'
-path_data = path + '/Data/Kumamoto_sac'
+path_data = path + '/Data/Kumamoto_env'
 path_results = path + '/Results'
 
 fig, ax = plt.subplots(1, 1)
@@ -116,14 +117,14 @@ for dossier in list_dossier:
             tstart = st[0].stats.starttime + st[0].stats.sac.t0 - 15
             tend = tstart + 50
             st[0].trim(tstart, tend, pad=True, fill_value=0)
-            tr_brut = st[0]
-            tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
+        #    tr_brut = st[0]
+        #    tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
         #envelop = abs(hilbert(tr_filt))
         #env_smoothed = smooth(envelop, 20)
-            squared_tr = [a**2 for a in tr_filt]
-            env_smoothed = smooth(squared_tr, 20)
+        #    squared_tr = [a**2 for a in tr_filt]
+        #    env_smoothed = smooth(squared_tr, 20)
 
-            t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
+            t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
 
             lath = st[0].stats.sac.evla
             lonh = st[0].stats.sac.evlo
@@ -138,18 +139,20 @@ for dossier in list_dossier:
                 azimuth = -angle(vect_nord, vect_dir_sta)
             ordo = azimuth# % 180
 
-            env_norm_shift = [a + ordo for a in norm1(env_smoothed)]
+            env_norm_shift = [a + ordo for a in st[0].data]
             print('    ', fichier, lath, lonh, st[0].stats.sac.stla, st[0].stats.sac.stlo, azimuth, ordo)
 
-            ax.plot(t, [a + ordo for a in norm1(env_smoothed)], linewidth = 0.2)
-            ax.text(30, ordo, st[0].stats.station, fontsize=3)
+            ax.plot(t, [a + ordo for a in norm1(st[0].data)], linewidth = 0.2, color = 'black')
+#            ax.text(30, ordo, st[0].stats.station, fontsize=3)
 
-            ax2.plot(t, [a + ordo for a in norm1(env_smoothed)], linewidth = 0.2)
-            ax2.text(30, ordo, st[0].stats.station + ' ' + str(azimuth), fontsize=3)
+            ax2.plot(t, [a + ordo for a in norm1(st[0].data)], linewidth = 0.2, color = 'black')
+#            ax2.text(30, ordo, st[0].stats.station + ' ' + str(azimuth), fontsize=3)
+
+            ax2.scatter(15 - st[0].stats.sac.t0 + st[0].stats.sac.a, ordo, s = 2, color = 'steelblue')
 
     os.chdir(path_results)
-    ax2.axvline(15)
+    ax2.axvline(15, linewidth = 0.5, color = 'darkorange')
     fig2.savefig('tt_sta_angle' + dossier + '.pdf')
 
-ax.axvline(15)
+ax.axvline(15, linewidth = 0.5, color = 'darkorange')
 fig.savefig('tt_sta_angle_tt_seisme.pdf')
