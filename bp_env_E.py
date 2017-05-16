@@ -110,6 +110,14 @@ def dist(la1, lo1, el1, la2, lo2, el2):
 def norm1(vect):
     return [10*a/vect.max() for a in vect]
 
+#fonction gaussienne
+def gauss(x_data, H, mu):
+    sigma = H/2.3548
+    y_data = np.zeros(len(x_data))
+    for i in range(len(x_data)):
+        y_data[i] = 1./(sigma*math.sqrt(2))*math.exp(-(x_data[i] - mu)*(x_data[i] - mu)/(2*sigma*sigma))
+    return y_data
+
 #recuperation position stations
 print('     recuperation position stations')
 
@@ -351,8 +359,11 @@ for station in list_file_used:
 #    squared_tr = [a**2 for a in tr_filt]
 #    env_smoothed = smooth(squared_tr, 20)
     env_norm = norm1(st[0].data)
-    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-    f = interpolate.interp1d(t, env_norm)
+    t_gauss = np.arange(st[0].stats.sampling_rate*2)/st[0].stats.sampling_rate
+    t_gauss = [a - t_gausse.max()/2 for a in t_gauss]
+    env_conv = np.convolve(env_norm, gauss(, 0.5, 0), 'valid')
+    t = np.arange(len(env_conv))/st[0].stats.sampling_rate
+    f = interpolate.interp1d(t, env_conv)
 
     ista = list_file_used.index(station)
     print('     ', station, str(ista + 1), '/', len(list_file_used))
