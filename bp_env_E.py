@@ -10,7 +10,7 @@ from scipy.signal import hilbert
 from obspy import read
 from obspy.signal.util import smooth
 from scipy import ndimage
-#from mpl_toolkits.basemap import Basemap
+from mpl_toolkits.basemap import Basemap
 
 #constantes
 R_Earth = 6400
@@ -118,7 +118,7 @@ print('     ', dossier_seisme)
 
 #path = '/localstorage/deleplanque'
 path = '/Users/deleplanque/Documents'
-path_data = path + '/Data/Kumamoto_sac/' + dossier_seisme
+path_data = path + '/Data/Kumamoto_env/' + dossier_seisme
 path_results = path + '/Results/Kumamoto/' + dossier_seisme
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
@@ -198,6 +198,7 @@ for fichier in list_file_used:
                     va='bottom',
                     zorder=3)
 
+print('boubou')
 x_epi, y_epi = m(st[0].stats.sac.evlo, st[0].stats.sac.evla)
 ax_pos_sta.scatter(x_epi,
                    y_epi,
@@ -207,42 +208,44 @@ ax_pos_sta.scatter(x_epi,
                    zorder=4)
 
 os.chdir(path_map)
-fig_pos_sta.savefig('map_stations.pdf')
+print('babou')
+#fig_pos_sta.savefig('map_stations.pdf')
+print('bouba')
 
 #envelope
 print('     envelopes')
 
-fig_env_all, ax_env_all = plt.subplots(1, 1)
-ax_env_all.set_xlabel('time (s)')
+#fig_env_all, ax_env_all = plt.subplots(1, 1)
+#ax_env_all.set_xlabel('time (s)')
 
-for fichier in list_file_used:
-    os.chdir(path_data)
-    st = read(fichier)
-    st = st.detrend(type='constant') #retirer la moyenne
-    tstart = st[0].stats.starttime + st[0].stats.sac.t0 - 15
-    tend = tstart + 50
-    st[0].trim(tstart, tend, pad=True, fill_value=0)
-    tr_brut = st[0]
-    tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
+#for fichier in list_file_used:
+#    os.chdir(path_data)
+#    st = read(fichier)
+#    st = st.detrend(type='constant') #retirer la moyenne
+#    tstart = st[0].stats.starttime + st[0].stats.sac.t0 - 15
+#    tend = tstart + 50
+#    st[0].trim(tstart, tend, pad=True, fill_value=0)
+#    tr_brut = st[0]
+#    tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
     #envelop = abs(hilbert(tr_filt))
     #env_smoothed = smooth(envelop, 20)
-    squared_tr = [a**2 for a in tr_filt]
-    env_smoothed = smooth(squared_tr, 20)
+#    squared_tr = [a**2 for a in tr_filt]
+#    env_smoothed = smooth(squared_tr, 20)
 
-    t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
-    ordo = dist(st[0].stats.sac.stla, st[0].stats.sac.stlo, 0.001*st[0].stats.sac.stel, st[0].stats.sac.evla, st[0].stats.sac.evlo, -st[0].stats.sac.evdp)
+#    t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
+#    ordo = dist(st[0].stats.sac.stla, st[0].stats.sac.stlo, 0.001*st[0].stats.sac.stel, st[0].stats.sac.evla, st[0].stats.sac.evlo, -st[0].stats.sac.evdp)
 
-    os.chdir(path_env)
+#    os.chdir(path_env)
 
-    fig_env, ax_env = plt.subplots(1, 1)
-    ax_env.set_xlabel('time (s)')
+#    fig_env, ax_env = plt.subplots(1, 1)
+#    ax_env.set_xlabel('time (s)')
     #ax_env.plot(t, tr_brut, linewidth=0.2, color='black')
-    ax_env.plot(t, norm1(env_smoothed), linewidth=1, color='red')
-    fig_env.savefig('envelope_' + str(st[0].stats.station) + '.pdf')
+#    ax_env.plot(t, norm1(env_smoothed), linewidth=1, color='red')
+#    fig_env.savefig('envelope_' + str(st[0].stats.station) + '.pdf')
 
-    ax_env_all.plot(t, norm1(env_smoothed) + ordo, linewidth=0.2)
+#    ax_env_all.plot(t, norm1(env_smoothed) + ordo, linewidth=0.2)
 
-fig_env_all.savefig('envelope_all.pdf')
+#fig_env_all.savefig('envelope_all.pdf')
 
 #placement de la faille
 print('     localisation de la faille en volume')
@@ -323,20 +326,22 @@ os.chdir(path_data)
 stack = np.zeros((l_fault, w_fault, 20000))
 
 st = read(list_file_used[0])
-tstart_ref = st[0].stats.starttime + st[0].stats.sac.t0 - 15
+#tstart_ref = st[0].stats.starttime + st[0].stats.sac.t0 - 15
+tstart_ref = st[0].stats.starttime
 
 for station in list_file_used:
     st = read(station)
-    st = st.detrend(type = 'constant')
-    tstart = st[0].stats.starttime + st[0].stats.sac.t0 - 15
-    tend = tstart + 50
-    st[0].trim(tstart, tend, pad=True, fill_value=0)
-    tr_brut = st[0]
-    tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
-    squared_tr = [a**2 for a in tr_filt]
-    env_smoothed = smooth(squared_tr, 20)
-    env_norm = norm1(env_smoothed)
-    t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
+#    st = st.detrend(type = 'constant')
+#    tstart = st[0].stats.starttime + st[0].stats.sac.t0 - 15
+    tstart = st[0].stats.starttime
+#    tend = tstart + 50
+#    st[0].trim(tstart, tend, pad=True, fill_value=0)
+#    tr_brut = st[0]
+#    tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
+#    squared_tr = [a**2 for a in tr_filt]
+#    env_smoothed = smooth(squared_tr, 20)
+    env_norm = norm1(st[0].data)
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
     f = interpolate.interp1d(t, env_norm)
 
     ista = list_file_used.index(station)
@@ -345,7 +350,7 @@ for station in list_file_used:
     for ixf in range(l_fault):
     	for iyf in range(w_fault):
     	    for it in range(len(t)):
-    	    	tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[ista][0, 0] + it/tr_brut.stats.sampling_rate
+    	    	tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[ista][0, 0] + it/st[0].stats.sampling_rate
     	    	if tshift > 0 and tshift < t[-1]:
     	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
