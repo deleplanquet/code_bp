@@ -87,7 +87,8 @@ def dist(pt1, pt2):
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
 #list_dossier = ['20160416080200']#, '20160415072000']#, '20160414230200']
-list_dossier = ['20160415072000']
+#list_dossier = ['20160415072000']
+list_dossier = ['20160416080200']
 
 #path = '/localstorage/deleplanque'
 path = '/Users/deleplanque/Documents'
@@ -152,6 +153,7 @@ for dossier in list_dossier:
 
     os.chdir(path_results)
     ax2.axvline(15, linewidth = 0.5, color = 'darkorange')
+    ax2.text(30, 185, '2016/04/16 08:02', color = 'black')
     fig2.savefig('tt_sta_angle' + dossier + '.pdf')
 
 ax.axvline(15, linewidth = 0.5, color = 'darkorange')
