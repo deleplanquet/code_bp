@@ -15,7 +15,7 @@ from mpl_toolkits.basemap import Basemap
 
 #constantes
 R_Earth = 6400
-v_s = 5.661
+v_s = 3.419
 
 #fonctions
 
@@ -360,8 +360,8 @@ for station in list_file_used:
 #    env_smoothed = smooth(squared_tr, 20)
     env_norm = norm1(st[0].data)
     t_gauss = np.arange(st[0].stats.sampling_rate*2)/st[0].stats.sampling_rate
-    t_gauss = [a - t_gausse.max()/2 for a in t_gauss]
-    env_conv = np.convolve(env_norm, gauss(, 0.5, 0), 'valid')
+    t_gauss = [a - t_gauss.max()/2 for a in t_gauss]
+    env_conv = np.convolve(env_norm, gauss(t_gauss, 0.5, 0), 'valid')
     t = np.arange(len(env_conv))/st[0].stats.sampling_rate
     f = interpolate.interp1d(t, env_conv)
 
@@ -371,7 +371,7 @@ for station in list_file_used:
     for ixf in range(l_fault):
     	for iyf in range(w_fault):
     	    for it in range(len(t)):
-    	    	tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[ista][0, 0] + mat_vel[1][list_file_used.index(station)] + it/st[0].stats.sampling_rate
+    	    	tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[ista][0, 0] + mat_vel[2][list_file_used.index(station)] + it/st[0].stats.sampling_rate
     	    	if tshift > 0 and tshift < t[-1]:
     	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
