@@ -48,7 +48,8 @@ dossier = '20160416080200'
 #dossier = '20160415072000'
 #dossier = '20160414230200'
 
-path = '/Users/deleplanque/Documents'
+#path = '/Users/deleplanque/Documents'
+path = '/localstorage/deleplanque'
 path_data = path + '/Data/Kumamoto_env/' + dossier
 path_results = path + '/LaTeX/Poster_jpgu_2017'
 path_vel = path + '/Results/Kumamoto/Velocity'
