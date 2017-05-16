@@ -70,10 +70,11 @@ for station in list_sta:
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
     tsec = st[0].stats.starttime.second
     tmicrosec = st[0].stats.starttime.microsecond
+#    t = [a + tsec + tmicrosec/1e6 for a in t]
     t = [a + tsec - 40 + tmicrosec/1e6 if tsec > 10 else a + tsec + 20 + tmicrosec/1e6 for a in t]
 
     pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
-    pos_hypo = [R_Earth + -st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
+    pos_hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
     ordo = dist(pos_sta, pos_hypo)
 
     list_tP.append(st[0].stats.sac.a + t[0])
@@ -91,16 +92,22 @@ list_DtS = [a - (list_dist[list_tS.index(a)] - poptS[1])/poptS[0] for a in list_
 
 to_register = [[poptP[0], poptS[0]], list_DtP, list_DtS]
 
+print(poptP[0], poptS[0])
+
 os.chdir(path_vel)
 with open(dossier + '_vel', 'wb') as mon_fich:
     mon_pick = pickle.Pickler(mon_fich)
     mon_pick.dump(to_register)
 
-tP = np.arange(10, 30)
-tS = np.arange(11, 45)
+tP = np.arange(9, 29)
+tS = np.arange(10, 42)
 
 ax.scatter(list_tP, list_dist, s=2)
 ax.scatter(list_tS, list_dist, s=2)
+
+ax.text(65, 30, str(int(1000*poptP[0])) + 'm/s', color='steelblue')
+ax.text(65, 20, str(int(1000*poptS[0])) + 'm/s', color='darkorange')
+ax.text(5, 115, '2016/04/16 08:02', color = 'black')
 
 ax.plot(tP, poptP[0]*tP + poptP[1], linewidth=0.2)
 ax.plot(tS, poptS[0]*tS + poptS[1], linewidth=0.2)
