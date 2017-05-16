@@ -108,8 +108,14 @@ for station in list_station:
     stS = read(station)
     nom_sta = stP[0].stats.station
     xst, yst = m(stP[0].stats.sac.stlo, stP[0].stats.sac.stla)
-    if nom_sta == 'FKOH10' or nom_sta == 'KMMH03' or nom_sta == 'KMMH16':
+    if nom_sta == 'KMMH14' or nom_sta == 'MYZ020' or nom_sta == 'MYZH05' or nom_sta == 'MYZH08':
         ax.text(xst, yst, nom_sta, fontsize=7, ha = 'left', va = 'center', zorder = 3)
+    elif nom_sta == 'KMM011':
+        ax.text(xst, yst, nom_sta, fontsize=7, ha = 'left', va = 'top', zorder = 3)
+    elif nom_sta == 'KMM014' or nom_sta == 'KMMH13' or nom_sta == 'MYZ010' or nom_sta == 'MYZH13':
+        ax.text(xst, yst, nom_sta, fontsize=7, ha = 'right', va = 'center', zorder = 3)
+    elif nom_sta == 'KMM017':
+        ax.text(xst, yst, nom_sta, fontsize=7, ha = 'right', va = 'bottom', zorder = 3)
     x_sta.append(xst)
     y_sta.append(yst)
     arrival_P = stP[0].stats.starttime + stP[0].stats.sac.a
@@ -133,7 +139,11 @@ print(rapport_PS)
 ax = plt.gca()
 ax.add_collection(bb)
 ax.add_collection(BB)
-ax.scatter(x_sta, y_sta, 15, marker = 'o', cmap = 'seismic', c = rapport_PS, zorder = 3)
+cax = fig.add_axes([0.1, 0.1, 500, 500])
+aaxx = ax.scatter(x_sta, y_sta, 15, marker = 'o', cmap = 'seismic', c = rapport_PS, zorder = 3)
+fig.colorbar(aaxx, cax=cax, orientation = 'vertical')
+#cbar = fig.colorbar(aaxx, ticks = [0.1, 1, 10])
+#cbar.ax.set_ytickslabels(['> 10', '1', '< 0.1'])
 ax.text(x_sta, y_sta, st[0].stats.station, fontsize = 1, ha = 'right', va = 'center', zorder = 4)
 
 os.chdir(path_results)
