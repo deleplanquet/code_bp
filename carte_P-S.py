@@ -4,8 +4,15 @@ import os
 from obspy import read
 from mpl_toolkits.basemap import Basemap
 import numpy as np
+from obspy.imaging.beachball import beach
 
-dossier = '20160416080200'
+#conversion angle degre -> radian
+def d2r(angle):
+    return angle*math.pi/180
+
+#dossier = '20160416080200'
+#dossier = '20160415072000'
+dossier = '20160414230200'
 
 path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_env/' + dossier
@@ -16,6 +23,20 @@ list_station = [a for a in list_station if ('UD' in a) == True and ('UD1' in a) 
 
 lat_fault = [32.65, 32.86]
 long_fault = [130.72, 131.07]
+
+#np1 = [276.2, 69.9, -27.6]
+strike = 276.2
+dip = 69.9
+rake = -27.6
+
+Mxx = - math.sin(d2r(dip))*math.cos(d2r(rake))*math.sin(d2r(2* strike)) - math.sin(d2r(2*dip))*math.sin(d2r(rake))*math.sin(d2r(2*strike))
+Myy = math.sin(d2r(dip))*math.cos(d2r(rake))*math.sin(d2r(2*strike)) - math.sin(d2r(2*dip))*math.sin(d2r(rake))*math.cos(d2r(2*strike))
+Mzz = math.sin(d2r(2*dip))*math.sin(d2r(rake))
+Mxy = math.sin(d2r(dip))*math.cos(d2r(rake))*math.cos(d2r(2*strike)) + math.sin(d2r(2*dip))*math.sin(d2r(rake))*math.sin(d2r(strike))*math.cos(d2r(strike))
+Mxz = - math.cos(d2r(dip))*math.cos(d2r(rake))*math.cos(d2r(strike)) - math.cos(d2r(2*dip))*math.sin(d2r(rake))*math.sin(d2r(strike))
+Myz = - math.cos(d2r(dip))*math.cos(d2r(rake))*math.sin(d2r(strike)) + math.cos(d2r(2*dip))*math.sin(d2r(rake))*math.cos(d2r(strike))
+
+moment_tensor = [Mxx, Myy, Mzz, Mxy, Mxz, Myz]
 
 #base de la carte
 fig, ax = plt.subplots(1, 1)
@@ -46,6 +67,10 @@ st = read(list_station[0])
 x_epi, y_epi = m(st[0].stats.sac.evlo, st[0].stats.sac.evla)
 ax.scatter(x_epi, y_epi, 30, marker = '*', color = 'black', zorder = 2)
 
+bx, by = m(131, 33)
+bb = beach(moment_tensor, xy = (bx, by), width=200, linewidth=1)
+bb.set_zorder(10)
+
 #stations
 x_sta = []
 y_sta = []
@@ -73,14 +98,15 @@ for station in list_station:
     name_sta.append(st[0].stats.station)
 
 print(rapport_PS)
-rapport_PS = [a if (a<1 and a>-1) else -1 if (a<-1) else 1 for a in rapport_PS]
+rapport_PS = [a if (a<1 and a>-1) else -1 if (a<-1) else 1 if (a>1) else a for a in rapport_PS]
 print(rapport_PS)
 #couleur = tuple(rapport_PS)
+ax.add_collection(bb)
 ax.scatter(x_sta, y_sta, 15, marker = 'o', cmap = 'seismic', c = rapport_PS, zorder = 3)
 ax.text(x_sta, y_sta, st[0].stats.station, fontsize = 1, ha = 'right', va = 'center', zorder = 4)
 
 os.chdir(path_results)
-fig.savefig('map.pdf')
+fig.savefig('map' + str(dossier) + '.pdf')
 
 
 
