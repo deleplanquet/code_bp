@@ -140,6 +140,7 @@ ax = plt.gca()
 ax.add_collection(bb)
 ax.add_collection(BB)
 cax = fig.add_axes([0.1, 0.1, 500, 500])
+cax.zorder=99
 aaxx = ax.scatter(x_sta, y_sta, 15, marker = 'o', cmap = 'seismic', c = rapport_PS, zorder = 3)
 fig.colorbar(aaxx, cax=cax, orientation = 'vertical')
 #cbar = fig.colorbar(aaxx, ticks = [0.1, 1, 10])
