@@ -19,18 +19,30 @@ list_sta = ['FKO0141604142247.EW.sac', 'FKO0141604142247.NS.sac', 'FKO0141604142
 fig_brute, ax_brute = plt.subplots(3, 1)#, sharex = True)
 ax_brute[2].set_xlabel('Time (s)')
 ax_brute[1].set_ylabel('Amplitude')
+ax_brute[0].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax_brute[1].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax_brute[2].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
 
 fig_filtree, ax_filtree = plt.subplots(3, 1)#, sharex = True)
 ax_filtree[2].set_xlabel('Time (s)')
 ax_filtree[1].set_ylabel('Amplitude')
+ax_filtree[0].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax_filtree[1].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax_filtree[2].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
 
 fig_filt_sqr, ax_filt_sqr = plt.subplots(3, 1)#, sharex = True)
 ax_filt_sqr[2].set_xlabel('Time (s)')
-ax_filt_sqr[1].set_ylabel('Amplitude')
+ax_filt_sqr[1].set_ylabel('Squared amplitude')
+ax_filt_sqr[0].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax_filt_sqr[1].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax_filt_sqr[2].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
 
 fig_env_norm, ax_env_norm = plt.subplots(3, 1)#, sharex = True)
 ax_env_norm[2].set_xlabel('Time (s)')
-ax_env_norm[1].set_ylabel('Normalized amplitude')
+ax_env_norm[1].set_ylabel('Normalized squared amplitude')
+ax_env_norm[0].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax_env_norm[1].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax_env_norm[2].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
 
 os.chdir(path_data)
 for station in list_sta:
@@ -51,6 +63,22 @@ for station in list_sta:
     ax_filtree[ista].plot(t, tr_filt)#, aspect = 50)#, aspect = 50/(abs(1.1*tr_filt.max()) + abs(1.1*tr_filt.max())))
     ax_filt_sqr[ista].plot(t, squared_tr)#, aspect = 50)#, aspect = 50/(abs(1.1*squared_tr.max()) + abs(1.1*squared_tr.max())))
     ax_env_norm[ista].plot(t, env_smoothed)#, aspect = 50)#, aspect = 50/(abs(1.1*env_smoothed.max()) + abs(1.1*env_smoothed.max())))
+
+    if st[0].stats.channel == 'EW':
+        ax_brute[ista].text(45, abs(tr_brut.max())/2, 'EW')
+        ax_filtree[ista].text(45, abs(tr_filt.max())/2, 'EW')
+        ax_filt_sqr[ista].text(45, max(squared_tr)/2, 'EW')
+        ax_env_norm[ista].text(45, max(env_smoothed)/2, 'EW')
+    elif st[0].stats.channel == 'NS':
+        ax_brute[ista].text(45, abs(tr_brut.max())/2, 'NS')
+        ax_filtree[ista].text(45, abs(tr_filt.max())/2, 'NS')
+        ax_filt_sqr[ista].text(45, max(squared_tr)/2, 'NS')
+        ax_env_norm[ista].text(45, max(env_smoothed)/2, 'NS')
+    else:
+        ax_brute[ista].text(45, abs(tr_brut.max())/2, 'UD')
+        ax_filtree[ista].text(45, abs(tr_filt.max())/2, 'UD')
+        ax_filt_sqr[ista].text(45, max(squared_tr)/2, 'UD')
+        ax_env_norm[ista].text(45, max(env_smoothed)/2, 'UD')
 
 os.chdir(path_plots)
 #ax_brute.set_aspect('auto')
