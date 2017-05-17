@@ -358,14 +358,15 @@ for station in list_file_used:
 #    tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
 #    squared_tr = [a**2 for a in tr_filt]
 #    env_smoothed = smooth(squared_tr, 20)
-#    env_norm = norm1(st[0].data)
-    env_norm = np.zeros(len(st[0].data))/st[0].stats.sampling_rate
-    env_norm[int(st[0].stats.sac.t0*st[0].stats.sampling_rate)] = 1
-    t_gauss = np.arange(st[0].stats.sampling_rate*2)/st[0].stats.sampling_rate
-    t_gauss = [a - t_gauss.max()/2 for a in t_gauss]
-    env_conv = np.convolve(env_norm, gauss(t_gauss, 0.5, 0), 'valid')
-    t = np.arange(len(env_conv))/st[0].stats.sampling_rate
-    f = interpolate.interp1d(t, env_conv)
+    env_norm = norm1(st[0].data)
+#    env_norm = np.zeros(len(st[0].data))/st[0].stats.sampling_rate
+#    env_norm[int(st[0].stats.sac.t0*st[0].stats.sampling_rate)] = 1
+#    t_gauss = np.arange(st[0].stats.sampling_rate*2)/st[0].stats.sampling_rate
+#    t_gauss = [a - t_gauss.max()/2 for a in t_gauss]
+#    env_conv = np.convolve(env_norm, gauss(t_gauss, 0.5, 0), 'valid')
+#    t = np.arange(len(env_conv))/st[0].stats.sampling_rate
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    f = interpolate.interp1d(t, env_norm)
 
     ista = list_file_used.index(station)
     print('     ', station, str(ista + 1), '/', len(list_file_used))
