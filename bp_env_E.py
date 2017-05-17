@@ -125,8 +125,8 @@ dossier_seisme = sys.argv[1]
 #dossier_seisme = dossier_seisme[0:-1]
 print('     ', dossier_seisme)
 
-path = '/localstorage/deleplanque'
-#path = '/Users/deleplanque/Documents'
+#path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_env/' + dossier_seisme
 path_results = path + '/Results/Kumamoto/' + dossier_seisme
 path_vel = path + '/Results/Kumamoto/Velocity'
@@ -371,11 +371,11 @@ for station in list_file_used:
     print('     ', station, str(ista + 1), '/', len(list_file_used))
 
     for ixf in range(l_fault):
-    	for iyf in range(w_fault):
-    	    for it in range(len(t)):
-    	    	tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + mat_vel[2][list_file_used.index(station)] + it/st[0].stats.sampling_rate
-    	    	if tshift > 0 and tshift < t[-1]:
-    	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
+        for iyf in range(w_fault):
+            for it in range(len(t)):
+                tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + mat_vel[2][list_file_used.index(station)] + it/st[0].stats.sampling_rate
+                if tshift > 0 and tshift < t[-1]:
+                    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
 #plots
 print('     figures bp envelop')
