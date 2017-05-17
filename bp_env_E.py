@@ -373,7 +373,7 @@ for station in list_file_used:
     for ixf in range(l_fault):
     	for iyf in range(w_fault):
     	    for it in range(len(t)):
-    	    	tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[ista][0, 0] + mat_vel[2][list_file_used.index(station)] + it/st[0].stats.sampling_rate
+    	    	tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + mat_vel[2][list_file_used.index(station)] + it/st[0].stats.sampling_rate
     	    	if tshift > 0 and tshift < t[-1]:
     	    	    stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
@@ -382,7 +382,7 @@ print('     figures bp envelop')
 
 os.chdir(path_bp_env)
 
-for ij in range(1000):
+for ij in range(700):
     m = 5*ij
     fig_bp, ax_bp = plt.subplots(1, 1)
     ax_bp.set_xlabel('x')
