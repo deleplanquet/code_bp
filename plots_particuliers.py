@@ -80,15 +80,30 @@ for station in list_sta:
         ax_filt_sqr[ista].text(45, max(squared_tr)/2, 'UD')
         ax_env_norm[ista].text(45, max(env_smoothed)/2, 'UD')
 
+os.chdir('/Users/deleplanque/Documents/Data/Kumamoto_env/20160416012500')
+st_main = read('env_MYZH051604160125.UD2.sac')
+os.chdir('/Users/deleplanque/Documents/Data/Kumamoto_env/20160416080200')
+st_rep = read('env_MYZH051604160802.UD2.sac')
+taimeuh = np.arange(st_main[0].stats.npts)/st_main[0].stats.sampling_rate
+
+fig_rep_main, ax_rep_main = plt.subplots(2, 1)
+ax_rep_main[0].set_xlabel('Time (s)')
+ax_rep_main[0].set_ylabel('Normalized squared amplitude')
+ax_rep_main[1].set_ylabel('Normalized squared amplitude')
+ax_rep_main[0].plot(taimeuh, st_rep[0].data)
+ax_rep_main[1].plot(taimeuh, st_main[0].data)
+
 os.chdir(path_plots)
+fig_rep_main.savefig('fig_rep_main.pdf')
+
 #ax_brute.set_aspect('auto')
-fig_brute.savefig('tr_brute.pdf')
+#fig_brute.savefig('tr_brute.pdf')
 
 #ax_filtree.set_aspect('auto')
-fig_filtree.savefig('tr_filt.pdf')
+#fig_filtree.savefig('tr_filt.pdf')
 
 #ax_filt_sqr.set_aspect('auto')
-fig_filt_sqr.savefig('tr_filt_sqr.pdf')
+#fig_filt_sqr.savefig('tr_filt_sqr.pdf')
 
 #ax_env_norm.set_aspect('auto')
-fig_env_norm.savefig('env_norm.pdf')
+#fig_env_norm.savefig('env_norm.pdf')
