@@ -377,6 +377,36 @@ for station in list_file_used:
                 if tshift > 0 and tshift < t[-1]:
                     stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
+#plots projection 3d
+print('     figures bp projection 3d')
+
+os.chdir(path_bp_env)
+
+coordmax = np.argmax(stack[:, :, :])
+xmax = coordmax//(10000*w_fault)
+ymax = (coordmax - xmax*10000*w_fault)//10000
+tmax = coordmax - xmax*10000*w_fault - ymax*10000
+
+print(xmax, ymax, tmax)
+
+xmesh = np.arange(0, l_fault + 1, 1)
+ymesh = np.arange(0, w_fault + 1, 1)
+tmesh = np.arange(0, 10000)/st[0].stats.sampling_rate
+
+Xt, Yt = np.meshgrid(ymesh, xmesh)
+Xy, Ty = np.meshgrid(xmesh, tmesh)
+Tx, Yx = np.meshgrid(tmesh, ymesh)
+
+fig_3d, ax_3d = plt.figure()
+ax_3d = fig_3d.add_subplot(111, projection = '3d')
+ax_3d.contour(Xy, np.transpose(stack[:, ymax, :]), Ty, 10, zdir = 'y', offset = 0, cmap = 'jet')
+ax_3d.contour(stack[xmax, :, :], Yx, Tx, 10, zdir = 'x', offset = 0, cmap = 'jet')
+ax_3d.contour(Xt, Yt, np.transpose(stack[:, :, tmax]), 10, zdir = 'z', offset = 0, cmap = 'jet')
+ax_3d.set_xlabel('X (km)')
+ax_3d.set_ylabel('Y (km)')
+ax_3d.set_zlabel('t (s)')
+fig_3d.savefig('plot_proj_3d.pdf')
+
 #plots
 print('     figures bp envelop')
 
