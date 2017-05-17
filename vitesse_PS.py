@@ -64,6 +64,9 @@ ax.set_ylabel('Distance from the hypocenter (km)')
 list_tP = []
 list_tS = []
 list_dist = []
+vP = {}
+vS = {}
+dist_hyp = {}
 
 os.chdir(path_data)
 for station in list_sta:
@@ -78,20 +81,32 @@ for station in list_sta:
     pos_hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
     ordo = dist(pos_sta, pos_hypo)
 
+    ax.plot(t, norm1(st[0].data) + ordo, linewidth = 0.2, color = 'black')
+#    ax.text(50 + t[0], ordo, st[0].stats.station, fontsize = 3)
+
     list_tP.append(st[0].stats.sac.a + t[0])
     list_tS.append(st[0].stats.sac.t0 + t[0])
     list_dist.append(ordo)
 
-    ax.plot(t, norm1(st[0].data) + ordo, linewidth = 0.2, color = 'black')
-#    ax.text(50 + t[0], ordo, st[0].stats.station, fontsize = 3)
+    vP[st[0].stats.station] = st[0].stats.sac.a + t[0]
+    vS[st[0].stats.station] = st[0].stats.sac.t0 + t[0]
+    dist_hyp[st[0].stats.station] = ordo
 
 poptP, pcovP = curve_fit(fit_lineaire, list_tP, list_dist)
 poptS, pcovS = curve_fit(fit_lineaire, list_tS, list_dist)
 
-list_DtP = [a - (list_dist[list_tP.index(a)] - poptP[1])/poptP[0] for a in list_tP]
-list_DtS = [a - (list_dist[list_tS.index(a)] - poptS[1])/poptS[0] for a in list_tS]
+vP['fit'] = poptP[0]
+vS['fit'] = poptS[0]
 
-to_register = [[poptP[0], poptS[0]], list_DtP, list_DtS]
+for cles in vP.keys():
+    if ('fit' in cles) == False:
+    	vP[cles] = vP[cles] - (dist_hyp[cles] - poptP[1])/vP['fit']
+
+for cles in vS.keys():
+    if ('fit' in cles) == False:
+    	vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[1])/vS['fit']
+
+to_register = [vP, vS]
 
 print(poptP[0], poptS[0])
 
