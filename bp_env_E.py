@@ -123,7 +123,7 @@ print('     ', dossier_seisme)
 
 path = '/localstorage/deleplanque'
 #path = '/Users/deleplanque/Documents'
-path_data = path + '/Data/Kumamoto_env/' + dossier_seisme
+path_data = path + '/Data/Kumamoto_env_selectP/' + dossier_seisme
 path_results = path + '/Results/Kumamoto/' + dossier_seisme
 path_vel = path + '/Results/Kumamoto/Velocity'
 
@@ -164,8 +164,8 @@ R_Earth = 6400
 v_P = dict_vel[0]['fit']
 v_S = dict_vel[1]['fit']
 
-vel_used = v_S
-dict_vel_used = dict_vel[1]
+vel_used = v_P
+dict_vel_used = dict_vel[0]
 
 '''
 3 choses a changer pour passer de P a S et inversement
@@ -400,22 +400,28 @@ tmax = coordmax - xmax*10000*w_fault - ymax*10000
 
 print(xmax, ymax, tmax)
 
-xmesh = np.arange(0, l_fault + 1, 1)
-ymesh = np.arange(0, w_fault + 1, 1)
+xmesh = np.arange(0, l_fault, 1)
+ymesh = np.arange(0, w_fault, 1)
 tmesh = np.arange(0, 10000)/st[0].stats.sampling_rate
 
-Xt, Yt = np.meshgrid(ymesh, xmesh)
+Xt, Yt = np.meshgrid(xmesh, ymesh)
 Xy, Ty = np.meshgrid(xmesh, tmesh)
 Tx, Yx = np.meshgrid(tmesh, ymesh)
 
-fig_3d, ax_3d = plt.figure()
+print(len(Xt), len(Yt))
+print(len(Xy), len(Ty))
+print(len(Tx), len(Yx))
+print(len(np.transpose(stack[:, ymax, :])), len(stack[xmax, :, :]), len(np.transpose(stack[:, :, tmax])))
+
+fig_3d = plt.figure()
 ax_3d = fig_3d.add_subplot(111, projection = '3d')
-ax_3d.contour(Xy, np.transpose(stack[:, ymax, :]), Ty, 10, zdir = 'y', offset = 0, cmap = 'jet')
+ax_3d.contour(Xy, np.transpose(stack[:, ymax, :]), Ty, 10, zdir = 'y', offset = 15, cmap = 'jet')
 ax_3d.contour(stack[xmax, :, :], Yx, Tx, 10, zdir = 'x', offset = 0, cmap = 'jet')
 ax_3d.contour(Xt, Yt, np.transpose(stack[:, :, tmax]), 10, zdir = 'z', offset = 0, cmap = 'jet')
 ax_3d.set_xlabel('X (km)')
 ax_3d.set_ylabel('Y (km)')
 ax_3d.set_zlabel('t (s)')
+ax_3d.set_zlim3d(0, 10)
 fig_3d.savefig('plot_proj_3d.pdf')
 
 #plots
