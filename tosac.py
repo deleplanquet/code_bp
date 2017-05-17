@@ -4,8 +4,9 @@ from obspy import read
 import os
 import obspy.io.sac
 
-path_data = '/localstorage/deleplanque/Data/Kumamoto'
-path_sac = '/localstorage/deleplanque/Data/Kumamoto_sac'
+path = '/Users/deleplanque/Documents'
+path_data = path + '/Data/Kumamoto'
+path_sac = path + '/Data/Kumamoto_sac'
 os.chdir(path_sac)
 
 dossier = sys.argv[1]
