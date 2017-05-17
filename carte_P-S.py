@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib import ticker
 from pylab import *
 import math
 import cmath
@@ -132,23 +133,30 @@ for station in list_station:
     #rapport_PS.append(0.5)
     name_sta.append(st[0].stats.station)
 
-print(rapport_PS)
 rapport_PS = [a if (a<1 and a>-1) else -1 if (a<-1) else 1 if (a>1) else a for a in rapport_PS]
-print(rapport_PS)
 #couleur = tuple(rapport_PS)
 ax = plt.gca()
 ax.add_collection(bb)
 ax.add_collection(BB)
-cax = fig.add_axes([0.1, 0.1, 500, 500])
-cax.zorder=99
-aaxx = ax.scatter(x_sta, y_sta, 15, marker = 'o', cmap = 'seismic', c = rapport_PS, zorder = 3)
-fig.colorbar(aaxx, cax=cax, orientation = 'vertical')
+cax = fig.add_axes([0.17, 0.15, 0.02, 0.3])
+cax.zorder=5
+im = ax.scatter(x_sta, y_sta, 15, marker = 'o', cmap = 'seismic', c = rapport_PS, zorder = 3)
+cb = fig.colorbar(im, cax=cax, orientation = 'vertical')
+tick_locator = ticker.MaxNLocator(nbins = 3)
+cb.set_ticks([-1, 0, 1])
+cb.set_ticklabels([0.1, 1, 10])
+cb.locator = tick_locator
+cb.update_ticks()
 #cbar = fig.colorbar(aaxx, ticks = [0.1, 1, 10])
 #cbar.ax.set_ytickslabels(['> 10', '1', '< 0.1'])
-ax.text(x_sta, y_sta, st[0].stats.station, fontsize = 1, ha = 'right', va = 'center', zorder = 4)
+#ax.text(x_sta, y_sta, st[0].stats.station, fontsize = 1, ha = 'right', va = 'center', zorder = 4)
+#fig.subplots_adjust(right=0.8)
+#cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+#fig.colorbar(aaxx, cax=cbar_ax)
+#fig.colorbar(aaxx, ax=axes.ravel().tolist())
+#fig.colorbar(im, ax=ax)
 
 os.chdir(path_results)
-print(type(dossier))
 fig.savefig('map' + str(dossier) + '.pdf')
 
 
