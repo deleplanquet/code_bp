@@ -13,10 +13,6 @@ from obspy.signal.util import smooth
 from scipy import ndimage
 from mpl_toolkits.basemap import Basemap
 
-#constantes
-R_Earth = 6400
-v_s = 3.419
-
 #fonctions
 
 #conversion angle degre -> radian
@@ -90,14 +86,14 @@ def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
     return grill_fault
 
 #calcul de la matrice des tps de trajet pour une station
-def trav_time(station, fault):
+def trav_time(station, fault, velocity):
     x_sta, y_sta, z_sta = geo2cart(R_Earth + station[0]/1000, station[1], station[2])
     mat_time = np.zeros((len(fault[:, 0, 0]), len(fault[0, :, 0])))
     for a in range(len(fault[:, 0, 0])):
         for b in range(len(fault[0, :, 0])):
             mat_time[a, b] = math.sqrt(pow(x_sta - fault[a, b, 0], 2)
                                         + pow(y_sta - fault[a, b, 1], 2)
-                                        + pow(z_sta - fault[a, b, 2], 2))/v_s
+                                        + pow(z_sta - fault[a, b, 2], 2))/velocity
     return mat_time
 
 #distance entre deux points, coordonnees cartesiennes
@@ -125,8 +121,8 @@ dossier_seisme = sys.argv[1]
 #dossier_seisme = dossier_seisme[0:-1]
 print('     ', dossier_seisme)
 
-#path = '/localstorage/deleplanque'
-path = '/Users/deleplanque/Documents'
+path = '/localstorage/deleplanque'
+#path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_env/' + dossier_seisme
 path_results = path + '/Results/Kumamoto/' + dossier_seisme
 path_vel = path + '/Results/Kumamoto/Velocity'
@@ -155,6 +151,30 @@ list_fichier = os.listdir(path_data)
 list_fichier = [a for a in list_fichier if (('UD' in a) == True and ('UD1' in a) == False)]
 
 list_file_used = list_fichier
+
+os.chdir(path_vel)
+with open(dossier_seisme + '_vel', 'rb') as mon_fich:
+    mon_depick = pickle.Unpickler(mon_fich)
+    dict_vel = mon_depick.load()
+
+print(dict_vel)
+
+#constantes
+R_Earth = 6400
+v_P = dict_vel[0]['fit']
+v_S = dict_vel[1]['fit']
+
+vel_used = v_S
+dict_vel_used = dict_vel[1]
+
+'''
+3 choses a changer pour passer de P a S et inversement
+- path_data
+- vel_used
+- dict_vel_used
+'''
+
+print('vP', v_P, 'vS',  v_S)
 
 #recuperation position faille
 
@@ -209,7 +229,6 @@ for fichier in list_file_used:
                     va='bottom',
                     zorder=3)
 
-print('boubou')
 x_epi, y_epi = m(st[0].stats.sac.evlo, st[0].stats.sac.evla)
 ax_pos_sta.scatter(x_epi,
                    y_epi,
@@ -219,9 +238,7 @@ ax_pos_sta.scatter(x_epi,
                    zorder=4)
 
 os.chdir(path_map)
-print('babou')
 #fig_pos_sta.savefig('map_stations.pdf')
-print('bouba')
 
 #envelope
 print('     envelopes')
@@ -278,7 +295,7 @@ travt = []
 os.chdir(path_data)
 for fichier in list_file_used:
     st = read(fichier)
-    travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], coord_fault))
+    travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], coord_fault, vel_used))
 
 #ARF figures
 print('     figures ARF')
@@ -333,13 +350,6 @@ for ista in range(len(list_file_used)):
 #stacks
 print('     stacks envelop')
 
-os.chdir(path_vel)
-with open(dossier_seisme + '_vel', 'rb') as mon_fich:
-    mon_depick = pickle.Unpickler(mon_fich)
-    mat_vel = mon_depick.load()
-
-print(mat_vel)
-
 os.chdir(path_data)
 stack = np.zeros((l_fault, w_fault, 10000))
 
@@ -374,7 +384,7 @@ for station in list_file_used:
     for ixf in range(l_fault):
         for iyf in range(w_fault):
             for it in range(len(t)):
-                tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + mat_vel[2][list_file_used.index(station)] + it/st[0].stats.sampling_rate
+                tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate
                 if tshift > 0 and tshift < t[-1]:
                     stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
