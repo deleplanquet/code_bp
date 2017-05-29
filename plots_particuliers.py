@@ -80,21 +80,36 @@ for station in list_sta:
         ax_filt_sqr[ista].text(45, max(squared_tr)/2, 'UD')
         ax_env_norm[ista].text(45, max(env_smoothed)/2, 'UD')
 
-os.chdir('/Users/deleplanque/Documents/Data/Kumamoto_env/20160416012500')
-st_main = read('env_MYZH051604160125.UD2.sac')
-os.chdir('/Users/deleplanque/Documents/Data/Kumamoto_env/20160416080200')
-st_rep = read('env_MYZH051604160802.UD2.sac')
-taimeuh = np.arange(st_main[0].stats.npts)/st_main[0].stats.sampling_rate
+os.chdir('/Users/deleplanque/Documents/Data/Kumamoto_sac/20160416012500')
+st_main = read('KMMH131604160125.UD2.sac')
+st_main.detrend(type = 'constant')
+tstart_m = st_main[0].stats.starttime + st_main[0].stats.sac.a - 5
+tend_m = tstart_m + 50
+print(tstart_m, tend_m)
+tr_main = st_main[0].trim(tstart_m, tend_m, pad=True, fill_value=0)
+os.chdir('/Users/deleplanque/Documents/Data/Kumamoto_sac/20160416080200')
+st_rep = read('KMMH131604160802.UD2.sac')
+st_rep.detrend(type = 'constant')
+tstart_r = st_rep[0].stats.starttime + st_rep[0].stats.sac.a - 5
+tend_r = tstart_r + 50
+print(tstart_r, tend_r)
+tr_rep = st_rep[0].trim(tstart_r, tend_r, pad=True, fill_value=0)
+taimeuh = np.arange(tr_main.stats.npts)/tr_main.stats.sampling_rate
+#taimeuh_rep = np.arange(st_rep[0].stats.npts)/st_rep[0].stats.sampling_rate
 
 fig_rep_main, ax_rep_main = plt.subplots(2, 1)
-ax_rep_main[0].set_xlabel('Time (s)')
-ax_rep_main[0].set_ylabel('Normalized squared amplitude')
-ax_rep_main[1].set_ylabel('Normalized squared amplitude')
-ax_rep_main[0].plot(taimeuh, st_rep[0].data)
-ax_rep_main[1].plot(taimeuh, st_main[0].data)
+ax_rep_main[1].set_xlabel('Time (s)')
+ax_rep_main[1].set_ylabel('Velocity')
+ax_rep_main[0].set_ylabel('Velocity')
+#ax_rep_main[1].plot(taimeuh, st_rep[0].data)
+ax_rep_main[1].plot(taimeuh, tr_rep)
+#ax_rep_main[0].plot(taimeuh, st_main[0].data)
+ax_rep_main[0].plot(taimeuh, tr_main)
+ax_rep_main[0].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+ax_rep_main[1].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 
 os.chdir(path_plots)
-fig_rep_main.savefig('fig_rep_main.pdf')
+fig_rep_main.savefig('sismo_rep_main.pdf')
 
 #ax_brute.set_aspect('auto')
 #fig_brute.savefig('tr_brute.pdf')
