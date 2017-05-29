@@ -121,9 +121,9 @@ dossier_seisme = sys.argv[1]
 #dossier_seisme = dossier_seisme[0:-1]
 print('     ', dossier_seisme)
 
-path = '/localstorage/deleplanque'
-#path = '/Users/deleplanque/Documents'
-path_data = path + '/Data/Kumamoto_env_selectP/' + dossier_seisme
+#path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
+path_data = path + '/Data/Kumamoto_env_selectS/' + dossier_seisme
 path_results = path + '/Results/Kumamoto/' + dossier_seisme
 path_vel = path + '/Results/Kumamoto/Velocity'
 
@@ -157,15 +157,13 @@ with open(dossier_seisme + '_vel', 'rb') as mon_fich:
     mon_depick = pickle.Unpickler(mon_fich)
     dict_vel = mon_depick.load()
 
-print(dict_vel)
-
 #constantes
 R_Earth = 6400
 v_P = dict_vel[0]['fit']
 v_S = dict_vel[1]['fit']
 
-vel_used = v_P
-dict_vel_used = dict_vel[0]
+vel_used = v_S
+dict_vel_used = dict_vel[1]
 
 '''
 3 choses a changer pour passer de P a S et inversement
@@ -351,7 +349,8 @@ for ista in range(len(list_file_used)):
 print('     stacks envelop')
 
 os.chdir(path_data)
-stack = np.zeros((l_fault, w_fault, 10000))
+length_t = int(10*st[0].stats.sampling_rate)
+stack = np.zeros((l_fault, w_fault, length_t))
 
 st = read(list_file_used[0])
 #tstart_ref = st[0].stats.starttime + st[0].stats.sac.t0 - 15
@@ -383,8 +382,8 @@ for station in list_file_used:
 
     for ixf in range(l_fault):
         for iyf in range(w_fault):
-            for it in range(len(t)):
-                tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate
+            for it in range(length_t):
+                tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate + 10.
                 if tshift > 0 and tshift < t[-1]:
                     stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
@@ -394,15 +393,15 @@ print('     figures bp projection 3d')
 os.chdir(path_bp_env)
 
 coordmax = np.argmax(stack[:, :, :])
-xmax = coordmax//(10000*w_fault)
-ymax = (coordmax - xmax*10000*w_fault)//10000
-tmax = coordmax - xmax*10000*w_fault - ymax*10000
+xmax = coordmax//(length_t*w_fault)
+ymax = (coordmax - xmax*length_t*w_fault)//length_t
+tmax = coordmax - xmax*length_t*w_fault - ymax*length_t
 
 print(xmax, ymax, tmax)
 
 xmesh = np.arange(0, l_fault, 1)
 ymesh = np.arange(0, w_fault, 1)
-tmesh = np.arange(0, 10000)/st[0].stats.sampling_rate
+tmesh = np.arange(0, length_t)/st[0].stats.sampling_rate
 
 Xt, Yt = np.meshgrid(xmesh, ymesh)
 Xy, Ty = np.meshgrid(xmesh, tmesh)
@@ -424,12 +423,23 @@ ax_3d.set_zlabel('t (s)')
 ax_3d.set_zlim3d(0, 10)
 fig_3d.savefig('plot_proj_3d.pdf')
 
+fig_3d_2 = plt.figure()
+ax_3d_2 = fig_3d_2.add_subplot(111, projection = '3d')
+ax_3d_2.contour(Xt, Yt, np.transpose(stack[:, :, tmax]), 10, zdir = 'z', offset = tmax/st[0].stats.sampling_rate, cmap = 'jet')
+ax_3d_2.contour(stack[xmax, :, :], Yx, Tx, 10, zdir = 'x', offset = xmax, cmap = 'jet')
+ax_3d_2.contour(Xy, np.transpose(stack[:, ymax, :]), Ty, 10, zdir = 'y', offset = ymax, cmap = 'jet')
+ax_3d_2.set_xlabel('X (km)')
+ax_3d_2.set_ylabel('Y (km)')
+ax_3d_2.set_zlabel('t (s)')
+ax_3d_2.set_zlim3d(0, 10)
+fig_3d_2.savefig('plot_proj_3d_intersect.pdf')
+
 #plots
 print('     figures bp envelop')
 
 os.chdir(path_bp_env)
 
-for ij in range(700):
+for ij in range(int(length_t/5)):
     m = 5*ij
     fig_bp, ax_bp = plt.subplots(1, 1)
     ax_bp.set_xlabel('x')
