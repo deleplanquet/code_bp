@@ -118,12 +118,23 @@ def gauss(x_data, H, mu):
 print('     recuperation position stations')
 
 dossier_seisme = sys.argv[1]
+hyp_ondes = sys.argv[2]
+select_station = sys.argv[3]
+
 #dossier_seisme = dossier_seisme[0:-1]
-print('     ', dossier_seisme)
+print('     ', dossier_seisme, hyp_ondes, select_station)
 
 #path = '/localstorage/deleplanque'
 path = '/Users/deleplanque/Documents'
-path_data = path + '/Data/Kumamoto_env_selectS/' + dossier_seisme
+if select_station == 'P':
+    path_data = path + '/Data/Kumamoto_env_selectP/' + dossier_seisme
+elif select_station == 'S':
+    path_data = path + '/Data/Kumamoto_env_selectS/' + dossier_seisme
+elif select_station == 'all':
+    path_data = path + '/Data/Kumamoto_env/' + dossier_seisme
+
+print(path_data)
+
 path_results = path + '/Results/Kumamoto/' + dossier_seisme
 path_vel = path + '/Results/Kumamoto/Velocity'
 
@@ -162,8 +173,14 @@ R_Earth = 6400
 v_P = dict_vel[0]['fit']
 v_S = dict_vel[1]['fit']
 
-vel_used = v_S
-dict_vel_used = dict_vel[1]
+if hyp_ondes == 'P':
+    vel_used = v_P
+    dict_vel_used = dict_vel[0]
+elif hyp_ondes == 'S':
+    vel_used = v_S
+    dict_vel_used = dict_vel[1]
+
+print(vel_used)
 
 '''
 3 choses a changer pour passer de P a S et inversement
@@ -383,7 +400,7 @@ for station in list_file_used:
     for ixf in range(l_fault):
         for iyf in range(w_fault):
             for it in range(length_t):
-                tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate + 10.
+                tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate# + 10.
                 if tshift > 0 and tshift < t[-1]:
                     stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
