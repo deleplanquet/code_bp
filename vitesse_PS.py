@@ -44,12 +44,10 @@ def norm1(vect):
         norm_v = norm_v + a*a
     return [50*a/pow(norm_v, 0.5) for a in vect]
 
-dossier = '20160416080200'
-#dossier = '20160415072000'
-#dossier = '20160414230200'
+dossier = sys.argv[1]
 
-#path = '/Users/deleplanque/Documents'
-path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
+#path = '/localstorage/deleplanque'
 path_data = path + '/Data/Kumamoto_env/' + dossier
 path_results = path + '/LaTeX/Poster_jpgu_2017'
 path_vel = path + '/Results/Kumamoto/Velocity'
@@ -74,8 +72,8 @@ for station in list_sta:
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
     tsec = st[0].stats.starttime.second
     tmicrosec = st[0].stats.starttime.microsecond
-#    t = [a + tsec + tmicrosec/1e6 for a in t]
-    t = [a + tsec - 40 + tmicrosec/1e6 if tsec > 10 else a + tsec + 20 + tmicrosec/1e6 for a in t]
+    t = [a + tsec + tmicrosec/1e6 for a in t]
+#    t = [a + tsec - 40 + tmicrosec/1e6 if tsec > 10 else a + tsec + 20 + tmicrosec/1e6 for a in t]
 
     pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
     pos_hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
