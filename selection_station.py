@@ -7,13 +7,17 @@ import numpy as np
 
 dossier = sys.argv[1]
 
-path = '/localstorage/deleplanque'
-#path = '/Users/deleplanque/Documents'
+#path = '/localstorage/deleplanque'
+path = '/Users/deleplanque/Documents'
 path_data = path + '/Data/Kumamoto_env/' + str(dossier)
-path_results = path + '/Data/Kumamoto_env_selectP/' + str(dossier)
+path_resultsP = path + '/Data/Kumamoto_env_selectP/' + str(dossier)
+path_resultsS = path + '/Data/Kumamoto_env_selectS/' + str(dossier)
 
-if os.path.isdir(path_results) == False:
-    os.makedirs(path_results)
+if os.path.isdir(path_resultsP) == False:
+    os.makedirs(path_resultsP)
+
+if os.path.isdir(path_resultsS) == False:
+    os.makedirs(path_resultsS)
 
 list_station = os.listdir(path_data)
 
@@ -35,7 +39,12 @@ for station in list_station:
     rapport_PS = math.log10(trP.max()/trS.max())
     if rapport_PS > math.log10(3):
         st = read(station)
-        os.chdir(path_results)
+        os.chdir(path_resultsP)
+        tr = Trace(st[0].data, st[0].stats)
+        tr.write(station, format='SAC')
+    if rapport_PS < math.log10(1./3):
+        st = read(station)
+        os.chdir(path_resultsS)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(station, format='SAC')
 
