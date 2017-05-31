@@ -32,14 +32,12 @@ dossier = sys.argv[1]
 path = '/Users/deleplanque/Documents'
 #path = '/localstorage/deleplanque'
 path_data = path + '/Data/Kumamoto_sac/' + str(dossier)
-path_results = path + '/Data/Kumamoto_sac_inf100km'
+path_results = path + '/Data/Kumamoto_sac_inf100km/' + str(dossier)
 
-os.chdir(path_results)
+if os.path.isdir(path_results) == False:
+    os.makedirs(path_results)
 
-if os.path.isdir(str(dossier)) == False:
-    os.makedir(str(dossier))
-
-path_results = path_results + '/' + str(dossier)
+os.chdir(path_data)
 
 list_stat = os.listdir(path_data)
 list_stat = [a for a in list_stat if ('UD' in a) == True and ('UD1' in a) == False]
@@ -50,16 +48,16 @@ dep_hyp = 8
 hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
 for station in list_stat:
-    os.chdir(ath_data)
+    os.chdir(path_data)
     print(station)
     st = read(station)
     pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
     print(dist(hypo, pos_sta))
     if dist(hypo, pos_sta) < 100:
         os.chdir(path_results)
-        print(selection)
+        print('selection')
         tr = Trace(st[0].data, st[0].stats)
-        r.write(station, format='SAC')
+        tr.write(station, format='SAC')
 
 
 
