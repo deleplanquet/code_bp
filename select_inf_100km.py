@@ -42,7 +42,10 @@ if os.path.isdir(path_results) == False:
 os.chdir(path_data)
 
 list_stat = os.listdir(path_data)
-list_stat = [a for a in list_stat if ('UD' in a) == True and ('UD1' in a) == False]
+list_stat_UD = [a for a in list_stat if ('UD' in a) == True and ('UD1' in a) == False]
+list_stat_NS = [a for a in list_stat if ('NS' in a) == True and ('NS1' in a) == False]
+list_stat_EW = [a for a in list_stat if ('EW' in a) == True and ('EW1' in a) == False]
+list_stat = list_stat_UD + list_stat_NS + list_stat_EW
 
 hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
@@ -53,10 +56,17 @@ for station in list_stat:
     pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
     print(dist(hypo, pos_sta))
     if dist(hypo, pos_sta) < 100:
+        #num_sta = list_stat_UD.index(station)
+        #stNS = read(list_stat_NS[num_sta])
+        #stEW = read(list_stat_EW[num_sta])
         os.chdir(path_results)
         print('selection')
         tr = Trace(st[0].data, st[0].stats)
+        #trNS = Trace(stNS[0].data, stNS[0].stats)
+        #trEW = Trace(stEW[0].data, stEW[0].stats)
         tr.write(station, format='SAC')
+        #trNS.write(list_stat_NS[num_sta], format='SAC')
+        #trEW.write(list_stat_EW[num_sta], format='SAC')
 
 
 
