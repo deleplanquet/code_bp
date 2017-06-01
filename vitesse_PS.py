@@ -49,8 +49,10 @@ dossier = sys.argv[1]
 path = '/Users/deleplanque/Documents'
 #path = '/localstorage/deleplanque'
 path_data = path + '/Data/Kumamoto_env/' + dossier
-path_results = path + '/LaTeX/Poster_jpgu_2017'
-path_vel = path + '/Results/Kumamoto/Velocity'
+path_results = path + '/Results/Kumamoto/' + dossier + '/Velocity'
+
+if os.path.isdir(path_results) == False:
+    os.makedirs(path_results)
 
 list_sta = os.listdir(path_data)
 list_sta = [a for a in list_sta if ('UD' in a) == True and ('UD1' in a) == False]
@@ -115,7 +117,7 @@ to_register = [vP, vS]
 
 print(poptP[0], poptS[0])
 
-os.chdir(path_vel)
+os.chdir(path_results)
 with open(dossier + '_vel', 'wb') as mon_fich:
     mon_pick = pickle.Pickler(mon_fich)
     mon_pick.dump(to_register)
@@ -132,5 +134,4 @@ ax.text(10, 115, '2016/04/16 08:02', color = 'black')
 
 ax.plot(tP, poptP[0]*tP + poptP[1], linewidth=0.2)
 ax.plot(tS, poptS[0]*tS + poptS[1], linewidth=0.2)
-os.chdir(path_results)
 fig.savefig('env_fct_dist_' + dossier + '.pdf')
