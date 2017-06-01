@@ -46,8 +46,7 @@ def norm1(vect):
 
 dossier = sys.argv[1]
 
-path = '/Users/deleplanque/Documents'
-#path = '/localstorage/deleplanque'
+path = os.getcwd()[:-6]
 path_data = path + '/Data/Kumamoto_env/' + dossier
 path_results = path + '/Results/Kumamoto/' + dossier + '/Velocity'
 
