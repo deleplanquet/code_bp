@@ -9,8 +9,7 @@ import matplotlib.pyplot as plt
 
 dossier = sys.argv[1]
 
-#path = '/localstorage/deleplanque'
-path = '/Users/deleplanque/Documents'
+path = os.getcwd()[:-6]
 path_data = path + '/Data/Kumamoto_sac_inf100km/' + str(dossier)
 path_env = path + '/Data/Kumamoto_env/'
 path_env_dossier = path_env + str(dossier)
