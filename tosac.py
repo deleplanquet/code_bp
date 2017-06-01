@@ -4,7 +4,7 @@ from obspy import read
 import os
 import obspy.io.sac
 
-path = '/Users/deleplanque/Documents'
+paht = os.getcwd()[:-6]
 path_data = path + '/Data/Kumamoto'
 path_sac = path + '/Data/Kumamoto_sac'
 os.chdir(path_sac)
