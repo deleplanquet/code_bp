@@ -28,9 +28,11 @@ def dist(vect1, vect2):
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
 dossier = sys.argv[1]
+lat_hyp = sys.argv[2]
+lon_hyp = sys.argv[3]
+dep_hyp = sys.argv[4]
 
-path = '/Users/deleplanque/Documents'
-#path = '/localstorage/deleplanque'
+path = os.getcwd()[:-6]
 path_data = path + '/Data/Kumamoto_sac/' + str(dossier)
 path_results = path + '/Data/Kumamoto_sac_inf100km/' + str(dossier)
 
@@ -42,9 +44,6 @@ os.chdir(path_data)
 list_stat = os.listdir(path_data)
 list_stat = [a for a in list_stat if ('UD' in a) == True and ('UD1' in a) == False]
 
-lat_hyp = 33.0020
-lon_hyp = 131.1998
-dep_hyp = 8
 hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
 for station in list_stat:
