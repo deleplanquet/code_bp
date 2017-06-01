@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /localstorage/deleplanque/Data/Kumamoto/
+cd ../Data/Kumamoto
 
 liste_dossiers=`ls -d */`
 
