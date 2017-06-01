@@ -28,9 +28,9 @@ def dist(vect1, vect2):
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
 dossier = sys.argv[1]
-lat_hyp = sys.argv[2]
-lon_hyp = sys.argv[3]
-dep_hyp = sys.argv[4]
+lat_hyp = float(sys.argv[2])
+lon_hyp = float(sys.argv[3])
+dep_hyp = float(sys.argv[4])
 
 path = os.getcwd()[:-6]
 path_data = path + '/Data/Kumamoto_sac/' + str(dossier)
