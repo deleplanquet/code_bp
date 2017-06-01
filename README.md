@@ -2,6 +2,8 @@
 
 Pour back projection:
 - telecharger les donnees (format ASCII)
+- selection des stations a moins de 100km de l'hypocentre avec: **pyhton3 select_inf_100km.py "nom_du_dossier" "lat_hyp" "lon_hyp" "dep_hyp"**
+   - dep_hyp en km
 - conversion en format 'SAC':
    - soit un seisme unique avec: **python3 tosac.py "nom_du_dossier"**
    - soit l'ensemble des seismes avec: **./boucle_tosac.sh** (si le dossier d'arrivee existe deja, le seisme correspondant n'est pas traite)
