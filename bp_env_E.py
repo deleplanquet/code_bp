@@ -136,7 +136,6 @@ elif select_station == 'all':
 print(path_data)
 
 path_results = path + '/Results/Kumamoto/' + dossier_seisme
-path_vel = path + '/Results/Kumamoto/Velocity'
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
@@ -146,6 +145,7 @@ path_env = path_results + '/envelop'
 path_ARF = path_results + '/ARF'
 path_bp_env = path_results + '/bp_envelop'
 path_bp_cos = path_results + '/bp_stationnaire'
+path_vel = path_results + '/Velocity'
 
 if os.path.isdir(path_map) == False:
     os.makedirs(path_map)
