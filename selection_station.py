@@ -7,8 +7,7 @@ import numpy as np
 
 dossier = sys.argv[1]
 
-#path = '/localstorage/deleplanque'
-path = '/Users/deleplanque/Documents'
+path = os.getcwd()[:-6]
 path_data = path + '/Data/Kumamoto_env/' + str(dossier)
 path_resultsP = path + '/Data/Kumamoto_env_selectP/' + str(dossier)
 path_resultsS = path + '/Data/Kumamoto_env_selectS/' + str(dossier)
