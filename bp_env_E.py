@@ -167,6 +167,26 @@ with open(dossier_seisme + '_vel', 'rb') as mon_fich:
     mon_depick = pickle.Unpickler(mon_fich)
     dict_vel = mon_depick.load()
 
+os.chdir(path + '/Data')
+with open('ref_seismes_bin', 'rb') as my_fich:
+    my_depick = pickle.Unpickler(my_fich)
+    dict_seis = my_depick.load()
+
+min_lat = None
+min_lon = None
+max_lat = None
+max_lon = None
+
+for cles in dict_seis.keys():
+    if min_lat is None or dict_seis[cles]['lat'] < min_lat:
+        min_lat = dict_seis[cles]['lat']
+    if min_lon is None or dict_seis[cles]['lon'] < min_lon:
+        min_lon = dict_seis[cles]['lon']
+    if max_lat is None or dict_seis[cles]['lat'] > max_lat:
+        max_lat = dict_seis[cles]['lat']
+    if max_lon is None or dict_seis[cles]['lon'] > max_lon:
+        max_lon = dict_seis[cles]['lon']
+
 #constantes
 R_Earth = 6400
 v_P = dict_vel[0]['fit']
@@ -180,25 +200,24 @@ elif hyp_ondes == 'S':
     dict_vel_used = dict_vel[1]
 
 print(vel_used)
-
-'''
-3 choses a changer pour passer de P a S et inversement
-- path_data
-- vel_used
-- dict_vel_used
-'''
-
 print('vP', v_P, 'vS',  v_S)
 
 #recuperation position faille
 
-strike = 234
-dip = 64
-#dip = 90
-l_fault = 40
-w_fault = 15
-lat_fault = [32.65, 32.86]
-long_fault = [130.72, 131.07]
+strike = 223.53
+#strike = 234
+dip = 0
+#dip = 64
+l_fault = 90
+#l_fault = 40
+w_fault = 57
+#w_fault = 15
+lat_fault = [min_lat - 0.2, max_lat - 0.1]
+#lat_fault = [32.65, 32.86]
+long_fault = [min_lon + 0.1, max_lon + 0.2]
+#long_fault = [130.72, 131.07]
+pas_l = 3
+pas_w = 3
 
 #map avec les stations et la faille
 print('     map avec stations et faille')
@@ -299,7 +318,7 @@ vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
 vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
 vect_dip = rotation(vect_perp_strike, dip, vect_strike)
 
-coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(vect_dip), 1., 1.)
+coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
 
 #calcul matrice tps de trajet
 print('     matrice tps de trajet')
@@ -318,8 +337,8 @@ frq_lst = [0.1, 0.2, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 ARF_complex = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), len(frq_lst)), dtype=complex)
 ARF = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), len(frq_lst)))
 
-for ixf in range(l_fault):
-    for iyf in range(w_fault):
+for ixf in range(int(l_fault/pas_l)):
+    for iyf in range(int(w_fault/pas_w)):
         for freq in range(len(frq_lst)):
             for ista in range(len(list_file_used)):
                 ARF_complex[ixf, iyf, freq] = ARF_complex[ixf, iyf, freq] + cmath.exp(2*math.pi*1j*frq_lst[freq]*(travt[ista][ixf, iyf] - travt[ista][20, 7]))
@@ -352,12 +371,12 @@ ph_cos = 0 #phase du cos en degre
 x_source = 20
 y_source = 7
 
-stack_cos = np.zeros((l_fault, w_fault, int(2*f_ech/f_cos)))
+stack_cos = np.zeros((int(l_fault/pas_l), int(w_fault/pas_w), int(2*f_ech/f_cos)))
 
 for ista in range(len(list_file_used)):
     print('     ', list_file_used[ista], str(ista + 1) + '/' + str(len(list_file_used)))
-    for ixf in range(l_fault):
-        for iyf in range(w_fault):
+    for ixf in range(int(l_fault/pas_l)):
+        for iyf in range(int(w_fault/pas_w)):
             for it in range(int(2*f_ech/f_cos)):
                 stack_cos[ixf, iyf, it] = stack_cos[ixf, iyf, it] + 1./len(list_file_used)*math.cos(d2r(ph_cos) + 2*math.pi*f_cos*(travt[ista][ixf, iyf] - travt[ista][x_source, y_source] + it/f_ech))
 
@@ -365,8 +384,8 @@ for ista in range(len(list_file_used)):
 print('     stacks envelop')
 
 os.chdir(path_data)
-length_t = int(10*st[0].stats.sampling_rate)
-stack = np.zeros((l_fault, w_fault, length_t))
+length_t = int(20*st[0].stats.sampling_rate)
+stack = np.zeros((int(l_fault/pas_l), int(w_fault/pas_w), length_t))
 
 st = read(list_file_used[0])
 #tstart_ref = st[0].stats.starttime + st[0].stats.sac.t0 - 15
@@ -382,10 +401,10 @@ for station in list_file_used:
     ista = list_file_used.index(station)
     print('     ', station, str(ista + 1), '/', len(list_file_used))
 
-    for ixf in range(l_fault):
-        for iyf in range(w_fault):
+    for ixf in range(int(l_fault/pas_l)):
+        for iyf in range(int(w_fault/pas_w)):
             for it in range(length_t):
-                tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate# + 10.
+                tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate + 10.
                 if tshift > 0 and tshift < t[-1]:
                     stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
@@ -395,14 +414,14 @@ print('     figures bp projection 3d')
 os.chdir(path_bp_env)
 
 coordmax = np.argmax(stack[:, :, :])
-xmax = coordmax//(length_t*w_fault)
-ymax = (coordmax - xmax*length_t*w_fault)//length_t
-tmax = coordmax - xmax*length_t*w_fault - ymax*length_t
+xmax = coordmax//(length_t*int(w_fault/pas_w))
+ymax = (coordmax - xmax*length_t*int(w_fault/pas_w))//length_t
+tmax = coordmax - xmax*length_t*int(w_fault/pas_w) - ymax*length_t
 
 print(xmax, ymax, tmax)
 
-xmesh = np.arange(0, l_fault, 1)
-ymesh = np.arange(0, w_fault, 1)
+xmesh = np.arange(0, l_fault/pas_l, 1)
+ymesh = np.arange(0, w_fault/pas_w, 1)
 tmesh = np.arange(0, length_t)/st[0].stats.sampling_rate
 
 Xt, Yt = np.meshgrid(xmesh, ymesh)
@@ -454,7 +473,7 @@ ttime = ttime/f_ech
 
 fig_bptr, ax_bptr = plt.subplots(1, 1)
 ax_bptr.set_xlabel('time (s)')
-for jk in range(l_fault):
+for jk in range(int(l_fault/pas_l)):
     ax_bptr.plot(ttime, stack[jk, 7, :] + jk - l_fault/2)
 ax_bptr.set_xlim(0, 20)
 fig_bptr.savefig('bp_traces.pdf')
@@ -473,7 +492,7 @@ fig_cos, ax_cos = plt.subplots(1, 1)
 ax_cos.set_xlabel('time (s)')
 ax_cos.plot(time_cos, signal_cos - l_fault)
 #ax_cos.plot(time_cos, math.cos(2*math.pi*f_cos*time_cos + d2r(ph_cos)) - l_fault)
-for jk in range(l_fault):
+for jk in range(int(l_fault/pas_l)):
     ax_cos.plot(time_cos, stack_cos[jk, 7, :] + jk - l_fault/2)
 fig_cos.savefig('bp_cos_traces.pdf')
 
