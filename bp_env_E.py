@@ -140,7 +140,6 @@ if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
 
 path_map = path_results + '/map'
-path_env = path_results + '/envelop'
 path_ARF = path_results + '/ARF'
 path_bp_env = path_results + '/bp_envelop'
 path_bp_cos = path_results + '/bp_stationnaire'
@@ -148,8 +147,6 @@ path_vel = path_results + '/Velocity'
 
 if os.path.isdir(path_map) == False:
     os.makedirs(path_map)
-if os.path.isdir(path_env) == False:
-    os.makedirs(path_env)
 if os.path.isdir(path_ARF) == False:
     os.makedirs(path_ARF)
 if os.path.isdir(path_bp_env) == False:
@@ -224,16 +221,16 @@ print('     map avec stations et faille')
 
 fig_pos_sta, ax_pos_sta = plt.subplots(1, 1)
 m = Basemap(projection='merc',
-            llcrnrlon=128,
-            llcrnrlat=30,
-            urcrnrlon=140,
-            urcrnrlat=37,
+            llcrnrlon=min_lon - 1,
+            llcrnrlat=min_lat - 0.5,
+            urcrnrlon=max_lon + 1,
+            urcrnrlat=max_lat + 0.5,
             resolution='i')
 x_fault, y_fault = m(long_fault, lat_fault)
 m.drawcoastlines(linewidth=0.2)
 m.fillcontinents('yellow')
-m.drawparallels(np.arange(30, 38, 2), labels=[1, 0, 0, 0], linewidth=0)
-m.drawmeridians(np.arange(128, 141, 2), labels=[0, 0, 0, 1], linewidth=0)
+m.drawparallels(np.arange(int(min_lat - 0.5), int(max_lat + 0.5) + 1, 0.5), labels=[1, 0, 0, 0], linewidth=0)
+m.drawmeridians(np.arange(int(min_lon - 1), int(max_lon + 1) + 1, 0.5), labels=[0, 0, 0, 1], linewidth=0)
 ax_pos_sta.plot(x_fault,
                 y_fault,
                 color='green',
@@ -271,42 +268,7 @@ ax_pos_sta.scatter(x_epi,
                    zorder=4)
 
 os.chdir(path_map)
-#fig_pos_sta.savefig('map_stations.pdf')
-
-#envelope
-print('     envelopes')
-
-#fig_env_all, ax_env_all = plt.subplots(1, 1)
-#ax_env_all.set_xlabel('time (s)')
-
-#for fichier in list_file_used:
-#    os.chdir(path_data)
-#    st = read(fichier)
-#    st = st.detrend(type='constant') #retirer la moyenne
-#    tstart = st[0].stats.starttime + st[0].stats.sac.t0 - 15
-#    tend = tstart + 50
-#    st[0].trim(tstart, tend, pad=True, fill_value=0)
-#    tr_brut = st[0]
-#    tr_filt = tr_brut.filter('bandpass', freqmin=0.2, freqmax=10, corners=4, zerophase=True)
-    #envelop = abs(hilbert(tr_filt))
-    #env_smoothed = smooth(envelop, 20)
-#    squared_tr = [a**2 for a in tr_filt]
-#    env_smoothed = smooth(squared_tr, 20)
-
-#    t = np.arange(tr_brut.stats.npts)/tr_brut.stats.sampling_rate
-#    ordo = dist(st[0].stats.sac.stla, st[0].stats.sac.stlo, 0.001*st[0].stats.sac.stel, st[0].stats.sac.evla, st[0].stats.sac.evlo, -st[0].stats.sac.evdp)
-
-#    os.chdir(path_env)
-
-#    fig_env, ax_env = plt.subplots(1, 1)
-#    ax_env.set_xlabel('time (s)')
-    #ax_env.plot(t, tr_brut, linewidth=0.2, color='black')
-#    ax_env.plot(t, norm1(env_smoothed), linewidth=1, color='red')
-#    fig_env.savefig('envelope_' + str(st[0].stats.station) + '.pdf')
-
-#    ax_env_all.plot(t, norm1(env_smoothed) + ordo, linewidth=0.2)
-
-#fig_env_all.savefig('envelope_all.pdf')
+fig_pos_sta.savefig('map_stations.pdf')
 
 #placement de la faille
 print('     localisation de la faille en volume')
