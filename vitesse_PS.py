@@ -7,6 +7,7 @@ import math
 import numpy as np
 from scipy.optimize import curve_fit
 
+#fit par une droite lineaire
 def fit_lineaire(x_data, a, b):
     y_data = np.zeros(len(x_data))
     for i in range(len(x_data)):
