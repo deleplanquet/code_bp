@@ -66,6 +66,7 @@ list_tS = []
 list_dist = []
 vP = {}
 vS = {}
+tdeb = {}
 dist_hyp = {}
 
 os.chdir(path_data)
@@ -97,6 +98,7 @@ for station in list_sta:
 
     vP[st[0].stats.station] = st[0].stats.sac.a + t[0]
     vS[st[0].stats.station] = st[0].stats.sac.t0 + t[0]
+    tdeb[st[0].stats.station] = delaistart
     dist_hyp[st[0].stats.station] = ordo
 
 poptP, pcovP = curve_fit(fit_lineaire, list_tP, list_dist)
@@ -113,7 +115,7 @@ for cles in vS.keys():
     if ('fit' in cles) == False:
     	vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[1])/vS['fit']
 
-to_register = [vP, vS]
+to_register = [vP, vS, tdeb]
 
 print(poptP[0], poptS[0])
 
