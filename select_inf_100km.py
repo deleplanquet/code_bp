@@ -1,3 +1,4 @@
+import pickle
 from obspy import read
 import sys
 import os
@@ -28,9 +29,6 @@ def dist(vect1, vect2):
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
 dossier = sys.argv[1]
-lat_hyp = float(sys.argv[2])
-lon_hyp = float(sys.argv[3])
-dep_hyp = float(sys.argv[4])
 
 path = os.getcwd()[:-6]
 path_data = path + '/Data/Kumamoto_sac/' + str(dossier)
@@ -38,6 +36,15 @@ path_results = path + '/Data/Kumamoto_sac_inf100km/' + str(dossier)
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
+
+os.chdir(path + '/Data')
+with open('ref_seismes_bin', 'rb') as my_fich:
+    my_depick = pickle.Unpickler(my_fich)
+    dict_seis = my_depick.load()
+
+lat_hyp = dict_seis[dossier]['lat']
+lon_hyp = dict_seis[dossier]['lon']
+dep_hyp = dict_seis[dossier]['dep']
 
 os.chdir(path_data)
 
