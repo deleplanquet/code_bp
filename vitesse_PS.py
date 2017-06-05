@@ -80,7 +80,9 @@ for station in list_sta:
     #tsec = st[0].stats.starttime.second
     #tmicrosec = st[0].stats.starttime.microsecond
     #t = [a + tsec + tmicrosec/1e6 for a in t]
-    delaistart = st[0].stats.starttime - tarrival + 20
+    delaistart = st[0].stats.starttime - tarrival
+    tdeb[st[0].stats.station] = delaistart
+    delaistart = delaistart + 20
     print(delaistart)
     t = [a + delaistart for a in t]
 #    t = [a + tsec - 40 + tmicrosec/1e6 if tsec > 10 else a + tsec + 20 + tmicrosec/1e6 for a in t]
@@ -98,7 +100,6 @@ for station in list_sta:
 
     vP[st[0].stats.station] = st[0].stats.sac.a + t[0]
     vS[st[0].stats.station] = st[0].stats.sac.t0 + t[0]
-    tdeb[st[0].stats.station] = delaistart
     dist_hyp[st[0].stats.station] = ordo
 
 poptP, pcovP = curve_fit(fit_lineaire, list_tP, list_dist)
