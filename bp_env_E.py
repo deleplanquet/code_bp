@@ -78,11 +78,11 @@ def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
     x_fault = np.arange(-length/2/pasx, length/2/pasx)
     y_fault = np.arange(0, width/pasy)
     grill_fault = np.zeros((len(x_fault), len(y_fault), 3))
-    for a in range(len(x_fault)):
-        for b in range(len(y_fault)):
-            grill_fault[a, b, 0] = x_cf + a*pasx*u_strike[0] + b*pasy*u_dip[0]
-            grill_fault[a, b, 1] = y_cf + a*pasx*u_strike[1] + b*pasy*u_dip[1]
-            grill_fault[a, b, 2] = z_cf + a*pasx*u_strike[2] + b*pasy*u_dip[2]
+    for a in x_fault:
+        for b in y_fault:
+            grill_fault[np.where(x_fault==a), np.where(y_fault==b), 0] = x_cf + a*pasx*u_strike[0] + b*pasy*u_dip[0]
+            grill_fault[np.where(x_fault==a), np.where(y_fault==b), 1] = y_cf + a*pasx*u_strike[1] + b*pasy*u_dip[1]
+            grill_fault[np.where(x_fault==a), np.where(y_fault==b), 2] = z_cf + a*pasx*u_strike[2] + b*pasy*u_dip[2]
     return grill_fault
 
 #calcul de la matrice des tps de trajet pour une station
@@ -113,6 +113,20 @@ def gauss(x_data, H, mu):
     for i in range(len(x_data)):
         y_data[i] = 1./(sigma*math.sqrt(2))*math.exp(-(x_data[i] - mu)*(x_data[i] - mu)/(2*sigma*sigma))
     return y_data
+
+#calcul distance et azimuth d'un point par rapport a un autre
+''' distance et azimuth de B par rapport a A -> dist_azim(A, B) '''
+def dist_azim(ptA, ptB):
+    latA = d2r(ptA[0])
+    lonA = d2r(ptA[1])
+    latB = d2r(ptB[0])
+    lonB = d2r(ptB[1])
+    dist_rad = math.acos(math.sin(latA)*math.sin(latB) + math.cos(latA)*math.cos(latB)*math.cos(lonB - lonA))
+    angle_brut = math.acos((math.sin(latB) - math.sin(latA)*math.cos(dist_rad))/(math.cos(latA)*math.sin(dist_rad)))
+    if math.sin(lonB - lonA) > 0:
+        return R_Earth*dist_rad, r2d(angle_brut)
+    else:
+        return R_Earth*dist_rad, 360 - r2d(angle_brut)
 
 #recuperation position stations
 print('     recuperation position stations')
@@ -196,6 +210,8 @@ elif hyp_ondes == 'S':
     vel_used = v_S
     dict_vel_used = dict_vel[1]
 
+dict_delai = dict_vel[2]
+
 print(vel_used)
 print('vP', v_P, 'vS',  v_S)
 
@@ -268,7 +284,7 @@ ax_pos_sta.scatter(x_epi,
                    zorder=4)
 
 os.chdir(path_map)
-fig_pos_sta.savefig('map_stations.pdf')
+#fig_pos_sta.savefig('map_stations.pdf')
 
 #placement de la faille
 print('     localisation de la faille en volume')
@@ -346,12 +362,15 @@ for ista in range(len(list_file_used)):
 print('     stacks envelop')
 
 os.chdir(path_data)
-length_t = int(20*st[0].stats.sampling_rate)
+length_t = int(10*st[0].stats.sampling_rate)
 stack = np.zeros((int(l_fault/pas_l), int(w_fault/pas_w), length_t))
 
-st = read(list_file_used[0])
+#st = read(list_file_used[0])
 #tstart_ref = st[0].stats.starttime + st[0].stats.sac.t0 - 15
-tstart_ref = st[0].stats.starttime
+tstart_ref = None
+for cles in dict_delai.keys():
+    if tstart_ref == None or tstart_ref > dict_delai[cles]:
+        tstart_ref = dict_delai[cles]
 
 for station in list_file_used:
     st = read(station)
@@ -366,7 +385,8 @@ for station in list_file_used:
     for ixf in range(int(l_fault/pas_l)):
         for iyf in range(int(w_fault/pas_w)):
             for it in range(length_t):
-                tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate + 10.
+                #tshift = tstart_ref - tstart + travt[ista][ixf, iyf] - travt[0][0, 0] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate + 10.
+                tshift = tstart_ref - dict_delai[st[0].stats.station] + travt[ista][ixf, iyf] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate
                 if tshift > 0 and tshift < t[-1]:
                     stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
 
@@ -421,13 +441,24 @@ fig_3d_2.savefig('plot_proj_3d_intersect.pdf')
 print('     figures bp envelop')
 
 os.chdir(path_bp_env)
+xxx = np.arange(0, l_fault, pas_l)
+yyy = np.arange(0, w_fault, pas_w)
+XXX, YYY = np.meshgrid(xxx, yyy)
+
+dist_hyp, az_hyp = dist_azim([lat_fault[0], long_fault[0]], [dict_seis[dossier_seisme]['lat'], dict_seis[dossier_seisme]['lon']])
+print([lat_fault[0], long_fault[0]], [dict_seis[dossier_seisme]['lat'], dict_seis[dossier_seisme]['lon']], dist_hyp, az_hyp)
 
 for ij in range(int(length_t/5)):
     m = 5*ij
     fig_bp, ax_bp = plt.subplots(1, 1)
     ax_bp.set_xlabel('x')
     ax_bp.set_ylabel('y')
-    cax_bp = ax_bp.imshow(ndimage.rotate(stack[:, :, m], strike), cmap='jet', vmin=stack[:, :, :].min(), vmax=stack[:, :, :].max(), interpolation='none', origin='lower')
+    #cax_bp = ax_bp.imshow(ndimage.rotate(stack[:, :, m], strike), cmap='jet', vmin=stack[:, :, :].min(), vmax=stack[:, :, :].max(), interpolation='none', origin='lower')
+    cax_bp = ax_bp.imshow(stack[:, :, m], cmap='jet', vmin=stack[:, :, :].min(), vmax=stack[:, :, :].max(), interpolation='none', origin='lower')
+    #cax_bp = ax_bp.imshow([XXX, YYY, stack[:, :, m]], cmap='jet', vmin=stack[:, :, :].min(), vmax=stack[:, :, :].max(), interpolation='none', origin='lower')
+    im_hyp = ax_bp.scatter(- dist_hyp*math.sin(d2r(strike - az_hyp))/pas_w, (l_fault + dist_hyp*math.cos(d2r(strike - az_hyp)))/pas_l, s = 25, marker = '*', c = 'white')
+    #im_hyp = ax_bp.plot(- 24.1449*math.sin(d2r(strike - 337.12))/pas_w, (l_fault + 24.1449*math.cos(d2r(strike - 337.12)))/pas_l, marker = '*', color = 'white')
+    #ax_bp.imshow(ndimage.rotate(im_hyp, strike))
     fig_bp.savefig('bp_' + str(m) + '_' + str(f_ech) + 'Hz.png')
 
 ttime = np.arange(0, len(stack[0, 0, :]))
