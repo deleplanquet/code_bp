@@ -33,3 +33,26 @@
 - from _/Data/Kumamoto_env_select*/nom_du_dossier_ to _/Results/Kumamoto/nom_du_dossier_
    - hypothese_ondes: 'P' ou 'S'
    - stations_selectionnees: 'P', 'S' ou 'all'
+
+## Arborescence
+
+Dossier_parent
+- Codes
+- Data
+   - Kumamoto
+      - dossiers
+   - Kumamoto_sac
+      - dossiers
+   - Kumamoto_sac_inf100km
+      - dossiers
+   - Kumamoto_vel
+      - dossiers
+   - Kumamoto_env
+      - dossiers
+   - Kumamoto_env_selectP
+      - dossiers
+   - Kumamoto_env_selectS
+      - dossiers
+- Results
+   - Kumamoto
+      - dossiers
