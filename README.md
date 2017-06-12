@@ -7,11 +7,11 @@
 
 `python3 tosac.py 'nom_du_dossier'` 
 - from _/Data/Kumamoto/nom_du_dossier/nom_du_dossier.k*_
-- to _/Data/Kumamoto_sac/nom_du_dossier_
+- to _/Data/Kumamoto_sac/nom_du_dossier_sac_
 3. selection des stations a mpoins de 100km de l'hypocentre
 
 `python3 select_inf_100km.py 'nom_du_dossier'`
-- from _/Data/Kumamoto_sac/nom_du_dossier_
+- from _/Data/Kumamoto_sac/nom_du_dossier_sac_
 - to _/Data/Kumamoto_sac_inf100km/nom_du_dossier_
 4. faire les pointes des arrivees P et S dans _SAC_ (a la main)
 5. transformer les accelerations en vitesses et trimer entre 5sec avant le pointe P et 45sec apres (total 50sec)
