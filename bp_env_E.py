@@ -200,8 +200,10 @@ for cles in dict_seis.keys():
 
 #constantes
 R_Earth = 6400
-v_P = dict_vel[0]['fit']
-v_S = dict_vel[1]['fit']
+#v_P = dict_vel[0]['fit']
+#v_S = dict_vel[1]['fit']
+v_P = 5.8
+v_S = 3.4
 
 if hyp_ondes == 'P':
     vel_used = v_P
