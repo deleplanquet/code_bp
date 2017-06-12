@@ -19,6 +19,7 @@ if os.path.isdir(path_resultsS) == False:
     os.makedirs(path_resultsS)
 
 list_station = os.listdir(path_data)
+list_station = [a for a in list_station if ('DS_Store' in a) == False]
 
 for station in list_station:
     os.chdir(path_data)
@@ -31,7 +32,7 @@ for station in list_station:
         stP[0].trim(arrival_P, arrival_P + delai_PS - 0.1)
     else:
         stP[0].trim(arrival_P, arrival_P + 5)
-    stS[0].trim(arrival_S, arrival_S + 5)
+    stS[0].trim(arrival_S, stS[0].stats.endtime)
     trP = stP[0]
     trS = stS[0]
     #rapport_PS.append(math.log10(trP.max()/trS.max()))
