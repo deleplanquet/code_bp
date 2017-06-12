@@ -62,9 +62,16 @@ for station in list_fich:
     st.detrend(type = 'constant')
     tstart = st[0].stats.starttime + st[0].stats.sac.a - 5
     tend = tstart + 50
+    tr = st[0].trim(tstart, tend, pad=True, fill_value=0)
+    st[0].stats.sac.nzyear = st[0].stats.starttime.year
+    st[0].stats.sac.nzjday = st[0].stats.starttime.julday
+    st[0].stats.sac.nzhour = st[0].stats.starttime.hour
+    st[0].stats.sac.nzmin = st[0].stats.starttime.minute
+    st[0].stats.sac.nzsec = st[0].stats.starttime.second
+    st[0].stats.sac.nzmsec = st[0].stats.starttime.microsecond
+    #st[0].stats.starttime = tstart
     st[0].stats.sac.t0 = st[0].stats.sac.t0 - st[0].stats.sac.a + 5
     st[0].stats.sac.a = 5
-    tr = st[0].trim(tstart, tend, pad=True, fill_value=0)
     t = np.arange(tr.stats.npts)/tr.stats.sampling_rate
     ordo = dist(st[0].stats.sac.stla, st[0].stats.sac.stlo, 0.001*st[0].stats.sac.stel, dict_doss['lat'], dict_doss['lon'], -dict_doss['dep'])
 
@@ -86,7 +93,7 @@ for station in list_fich:
 
     os.chdir(path_results)
     #fig.savefig(tr.stats.station + '.pdf')
-    tr.write('vel_' + station, format = 'SAC')
+    tr_vel.write('vel_' + station, format = 'SAC')
 
 
 
