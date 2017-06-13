@@ -138,17 +138,19 @@ select_station = sys.argv[3]
 #dossier_seisme = dossier_seisme[0:-1]
 print('     ', dossier_seisme, hyp_ondes, select_station)
 
-path = os.getcwd()[:-6]
+path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier_seisme
 if select_station == 'P':
-    path_data = path + '/Data/Kumamoto_env_selectP/' + dossier_seisme
+    path_data = path + '/' + dossier_seisme + '_vel_env_selectP'
+    path_results = path + '/' + dossier_seisme + '_vel_env_selectP_bp'
 elif select_station == 'S':
-    path_data = path + '/Data/Kumamoto_env_selectS/' + dossier_seisme
+    path_data = path + '/' + dossier_seisme + '_vel_env_selectS'
+    path_results = path + '/' + dossier_seisme + '_vel_env_selectS_bp'
 elif select_station == 'all':
-    path_data = path + '/Data/Kumamoto_env/' + dossier_seisme
+    path_data = path + '/' + dossier_seisme + '_vel_env'
+    path_results = path + '/' + dossier_seisme + '_vel_env_selectall_bp'
 
 print(path_data)
-
-path_results = path + '/Results/Kumamoto/' + dossier_seisme
+print(path_results)
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
@@ -157,7 +159,6 @@ path_map = path_results + '/map'
 path_ARF = path_results + '/ARF'
 path_bp_env = path_results + '/bp_envelop'
 path_bp_cos = path_results + '/bp_stationnaire'
-path_vel = path_results + '/Velocity'
 
 if os.path.isdir(path_map) == False:
     os.makedirs(path_map)
@@ -173,7 +174,7 @@ list_fichier = [a for a in list_fichier if (('UD' in a) == True and ('UD1' in a)
 
 list_file_used = list_fichier
 
-os.chdir(path_vel)
+os.chdir(path)
 with open(dossier_seisme + '_vel', 'rb') as mon_fich:
     mon_depick = pickle.Unpickler(mon_fich)
     dict_vel = mon_depick.load()

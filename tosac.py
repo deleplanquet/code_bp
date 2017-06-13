@@ -6,11 +6,11 @@ import obspy.io.sac
 
 dossier = sys.argv[1]
 
-path = os.getcwd()[:-6]
-path_data = path + '/Data/Kumamoto/' + dossier
+path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier
+path_data = path + '/' + dossier + '_brut'
 path_kik = path_data + '/' + dossier + '.kik'
 path_knt = path_data + '/' + dossier + '.knt'
-path_sac = path + '/Data/Kumamoto_sac/' + dossier
+path_sac = path + '/' + dossier + '_sac'
 
 if os.path.isdir(path_sac) == False:
     os.makedirs(path_sac)

@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 
 dossier = sys.argv[1]
 
-path = os.getcwd()[:-6]
-path_data = path + '/Data/Kumamoto_vel/' + str(dossier)
-path_env = path + '/Data/Kumamoto_env/' + str(dossier)
+path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier
+path_data = path + '/' + dossier + '_vel/'
+path_env = path + '/' + dossier + 'vel_env/'
 
 if os.path.isdir(path_env) == False:
     os.makedirs(path_env)

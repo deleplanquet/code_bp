@@ -35,9 +35,9 @@ def norm1(vect):
 
 dossier = sys.argv[1]
 
-path = os.getcwd()[:-6]
-path_data = path + '/Data/Kumamoto_sac_inf100km/' + dossier
-path_results = path + '/Data/Kumamoto_vel/' + dossier
+path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier
+path_data = path + '/' + dossier + '_sac_inf100km/'
+path_results = path + '/' + dossier + '_vel/'
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)

@@ -7,10 +7,10 @@ import numpy as np
 
 dossier = sys.argv[1]
 
-path = os.getcwd()[:-6]
-path_data = path + '/Data/Kumamoto_env/' + str(dossier)
-path_resultsP = path + '/Data/Kumamoto_env_selectP/' + str(dossier)
-path_resultsS = path + '/Data/Kumamoto_env_selectS/' + str(dossier)
+path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier
+path_data = path + '/' + dossier + '_vel_env/'
+path_resultsP = path + '/' + dossier + '_vel_env_selectP/'
+path_resultsS = path + '/' + dossier + '_vel_env_selectS/'
 
 if os.path.isdir(path_resultsP) == False:
     os.makedirs(path_resultsP)

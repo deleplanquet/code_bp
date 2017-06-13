@@ -30,9 +30,9 @@ def dist(vect1, vect2):
 
 dossier = sys.argv[1]
 
-path = os.getcwd()[:-6]
-path_data = path + '/Data/Kumamoto_sac/' + str(dossier)
-path_results = path + '/Data/Kumamoto_sac_inf100km/' + str(dossier)
+path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier
+path_data = path + '/' + dossier + '_sac'
+path_results = path + '/' + dossier + '_sac_inf100km'
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
