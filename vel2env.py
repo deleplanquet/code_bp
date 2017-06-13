@@ -11,7 +11,7 @@ dossier = sys.argv[1]
 
 path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_vel/'
-path_env = path + '/' + dossier + 'vel_env/'
+path_env = path + '/' + dossier + '_vel_env/'
 
 if os.path.isdir(path_env) == False:
     os.makedirs(path_env)
