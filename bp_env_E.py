@@ -138,7 +138,8 @@ select_station = sys.argv[3]
 #dossier_seisme = dossier_seisme[0:-1]
 print('     ', dossier_seisme, hyp_ondes, select_station)
 
-path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier_seisme
+path_origin = os.getcwd()[:-6]
+path = path_origin + '/Data/Kumamoto/' + dossier_seisme
 if select_station == 'P':
     path_data = path + '/' + dossier_seisme + '_vel_env_selectP'
     path_results = path + '/' + dossier_seisme + '_vel_env_selectP_bp'
@@ -175,11 +176,11 @@ list_fichier = [a for a in list_fichier if (('UD' in a) == True and ('UD1' in a)
 list_file_used = list_fichier
 
 os.chdir(path)
-with open(dossier_seisme + '_vel', 'rb') as mon_fich:
+with open(dossier_seisme + '_veldata', 'rb') as mon_fich:
     mon_depick = pickle.Unpickler(mon_fich)
     dict_vel = mon_depick.load()
 
-os.chdir(path + '/Data')
+os.chdir(path_origin + '/Data')
 with open('ref_seismes_bin', 'rb') as my_fich:
     my_depick = pickle.Unpickler(my_fich)
     dict_seis = my_depick.load()
@@ -220,20 +221,26 @@ print('vP', v_P, 'vS',  v_S)
 
 #recuperation position faille
 
-strike = 223.53
+#strike = 223.53
 #strike = 234
-dip = 0
+strike = 224
+#dip = 0
 #dip = 64
-l_fault = 90
+dip = 65
+#l_fault = 90
 #l_fault = 40
-w_fault = 57
+l_fault = 56
+#w_fault = 57
 #w_fault = 15
-lat_fault = [min_lat - 0.2, max_lat - 0.1]
+w_fault = 24
+#lat_fault = [min_lat - 0.2, max_lat - 0.1]
 #lat_fault = [32.65, 32.86]
-long_fault = [min_lon + 0.1, max_lon + 0.2]
+lat_fault = [32.6477, 32.9858]
+#long_fault = [min_lon + 0.1, max_lon + 0.2]
 #long_fault = [130.72, 131.07]
-pas_l = 3
-pas_w = 3
+long_fault = [130.7071, 131.1216]
+pas_l = 2
+pas_w = 2
 
 #map avec les stations et la faille
 print('     map avec stations et faille')
@@ -365,7 +372,7 @@ for ista in range(len(list_file_used)):
 print('     stacks envelop')
 
 os.chdir(path_data)
-length_t = int(10*st[0].stats.sampling_rate)
+length_t = int(30*st[0].stats.sampling_rate)
 stack = np.zeros((int(l_fault/pas_l), int(w_fault/pas_w), length_t))
 
 #st = read(list_file_used[0])
@@ -392,6 +399,11 @@ for station in list_file_used:
                 tshift = tstart_ref - dict_delai[st[0].stats.station] + travt[ista][ixf, iyf] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate
                 if tshift > 0 and tshift < t[-1]:
                     stack[ixf, iyf, it] = stack[ixf, iyf, it] + 1./len(list_file_used)*f(tshift)
+
+os.chdir(path)
+with open('stack_vel_' + select_station, 'wb') as mon_fich_stack:
+    mon_pick_stack = pickle.Pickler(mon_fich_stack)
+    mon_pick_stack.dump(stack)
 
 #plots projection 3d
 print('     figures bp projection 3d')
@@ -462,7 +474,7 @@ for ij in range(int(length_t/5)):
     im_hyp = ax_bp.scatter(- dist_hyp*math.sin(d2r(strike - az_hyp))/pas_w, (l_fault + dist_hyp*math.cos(d2r(strike - az_hyp)))/pas_l, s = 25, marker = '*', c = 'white')
     #im_hyp = ax_bp.plot(- 24.1449*math.sin(d2r(strike - 337.12))/pas_w, (l_fault + 24.1449*math.cos(d2r(strike - 337.12)))/pas_l, marker = '*', color = 'white')
     #ax_bp.imshow(ndimage.rotate(im_hyp, strike))
-    fig_bp.savefig('bp_' + str(m) + '_' + str(f_ech) + 'Hz.png')
+    fig_bp.savefig(dossier_seisme + '_vel_bp_' + str(m) + '_' + str(f_ech) + 'Hz.png')
 
 ttime = np.arange(0, len(stack[0, 0, :]))
 ttime = ttime/f_ech
