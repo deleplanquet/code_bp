@@ -53,25 +53,24 @@
 
 # Arborescence
 
-Dossier_parent
-- Codes
-- Data
+Codes
+Data
    - Kumamoto
       - dossiers
-         -- brut
-	 -- sac
-	 -- sac_inf100km
-	 -- vel
-	 -- vel_env
-	 -- vel_env_selectP
-	 -- vel_env_selectS
-	 -- vel_env_selectP_bp
-	 -- vel_env_selectS_bp
-	 -- acc_env
-	 -- acc_env_selectP
-	 -- acc_env_selectS
-	 -- acc_env_selectP_bp
-	 -- acc_env_selectS-bp
+         - brut
+	 - sac
+	 - sac_inf100km
+	 - vel
+	 - vel_env
+	 - vel_env_selectP
+	 - vel_env_selectS
+	 - vel_env_selectP_bp
+	 - vel_env_selectS_bp
+	 - acc_env
+	 - acc_env_selectP
+	 - acc_env_selectS
+	 - acc_env_selectP_bp
+	 - acc_env_selectS-bp
 
 
 
