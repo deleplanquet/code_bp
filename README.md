@@ -1,3 +1,15 @@
+# Plan
+
+1. telecharger les donnees (format ASCII)
+2. conversion au format 'SAC'
+3. selection des stations a moins de 100km de l'hypocentre
+4. faire les pointes des arrivees P et S dans _SAC_ (a la main)
+5. transformer les accelerations en vitesses et trimer entre 5sec avant le pointe P et 45sec apres (total 50sec)
+6. obtenir les envelopes
+7. estimation des vitesses P et S et creation d'un dictionnaire contenant le delai de starttime pour chaque station
+8. selection des stations pour la bp
+9. bp des stations selectionnees
+
 # Back projection process
 
 ## telecharger les donnees (format ASCII)
