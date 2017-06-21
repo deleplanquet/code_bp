@@ -121,7 +121,7 @@ to_register = [vP, vS, tdeb]
 print(poptP[0], poptS[0])
 
 os.chdir(path_results)
-with open(dossier + '_vel', 'wb') as mon_fich:
+with open(dossier + '_veldata', 'wb') as mon_fich:
     mon_pick = pickle.Pickler(mon_fich)
     mon_pick.dump(to_register)
 
