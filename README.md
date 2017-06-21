@@ -11,7 +11,7 @@
 - from _/Data/Kumamoto/nom_du_dossier/nom_du_dossier_brut/nom_du_dossier.k*_
 - to _/Data/Kumamoto/nom_du_dossier/nom_du_dossier_sac_
 
-## selection des stations a mpoins de 100km de l'hypocentre
+## selection des stations a moins de 100km de l'hypocentre
 
 `python3 select_inf_100km.py 'nom_du_dossier'`
 - from _/Data/Kumamoto/nom_du_dossier/nom_du_dossier_sac_
@@ -47,7 +47,7 @@
 
 `python3 bp_env_E.py 'nom_du_dossier' 'hypothese_ondes' 'stations_selectionnees'`
 - from _/Data/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_select*_
-- to _/Data/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_select*_bp_
+- to _/Data/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_select* _bp_
    - hypothese_ondes: 'P' ou 'S'
    - stations_selectionnees: 'P', 'S' ou 'all'
 
@@ -58,17 +58,17 @@ Dossier_parent
 - Data
    - Kumamoto
       - dossiers
-      	- brut
-	- sac
-	- sac_inf100km
-	- vel
-	- vel_env
-	- vel_env_selectP
-	- vel_env_selectS
-	- vel_env_selectP_bp
-	- vel_env_selectS_bp
-	- acc_env
-	- acc_env_selectP
-	- acc_env_selectS
-	- acc_env_selectP_bp
-	- acc_env_selectS-bp
+         - brut
+	 - sac
+	 - sac_inf100km
+	 - vel
+	 - vel_env
+	 - vel_env_selectP
+	 - vel_env_selectS
+	 - vel_env_selectP_bp
+	 - vel_env_selectS_bp
+	 - acc_env
+	 - acc_env_selectP
+	 - acc_env_selectS
+	 - acc_env_selectP_bp
+	 - acc_env_selectS-bp
