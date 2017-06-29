@@ -8,7 +8,6 @@ from collections import OrderedDict
 
 path = os.getcwd()[:-6]
 path_data = path + '/Data'
-path_results = path + '/Results'
 
 os.chdir(path_data)
 with open('ref_seismes_bin', 'rb') as my_fich:
@@ -100,7 +99,6 @@ for cpt in range(len(my_dict)):
     ax.text(xtxti, ytxti, my_dict[cpt_cle]['Mw'], fontsize=7, ha = 'center', va = 'center', zorder = 5)
     ax.text(xtxte, ytxte, cpt_cle[6:8] + ' ' + cpt_cle[8:10] + ':' + cpt_cle[10:12], fontsize=7, ha = 'center', va = 'center', zorder = 5)
 
-os.chdir(path_results)
 fig.savefig('carte_seismes.pdf')
 
 
