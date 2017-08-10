@@ -10,6 +10,9 @@ path = os.getcwd()[:-6] + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_sac_inf100km'
 path_results = path + '/' + dossier + '_3comp'
 
+if os.path.iisdir(path_results) == False:
+	os.makedirs(path_results)
+
 list_fich = os.listdir(path_data)
 list_fich_x = [a for a in list_fich if ('EW' in a) == True and ('EW1' in a) == False]
 list_fich_y = [a for a in list_fich if ('NS' in a) == True and ('NS1' in a) == False]
