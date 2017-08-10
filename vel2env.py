@@ -54,7 +54,7 @@ for station in list_fich:
     tr05 = Trace(tr05, st[0].stats)
     tr1 = Trace(tr1, st[0].stats)
     tr2 = Trace(tr2, st[0].stats)
-    tr4 = Trace(tr5, st[0].stats)
+    tr4 = Trace(tr4, st[0].stats)
     os.chdir(path_env_02)
     tr02.write('02_05Hz_' + station, format = 'SAC')
     os.chdir(path_env_05)
