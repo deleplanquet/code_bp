@@ -22,15 +22,16 @@ lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_10']
 for freq in range(5):
     frq = {}
     for station in list_fich:
-	lst = []
-	os.chdir(path_data1)
-	st = read(station)
-	for i in range(int(50./t_wd)):
-	    for j in range(int(st[0].stats.sampling_rate*t_wd)):
-		clcl = clcl + st.data[int(i*t_wd*st[0].stats.sampling_rate) + j]/st[0].stats.sampling_rate
-	    lst.append(clcl)
-	frq[st.stats.station] = lst
-    ampli{lst_frq[freq]} = frq
+    	lst = []
+    	clcl = 0
+    	os.chdir(path_data1)
+    	st = read(station)
+    	for i in range(int(50./t_wd)):
+    	    for j in range(int(st[0].stats.sampling_rate*t_wd)):
+    	    	clcl = clcl + st[0].data[int(i*t_wd*st[0].stats.sampling_rate) + j]/st[0].stats.sampling_rate
+    	    lst.append(clcl)
+    	frq[st[0].stats.station] = lst
+    ampli[lst_frq[freq]] = frq
 
 with open('mat_vel_ampli_bin', 'wb') as ma_sortie:
     mon_pick = pickle.Pickler(ma_sortie)
