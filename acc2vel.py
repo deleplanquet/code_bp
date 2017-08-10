@@ -29,14 +29,15 @@ def norm1(vect):
 
 dossier = sys.argv[1]
 
-path = os.getcwd()[:-6] + '/Kumamoto/' + dossier
+path_origin = os.getcwd()[:-6]
+path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_3comp/'
 path_results = path + '/' + dossier + '_vel/'
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
 
-os.chdir(path + '/Data')
+os.chdir(path_origin + '/Data')
 with open('ref_seismes_bin', 'rb') as my_fich:
     my_depick = pickle.Unpickler(my_fich)
     dict_seis = my_depick.load()
@@ -44,7 +45,6 @@ with open('ref_seismes_bin', 'rb') as my_fich:
 dict_doss = dict_seis[dossier]
 
 list_fich = os.listdir(path_data)
-list_fich = [a for a in list_fich if ('UD' in a) == True and ('UD1' in a) == False]
 
 for station in list_fich:
     #fig, ax = plt.subplots(1, 1)
