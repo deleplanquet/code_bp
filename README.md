@@ -48,7 +48,11 @@
 
 `python3 vel2env.py 'nom_du_dossier'`
 - from _/Kumamoto/nom_du_dossier/nom_du_dossier_vel_
-- to _/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_02_05Hz_, to _/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_05_1Hz_, to _/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_1_2Hz_, _/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_2_4Hz_ et _/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_4_10Hz_
+- to _/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_02_05Hz_
+	_/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_05_1Hz_
+	_/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_1_2Hz_
+	_/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_2_4Hz_
+	_/Kumamoto/nom_du_dossier/nom_du_dossier_vel_env_4_10Hz_
 
 ## estimation des vitesses P et S et creation d'un dictionnaire contenant le delai de starttime pour chaque station
 
