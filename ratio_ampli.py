@@ -18,13 +18,14 @@ list_fich = os.listdir(path_data1)
 t_wd = 1
 ampli = {}
 lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_10']
+lst_path = [path_data1, path_data2, path_data3, path_data4, path_data5]
 
 for freq in range(5):
+    os.chdir(lst_path[freq])
     frq = {}
     for station in list_fich:
     	lst = []
     	clcl = 0
-    	os.chdir(path_data1)
     	st = read(station)
     	for i in range(int(50./t_wd)):
     	    for j in range(int(st[0].stats.sampling_rate*t_wd)):
@@ -33,6 +34,7 @@ for freq in range(5):
     	frq[st[0].stats.station] = lst
     ampli[lst_frq[freq]] = frq
 
+os.chdir(path)
 with open('mat_vel_ampli_bin', 'wb') as ma_sortie:
     mon_pick = pickle.Pickler(ma_sortie)
     mon_pick.dump(ampli)
