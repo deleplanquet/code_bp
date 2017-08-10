@@ -13,8 +13,6 @@ path_data3 = path + '/' + dossier + '_vel_env_1_2Hz'
 path_data4 = path + '/' + dossier + '_vel_env_2_4Hz'
 path_data5 = path + '/' + dossier + '_vel_env_4_10Hz'
 
-list_fich = os.listdir(path_data1)
-
 t_wd = 1
 ampli = {}
 lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_10']
@@ -22,6 +20,7 @@ lst_path = [path_data1, path_data2, path_data3, path_data4, path_data5]
 
 for freq in range(5):
     os.chdir(lst_path[freq])
+    list_fich = os.listdir(lst_path[freq])
     frq = {}
     for station in list_fich:
     	lst = []
