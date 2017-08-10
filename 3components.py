@@ -29,6 +29,9 @@ for station in list_fich_x:
 	sty = read(list_fich_y[list_fich_x.index(station)])
 	stz = read(list_fich_z[list_fich_x.index(station)])
 	if stx[0].stats.station == sty[0].stats.station and stx[0].stats.station == stz[0].stats.station:
+		stx.detrend(type = 'constant')
+		sty.detrend(type = 'constant')
+		stz.detrend(type = 'constant')
 		tr_x = stx[0]
 		tr_y = sty[0]
 		tr_z = stz[0]
@@ -37,7 +40,7 @@ for station in list_fich_x:
 		tr = np.asarray(tr)
 		os.chdir(path_results)
 		tr = Trace(tr, stz[0].stats)
-		tr.write(station, format = 'SAC')
+		tr.write(stz[0].stats.station + '_' + dossier + '.sac', format = 'SAC')
 	else:
 		print('     ', stx[0].stats.station, sty[0].stats.station, stz[0].stats.station)
 
