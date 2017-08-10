@@ -23,20 +23,14 @@ def geo2cart(r, lat, lon):
     zz = r*math.sin(rlat)
     return [xx, yy, zz]
 
-#distance entre deux points, coordonnees cartesiennes
-def dist(la1, lo1, el1, la2, lo2, el2):
-    x1, y1, z1 = geo2cart(R_Earth + el1, la1, lo1)
-    x2, y2, z2 = geo2cart(R_Earth + el2, la2, lo2)
-    return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
-
 #normalisation
 def norm1(vect):
     return [5*a/vect.max() for a in vect]
 
 dossier = sys.argv[1]
 
-path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_sac_inf100km/'
+path = os.getcwd()[:-6] + '/Kumamoto/' + dossier
+path_data = path + '/' + dossier + '_3comp/'
 path_results = path + '/' + dossier + '_vel/'
 
 if os.path.isdir(path_results) == False:
@@ -73,7 +67,6 @@ for station in list_fich:
     st[0].stats.sac.t0 = st[0].stats.sac.t0 - st[0].stats.sac.a + 5
     st[0].stats.sac.a = 5
     t = np.arange(tr.stats.npts)/tr.stats.sampling_rate
-    ordo = dist(st[0].stats.sac.stla, st[0].stats.sac.stlo, 0.001*st[0].stats.sac.stel, dict_doss['lat'], dict_doss['lon'], -dict_doss['dep'])
 
     #ax.plot(t, norm1(tr.data), linewidth = 0.2, color = 'black')
     #ax.plot(norm1(np.fft.fft(tr)[range(int(tr.stats.npts/2))]), linewidth = 0.2, color = 'black')
