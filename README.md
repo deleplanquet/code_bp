@@ -41,8 +41,8 @@
 ## transformer les accelerations en vitesses et trimer entre 5sec avant le pointe P et 45sec apres (total 50sec)
 
 `python3 acc2vel.py 'nom_du_dossier'` 
-- from _/Data/Kumamoto/nom_du_dossier/nom_du_dossier_sac_inf100km_
-- to _/Data/Kumamoto/nom_du_dossier/nom_du_dossier_vel_
+- from _/Kumamoto/nom_du_dossier/nom_du_dossier_3comp_
+- to _/Kumamoto/nom_du_dossier/nom_du_dossier_vel_
 
 ## obtenir les envelopes
 
