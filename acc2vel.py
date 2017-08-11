@@ -31,8 +31,8 @@ dossier = sys.argv[1]
 
 path_origin = os.getcwd()[:-6]
 path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_3comp/'
-path_results = path + '/' + dossier + '_vel/'
+path_data = path + '/' + dossier + '_sac_inf100km'
+path_results = path + '/' + dossier + '_vel'
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
@@ -86,7 +86,7 @@ for station in list_fich:
 
     os.chdir(path_results)
     #fig.savefig(tr.stats.station + '.pdf')
-    tr_vel.write('vel_' + station, format = 'SAC')
+    tr_vel.write(station[:-4] + '_vel', format = 'SAC')
 
 
 
