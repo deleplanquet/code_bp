@@ -24,8 +24,10 @@
 ## conversion au format 'SAC'
 
 `python3 tosac.py 'YyyyMmDdHhMmSs'` 
-- from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.k*_
-- to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_
+- from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.kik_
+
+	_/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.knt_
+- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_
 
 ## selection des stations a moins de 100km de l'hypocentre
 
