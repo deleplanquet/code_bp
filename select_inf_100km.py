@@ -30,14 +30,15 @@ def dist(vect1, vect2):
 
 dossier = sys.argv[1]
 
-path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier
+path_origin = os.getcwd()[:-6]
+path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_sac'
 path_results = path + '/' + dossier + '_sac_inf100km'
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
 
-os.chdir(path + '/Data')
+os.chdir(path_origin + '/Data')
 with open('ref_seismes_bin', 'rb') as my_fich:
     my_depick = pickle.Unpickler(my_fich)
     dict_seis = my_depick.load()
