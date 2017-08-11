@@ -40,7 +40,7 @@
 ## transformer les accelerations en vitesses et trimer entre 5sec avant le pointe P et 45sec apres (total 50sec)
 
 `python3 acc2vel.py 'YyyyMmDdHhMmSs'` 
-- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_3comp_
+- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km_
 - to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_
 
 ## filtrage selon differentes bandes de frequences
