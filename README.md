@@ -17,7 +17,9 @@
 ## telecharger les donnees (format ASCII)
 
 - from _http://www.kyoshin.bosai.go.jp_
-- to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.kik_ and _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.knt_
+- to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.kik_
+
+	_/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.knt_
 
 ## conversion au format 'SAC'
 
