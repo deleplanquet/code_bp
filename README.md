@@ -60,8 +60,25 @@
 ## creation d une trace a partir des 3 composantes (toujours positive)
 
 `python3 3components.py 'YyyyMmDdHhMmSs'`
-- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km_
-- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_3comp_
+- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_1_2Hz
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_2_4Hz
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz
+
+- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_3comp_
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz_3comp_
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_1_2Hz_3comp_
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_2_4Hz_3comp_
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz_3comp_
 
 ## obtenir les envelopes
 
