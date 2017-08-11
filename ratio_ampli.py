@@ -34,7 +34,7 @@ for freq in range(5):
     ampli[lst_frq[freq]] = frq
 
 os.chdir(path)
-with open('mat_vel_ampli_bin', 'wb') as ma_sortie:
+with open(dossier + '_mat_vel_ampli_bin', 'wb') as ma_sortie:
     mon_pick = pickle.Pickler(ma_sortie)
     mon_pick.dump(ampli)
 
