@@ -86,7 +86,7 @@ for station in list_fich:
 
     os.chdir(path_results)
     #fig.savefig(tr.stats.station + '.pdf')
-    tr_vel.write(station[:-4] + '_vel', format = 'SAC')
+    tr_vel.write(station[:-4] + '_vel.sac', format = 'SAC')
 
 
 
