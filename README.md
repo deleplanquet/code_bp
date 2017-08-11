@@ -1,5 +1,14 @@
 # Plan
 
+acc
+sac
+100km
+pointe
+vel
+filtre
+3comp
+env
+
 1. telecharger les donnees (format ASCII)
 2. conversion au format 'SAC'
 3. selection des stations a moins de 100km de l'hypocentre
