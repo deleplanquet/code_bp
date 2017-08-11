@@ -83,16 +83,25 @@
 ## obtenir les envelopes
 
 `python3 vel2env.py 'YyyyMmDdHhMmSs'`
-- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_
-- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_02_05Hz_
+- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_3comp_
 
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_05_1Hz_
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz_3comp_
 
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_1_2Hz_
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_1_2Hz_3comp_
 
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_2_4Hz_
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_2_4Hz_3comp_
 
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_4_10Hz_
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz_3comp_
+
+- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_3comp_env_
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz_3comp_env_
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_1_2Hz_3comp_env_
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_2_4Hz_3comp_env_
+
+	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz_3comp_env_
 
 ## estimation des vitesses P et S et creation d'un dictionnaire contenant le delai de starttime pour chaque station
 
