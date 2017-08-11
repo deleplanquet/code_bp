@@ -32,8 +32,8 @@
 ## selection des stations a moins de 100km de l'hypocentre
 
 `python3 select_inf_100km.py 'YyyyMmDdHhMmSs'`
-- from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_
-- to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km_
+- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_
+- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km_
 
 ## faire les pointes des arrivees P et S dans _SAC_ (a la main)
 
