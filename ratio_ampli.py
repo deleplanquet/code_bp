@@ -24,9 +24,9 @@ for freq in range(5):
     frq = {}
     for station in list_fich:
     	lst = []
-    	clcl = 0
     	st = read(station)
     	for i in range(int(50./t_wd)):
+    	    clcl = 0
     	    for j in range(int(st[0].stats.sampling_rate*t_wd)):
     	    	clcl = clcl + st[0].data[int(i*t_wd*st[0].stats.sampling_rate) + j]/st[0].stats.sampling_rate
     	    lst.append(clcl)
