@@ -7,27 +7,40 @@ import numpy as np
 
 dossier = sys.argv[1]
 
-path = os.getcwd()[:-6] + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_sac_inf100km'
-path_results = path + '/' + dossier + '_3comp'
+path_origin = os.getcwd()[:-6]
+path = path_origin + '/Kumamoto/' + dossier
 
-if os.path.isdir(path_results) == False:
-	os.makedirs(path_results)
+lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_10']
+lst_pth_dt = []
+lst_pth_rslt = []
 
-list_fich = os.listdir(path_data)
-list_fich_x = [a for a in list_fich if ('EW' in a) == True and ('EW1' in a) == False]
-list_fich_y = [a for a in list_fich if ('NS' in a) == True and ('NS1' in a) == False]
-list_fich_z = [a for a in list_fich if ('UD' in a) == True and ('UD1' in a) == False]
+for freq in lst_frq:
+    lst_pth_dt[lst_frq.index(freq)] = path + '/' + dossier + '_vel_' + freq + 'Hz'
+    lst_pth_rslt[lst_frq.index(freq)] = path + '/' + dossier + '_vel_' + freq + 'Hz_3comp'
 
-list_fich_x.sort()
-list_fich_y.sort()
-list_fich_z.sort()
+for pth in lst_pth_rslt:
+    if os.path.isdir(pth) == False:
+    	os.makedirs(pth)
 
-for station in list_fich_x:
-	os.chdir(path_data)
+lst_fch_x = []
+lst_fch_y = []
+lst_fch_z = []
+
+for pth in lst_pth_dt:
+    lst_fch_x[lst_pth_dt.index(pth)] = [a for a in os.listdir(pth) if ('EW' in a) == True and ('EW1' in a) == False]
+    lst_fch_y[lst_pth_dt.index(pth)] = [a for a in os.listdir(pth) if ('NS' in a) == True and ('NS1' in a) == False]
+    lst_fch_z[lst_pth_dt.index(pth)] = [a for a in os.listdir(pth) if ('UD' in a) == True and ('UD1' in a) == False]
+
+    lst_fch_x[lst_pth_dt.index(pth)].sort()
+    lst_fch_y[lst_pth_dt.index(pth)].sort()
+    lst_fch_z[lst_pth_dt.index(pth)].sort()
+
+for freq in lst_frq:
+    for station in lst_fch_x[lst_frq.index(freq)]:
+	os.chdir(lst_pth_dt[lst_frq.index(freq)])
 	stx = read(station)
-	sty = read(list_fich_y[list_fich_x.index(station)])
-	stz = read(list_fich_z[list_fich_x.index(station)])
+	sty = read(lst_fch_y[lst_frq.index(freq)][lst_fch_x.index(station)])
+	stz = read(lst_fch_z[lst_frq.index(freq)][lst_fch_x.index(station)])
 	if stx[0].stats.station == sty[0].stats.station and stx[0].stats.station == stz[0].stats.station:
 		stx.detrend(type = 'constant')
 		sty.detrend(type = 'constant')
@@ -35,12 +48,11 @@ for station in list_fich_x:
 		tr_x = stx[0]
 		tr_y = sty[0]
 		tr_z = stz[0]
-		tr_s = [a/abs(a) if abs(a)>0 else 0 for a in tr_z]
-		tr = [d*math.sqrt(a**2 + b**2 + c**2) for a,b,c,d in zip(tr_x, tr_y, tr_z, tr_s)]
+		tr = [sqrt(a**2 + b**2 + c**2) for a,b,c in zip(tr_x, tr_y, tr_z)]
 		tr = np.asarray(tr)
-		os.chdir(path_results)
+		os.chdir(lst_pth_rslt[lst_frq.index(freq)])
 		tr = Trace(tr, stz[0].stats)
-		tr.write(stz[0].stats.station + '_' + dossier + '.sac', format = 'SAC')
+		tr.write(station[:17] + 'vel_' + freq + 'Hz.sac', format = 'SAC')
 	else:
 		print('     ', stx[0].stats.station, sty[0].stats.station, stz[0].stats.station)
 
