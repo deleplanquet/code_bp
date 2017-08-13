@@ -101,7 +101,7 @@ for station in lst_fch_x:
     stz[0].stats.sac.t0 = stz[0].stats.sac.t0 - stz[0].stats.sac.a + 5
     stz[0].stats.sac.a = 5
 
-    t = np.arange(tr.stats.npts)/tr.stats.sampling_rate
+    t = np.arange(tr_z.stats.npts)/tr_z.stats.sampling_rate
 
     #ax.plot(t, norm1(tr.data), linewidth = 0.2, color = 'black')
     #ax.plot(norm1(np.fft.fft(tr)[range(int(tr.stats.npts/2))]), linewidth = 0.2, color = 'black')
