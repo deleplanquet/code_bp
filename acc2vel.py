@@ -132,8 +132,8 @@ for station in lst_fch_x:
     os.chdir(path_results)
     #fig.savefig(tr.stats.station + '.pdf')
     trx_vel.write(station[:-4] + '_vel.sac', format = 'SAC')
-    try_vel.write(station[:-4] + '_vel.sac', format = 'SAC')
-    trz_vel.write(station[:-4] + '_vel.sac', format = 'SAC')
+    try_vel.write(station[:17] + 'NS' + station[19:-4] + '_vel.sac', format = 'SAC')
+    trz_vel.write(station[:17] + 'UD' + station[19:-4] + '_vel.sac', format = 'SAC')
 
 
 
