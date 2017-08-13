@@ -27,9 +27,9 @@ lst_fch_y = []
 lst_fch_z = []
 
 for pth in lst_pth_dt:
-    lst_fch_x.append([a for a in os.listdir(pth) if ('EW' in a) == True and ('EW1' in a) == False])
-    lst_fch_y.append([a for a in os.listdir(pth) if ('NS' in a) == True and ('NS1' in a) == False])
-    lst_fch_z.append([a for a in os.listdir(pth) if ('UD' in a) == True and ('UD1' in a) == False])
+    lst_fch_x.append([a for a in os.listdir(pth) if ('EW' in a) == True])
+    lst_fch_y.append([a for a in os.listdir(pth) if ('NS' in a) == True])
+    lst_fch_z.append([a for a in os.listdir(pth) if ('UD' in a) == True])
 
     lst_fch_x[lst_pth_dt.index(pth)].sort()
     lst_fch_y[lst_pth_dt.index(pth)].sort()
@@ -39,8 +39,8 @@ for freq in lst_frq:
     for station in lst_fch_x[lst_frq.index(freq)]:
     	os.chdir(lst_pth_dt[lst_frq.index(freq)])
     	stx = read(station)
-    	sty = read(lst_fch_y[lst_frq.index(freq)][lst_fch_x.index(station)])
-    	stz = read(lst_fch_z[lst_frq.index(freq)][lst_fch_x.index(station)])
+    	sty = read(lst_fch_y[lst_frq.index(freq)][lst_fch_x[lst_frq.index(freq)].index(station)])
+    	stz = read(lst_fch_z[lst_frq.index(freq)][lst_fch_x[lst_frq.index(freq)].index(station)])
     	if stx[0].stats.station == sty[0].stats.station and stx[0].stats.station == stz[0].stats.station:
     	    stx.detrend(type = 'constant')
     	    sty.detrend(type = 'constant')
@@ -48,7 +48,7 @@ for freq in lst_frq:
     	    tr_x = stx[0]
     	    tr_y = sty[0]
     	    tr_z = stz[0]
-    	    tr = [sqrt(a**2 + b**2 + c**2) for a,b,c in zip(tr_x, tr_y, tr_z)]
+    	    tr = [math.sqrt(a**2 + b**2 + c**2) for a,b,c in zip(tr_x, tr_y, tr_z)]
     	    tr = np.asarray(tr)
     	    os.chdir(lst_pth_rslt[lst_frq.index(freq)])
     	    tr = Trace(tr, stz[0].stats)
