@@ -67,7 +67,7 @@ for station in lst_fch_x:
     sty.detrend(type = 'constant')
     stz.detrend(type = 'constant')
 
-    tstart = stx[0].stats.starttime + stx[0].stats.sac.a - 5
+    tstart = stz[0].stats.starttime + stz[0].stats.sac.a - 5
     tend = tstart + 50
 
     tr_x = stx[0].trim(tstart, tend, pad=True, fill_value=0)
