@@ -13,33 +13,62 @@ path_origin = os.getcwd()[:-6]
 path = path_origin + '/Kumamoto/' + dossier
 
 lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_10']
-lst_pth_dt = []
-lst_pth_rslt = []
+lst_pth_dt3 = []
+lst_pth_dth = []
+lst_pth_dtv = []
+lst_pth_rslt3 = []
+lst_pth_rslth = []
+lst_pth_rsltv = []
 
 for freq in lst_frq:
-    lst_pth_dt.append(path + '/' + dossier + '_vel_' + freq + 'Hz_3comp')
-    lst_pth_rslt.append(path + '/' +dossier + '_vel_' + freq + 'Hz_3comp_env')
-    if os.path.isdir(lst_pth_rslt[lst_frq.index(freq)]) == False:
-    	os.makedirs(lst_pth_rslt[lst_frq.index(freq)])
+    lst_pth_dt3.append(path + '/' + dossier + '_vel_' + freq + 'Hz_3comp')
+    lst_pth_dth.append(path + '/' + dossier + '_vel_' + freq + 'Hz_hori')
+    lst_pth_dtv.append(path + '/' + dossier + '_vel_' + freq + 'Hz_vert')
+    lst_pth_rslt3.append(path + '/' + dossier + '_vel_' + freq + 'Hz_3comp_env')
+    lst_pth_rslth.append(path + '/' + dossier + '_vel_' + freq + 'Hz_hori_env')
+    lst_pth_rsltv.append(path + '/' + dossier + '_vel_' + freq + 'Hz_vert_env')
 
-lst_fch = []
+    if os.path.isdir(lst_pth_rslt3[lst_frq.index(freq)]) == False:
+    	os.makedirs(lst_pth_rslt3[lst_frq.index(freq)])
+    if os.path.isdir(lst_pth_rslth[lst_frq.index(freq)]) == False:
+    	os.makedirs(lst_pth_rslth[lst_frq.index(freq)])
+    if os.path.isdir(lst_pth_rsltv[lst_frq.index(freq)]) == False:
+    	os.makedirs(lst_pth_rsltv[lst_frq.index(freq)])
 
-for pth in lst_pth_dt:
-    lst_fch.append(os.listdir(pth))
+lst_fch_3 = []
+lst_fch_h = []
+lst_fch_v = []
+
+for pth in lst_pth_dt3:
+    lst_fch_3.append(os.listdir(pth))
+for pth in lst_pth_dth:
+    lst_fch_h.append(os.listdir(pth))
+for pth in lst_pth_dtv:
+    lst_fch_v.append(os.listdir(pth))
 
 for freq in lst_frq:
     print('     ', freq)
-    for station in lst_fch[lst_frq.index(freq)]:
-    	print('       ', station)
-    	os.chdir(lst_pth_dt[lst_frq.index(freq)])
+    for station in lst_fch_3[lst_frq.index(freq)]:
+    	os.chdir(lst_pth_dt3[lst_frq.index(freq)])
     	st = read(station)
     	tr = [a**2 for a in st[0].data]
-    	tr = np.asarray(smooth(tr, 20))
-    	tr = Trace(tr, st[0].stats)
-    	os.chdir(lst_pth_rslt[lst_frq.index(freq)])
+    	tr = Trace(np.asarray(smooth(tr, 20)), st[0].stats)
+    	os.chdir(lst_pth_rslt3[lst_frq.index(freq)])
     	tr.write(station[:-4] + '_env.sac', format = 'SAC')
 
+    for station in lst_fch_h[lst_frq.index(freq)]:
+    	os.chdir(lst_pth_dth[lst_frq.index(freq)])
+    	st = read(station)
+    	tr = [a**2 for a in st[0].data]
+    	tr = Trace(np.asarray(smooth(tr, 20)), st[0].stats)
+    	os.chdir(lst_pth_rslth[lst_frq.index(freq)])
+    	tr.write(station[:-4] + '_env.sac', format = 'SAC')
 
-
-
+    for station in lst_fch_v[lst_frq.index(freq)]:
+    	os.chdir(lst_pth_dtv[lst_frq.index(freq)])
+    	st = read(station)
+    	tr = [a**2 for a in st[0].data]
+    	tr = Trace(np.asarray(smooth(tr, 20)), st[0].stats)
+    	os.chdir(lst_pth_rsltv[lst_frq.index(freq)])
+    	tr.write(station[:-4] + '_env.sac', format = 'SAC')
 
