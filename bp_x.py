@@ -128,7 +128,7 @@ for fich in lst_fch:
 
     for ix in range(int(L_fault/pas)):
     	for it in range(length_t):
-    	    tshift = t_start_ref - dict_delai[st[0].stats.station] + travt[lst_fch.index(fich)][ix] + dict_vel_used[st[0].stats.station]
+    	    tshift = t_start_ref - dict_delai[st[0].stats.station] + travt[lst_fch.index(fich)][ix] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate
     	    if tshift > 0 and tshift < t[-1]:
     	    	stack[ix, it] = stack[ix, it] + 1./len(lst_fch)*f(tshift)
 
