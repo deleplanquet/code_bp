@@ -65,8 +65,8 @@ else:
 
 path_origin = os.getcwd()[:-6]
 path = path_origin + '/Kumamoto/' + dossier
-path_data = 
-path_results = 
+path_data = path + '/' + dossier + '_vel_' + dt_type + '_env'
+path_results = path_data + '_results'
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
@@ -129,7 +129,7 @@ for fich in lst_fch:
     	    if tshift > 0 and tshift < t[-1]:
     	    	stack[ix, it] = stack[ix, it] + 1./len(lst_fch)*f(tshift)
 
-os.chdir(path)
+os.chdir(path_results)
 with open('', 'wb') as my_fch_stk:
     my_pck_stk = pickle.Pickler(my_fch_stk)
     my_pck_stk.dump(stack)
