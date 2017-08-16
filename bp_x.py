@@ -36,7 +36,7 @@ def milieu(lat1, lon1, lat2, lon2):
 def fault(cen_fault, length, u_strike, pas):
     x_cf, y_cf, z_cf = geo2cart(cen_fault[0], cen_fault[1], cen_fault[2])
     x_fault = np.arange(-length/2/pas, length/2/pas)
-    grill_fault = np.zeros((len(x_fault), 3))
+    grill_fault = np.zeros((len(x_fault), 1, 3))
     for a in x_fault:
     	grill_fault[np.where(x_fault==a), 0, 0] = x_cf + a*pas*u_strike[0]
     	grill_fault[np.where(x_fault==a), 0, 1] = y_cf + a*pas*u_strike[1]
@@ -52,20 +52,22 @@ def trav_time(station, fault, velocity):
     	    	    	    	+ pow(z_sta - fault[a, 0, 2], 2))/velocity
     return mat_time
 
+def norm1(vect):
+    return [10*a/vect.max() for a in vect]
+
 R_Earth = 6400
 vel_used = 3.4
 
 dossier = sys.argv[1]
 dt_type = sys.argv[2]
 
-if dt_type == '3comp' or dt_type == 'hori' or dt_type == 'vert':
-else:
+if dt_type != '3comp' and dt_type != 'hori' and dt_type != 'vert':
     print('ERROR TYPO')
     sys.exit(0)
 
 path_origin = os.getcwd()[:-6]
 path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_' + dt_type + '_env'
+path_data = path + '/' + dossier + '_vel_2_4Hz_' + dt_type + '_env'
 path_results = path_data + '_results'
 
 if os.path.isdir(path_results) == False:
@@ -113,10 +115,11 @@ stack = np.zeros((int(L_fault/pas), length_t))
 
 t_start_ref = None
 for cles in dict_delai.keys():
-    if tstart_ref == None or tstart_ref > dict_delai[cles]:
-    	tstart_ref = dict_delai[cles]
+    if t_start_ref == None or t_start_ref > dict_delai[cles]:
+    	t_start_ref = dict_delai[cles]
 
 for fich in lst_fch:
+    print('     ', fich)
     st = read(fich)
     tstart = st[0].stats.starttime
     env_norm = norm1(st[0].data)
@@ -130,7 +133,7 @@ for fich in lst_fch:
     	    	stack[ix, it] = stack[ix, it] + 1./len(lst_fch)*f(tshift)
 
 os.chdir(path_results)
-with open('', 'wb') as my_fch_stk:
+with open('stack_vel_2_4Hz_' + dt_type + '_env', 'wb') as my_fch_stk:
     my_pck_stk = pickle.Pickler(my_fch_stk)
     my_pck_stk.dump(stack)
 
