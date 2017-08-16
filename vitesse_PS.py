@@ -47,8 +47,8 @@ def norm1(vect):
 
 dossier = sys.argv[1]
 
-path = os.getcwd()[:-6] + '/Data/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_env'
+path = os.getcwd()[:-6] + '/Kumamoto/' + dossier
+path_data = path + '/' + dossier + '_vel'
 path_results = path
 
 if os.path.isdir(path_results) == False:
