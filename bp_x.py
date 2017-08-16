@@ -67,13 +67,22 @@ if dt_type != '3comp' and dt_type != 'hori' and dt_type != 'vert':
 
 path_origin = os.getcwd()[:-6]
 path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_2_4Hz_' + dt_type + '_env'
-path_results = path_data + '_results'
 
-if os.path.isdir(path_results) == False:
-    os.makedirs(path_results)
+lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_10']
+lst_pth_dt = []
+lst_pth_rslt = []
 
-lst_fch = os.listdir(path_data)
+for freq in lst_frq:
+    lst_pth_dt.append(path + '/' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env')
+    lst_pth_rslt.append(lst_pth_dt[lst_frq.index(freq)] + '_results')
+    if os.path.isdir(lst_pth_rslt[lst_frq.index(freq)]) == False:
+    	os.makedirs(lst_pth_rslt[lst_frq.index(freq)])
+
+lst_fch = []
+
+for pth in lst_pth_dt:
+    os.chdir(pth)
+    lst_fch.append(os.listdir(pth))
 
 os.chdir(path)
 with open(dossier + '_veldata', 'rb') as my_fch:
@@ -103,39 +112,41 @@ coord_fault = fault([R_Earth, lat_cen_fault, lon_cen_fault], L_fault, norm(vect_
 
 travt = []
 
-os.chdir(path_data)
-for fich in lst_fch:
+os.chdir(lst_pth_dt[0])
+for fich in lst_fch[0]:
     st = read(fich)
     travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], coord_fault, vel_used))
 
 #ARF?
 
 length_t = int(30*st[0].stats.sampling_rate)
-stack = np.zeros((int(L_fault/pas), length_t))
 
 t_start_ref = None
 for cles in dict_delai.keys():
     if t_start_ref == None or t_start_ref > dict_delai[cles]:
     	t_start_ref = dict_delai[cles]
 
-for fich in lst_fch:
-    print('     ', fich)
-    st = read(fich)
-    tstart = st[0].stats.starttime
-    env_norm = norm1(st[0].data)
-    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-    f = interpolate.interp1d(t, env_norm)
+for freq in lst_frq:
+    stack = np.zeros((int(L_fault/pas), length_t))
+    os.chdir(lst_pth_dt[lst_frq.index(freq)])
+    for fich in lst_fch[lst_frq.index(freq)]:
+    	print('     ', fich)
+    	st = read(fich)
+    	tstart = st[0].stats.starttime
+    	env_norm = norm1(st[0].data)
+    	t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    	f = interpolate.interp1d(t, env_norm)
 
-    for ix in range(int(L_fault/pas)):
-    	for it in range(length_t):
-    	    tshift = t_start_ref - dict_delai[st[0].stats.station] + travt[lst_fch.index(fich)][ix] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate
-    	    if tshift > 0 and tshift < t[-1]:
-    	    	stack[ix, it] = stack[ix, it] + 1./len(lst_fch)*f(tshift)
+    	for ix in range(int(L_fault/pas)):
+    	    for it in range(length_t):
+    	    	tshift = t_start_ref - dict_delai[st[0].stats.station] + travt[lst_fch[lst_frq.index(freq)].index(fich)][ix] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate
+    	    	if tshift > 0 and tshift < t[-1]:
+    	    	    stack[ix, it] = stack[ix, it] + 1./len(lst_fch)*f(tshift)
 
-os.chdir(path_results)
-with open('stack_vel_2_4Hz_' + dt_type + '_env', 'wb') as my_fch_stk:
-    my_pck_stk = pickle.Pickler(my_fch_stk)
-    my_pck_stk.dump(stack)
+    os.chdir(lst_pth_rslt[lst_frq.index(freq)])
+    with open('stack_vel_' + freq + 'Hz_' + dt_type + '_env', 'wb') as my_fch_stk:
+    	my_pck_stk = pickle.Pickler(my_fch_stk)
+    	my_pck_stk.dump(stack)
 
 
 
