@@ -25,6 +25,7 @@ for station in lst_fch:
 
     os.chdir(path_data)
     st = read(station)
+    st.detrend(type = 'constant')
     tr = st[0].filter('bandpass', freqmin = 0.2, freqmax = 0.5, corners = 4, zerophase = True)
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(lst_pth_rslt[0])
@@ -32,6 +33,7 @@ for station in lst_fch:
     
     os.chdir(path_data)
     st = read(station)
+    st.detrend(type = 'constant')
     tr = st[0].filter('bandpass', freqmin = 0.5, freqmax = 1, corners = 4, zerophase = True)
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(lst_pth_rslt[1])
@@ -39,6 +41,7 @@ for station in lst_fch:
 
     os.chdir(path_data)
     st = read(station)
+    st.detrend(type = 'constant')
     tr = st[0].filter('bandpass', freqmin = 1, freqmax = 2, corners = 4, zerophase = True)
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(lst_pth_rslt[2])
@@ -46,6 +49,7 @@ for station in lst_fch:
 
     os.chdir(path_data)
     st = read(station)
+    st.detrend(type = 'constant')
     tr = st[0].filter('bandpass', freqmin = 2, freqmax = 4, corners = 4, zerophase = True)
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(lst_pth_rslt[3])
@@ -53,6 +57,7 @@ for station in lst_fch:
 
     os.chdir(path_data)
     st = read(station)
+    st.detrend(type = 'constant')
     tr = st[0].filter('bandpass', freqmin = 4, freqmax = 10, corners = 4, zerophase = True)
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(lst_pth_rslt[4])
