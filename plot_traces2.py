@@ -1,5 +1,6 @@
 from obspy import read
 import matplotlib.pyplot as plt
+import pickle
 import os
 import sys
 import numpy as np
@@ -51,16 +52,40 @@ path_results = path_data + '_results'
 
 list_fich = os.listdir(path_data)
 
+os.chdir(path)
+with open(dossier + '_veldata', 'rb') as myfch:
+    mydp = pickle.Unpickler(myfch)
+    dict_vel = mydp.load()
+
+dict_vel_used = dict_vel[1]
+
 os.chdir(path_data)
 
 fig, ax = plt.subplots(1, 1)
 ax.set_xlabel('Time')
 
+stt = read(list_fich[0])
+tarrival = stt[0].stats.starttime
+
+t_start_ref = None
+for cles in dict_vel[2].keys():
+    if t_start_ref == None or t_start_ref > dict_vel[2][cles]:
+    	t_start_ref = dict_vel[2][cles]
+
 for fich in list_fich:
     st = read(fich)
+    #xh, yh, zh = geo2cart([R_Earth - 11.97, 32.8408, 130.8845])
+    xh, yh, zh = -3514.73166817, 4053.15977919, 3467.78299218
+    xs, ys, zs = geo2cart([R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo])
+    print(xh, yh, zh, xs, ys, zs)
+    tshift = t_start_ref - dict_vel[2][st[0].stats.station] + math.sqrt(pow(xh - xs, 2) + pow(yh - ys, 2) + pow(zh - zs, 2))/3.4 + dict_vel_used[st[0].stats.station]
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    delaistart = st[0].stats.starttime - tarrival
+    t = [a + tshift for a in t]
     ordo = dist([R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo])
+    #print(t_start_ref, dict_vel[2][st[0].stats.station], math.sqrt(pow(xh - xs, 2) + pow(yh - ys, 2) + pow(zh - zs, 2))/3.4, dict_vel_used[st[0].stats.station], tshift)
     ax.plot(t, translate(norm1(st[0].data), ordo), lw = 0.2)
+    #ax.scatter(ordo/3.4 - 0.2 + dict_vel_used[st[0].stats.station], ordo, s = 2)
 
 os.chdir(path_results)
 fig.savefig('tttraces_' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env.pdf')
