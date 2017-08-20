@@ -67,12 +67,20 @@ for station in lst_fch_x:
     sty.detrend(type = 'constant')
     stz.detrend(type = 'constant')
 
+    stx[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
+    sty[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
+    stz[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
+
     tstart = stz[0].stats.starttime + stz[0].stats.sac.a - 5
     tend = tstart + 50
 
     tr_x = stx[0].trim(tstart, tend, pad=True, fill_value=0)
     tr_y = sty[0].trim(tstart, tend, pad=True, fill_value=0)
     tr_z = stz[0].trim(tstart, tend, pad=True, fill_value=0)
+
+    tr_x.taper(0.05, type = 'hann', max_length = None, side = 'both')
+    tr_y.taper(0.05, type = 'hann', max_length = None, side = 'both')
+    tr_z.taper(0.05, type = 'hann', max_length = None, side = 'both')
 
     stx[0].stats.sac.nzyear = stz[0].stats.starttime.year
     stx[0].stats.sac.nzjday = stz[0].stats.starttime.julday
