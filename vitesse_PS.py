@@ -48,14 +48,14 @@ def norm1(vect):
 dossier = sys.argv[1]
 
 path = os.getcwd()[:-6] + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel'
+path_data = path + '/' + dossier + '_vel_1_2Hz_3comp_env'
 path_results = path
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
 
 list_sta = os.listdir(path_data)
-list_sta = [a for a in list_sta if ('UD' in a) == True and ('UD1' in a) == False]
+#list_sta = [a for a in list_sta if ('UD' in a) == True and ('UD1' in a) == False]
 
 fig, ax = plt.subplots(1, 1)
 ax.set_xlabel('Time (s)')
@@ -83,7 +83,7 @@ for station in list_sta:
     delaistart = st[0].stats.starttime - tarrival
     tdeb[st[0].stats.station] = delaistart
     delaistart = delaistart + 20
-    print(delaistart)
+    print(delaistart, st[0].stats.station)
     t = [a + delaistart for a in t]
 #    t = [a + tsec - 40 + tmicrosec/1e6 if tsec > 10 else a + tsec + 20 + tmicrosec/1e6 for a in t]
 
@@ -92,7 +92,7 @@ for station in list_sta:
     ordo = dist(pos_sta, pos_hypo)
 
     ax.plot(t, norm1(st[0].data) + ordo, linewidth = 0.2, color = 'black')
-#    ax.text(50 + t[0], ordo, st[0].stats.station, fontsize = 3)
+    ax.text(50 + t[0], ordo, st[0].stats.station, fontsize = 3)
 
     list_tP.append(st[0].stats.sac.a + t[0])
     list_tS.append(st[0].stats.sac.t0 + t[0])
@@ -110,11 +110,13 @@ vS['fit'] = poptS[0]
 
 for cles in vP.keys():
     if ('fit' in cles) == False:
-    	vP[cles] = vP[cles] - (dist_hyp[cles] - poptP[1])/vP['fit']
+    	#vP[cles] = vP[cles] - (dist_hyp[cles] - poptP[1])/vP['fit']
+    	vP[cles] = vP[cles] - (dist_hyp[cles] - poptP[1])/5.8
 
 for cles in vS.keys():
     if ('fit' in cles) == False:
-    	vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[1])/vS['fit']
+    	#vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[1])/vS['fit']
+    	vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[1])/3.4
 
 to_register = [vP, vS, tdeb]
 
