@@ -71,6 +71,10 @@ for station in lst_fch_x:
     sty[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
     stz[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
 
+    stx[0].filter('highpass', freq = 1./20)
+    sty[0].filter('highpass', freq = 1./20)
+    stz[0].filter('highpass', freq = 1./20)
+
     tstart = stz[0].stats.starttime + stz[0].stats.sac.a - 5
     tend = tstart + 50
 
