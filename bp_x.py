@@ -83,6 +83,7 @@ lst_fch = []
 for pth in lst_pth_dt:
     os.chdir(pth)
     lst_fch.append(os.listdir(pth))
+    lst_fch[lst_pth_dt.index(pth)].sort()
 
 os.chdir(path)
 with open(dossier + '_veldata', 'rb') as my_fch:
@@ -95,11 +96,11 @@ dict_delai = dict_vel[2]
 
 strike = 224 
 dip = 65 
-L_fault = 60
+L_fault = 100
 
 lat_fault = [32.6477, 32.9858]
 lon_fault = [130.7071, 131.1216]
-dep_fault = [9, 9]
+dep_fault = [11.97, 11.97]
 
 pas = 2
 
@@ -108,7 +109,8 @@ x1_flt, y1_flt, z1_flt = geo2cart(R_Earth - dep_fault[0], lat_fault[0], lon_faul
 x2_flt, y2_flt, z2_flt = geo2cart(R_Earth - dep_fault[1], lat_fault[1], lon_fault[1])
 vect_strike = [x2_flt - x1_flt, y2_flt - y1_flt, z2_flt - z1_flt]
 
-coord_fault = fault([R_Earth, lat_cen_fault, lon_cen_fault], L_fault, norm(vect_strike), pas)
+coord_fault = fault([R_Earth - dep_fault[0], lat_cen_fault, lon_cen_fault], L_fault, norm(vect_strike), pas)
+#coord_fault = fault([R_Earth - dep_fault[0], 32.8408, 130.8845], L_fault, norm(vect_strike), pas)
 
 travt = []
 
