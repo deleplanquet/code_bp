@@ -100,6 +100,94 @@ for freq in lst_frq:
 os.chdir(path)
 fig.savefig('tttraces.pdf')
 
+fig2, ax2 = plt.subplots(3, 1, sharex = 'col')
+ax2[0].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax2[1].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax2[2].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+os.chdir(path_sac)
+st = read(station + '.EW.sac')
+t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+ax2[0].plot(t, st[0].data, lw = 0.5)
+st = read(station + '.NS.sac')
+t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+ax2[1].plot(t, st[0].data, lw = 0.5)
+st = read(station + '.UD.sac')
+t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+ax2[2].plot(t, st[0].data, lw = 0.5)
+os.chdir(path)
+fig2.savefig('accelero.pdf')
+fig2.savefig('accelero.png')
+
+fig3, ax3 = plt.subplots(5, 1, sharex = 'col')
+ax3[0].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax3[1].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax3[2].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax3[3].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax3[4].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+for freq in lst_frq:
+    os.chdir(lst_pth_vel_frq_hor_env[lst_frq.index(freq)])
+    st = read(station + '.vel_' + freq + 'Hz_hori_env.sac')
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    ax3[lst_frq.index(freq)].plot(t, st[0].data, lw = 0.5)
+os.chdir(path)
+fig3.savefig('envfreq.pdf')
+fig3.savefig('envfreq.png')
+
+fig4, ax4 = plt.subplots(5, 1, sharex = 'col', sharey = 'all')
+ax4[0].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax4[1].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax4[2].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax4[3].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax4[4].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+for freq in lst_frq:
+    os.chdir(lst_pth_vel_frq_hor_env[lst_frq.index(freq)])
+    st = read(station + '.vel_' + freq + 'Hz_hori_env.sac')
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    ax4[lst_frq.index(freq)].plot(t, st[0].data, lw = 0.5)
+os.chdir(path)
+fig4.savefig('envfreqmmax.pdf')
+fig4.savefig('envfreqmmax.png')
+
+fig5, ax5 = plt.subplots(3, 3, sharex = 'col')
+ax5[0, 0].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax5[0, 1].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax5[0, 2].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax5[1, 0].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax5[1, 1].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax5[1, 2].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax5[2, 0].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax5[2, 1].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+ax5[2, 2].ticklabel_format(style = 'sci', axis = 'y', scilimits = (0, 0))
+for freq in lst_frq[2:]:
+    os.chdir(lst_pth_vel_frq_3cp_env[lst_frq.index(freq)])
+    st = read(station + '.vel_' + freq + 'Hz_env.sac')
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    ax5[0, lst_frq.index(freq) - 2].plot(t, st[0].data, lw = 0.5)
+    os.chdir(lst_pth_vel_frq_hor_env[lst_frq.index(freq)])
+    st = read(station + '.vel_' + freq + 'Hz_hori_env.sac')
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    ax5[1, lst_frq.index(freq) - 2].plot(t, st[0].data, lw = 0.5)
+    os.chdir(lst_pth_vel_frq_ver_env[lst_frq.index(freq)])
+    st = read(station + '.vel_' + freq + 'Hz_vert_env.sac')
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    ax5[2, lst_frq.index(freq) - 2].plot(t, st[0].data, lw = 0.5)
+os.chdir(path)
+fig5.savefig('composition.pdf')
+fig5.savefig('composition.png')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
