@@ -101,16 +101,18 @@ L_fault = 100
 lat_fault = [32.6477, 32.9858]
 lon_fault = [130.7071, 131.1216]
 dep_fault = [11.97, 11.97]
+#dep_fault = [9.13, 9.13 ]
 
 pas = 2
 
 lat_cen_fault, lon_cen_fault = milieu(lat_fault[0], lon_fault[0], lat_fault[1], lon_fault[1])
+#lat_cen_fault, lon_cen_fault = 33.0128,	131.2022
 x1_flt, y1_flt, z1_flt = geo2cart(R_Earth - dep_fault[0], lat_fault[0], lon_fault[0])
 x2_flt, y2_flt, z2_flt = geo2cart(R_Earth - dep_fault[1], lat_fault[1], lon_fault[1])
 vect_strike = [x2_flt - x1_flt, y2_flt - y1_flt, z2_flt - z1_flt]
 
-coord_fault = fault([R_Earth - dep_fault[0], lat_cen_fault, lon_cen_fault], L_fault, norm(vect_strike), pas)
-#coord_fault = fault([R_Earth - dep_fault[0], 32.8408, 130.8845], L_fault, norm(vect_strike), pas)
+#coord_fault = fault([R_Earth - dep_fault[0], lat_cen_fault, lon_cen_fault], L_fault, norm(vect_strike), pas)
+coord_fault = fault([R_Earth - dep_fault[0], 32.8408, 130.8845], L_fault, norm(vect_strike), pas)
 
 travt = []
 
