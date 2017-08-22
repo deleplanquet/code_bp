@@ -36,6 +36,7 @@ for freq in lst_frq:
     print(stack.max()/len(lst_pth_dt[0]))
 
     fig.savefig('bp_vel_' + freq + 'Hz_' + tp_data + '_env.pdf')
+    fig.savefig('bp_vel_' + freq + 'Hz_' + tp_data + '_env.png')
 
 
 
