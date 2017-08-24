@@ -130,8 +130,8 @@ with open(dossier + '_veldata', 'wb') as mon_fich:
 tP = np.arange(min(list_tP), max(list_tP))
 tS = np.arange(min(list_tS), max(list_tS))
 
-ax.scatter(list_tP, list_dist, s=2)
-ax.scatter(list_tS, list_dist, s=2)
+ax.scatter(list_tP, list_dist, s=2, color = 'steelblue')
+ax.scatter(list_tS, list_dist, s=2, color = 'darkorange')
 
 ax.text(65, 30, str(int(1000*poptP[0])) + 'm/s', color='steelblue')
 ax.text(65, 20, str(int(1000*poptS[0])) + 'm/s', color='darkorange')
