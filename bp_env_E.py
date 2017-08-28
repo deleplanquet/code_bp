@@ -197,19 +197,11 @@ vect_dip = rotation(vect_perp_strike, dip, vect_strike)
 
 coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
 
-#calcul matrice tps de trajet
-print('     matrice tps de trajet')
-
-travt = []
-
-os.chdir(lst_pth_dt[0])
-for fichier in lst_pth_fch[0]:
-    st = read(fichier)
-    travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], coord_fault, vel_used))
-
 #stacks
 print('     stacks envelop')
 
+os.chdir(lst_pth_dt[0])
+st = read(lst_pth_fch[0][0])
 length_t = int(30*st[0].stats.sampling_rate)
 
 tstart_ref = None
@@ -219,6 +211,12 @@ for cles in dict_delai.keys():
 
 for freq in lst_frq:
     os.chdir(lst_pth_dt[lst_frq.index(freq)])
+
+    travt = []
+    for fichier in lst_pth_fch[lst_frq.index(freq)]:
+    	st = read(fichier)
+    	travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], coord_fault, vel_used))
+
     stack = np.zeros((int(l_fault/pas_l), int(w_fault/pas_w), length_t))
 
     for station in lst_pth_fch[lst_frq.index(freq)]:
