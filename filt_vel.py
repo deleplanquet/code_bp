@@ -10,8 +10,8 @@ path_origin = os.getcwd()[:-6]
 path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_vel'
 
-lst_frq_mi = ['02', '05', '1', '2', '4']
-lst_frq_ma = ['05', '1', '2', '4', '10']
+lst_frq_mi = ['02', '05', '1', '2', '4', '8', '16']
+lst_frq_ma = ['05', '1', '2', '4', '8', '16', '30']
 lst_pth_rslt = []
 
 for freq in lst_frq_mi:
@@ -43,11 +43,17 @@ for freq in lst_frq_mi:
     	fqma = 4
     elif freq == '4':
     	fqmi = 4
-    	fqma = 10
+    	fqma = 8
+    elif freq == '8':
+    	fqmi = 8
+    	fqma = 16
+    elif freq == '16':
+    	fqmi = 16
+    	fqma = 32
     else:
     	print('ERROR LIST_FREQ')
-    	sys.exit(0
-)
+    	sys.exit(0)
+
     for station in lst_fch_x:
     	print('     ', station)
 
