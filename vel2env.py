@@ -12,7 +12,7 @@ dossier = sys.argv[1]
 path_origin = os.getcwd()[:-6]
 path = path_origin + '/Kumamoto/' + dossier
 
-lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_10']
+lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_8', '8_16', '16_30']
 lst_pth_dt3 = []
 lst_pth_dth = []
 lst_pth_dtv = []
