@@ -39,10 +39,10 @@ for freq in lst_frq:
     	os.chdir(lst_pth_rslt[lst_frq.index(freq)])
     	m = 5*i
     	fig, ax = plt.subplots(1, 1)
-    	ax.set_xlabel('Strike (km)')
-    	ax.set_ylabel('Dip (km)')
+    	ax.set_xlabel('Dip (km)')
+    	ax.set_ylabel('Strike (km)')
     	ax.imshow(stack[:, :, m], cmap = 'jet', vmin = stack[:, :, :].min(), vmax = stack[:, :, :].max(), interpolation = 'none', origin = 'lower')
-    	ax.set_aspect('auto')
+    	#ax.set_aspect('auto')
     	#ax.set_xticklabels([])
     	#ax.set_yticklabels([])
     
