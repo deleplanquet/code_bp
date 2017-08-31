@@ -20,10 +20,8 @@ lst_pth_rslt = []
 
 for freq in lst_frq:
     lst_pth_rslt.append(path_data + '/' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_2D')
-    print('bou')
     if os.path.isdir(lst_pth_rslt[lst_frq.index(freq)]) == False:
     	os.makedirs(lst_pth_rslt[lst_frq.index(freq)])
-    	print('bou')
 
 length_t = int(30*100)
 
