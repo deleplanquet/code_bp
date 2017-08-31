@@ -11,29 +11,43 @@ if dt_type != '3comp' and dt_type != 'hori' and dt_type != 'vert':
     sys.exit(0)
 
 path_origin = os.getcwd()[:-6]
-path = path_origin + '/' + dossier
+path = path_origin + '/Kumamoto/' + dossier
 
 lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_8', '8_16', '16_30']
 path_data = path + '/' + dossier + '_results'
 
-os.chdir(path_data)
+lst_pth_rslt = []
 
 for freq in lst_frq:
+    lst_pth_rslt.append(path_data + '/' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_2D')
+    print('bou')
+    if os.path.isdir(lst_pth_rslt[lst_frq.index(freq)]) == False:
+    	os.makedirs(lst_pth_rslt[lst_frq.index(freq)])
+    	print('bou')
+
+length_t = int(30*100)
+
+for freq in lst_frq:
+    print('     ', freq)
+    os.chdir(path_data)
     stack = None
-    with open('',  'rb') as my_fch:
+    with open(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D', 'rb') as my_fch:
     	my_dpck = pickle.Unpickler(my_fch)
     	stack = my_dpck.load()
 
-    fig, ax = plt.subplots(1, 1)
-    ax.set_xlabel('')
-    ax.set_ylabel('')
-    ax.imshow(stack, cmap = 'jet', interpolation = 'none', origin = 'lower')
-    ax.set_aspect('auto')
-    ax.set_xticklabels([])
-    ax.set_yticklabels([])
+    for i in range(int(length_t/5)):
+    	os.chdir(lst_pth_rslt[lst_frq.index(freq)])
+    	m = 5*i
+    	fig, ax = plt.subplots(1, 1)
+    	ax.set_xlabel('Strike (km)')
+    	ax.set_ylabel('Dip (km)')
+    	ax.imshow(stack[:, :, m], cmap = 'jet', vmin = stack[:, :, :].min(), vmax = stack[:, :, :].max(), interpolation = 'none', origin = 'lower')
+    	ax.set_aspect('auto')
+    	#ax.set_xticklabels([])
+    	#ax.set_yticklabels([])
     
-    fig.savefig('.pdf')
-    fig.savefig('.png')
+    	fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_' + str(m) + '.pdf')
+    	fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_' + str(m) + '.png')
     	
 
 
