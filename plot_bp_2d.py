@@ -43,8 +43,8 @@ for freq in lst_frq:
     	ax.set_ylabel('Strike (km)')
     	ax.imshow(stack[:, :, m], cmap = 'jet', vmin = stack[:, :, :].min(), vmax = stack[:, :, :].max(), interpolation = 'none', origin = 'lower')
     	#ax.set_aspect('auto')
-    	#ax.set_xticklabels([])
-    	#ax.set_yticklabels([])
+    	ax.set_xticklabels([0, 0, 4, 8, 12, 16, 20])
+    	ax.set_yticklabels([0, 0, 10, 20, 30, 40, 50])
     
     	fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_' + str(m) + '.pdf')
     	fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_' + str(m) + '.png')
