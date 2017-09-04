@@ -27,27 +27,26 @@ for freq in lst_frq:
     	my_dpck = pickle.Unpickler(my_fch)
     	stack = my_dpck.load()
 
-    dip = []
     strike = []
+    dip = []
     sizes = []
     colors = []
     for it in range(int(length_t)):
-    	dip.append(np.where(stack == stack[:, :, it].max())[0])
-    	strike.append(np.where(stack == stack[:, :, it].max())[1])
+    	strike.append(2*np.where(stack == stack[:, :, it].max())[0])
+    	dip.append(2*np.where(stack == stack[:, :, it].max())[1])
     	sizes.append(pow(5*stack[:, :, it].max()/stack[:, :, :].max(), 3))
     	colors.append(it/length_t)
 
     fig, ax = plt.subplots(1, 1)
-    ax.set_xlabel('Dip (km)')
-    ax.set_ylabel('Strike (km)')
-    ax.scatter(dip, strike, s = sizes, c = colors, edgecolors = 'none')
+    ax.set_xlabel('Strike (km)')
+    ax.set_ylabel('Dip (km)')
+    ax.scatter(strike, dip, s = sizes, c = colors, edgecolors = 'none')
     #for it in range(int(length_t)):
     	#ax.scatter(it/len(stack[:, 0, 0]), it/len(stack[0, :, 0]), c = it/length_t, edgecolors = 'none')
     	#ax.scatter(np.where(stack == stack[:, :, it].max())[0], np.where(stack == stack[:, :, it].max())[1], s = 50*stack[:, :, it].max()/stack[:, :, :].max(), c = length_t, edgecolors = 'none')
     	#print(it/length_t)
-
-    ax.set_xticklabels([0, 0, 4, 8, 12, 16, 20])
-    ax.set_yticklabels([0, 0, 10, 20, 30, 40, 50])
+    ax.set_xlim(0, 56)
+    ax.set_ylim(0, 24)
 
     fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_max.png')
     fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_max.pdf')
