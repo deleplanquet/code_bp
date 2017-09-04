@@ -27,6 +27,7 @@ for freq in lst_frq:
     	my_dpck = pickle.Unpickler(my_fch)
     	stack = my_dpck.load()
 
+    maax = stack[:, :, :].max()
     strike = []
     dip = []
     sizes = []
@@ -34,7 +35,7 @@ for freq in lst_frq:
     for it in range(int(length_t)):
     	strike.append(2*np.where(stack == stack[:, :, it].max())[0])
     	dip.append(2*np.where(stack == stack[:, :, it].max())[1])
-    	sizes.append(pow(5*stack[:, :, it].max()/stack[:, :, :].max(), 3))
+    	sizes.append(pow(5*stack[:, :, it].max()/maax, 3))
     	colors.append(it/length_t)
 
     fig, ax = plt.subplots(1, 1)
