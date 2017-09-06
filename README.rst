@@ -6,7 +6,7 @@ telecharger les donnees (format ASCII)
 --------------------------------------
 
 - from *http://www.kyoshin.bosai.go.jp*
-- to */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.kik*
+- to */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.\*\*\* *
 
 	_/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.knt_
 
