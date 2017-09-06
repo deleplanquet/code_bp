@@ -202,7 +202,9 @@ print('     stacks envelop')
 
 os.chdir(lst_pth_dt[0])
 st = read(lst_pth_fch[0][0])
-length_t = int(30*st[0].stats.sampling_rate)
+#pas_t = st[0].stats.sampling_rate
+pas_t = 10
+length_t = int(30*pas_t)
 
 tstart_ref = None
 for cles in dict_delai.keys():
@@ -232,9 +234,10 @@ for freq in lst_frq:
     	for ix in range(int(l_fault/pas_l)):
     	    for iy in range(int(w_fault/pas_w)):
     	    	for it in range(length_t):
-    	    	    tshift = tstart_ref + dict_delai[st[0].stats.station] + travt[ista][ix, iy] + dict_vel_used[st[0].stats.station] + it/st[0].stats.sampling_rate
-    	    	    if tshift > 0 and tshift < t[-1]:
-    	    	    	stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_pth_fch[lst_frq.index(freq)])*f(tshift)
+    	    	    tshift = tstart_ref + dict_delai[st[0].stats.station] + travt[ista][ix, iy] + dict_vel_used[st[0].stats.station] + it/pas_t
+    	    	    if tshift > 0 and tshift < t[-1] - pas_t/st[0].stats.sampling_rate:
+    	    	    	for itt in range(int(st[0].stats.sampling_rate/pas_t)):
+    	    	    	    stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_pth_fch[lst_frq.index(freq)])*f(tshift + itt/st[0].stats.sampling_rate)
 
     os.chdir(path_results)
     with open(dossier_seisme + '_vel_' + freq + 'Hz_' + dt_type + '_env_' + select_station + '_stack2D', 'wb') as my_fch:
