@@ -4,7 +4,6 @@ from obspy.signal.util import smooth
 import numpy as np
 import os
 import sys
-#from mpl_toolkits.axes_grid1 import ImageGrid
 import matplotlib.pyplot as plt
 
 dossier = sys.argv[1]
@@ -21,12 +20,13 @@ lst_pth_rslth = []
 lst_pth_rsltv = []
 
 for freq in lst_frq:
-    lst_pth_dt3.append(path + '/' + dossier + '_vel_' + freq + 'Hz_3comp')
-    lst_pth_dth.append(path + '/' + dossier + '_vel_' + freq + 'Hz_hori')
-    lst_pth_dtv.append(path + '/' + dossier + '_vel_' + freq + 'Hz_vert')
-    lst_pth_rslt3.append(path + '/' + dossier + '_vel_' + freq + 'Hz_3comp_env')
-    lst_pth_rslth.append(path + '/' + dossier + '_vel_' + freq + 'Hz_hori_env')
-    lst_pth_rsltv.append(path + '/' + dossier + '_vel_' + freq + 'Hz_vert_env')
+    pth_dt = path + '/' + dossier + '_vel_' + freq + 'Hz/' + dossier + '_vel_' + freq + 'Hz'
+    lst_pth_dt3.append(pth_dt + '_3comp')
+    lst_pth_dth.append(pth_dt + '_hori')
+    lst_pth_dtv.append(pth_dt + '_vert')
+    lst_pth_rslt3.append(pth_dt + '_3comp_env')
+    lst_pth_rslth.append(pth_dt + '_hori_env')
+    lst_pth_rsltv.append(pth_dt + '_vert_env')
 
     if os.path.isdir(lst_pth_rslt3[lst_frq.index(freq)]) == False:
     	os.makedirs(lst_pth_rslt3[lst_frq.index(freq)])
