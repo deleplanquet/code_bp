@@ -11,7 +11,7 @@ from scipy.signal import hilbert
 from obspy import read
 from obspy.signal.util import smooth
 from scipy import ndimage
-from mpl_toolkits.basemap import Basemap
+#from mpl_toolkits.basemap import Basemap
 
 #fonctions
 
@@ -145,7 +145,8 @@ lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_8', '8_16', '16_30']
 lst_pth_dt = []
 
 for freq in lst_frq:
-    lst_pth_dt.append(path + '/' + dossier_seisme + '_vel_' + freq + 'Hz_' + dt_type + '_env_' + select_station)
+    pth_dt = path + '/' + dossier_seisme + '_vel_' + freq + 'Hz/' + dossier_seisme + '_vel_' + freq + 'Hz'
+    lst_pth_dt.append(pth_dt + '_' + dt_type + '_env_' + select_station)
 
 path_results = path + '/' + dossier_seisme + '_results'
 
