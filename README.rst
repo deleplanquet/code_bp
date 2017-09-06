@@ -1,5 +1,7 @@
 # Plan
 
+.. contents::
+
 1. telecharger les donnees (format ASCII)
 2. conversion au format 'SAC'
 3. selection des stations a moins de 100km de l'hypocentre
@@ -15,6 +17,7 @@
 # Back projection process
 
 ## 1. telecharger les donnees (format ASCII)
+-----------------------------------------
 
 - from _http://www.kyoshin.bosai.go.jp_
 - to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.kik_
@@ -22,6 +25,7 @@
 	_/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.knt_
 
 ## 2. conversion au format 'SAC'
+--------------------------------
 
 `python3 tosac.py 'YyyyMmDdHhMmSs'` 
 - from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.kik_
@@ -30,20 +34,24 @@
 - to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_
 
 ## 3. selection des stations a moins de 100km de l'hypocentre
+-------------------------------------------------------------
 
 `python3 select_inf_100km.py 'YyyyMmDdHhMmSs'`
 - from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_
 - to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km_
 
 ## 4. faire les pointes des arrivees P et S dans _SAC_ (a la main)
+------------------------------------------------------------------
 
 ## 5. transformer les accelerations en vitesses et trimer entre 5sec avant le pointe P et 45sec apres (total 50sec)
+-------------------------------------------------------------------------------------------------------------------
 
 `python3 acc2vel.py 'YyyyMmDdHhMmSs'` 
 - from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km_
 - to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_
 
 ## 6. filtrage selon differentes bandes de frequences
+-----------------------------------------------------
 
 `python3 filt_vel.py 'YyyyMmDdHhMmSs'`
 - from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_
@@ -58,6 +66,7 @@
 	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz_
 
 ## 7. creation d une trace a partir des 3 composantes (toujours positive)
+-------------------------------------------------------------------------
 
 `python3 3components.py 'YyyyMmDdHhMmSs'`
 - from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_
@@ -81,6 +90,7 @@
 	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz_3comp_
 
 ## 8. obtenir les envelopes
+---------------------------
 
 `python3 vel2env.py 'YyyyMmDdHhMmSs'`
 - from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_3comp_
@@ -104,18 +114,21 @@
 	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz_3comp_env_
 
 ## 9. estimation des vitesses P et S et creation d'un dictionnaire contenant le delai de starttime pour chaque station
+----------------------------------------------------------------------------------------------------------------------
 
 `python3 vitesse_PS.py 'YyyyMmDdHhMmSs'`
 - from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_
 - to _/Data/Kumamoto/YyyyMmDdHhMmSs_
 
 ## 10. selection des stations pour la bp
+----------------------------------------
 
 `python3 selection_station.py 'YyyyMmDdHhMmSs'`
 - from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_
 - to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_selectP_ et _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_selectS_
 
 ## 11. bp des stations selectionnees
+------------------------------------
 
 `python3 bp_env_E.py 'YyyyMmDdHhMmSs' 'hypothese_ondes' 'stations_selectionnees'`
 - from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_select*_
