@@ -23,7 +23,7 @@ for freq in lst_frq:
     if os.path.isdir(lst_pth_rslt[lst_frq.index(freq)]) == False:
     	os.makedirs(lst_pth_rslt[lst_frq.index(freq)])
 
-length_t = int(30*100)
+length_t = int(30*10)
 
 for freq in lst_frq:
     print('     ', freq)
