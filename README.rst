@@ -8,7 +8,7 @@ telecharger les donnees (format ASCII)
 - from *http://www.kyoshin.bosai.go.jp*
 - to */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.****
 
-  with *** = *kik* or *knt*
+  with *\**** = *kik* or *knt*
 
 conversion au format 'SAC'
 --------------------------
@@ -19,7 +19,7 @@ conversion au format 'SAC'
 
 - from */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.****
 
-  with *** = *kik* or *knt*
+  with *\**** = *kik* or *knt*
 
 - to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac*
 
@@ -56,7 +56,7 @@ filtrage selon differentes bandes de frequences
 - from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel*
 - to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz*
 
-  with *** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
+  with *\**** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
 
 creation d une trace a partir des 3 composantes (toujours positive)
 -------------------------------------------------------------------
@@ -67,11 +67,11 @@ creation d une trace a partir des 3 composantes (toujours positive)
 
 - from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz*
 
-  with *** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
+  with *\**** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
 
 - to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz_3comp*
 
-  with *** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
+  with *\**** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
 
 obtenir les envelopes
 ---------------------
@@ -82,11 +82,11 @@ obtenir les envelopes
 
 - from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz_3comp*
 
-  with *** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
+  with *\**** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
 
 - to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz_3comp_env*
 
-  with *** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
+  with *\**** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
 
 estimation des vitesses P et S et creation d'un dictionnaire contenant le delai de starttime pour chaque station
 ----------------------------------------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ selection des stations pour la bp
 - from */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env*
 - to */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_select****
 
-  with *** = *P* or *S*
+  with *\**** = *P* or *S*
 
 bp des stations selectionnees
 -----------------------------
