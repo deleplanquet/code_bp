@@ -19,9 +19,9 @@ lst_pth_rslt_v = []
 for freq in lst_frq:
     pth_dt = path + '/' + dossier + '_vel_' + freq + 'Hz/' + dossier + '_vel_' + freq + 'Hz'
     lst_pth_dt.append(pth_dt)
-    lst_pth_rslt.append(path + '_3comp')
-    lst_pth_rslt_h.append(path + '_hori')
-    lst_pth_rslt_v.append(path + '_vert')
+    lst_pth_rslt.append(pth_dt + '_3comp')
+    lst_pth_rslt_h.append(pth_dt + '_hori')
+    lst_pth_rslt_v.append(pth_dt + '_vert')
 
 for pth in lst_pth_rslt:
     if os.path.isdir(pth) == False:
