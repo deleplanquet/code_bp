@@ -55,8 +55,6 @@ for freq in lst_frq_mi:
     	sys.exit(0)
 
     for station in lst_fch_x:
-        print('     ', station)
-
         os.chdir(path_data)
         stx = read(station)
         sty = read(lst_fch_y[lst_fch_x.index(station)])
