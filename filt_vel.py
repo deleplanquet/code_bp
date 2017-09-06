@@ -55,29 +55,34 @@ for freq in lst_frq_mi:
     	sys.exit(0)
 
     for station in lst_fch_x:
-    	print('     ', station)
+        print('     ', station)
 
-    	os.chdir(path_data)
-    	stx = read(station)
-    	sty = read(lst_fch_y[lst_fch_x.index(station)])
-    	stz = read(lst_fch_z[lst_fch_x.index(station)])
-    	stx.detrend(type = 'constant')
-    	sty.detrend(type = 'constant')
-    	stz.detrend(type = 'constant')
-    	stx[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
-    	sty[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
-    	stz[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
-    	tr_x = stx[0].filter('bandpass', freqmin = fqmi, freqmax = fqma, corners = 4, zerophase = False)
-    	tr_y = sty[0].filter('bandpass', freqmin = fqmi, freqmax = fqma, corners = 4, zerophase = False)
-    	tr_z = stz[0].filter('bandpass', freqmin = fqmi, freqmax = fqma, corners = 4, zerophase = False)
-    	tr_x = Trace(np.asarray(tr_x), stz[0].stats)
-    	tr_y = Trace(np.asarray(tr_y), stz[0].stats)
-    	tr_z = Trace(np.asarray(tr_z), stz[0].stats)
+        os.chdir(path_data)
+        stx = read(station)
+        sty = read(lst_fch_y[lst_fch_x.index(station)])
+        stz = read(lst_fch_z[lst_fch_x.index(station)])
+        stx.detrend(type = 'constant')
+        sty.detrend(type = 'constant')
+        stz.detrend(type = 'constant')
+        stx[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
+        sty[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
+        stz[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
+        tr_x = stx[0].filter('bandpass', freqmin = fqmi, freqmax = fqma, corners = 4, zerophase = False)
+        tr_y = sty[0].filter('bandpass', freqmin = fqmi, freqmax = fqma, corners = 4, zerophase = False)
+        tr_z = stz[0].filter('bandpass', freqmin = fqmi, freqmax = fqma, corners = 4, zerophase = False)
+        stx[0].stats.sac.a = stz[0].stats.sac.a
+        stx[0].stats.sac.t0 = stz[0].stats.sac.t0
+        sty[0].stats.sac.a = stz[0].stats.sac.a
+        sty[0].stats.sac.t0 = stz[0].stats.sac.t0
 
-    	os.chdir(lst_pth_rslt[lst_frq_mi.index(freq)])
-    	tr_x.write(station[:-4] + '_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz.sac', format = 'SAC')
-    	tr_y.write(lst_fch_y[lst_fch_x.index(station)][:-4] + '_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz.sac', format = 'SAC')
-    	tr_z.write(lst_fch_z[lst_fch_x.index(station)][:-4] + '_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz.sac', format = 'SAC')
+        tr_x = Trace(np.asarray(tr_x), stx[0].stats)
+        tr_y = Trace(np.asarray(tr_y), sty[0].stats)
+        tr_z = Trace(np.asarray(tr_z), stz[0].stats)
+
+        os.chdir(lst_pth_rslt[lst_frq_mi.index(freq)])
+        tr_x.write(station[:-4] + '_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz.sac', format = 'SAC')
+        tr_y.write(lst_fch_y[lst_fch_x.index(station)][:-4] + '_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz.sac', format = 'SAC')
+        tr_z.write(lst_fch_z[lst_fch_x.index(station)][:-4] + '_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz.sac', format = 'SAC')
 
 
 
