@@ -17,7 +17,7 @@ path = path_origin + '/Kumamoto/' + dossier
 lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_8', '8_16', '16_30']
 path_data = path + '/' + dossier + '_results'
 
-length_t = int(30*100)
+length_t = int(30*10)
 
 os.chdir(path_data)
 for freq in lst_frq:
