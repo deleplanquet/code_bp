@@ -6,9 +6,8 @@ telecharger les donnees (format ASCII)
 --------------------------------------
 
 - from *http://www.kyoshin.bosai.go.jp*
-- to */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.'***'*
-
-	_/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.knt_
+- to */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.****
+  with *** = *kik* or *knt*
 
 conversion au format 'SAC'
 --------------------------
@@ -17,10 +16,10 @@ conversion au format 'SAC'
 
     python3 tosac.py 'YyyyMmDdHhMmSs'
 
-- from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.kik_
+- from */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.****
+  with *** = *kik* or *knt*
 
-	_/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.knt_
-- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_
+- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac*
 
 selection des stations a moins de 100km de l'hypocentre
 -------------------------------------------------------
@@ -29,8 +28,8 @@ selection des stations a moins de 100km de l'hypocentre
 
     python3 select_inf_100km.py 'YyyyMmDdHhMmSs'
 
-- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_
-- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km_
+- from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac*
+- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km*
 
 faire les pointes des arrivees P et S dans _SAC_ (a la main)
 ------------------------------------------------------------
@@ -42,8 +41,8 @@ transformer les accelerations en vitesses et trimer entre 5sec avant le pointe P
 
     python3 acc2vel.py 'YyyyMmDdHhMmSs' 
 
-- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km_
-- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_
+- from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km*
+- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel*
 
 filtrage selon differentes bandes de frequences
 -----------------------------------------------
@@ -52,16 +51,9 @@ filtrage selon differentes bandes de frequences
 
     python3 filt_vel.py 'YyyyMmDdHhMmSs'
 
-- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_
-- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_1_2Hz_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_2_4Hz_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz_
+- from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel*
+- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz*
+  with *** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
 
 creation d une trace a partir des 3 composantes (toujours positive)
 -------------------------------------------------------------------
@@ -70,25 +62,11 @@ creation d une trace a partir des 3 composantes (toujours positive)
 
     python3 3components.py 'YyyyMmDdHhMmSs'
 
-- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_
+- from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz*
+  with *** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
 
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_1_2Hz
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_2_4Hz
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz
-
-- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_3comp_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz_3comp_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_1_2Hz_3comp_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_2_4Hz_3comp_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz_3comp_
+- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz_3comp*
+  with *** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
 
 obtenir les envelopes
 ---------------------
@@ -97,25 +75,11 @@ obtenir les envelopes
 
     python3 vel2env.py 'YyyyMmDdHhMmSs'
 
-- from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_3comp_
+- from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz_3comp*
+  with *** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
 
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz_3comp_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_1_2Hz_3comp_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_2_4Hz_3comp_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz_3comp_
-
-- to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_3comp_env_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz_3comp_env_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_1_2Hz_3comp_env_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_2_4Hz_3comp_env_
-
-	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_4_10Hz_3comp_env_
+- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz_3comp_env*
+  with *** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
 
 estimation des vitesses P et S et creation d'un dictionnaire contenant le delai de starttime pour chaque station
 ----------------------------------------------------------------------------------------------------------------
@@ -124,8 +88,8 @@ estimation des vitesses P et S et creation d'un dictionnaire contenant le delai 
 
     python3 vitesse_PS.py 'YyyyMmDdHhMmSs'
 
-- from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_
-- to _/Data/Kumamoto/YyyyMmDdHhMmSs_
+- from */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env*
+- to */Data/Kumamoto/YyyyMmDdHhMmSs*
 
 selection des stations pour la bp
 ---------------------------------
@@ -134,8 +98,9 @@ selection des stations pour la bp
 
     python3 selection_station.py 'YyyyMmDdHhMmSs'
 
-- from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_
-- to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_selectP_ et _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_selectS_
+- from */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env*
+- to */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_select****
+  with *** = *P* or *S*
 
 bp des stations selectionnees
 -----------------------------
