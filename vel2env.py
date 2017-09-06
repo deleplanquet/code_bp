@@ -52,7 +52,7 @@ for freq in lst_frq:
     	os.chdir(lst_pth_dt3[lst_frq.index(freq)])
     	st = read(station)
     	tr = [a**2 for a in st[0].data]
-    	tr = Trace(np.asarray(smooth(tr, 20)), st[0].stats)
+    	tr = Trace(np.asarray(tr), st[0].stats)
     	os.chdir(lst_pth_rslt3[lst_frq.index(freq)])
     	tr.write(station[:-4] + '_env.sac', format = 'SAC')
 
@@ -60,7 +60,7 @@ for freq in lst_frq:
     	os.chdir(lst_pth_dth[lst_frq.index(freq)])
     	st = read(station)
     	tr = [a**2 for a in st[0].data]
-    	tr = Trace(np.asarray(smooth(tr, 20)), st[0].stats)
+    	tr = Trace(np.asarray(tr), st[0].stats)
     	os.chdir(lst_pth_rslth[lst_frq.index(freq)])
     	tr.write(station[:-4] + '_env.sac', format = 'SAC')
 
@@ -68,7 +68,7 @@ for freq in lst_frq:
     	os.chdir(lst_pth_dtv[lst_frq.index(freq)])
     	st = read(station)
     	tr = [a**2 for a in st[0].data]
-    	tr = Trace(np.asarray(smooth(tr, 20)), st[0].stats)
+    	tr = Trace(np.asarray(tr), st[0].stats)
     	os.chdir(lst_pth_rsltv[lst_frq.index(freq)])
     	tr.write(station[:-4] + '_env.sac', format = 'SAC')
 
