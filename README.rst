@@ -25,7 +25,10 @@ conversion au format 'SAC'
 selection des stations a moins de 100km de l'hypocentre
 -------------------------------------------------------
 
-`python3 select_inf_100km.py 'YyyyMmDdHhMmSs'`
+.. code-block:: python3
+
+    python3 select_inf_100km.py 'YyyyMmDdHhMmSs'
+
 - from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_
 - to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km_
 
@@ -35,14 +38,20 @@ faire les pointes des arrivees P et S dans _SAC_ (a la main)
 transformer les accelerations en vitesses et trimer entre 5sec avant le pointe P et 45sec apres (total 50sec)
 -------------------------------------------------------------------------------------------------------------
 
-`python3 acc2vel.py 'YyyyMmDdHhMmSs'` 
+.. code-block:: python3
+
+    python3 acc2vel.py 'YyyyMmDdHhMmSs' 
+
 - from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km_
 - to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_
 
 filtrage selon differentes bandes de frequences
 -----------------------------------------------
 
-`python3 filt_vel.py 'YyyyMmDdHhMmSs'`
+.. code-block:: python3
+
+    python3 filt_vel.py 'YyyyMmDdHhMmSs'
+
 - from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_
 - to _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_
 
@@ -57,7 +66,10 @@ filtrage selon differentes bandes de frequences
 creation d une trace a partir des 3 composantes (toujours positive)
 -------------------------------------------------------------------
 
-`python3 3components.py 'YyyyMmDdHhMmSs'`
+.. code-block:: python3
+
+    python3 3components.py 'YyyyMmDdHhMmSs'
+
 - from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_
 
 	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz
@@ -81,7 +93,10 @@ creation d une trace a partir des 3 composantes (toujours positive)
 obtenir les envelopes
 ---------------------
 
-`python3 vel2env.py 'YyyyMmDdHhMmSs'`
+.. code-block:: python3
+
+    python3 vel2env.py 'YyyyMmDdHhMmSs'
+
 - from _/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_02_05Hz_3comp_
 
 	_/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_05_1Hz_3comp_
@@ -105,21 +120,30 @@ obtenir les envelopes
 estimation des vitesses P et S et creation d'un dictionnaire contenant le delai de starttime pour chaque station
 ----------------------------------------------------------------------------------------------------------------
 
-`python3 vitesse_PS.py 'YyyyMmDdHhMmSs'`
+.. code-block:: python3
+
+    python3 vitesse_PS.py 'YyyyMmDdHhMmSs'
+
 - from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_
 - to _/Data/Kumamoto/YyyyMmDdHhMmSs_
 
 selection des stations pour la bp
 ---------------------------------
 
-`python3 selection_station.py 'YyyyMmDdHhMmSs'`
+.. code-block:: python3
+
+    python3 selection_station.py 'YyyyMmDdHhMmSs'
+
 - from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_
 - to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_selectP_ et _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_selectS_
 
 bp des stations selectionnees
 -----------------------------
 
-`python3 bp_env_E.py 'YyyyMmDdHhMmSs' 'hypothese_ondes' 'stations_selectionnees'`
+.. code-block:: python3
+
+    python3 bp_env_E.py 'YyyyMmDdHhMmSs' 'hypothese_ondes' 'stations_selectionnees'
+
 - from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_select*_
 - to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_select* _bp_
    - hypothese_ondes: 'P' ou 'S'
