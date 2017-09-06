@@ -13,7 +13,10 @@ telecharger les donnees (format ASCII)
 conversion au format 'SAC'
 --------------------------
 
-`python3 tosac.py 'YyyyMmDdHhMmSs'` 
+.. code-block:: python3
+
+    python3 tosac.py 'YyyyMmDdHhMmSs'
+
 - from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.kik_
 
 	_/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.knt_
