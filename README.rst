@@ -1,12 +1,12 @@
 .. contents::
 
-# Back projection process
+.. section-numbering::
 
 telecharger les donnees (format ASCII)
 --------------------------------------
 
-- from _http://www.kyoshin.bosai.go.jp_
-- to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.kik_
+- from *http://www.kyoshin.bosai.go.jp*
+- to */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.kik*
 
 	_/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.knt_
 
