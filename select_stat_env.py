@@ -14,14 +14,15 @@ lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_8', '8_16', '16_30']
 lst_pth_dt = []
 
 for freq in lst_frq:
-    lst_pth_dt.append(path + '/' + dossier + '_vel_' + freq + 'Hz_hori_env')
+    lst_pth_dt.append(path + '/' + dossier + '_vel_' + freq + 'Hz/' + dossier + '_vel_' + freq + 'Hz_hori_env')
 
 lst_pth_rslt_P = []
 lst_pth_rslt_S = []
 
 for freq in lst_frq:
-    lst_pth_rslt_P.append(path + '/' + dossier + '_vel_' + freq + 'Hz_hori_env_P')
-    lst_pth_rslt_S.append(path + '/' + dossier + '_vel_' + freq + 'Hz_hori_env_S')
+    pth_dt = path + '/' + dossier + '_vel_' + freq + 'Hz/' + dossier + '_vel_' + freq + 'Hz'
+    lst_pth_rslt_P.append(pth_dt + '_hori_env_P')
+    lst_pth_rslt_S.append(pth_dt + '_hori_env_S')
     if os.path.isdir(lst_pth_rslt_P[lst_frq.index(freq)]) == False:
     	os.makedirs(lst_pth_rslt_P[lst_frq.index(freq)])
     if os.path.isdir(lst_pth_rslt_S[lst_frq.index(freq)]) == False:
