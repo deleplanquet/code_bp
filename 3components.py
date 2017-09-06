@@ -49,7 +49,6 @@ for pth in lst_pth_dt:
 for freq in lst_frq:
     print('     ', freq)
     for station in lst_fch_x[lst_frq.index(freq)]:
-    	print('       ', station)
     	os.chdir(lst_pth_dt[lst_frq.index(freq)])
     	stx = read(station)
     	sty = read(lst_fch_y[lst_frq.index(freq)][lst_fch_x[lst_frq.index(freq)].index(station)])
