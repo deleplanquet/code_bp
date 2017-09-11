@@ -56,7 +56,7 @@ for freq in lst_frq:
             smth = 0
             for i in range(int(0.5/st[0].stats.delta)):
                 smth = smth + st[0].data[int(0.5/st[0].stats.delta) + t - i]
-            tr.append(smth)
+            tr.append(smth/int(0.5/st[0].stats.delta))
         tr = Trace(np.asarray(tr), st[0].stats)
         tr.stats.npts = st[0].stats.npts - int(0.5/st[0].stats.delta)
         os.chdir(lst_pth_rslt3[lst_frq.index(freq)])
@@ -70,7 +70,7 @@ for freq in lst_frq:
             smth = 0
             for i in range(int(0.5/st[0].stats.delta)):
                 smth = smth + st[0].data[int(0.5/st[0].stats.delta) + t - i]
-            tr.append(smth)
+            tr.append(smth/int(0.5/st[0].stats.delta))
         tr = Trace(np.asarray(tr), st[0].stats)
         tr.stats.npts = st[0].stats.npts - int(0.5/st[0].stats.delta)
         os.chdir(lst_pth_rslth[lst_frq.index(freq)])
@@ -84,7 +84,7 @@ for freq in lst_frq:
             smth = 0
             for i in range(int(0.5/st[0].stats.delta)):
                 smth = smth + st[0].data[int(0.5/st[0].stats.delta) + t - i]
-            tr.append(smth)
+            tr.append(smth/int(0.5/st[0].stats.delta))
         tr = Trace(np.asarray(tr), st[0].stats)
         tr.stats.npts = st[0].stats.npts - int(0.5/st[0].stats.delta)
         os.chdir(lst_pth_rsltv[lst_frq.index(freq)])
