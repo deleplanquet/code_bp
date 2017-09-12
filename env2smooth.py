@@ -1,4 +1,5 @@
 from obspy import read
+from obspy.signal.util import smooth
 from obspy import Trace
 import sys
 import os
@@ -51,42 +52,21 @@ for freq in lst_frq:
     for station in lst_fch_3[lst_frq.index(freq)]:
         os.chdir(lst_pth_dt3[lst_frq.index(freq)])
         st = read(station)
-        tr = [a for a in np.zeros(int(0.5/st[0].stats.delta))]
-        for t in range(st[0].stats.npts - int(0.5/st[0].stats.delta)):
-            smth = 0
-            for i in range(int(0.5/st[0].stats.delta)):
-                smth = smth + st[0].data[int(0.5/st[0].stats.delta) + t - i]
-            tr.append(smth/int(0.5/st[0].stats.delta))
-        tr = Trace(np.asarray(tr), st[0].stats)
-        tr.stats.npts = st[0].stats.npts - int(0.5/st[0].stats.delta)
+        tr = Trace(smooth(st[0].data, int(0.5/st[0].stats.delta)), st[0].stats)
         os.chdir(lst_pth_rslt3[lst_frq.index(freq)])
         tr.write(station[:-4] + '_smooth.sac', format = 'SAC')
 
     for station in lst_fch_h[lst_frq.index(freq)]:
         os.chdir(lst_pth_dth[lst_frq.index(freq)])
         st = read(station)
-        tr = [a for a in np.zeros(int(0.5/st[0].stats.delta))]
-        for t in range(st[0].stats.npts - int(0.5/st[0].stats.delta)):
-            smth = 0
-            for i in range(int(0.5/st[0].stats.delta)):
-                smth = smth + st[0].data[int(0.5/st[0].stats.delta) + t - i]
-            tr.append(smth/int(0.5/st[0].stats.delta))
-        tr = Trace(np.asarray(tr), st[0].stats)
-        tr.stats.npts = st[0].stats.npts - int(0.5/st[0].stats.delta)
+        tr = Trace(smooth(st[0].data, int(0.5/st[0].stats.delta)), st[0].stats)
         os.chdir(lst_pth_rslth[lst_frq.index(freq)])
         tr.write(station[:-4] + '_smooth.sac', format = 'SAC')
 
     for station in lst_fch_v[lst_frq.index(freq)]:
         os.chdir(lst_pth_dtv[lst_frq.index(freq)])
         st = read(station)
-        tr = [a for a in np.zeros(int(0.5/st[0].stats.delta))]
-        for t in range(st[0].stats.npts - int(0.5/st[0].stats.delta)):
-            smth = 0
-            for i in range(int(0.5/st[0].stats.delta)):
-                smth = smth + st[0].data[int(0.5/st[0].stats.delta) + t - i]
-            tr.append(smth/int(0.5/st[0].stats.delta))
-        tr = Trace(np.asarray(tr), st[0].stats)
-        tr.stats.npts = st[0].stats.npts - int(0.5/st[0].stats.delta)
+        tr = Trace(smooth(st[0].data, int(0.5/st[0].stats.delta)), st[0].stats)
         os.chdir(lst_pth_rsltv[lst_frq.index(freq)])
         tr.write(station[:-4] + '_smooth.sac', format = 'SAC')
 
