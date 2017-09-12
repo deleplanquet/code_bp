@@ -237,6 +237,6 @@ for freq in lst_frq:
     	    	    	stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_pth_fch[lst_frq.index(freq)])*f(tshift)
 
     os.chdir(path_results)
-    with open(dossier_seisme + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_' + select_station + 'impulse_stack2D', 'wb') as my_fch:
+    with open(dossier_seisme + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_' + select_station + '_impulse_stack2D', 'wb') as my_fch:
     	my_pck = pickle.Pickler(my_fch)
     	my_pck.dump(stack)
