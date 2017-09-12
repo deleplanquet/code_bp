@@ -16,12 +16,17 @@ path = path_origin + '/Kumamoto/' + dossier
 lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_8', '8_16', '16_30']
 path_data = path + '/' + dossier + '_results'
 
-lst_pth_rslt = []
+lst_pth_rslt_pdf = []
+lst_pth_rslt_png = []
 
 for freq in lst_frq:
-    lst_pth_rslt.append(path_data + '/' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_2D')
-    if os.path.isdir(lst_pth_rslt[lst_frq.index(freq)]) == False:
-    	os.makedirs(lst_pth_rslt[lst_frq.index(freq)])
+    lst_pth_rslt_pdf.append(path_data + '/' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_S_impulse_2D/pdf')
+    lst_pth_rslt_png.append(path_data + '/' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_S_impulse_2D/png')
+
+    if os.path.isdir(lst_pth_rslt_pdf[lst_frq.index(freq)]) == False:
+    	os.makedirs(lst_pth_rslt_pdf[lst_frq.index(freq)])
+    if os.path.isdir(lst_pth_rslt_png[lst_frq.index(freq)]) == False:
+    	os.makedirs(lst_pth_rslt_png[lst_frq.index(freq)])
 
 length_t = int(30*10)
 
@@ -29,23 +34,23 @@ for freq in lst_frq:
     print('     ', freq)
     os.chdir(path_data)
     stack = None
-    with open(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D', 'rb') as my_fch:
+    with open(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_S_impulse_stack2D', 'rb') as my_fch:
     	my_dpck = pickle.Unpickler(my_fch)
     	stack = my_dpck.load()
 
-    for i in range(int(length_t/5)):
-    	os.chdir(lst_pth_rslt[lst_frq.index(freq)])
-    	m = 5*i
-    	fig, ax = plt.subplots(1, 1)
-    	ax.set_xlabel('Dip (km)')
-    	ax.set_ylabel('Strike (km)')
-    	ax.imshow(stack[:, :, m], cmap = 'jet', vmin = stack[:, :, :].min(), vmax = stack[:, :, :].max(), interpolation = 'none', origin = 'lower')
-    	#ax.set_aspect('auto')
-    	ax.set_xticklabels([0, 0, 4, 8, 12, 16, 20])
-    	ax.set_yticklabels([0, 0, 10, 20, 30, 40, 50])
+    for i in range(length_t):
+        fig, ax = plt.subplots(1, 1)
+        ax.set_xlabel('Dip (km)')
+        ax.set_ylabel('Strike (km)')
+        ax.imshow(stack[:, :, i], cmap = 'jet', vmin = stack[:, :, :].min(), vmax = stack[:, :, :].max(), interpolation = 'none', origin = 'lower')
+        #ax.set_aspect('auto')
+        #ax.set_xticklabels([0, 0, 4, 8, 12, 16, 20])
+        #ax.set_yticklabels([0, 0, 10, 20, 30, 40, 50])
     
-    	fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_' + str(m) + '.pdf')
-    	fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_' + str(m) + '.png')
+        os.chdir(lst_pth_rslt_pdf[lst_frq.index(freq)])
+        fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_' + str(i*100) + '.pdf')
+        os.chdir(lst_pth_rslt_png[lst_frq.index(freq)])
+        fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_' + str(i*100) + '.png')
     	
 
 
