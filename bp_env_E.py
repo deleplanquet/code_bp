@@ -146,7 +146,7 @@ lst_pth_dt = []
 
 for freq in lst_frq:
     pth_dt = path + '/' + dossier_seisme + '_vel_' + freq + 'Hz/' + dossier_seisme + '_vel_' + freq + 'Hz'
-    lst_pth_dt.append(pth_dt + '_' + dt_type + '_env_' + select_station)
+    lst_pth_dt.append(pth_dt + '_' + dt_type + '_env_smooth_' + select_station + '_impulse')
 
 path_results = path + '/' + dossier_seisme + '_results'
 
@@ -201,8 +201,6 @@ coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, nor
 #stacks
 print('     stacks envelop')
 
-os.chdir(lst_pth_dt[0])
-st = read(lst_pth_fch[0][0])
 samp_rate = 10 # st[0].stats.sampling_rate = 100
 length_t = int(30*samp_rate)
 
@@ -239,6 +237,6 @@ for freq in lst_frq:
     	    	    	stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_pth_fch[lst_frq.index(freq)])*f(tshift)
 
     os.chdir(path_results)
-    with open(dossier_seisme + '_vel_' + freq + 'Hz_' + dt_type + '_env_' + select_station + '_stack2D', 'wb') as my_fch:
+    with open(dossier_seisme + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_' + select_station + 'impulse_stack2D', 'wb') as my_fch:
     	my_pck = pickle.Pickler(my_fch)
     	my_pck.dump(stack)
