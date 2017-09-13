@@ -38,7 +38,7 @@ dt_type = sys.argv[3]
 if len(dossier) != 14:
     print('ERROR TYPO dossier', len(dossier))
     sys.exit(0)
-if freq != '02_05' and freq != '05_1' and freq != '1_2' and freq != '2_4' and freq != '4_10':
+if freq != '02_05' and freq != '05_1' and freq != '1_2' and freq != '2_4' and freq != '4_8' and freq != '8_16' and freq != '16_30':
     print('ERROR TYPO freq')
     sys.exit(0)
 if dt_type != '3comp' and dt_type != 'hori' and dt_type != 'vert':
@@ -47,8 +47,8 @@ if dt_type != '3comp' and dt_type != 'hori' and dt_type != 'vert':
 
 path_origin = os.getcwd()[:-6]
 path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env'
-path_results = path_data + '_results'
+path_data = path + '/' + dossier + '_vel_' + freq + 'Hz/' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_S_impulse'
+path_results = path + '/' + dossier + '_results'
 
 list_fich = os.listdir(path_data)
 
@@ -88,7 +88,7 @@ for fich in list_fich:
     #ax.scatter(ordo/3.4 - 0.2 + dict_vel_used[st[0].stats.station], ordo, s = 2)
 
 os.chdir(path_results)
-fig.savefig('tttraces_' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env.pdf')
+fig.savefig('tttraces_' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_S_impulse.pdf')
 
 
 
