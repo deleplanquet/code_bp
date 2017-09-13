@@ -42,7 +42,7 @@ for freq in lst_frq:
         fig, ax = plt.subplots(1, 1)
         ax.set_xlabel('Dip (km)')
         ax.set_ylabel('Strike (km)')
-        ax.imshow(stack[:, :, i], cmap = 'jet', vmin = stack[:, :, :].min(), vmax = stack[:, :, :].max(), interpolation = 'none', origin = 'lower')
+        ax.imshow(stack[:, :, i], cmap = 'jet', vmin = stack[:, :, :].min(), vmax = stack[:, :, :].max(), interpolation = 'none', origin = 'lower', extent = (0, 24, 0, 56))
         #ax.set_aspect('auto')
         #ax.set_xticklabels([0, 0, 4, 8, 12, 16, 20])
         #ax.set_yticklabels([0, 0, 10, 20, 30, 40, 50])
