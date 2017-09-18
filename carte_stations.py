@@ -25,6 +25,11 @@ lst_pth_fch = []
 
 for freq in lst_frq:
     lst_pth_fch.append(os.listdir(lst_pth_dt[lst_frq.index(freq)]))
+    
+os.chdir(path_origin + '/Kumamoto')
+with open('ref_seismes_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    dict_seis = my_dpck.load()
 
 min_lat = None
 min_lon = None
@@ -73,6 +78,9 @@ ax.plot(x_fault,
         color='green',
         linewidth = 0.3,
         zorder=1)
+#Epicenter
+x_epi, y_epi = m(dict_seis[dossier]['lon'], dict_seis[dossier]['lat'])
+ax.scatter(x_epi, y_epi, 5, marker = '*', color = 'green', zorder = 4)
 
 for freq in lst_frq:
     os.chdir(lst_pth_dt[lst_frq.index(freq)])
@@ -81,9 +89,6 @@ for freq in lst_frq:
         x_sta, y_sta = m(st[0].stats.sac.stlo, st[0].stats.sac.stla)
         ax.scatter(x_sta, y_sta, 2, marker='^', color = 'blue', zorder=2)
         ax.text(x_sta, y_sta, st[0].stats.station, fontsize=2, ha='center', va='bottom', zorder=3)
-
-        x_epi, y_epi = m(st[0].stats.sac.evlo, st[0].stats.sac.evla)
-        ax.scatter(x_epi, y_epi, 5, marker='*', color='green', zorder=4)
 
     os.chdir(path_results)
     fig.savefig('map_' + dossier + '_vel_' + freq + '_Hz_' + dt_type + '_env_smooth_' + select_station + '_impulse.pdf')
