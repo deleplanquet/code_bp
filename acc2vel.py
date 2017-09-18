@@ -37,7 +37,7 @@ path_results = path + '/' + dossier + '_vel'
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
 
-os.chdir(path_origin + '/Data')
+os.chdir(path_origin + '/Kumamoto')
 with open('ref_seismes_bin', 'rb') as my_fich:
     my_depick = pickle.Unpickler(my_fich)
     dict_seis = my_depick.load()
