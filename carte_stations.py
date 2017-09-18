@@ -54,8 +54,8 @@ long_fault = [130.7071, 131.1216]
 
 fig, ax = plt.subplots(1, 1)
 #Basemap
-print(min_lon - 1, min_lat - 0.5, max_lon + 1, max_lat + 0.5)
-m = Basemap(projection='merc', llcrnrlon=min_lon - 1, llcrnrlat=min_lat - 0.5, urcrnrlon=max_lon + 1, urcrnrlat=max_lat + 0.5, resolution='i')
+print(min_lon - 1, min_lat - 0.15, max_lon + 1, max_lat + 0.15)
+m = Basemap(projection='merc', llcrnrlon=min_lon - 1, llcrnrlat=min_lat - 0.15, urcrnrlon=max_lon + 1, urcrnrlat=max_lat + 0.15, resolution='i')
 #Coord fault
 x_fault, y_fault = m(long_fault, lat_fault)
 #Coastlines
@@ -63,13 +63,11 @@ m.drawcoastlines(linewidth=0.2)
 #Fill color
 m.fillcontinents('yellow')
 #Parallels
-m.drawparallels(np.arange(int(min_lat - 0.5),
-    int(max_lat + 0.5) + 1, 0.5),
+m.drawparallels(np.arange(int(min_lat - 0.15), int(max_lat + 0.15) + 1, 0.5),
     labels=[1, 0, 0, 0],
     linewidth=0.1)
 #Meridians
-m.drawmeridians(np.arange(int(min_lon - 1),
-    int(max_lon + 1) + 1, 0.5),
+m.drawmeridians(np.arange(int(min_lon - 1), int(max_lon + 1) + 1, 0.5),
     labels=[0, 0, 0, 1],
     linewidth=0.1)
 #Plot fault
