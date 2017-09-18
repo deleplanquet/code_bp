@@ -70,7 +70,14 @@ tarrival = stt[0].stats.starttime
 t_start_ref = None
 for cles in dict_vel[2].keys():
     if t_start_ref == None or t_start_ref > dict_vel[2][cles]:
-    	t_start_ref = dict_vel[2][cles]
+        t_start_ref = dict_vel[2][cles]
+        cles_ref = cles
+
+for fich in list_fich:
+    st = read(fich)
+    if st[0].stats.station == cles_ref:
+        x0, y0, z0 = geo2cart([R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo])
+        print('bouab')
 
 for fich in list_fich:
     st = read(fich)
@@ -78,14 +85,17 @@ for fich in list_fich:
     xh, yh, zh = -3514.73166817, 4053.15977919, 3467.78299218
     xs, ys, zs = geo2cart([R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo])
     print(xh, yh, zh, xs, ys, zs)
-    tshift = t_start_ref - dict_vel[2][st[0].stats.station] + math.sqrt(pow(xh - xs, 2) + pow(yh - ys, 2) + pow(zh - zs, 2))/3.4 + dict_vel_used[st[0].stats.station]
+    #tshift = t_start_ref - dict_vel[2][st[0].stats.station] + math.sqrt(pow(xh - xs, 2) + pow(yh - ys, 2) + pow(zh - zs, 2))/3.4 + dict_vel_used[st[0].stats.station]
+    tshift = math.sqrt(pow(xh - xs, 2) + pow(yh - ys, 2) + pow(zh - zs, 2))/3.4 - math.sqrt(pow(xh - x0, 2) + pow(yh - y0, 2) + pow(zh - z0, 2))/3.4 + t_start_ref - dict_vel[2][st[0].stats.station] + dict_vel_used[st[0].stats.station]
+    print(math.sqrt(pow(xh - xs, 2) + pow(yh - ys, 2) + pow(zh - zs, 2))/3.4, math.sqrt(pow(xh - x0, 2) + pow(yh - y0, 2) + pow(zh - z0, 2))/3.4)
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
     delaistart = st[0].stats.starttime - tarrival
-    t = [a + tshift for a in t]
+    t = [a - tshift for a in t]
     ordo = dist([R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo])
     #print(t_start_ref, dict_vel[2][st[0].stats.station], math.sqrt(pow(xh - xs, 2) + pow(yh - ys, 2) + pow(zh - zs, 2))/3.4, dict_vel_used[st[0].stats.station], tshift)
     ax.plot(t, translate(norm1(st[0].data), ordo), lw = 0.2)
     #ax.scatter(ordo/3.4 - 0.2 + dict_vel_used[st[0].stats.station], ordo, s = 2)
+    ax.text(40, ordo, st[0].stats.station, fontsize = 2, ha = 'center', va = 'bottom', zorder = 3)
 
 os.chdir(path_results)
 fig.savefig('tttraces_' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_S_impulse.pdf')
