@@ -76,7 +76,8 @@ def milieu(lat1, long1, lat2, long2):
 def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
     x_cf, y_cf, z_cf = geo2cart(cen_fault[0], cen_fault[1], cen_fault[2])
     x_fault = np.arange(-length/2/pasx, length/2/pasx)
-    y_fault = np.arange(0, width/pasy)
+    #y_fault = np.arange(0, width/pasy)
+    y_fault = np.arange(-width/2/pasy, width/2/pasy)
     grill_fault = np.zeros((len(x_fault), len(y_fault), 3))
     for a in x_fault:
         for b in y_fault:
@@ -163,6 +164,11 @@ with open(dossier_seisme + '_veldata', 'rb') as mon_fich:
     mon_depick = pickle.Unpickler(mon_fich)
     dict_vel = mon_depick.load()
 
+os.chdir(path_origin + '/Kumamoto')
+with open('ref_seismes_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    dict_seis = my_dpck.load()
+
 #constantes
 R_Earth = 6400
 v_P = 5.8
@@ -179,8 +185,8 @@ print('vP', v_P, 'vS',  v_S)
 #recuperation position faille
 strike = 224
 dip = 65
-l_fault = 56
-w_fault = 24
+l_fault = 100
+w_fault = 40
 lat_fault = [32.6477, 32.9858]
 long_fault = [130.7071, 131.1216]
 pas_l = 2
@@ -196,7 +202,8 @@ vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
 vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
 vect_dip = rotation(vect_perp_strike, dip, vect_strike)
 
-coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
+#coord_fault = fault([6400, lat_cen_fault, long_cen_fault], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
+coord_fault = fault([6400 - dict_seis[dossier_seisme]['dep'], dict_seis[dossier_seisme]['lat'], dict_seis[dossier_seisme]['lon']], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
 
 #stacks
 print('     stacks envelop')
@@ -213,9 +220,15 @@ for freq in lst_frq:
     os.chdir(lst_pth_dt[lst_frq.index(freq)])
 
     travt = []
+    tmin = None
+    dmin = None
     for fichier in lst_pth_fch[lst_frq.index(freq)]:
-    	st = read(fichier)
-    	travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], coord_fault, vel_used))
+        st = read(fichier)
+        travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], coord_fault, vel_used))
+        if dmin == None or dmin > st[0].stats.sac.dist:
+            dmin = st[0].stats.sac.dist
+        if tmin == None or tmin > st[0].stats.sac.t0:
+            tmin = st[0].stats.sac.t0
 
     stack = np.zeros((int(l_fault/pas_l), int(w_fault/pas_w), length_t))
 
@@ -232,9 +245,11 @@ for freq in lst_frq:
     	for ix in range(int(l_fault/pas_l)):
     	    for iy in range(int(w_fault/pas_w)):
     	    	for it in range(length_t):
-    	    	    tshift = tstart_ref + dict_delai[st[0].stats.station] + travt[ista][ix, iy] + dict_vel_used[st[0].stats.station] + it/samp_rate
-    	    	    if tshift > 0 and tshift < t[-1]:
-    	    	    	stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_pth_fch[lst_frq.index(freq)])*f(tshift)
+                    #tshift = travt[ista][ix, iy] + dict_vel_used[st[0].stats.station] - 15 + it/samp_rate
+                    #tshift = travt[ista][ix, iy] - dmin/v_S + tmin - 5 + it/samp_rate
+                    tshift = tstart_ref - dict_delai[st[0].stats.station] + travt[ista][ix, iy] -dmin/v_S + dict_vel_used[st[0].stats.station] + it/samp_rate
+                    if tshift > 0 and tshift < t[-1]:
+                        stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_pth_fch[lst_frq.index(freq)])*f(tshift)
 
     os.chdir(path_results)
     with open(dossier_seisme + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_' + select_station + '_impulse_stack2D', 'wb') as my_fch:
