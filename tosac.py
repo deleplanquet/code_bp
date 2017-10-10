@@ -7,11 +7,11 @@ import pickle
 
 path_origin = os.getcwd()[:-6]
 os.chdir(path_origin + '/Kumamoto')
-with open('variables_bin', 'rb') as my_fch:
+with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
-    variables = my_dpck.load()
+    param = my_dpck.load()
 
-dossier = variables['dossier']
+dossier = param['dossier']
 
 path = path_origin + '/Data/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_brut'
