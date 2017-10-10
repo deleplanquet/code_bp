@@ -3,10 +3,16 @@ import sys
 from obspy import read
 import os
 import obspy.io.sac
-
-dossier = sys.argv[1]
+import pickle
 
 path_origin = os.getcwd()[:-6]
+os.chdir(path_origin + '/Kumamoto')
+with open('variables_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    variables = my_dpck.load()
+
+dossier = variables['dossier']
+
 path = path_origin + '/Data/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_brut'
 path_kik = path_data + '/' + dossier + '.kik'
