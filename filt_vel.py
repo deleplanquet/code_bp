@@ -3,20 +3,25 @@ import numpy as np
 from obspy import Trace
 import os
 import sys
-
-dossier = sys.argv[1]
+import pickle
 
 path_origin = os.getcwd()[:-6]
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel'
+os.chdir(path_origin + '/Kumamoto')
+with open('parametres_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    param = my_dpck.load()
 
-lst_frq_mi = ['02', '05', '1', '2', '4', '8', '16']
-lst_frq_ma = ['05', '1', '2', '4', '8', '16', '30']
+dossier = param['dossier']
+couronne = param['couronne']
+
+path = path_origin + '/Kumamoto/' + dossier
+path_data = path + '/' + dossier + '_vel_' + couronne + 'km'
+
+lst_frq = ['02-05', '05-1', '1-2', '2-4', '4-8', '8-16', '16-30']
 lst_pth_rslt = []
 
-for freq in lst_frq_mi:
-    #lst_pth_rslt.append(path + '/' + dossier + '_vel_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz')
-    lst_pth_rslt.append(path_data + '_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz/' + dossier + '_vel_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz')
+for freq in lst_frq:
+    lst_pth_rslt.append(path_data + '_' + freq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + freq + 'Hz')
     if os.path.isdir(lst_pth_rslt[lst_frq_mi.index(freq)]) == False:
     	os.makedirs(lst_pth_rslt[lst_frq_mi.index(freq)])
 
@@ -28,27 +33,27 @@ lst_fch_x.sort()
 lst_fch_y.sort()
 lst_fch_z.sort()
 
-for freq in lst_frq_mi:
+for freq in lst_frq:
     print('   ', freq, lst_frq_ma[lst_frq_mi.index(freq)])
-    if freq == '02':
+    if freq == '02-05':
     	fqmi = 0.2
     	fqma = 0.5
-    elif freq == '05':
+    elif freq == '05-1':
     	fqmi = 0.5
     	fqma = 1
-    elif freq == '1':
+    elif freq == '1-2':
     	fqmi = 1
     	fqma = 2
-    elif freq == '2':
+    elif freq == '2-4':
     	fqmi = 2
     	fqma = 4
-    elif freq == '4':
+    elif freq == '4-8':
     	fqmi = 4
     	fqma = 8
-    elif freq == '8':
+    elif freq == '8-16':
     	fqmi = 8
     	fqma = 16
-    elif freq == '16':
+    elif freq == '16-30':
     	fqmi = 16
     	fqma = 32
     else:
@@ -79,9 +84,9 @@ for freq in lst_frq_mi:
         tr_z = Trace(np.asarray(tr_z), stz[0].stats)
 
         os.chdir(lst_pth_rslt[lst_frq_mi.index(freq)])
-        tr_x.write(station[:-4] + '_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz.sac', format = 'SAC')
-        tr_y.write(lst_fch_y[lst_fch_x.index(station)][:-4] + '_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz.sac', format = 'SAC')
-        tr_z.write(lst_fch_z[lst_fch_x.index(station)][:-4] + '_' + freq + '_' + lst_frq_ma[lst_frq_mi.index(freq)] + 'Hz.sac', format = 'SAC')
+        tr_x.write(station[:-4] + '_' + freq + 'Hz.sac', format = 'SAC')
+        tr_y.write(lst_fch_y[lst_fch_x.index(station)][:-4] + '-' + freq + 'Hz.sac', format = 'SAC')
+        tr_z.write(lst_fch_z[lst_fch_x.index(station)][:-4] + '-' + freq + 'Hz.sac', format = 'SAC')
 
 
 
