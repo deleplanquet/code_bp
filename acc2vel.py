@@ -27,12 +27,19 @@ def geo2cart(r, lat, lon):
 def norm1(vect):
     return [5*a/vect.max() for a in vect]
 
-dossier = sys.argv[1]
-
 path_origin = os.getcwd()[:-6]
+os.chdir(path_origin + '/Kumamoto')
+with open('parametres_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    param = my_dpck.load()
+
+R_Earth = param['R_Earth']
+dossier = param['dossier']
+couronne = param['couronne']
+
 path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_sac_inf100km'
-path_results = path + '/' + dossier + '_vel'
+path_data = path + '/' + dossier + '_sac_' + couronne + 'km'
+path_results = path + '/' + dossier + '_vel_' + couronne + 'km'
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
@@ -143,9 +150,9 @@ for station in lst_fch_x:
 
     os.chdir(path_results)
     #fig.savefig(tr.stats.station + '.pdf')
-    trx_vel.write(station[:-4] + '_vel.sac', format = 'SAC')
-    try_vel.write(station[:17] + 'NS' + station[19:-4] + '_vel.sac', format = 'SAC')
-    trz_vel.write(station[:17] + 'UD' + station[19:-4] + '_vel.sac', format = 'SAC')
+    trx_vel.write(station[:-4] + '_vel_' + couronne + 'km.sac', format = 'SAC')
+    try_vel.write(station[:17] + 'NS' + station[19:-4] + '_vel_' + couronne + 'km.sac', format = 'SAC')
+    trz_vel.write(station[:17] + 'UD' + station[19:-4] + '_vel_' + couronne + 'km.sac', format = 'SAC')
 
 
 
