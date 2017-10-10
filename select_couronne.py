@@ -5,9 +5,6 @@ import os
 import math
 from obspy import Trace
 
-#constantes
-R_Earth = 6400
-
 #conversion angle degre -> radian
 def d2r(angle):
     return angle*math.pi/180
@@ -34,6 +31,7 @@ with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
 
+R_Earth = param['R_Earth']
 dossier = param['dossier']
 couronne = param['couronne']
 dist_min = param['dist_min']
