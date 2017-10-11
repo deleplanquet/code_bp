@@ -118,6 +118,9 @@ for cles in vS.keys():
     	#vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[1])/vS['fit']
     	vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[1])/3.4
 
+#vP: correction station pointe P
+#vS: correction station pointe S
+#tdeb: difference starttime
 to_register = [vP, vS, tdeb]
 
 print(poptP[0], poptS[0])
