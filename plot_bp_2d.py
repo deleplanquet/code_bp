@@ -3,64 +3,59 @@ import os
 import sys
 import pickle
 
-dossier = sys.argv[1]
-dt_type = sys.argv[2]
-
-if dt_type != '3comp' and dt_type != 'hori' and dt_type != 'vert':
-    print('ERROR TYPO')
-    sys.exit(0)
-
 path_origin = os.getcwd()[:-6]
+os.chdir(path_origin + '/Kumamoto')
+with open('parametres_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    param = my_dpck.load()
+
+dossier = param['dossier']
+dt_type = param['composante']
+frq = param['band_freq']
+couronne = param['couronne']
+length_time = param['length_t']
+samp_rate = param['samp_rate']
+hyp_bp = param['ondes_select']
+azim = param['angle']
+l_fault = param['l_fault']
+w_fault = param['w_fault']
+strike = param['strike']
+
+latlon = 'latlon10'
+
+degree = '\u00b0'
+
 path = path_origin + '/Kumamoto/' + dossier
+path_data = path + '/' + dossier + '_results/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz'
+path_rslt_pdf = path_data + '/pdf_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
+path_rslt_png = path_data + '/png_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
 
-lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_8', '8_16', '16_30']
-path_data = path + '/' + dossier + '_results'
+if os.path.isdir(path_rslt_pdf) == False:
+    os.makedirs(path_rslt_pdf)
+if os.path.isdir(path_rslt_png) == False:
+    os.makedirs(path_rslt_png)
 
-lst_pth_rslt_pdf = []
-lst_pth_rslt_png = []
+length_t = int(length_time*samp_rate)
 
-for freq in lst_frq:
-    lst_pth_rslt_pdf.append(path_data + '/' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_S_impulse_2D/pdf')
-    lst_pth_rslt_png.append(path_data + '/' + dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_S_impulse_2D/png')
+os.chdir(path_data)
+stack = None
+with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack2D', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    stack = my_dpck.load()
 
-    if os.path.isdir(lst_pth_rslt_pdf[lst_frq.index(freq)]) == False:
-    	os.makedirs(lst_pth_rslt_pdf[lst_frq.index(freq)])
-    if os.path.isdir(lst_pth_rslt_png[lst_frq.index(freq)]) == False:
-    	os.makedirs(lst_pth_rslt_png[lst_frq.index(freq)])
-
-length_t = int(30*10)
-
-for freq in lst_frq:
-    print('     ', freq)
-    os.chdir(path_data)
-    stack = None
-    with open(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_smooth_S_impulse_stack2D', 'rb') as my_fch:
-    	my_dpck = pickle.Unpickler(my_fch)
-    	stack = my_dpck.load()
-
-    for i in range(length_t):
-        fig, ax = plt.subplots(1, 1)
-        ax.set_xlabel('Dip (km)')
-        ax.set_ylabel('Strike (km)')
-        ax.imshow(stack[:, :, i], cmap = 'jet', vmin = stack[:, :, :].min(), vmax = stack[:, :, :].max(), interpolation = 'none', origin = 'lower', extent = (0, 24, 0, 56))
-        #ax.set_aspect('auto')
-        #ax.set_xticklabels([0, 0, 4, 8, 12, 16, 20])
-        #ax.set_yticklabels([0, 0, 10, 20, 30, 40, 50])
+for i in range(length_t):
+    fig, ax = plt.subplots(1, 1)
+    ax.set_xlabel('Dip (km)')
+    ax.set_ylabel('Strike (km)')
+    ax.imshow(stack[:, :, i]**2, cmap = 'jet', vmin = stack[:, :, :].min(), vmax = (stack[:, :, :].max())**2, interpolation = 'none', origin = 'lower', extent = (0, w_fault, 0, l_fault))
+    ax.text(w_fault/4, 95*l_fault/100, 'N ' + strike + degree + ' E', fontsize = 10, ha = 'center', va = 'center', color = 'white')
+    ax.text(35*w_fault/40, 95*l_fault/100, str((i - 50)/10) + 's', fontsize = 10, ha = 'center', va = 'center', color = 'white')
+    ax.scatter(w_fault/2, l_fault/2, 20, marker = '*', color = 'white', linewidth = 0.2)
     
-        os.chdir(lst_pth_rslt_pdf[lst_frq.index(freq)])
-        fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_' + str(i*100) + '.pdf')
-        os.chdir(lst_pth_rslt_png[lst_frq.index(freq)])
-        fig.savefig(dossier + '_vel_' + freq + 'Hz_' + dt_type + '_env_S_stack2D_' + str(i*100) + '.png')
-    	
-
-
-
-
-
-
-
-
-
+    os.chdir(path_rslt_pdf)
+    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack2D_n=2_' + str(i*100) + '.pdf')
+    os.chdir(path_rslt_png)
+    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack2D_n=2_' + str(i*100) + '.png')
 
 
 
