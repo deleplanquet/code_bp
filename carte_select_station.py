@@ -17,7 +17,9 @@ lst_fch_origin = [a for a in os.listdir(path + '/' + dossier + '_sac') if ('UD' 
 lst_fch_inf100 = [a for a in os.listdir(path + '/' + dossier + '_sac_inf100km') if ('UD' in a) == True and ('UD1' in a) == False]
 
 freq = '4_8Hz'
-lst_fch_frq = os.listdir(path + '/' + dossier + '_vel_' + freq + '/' + dossier + '_vel_' + freq + '_hori_env_smooth_S')
+lst_fch_frq = os.listdir(path + '/' + dossier + '_vel_0-50km_' + freq + '/' + dossier + '_vel_0-50km_' + freq + '_hori_env_smooth_S')
+lst_fch_frq1 = os.listdir(path + '/' + dossier + '_vel_' + freq + '/' + dossier + '_vel_' + freq + '_hori_env_smooth_S')
+lst_fch_frq2 = os.listdir(path + '/' + dossier + '_vel_80-100km_' + freq + '/' + dossier + '_vel_80-100km_' + freq + '_hori_env_smooth_S')
 
 #lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_8', '8_16', '16_30']
 #lst_pth_dt = []
@@ -64,16 +66,29 @@ os.chdir(path + '/' + dossier + '_sac')
 for station in lst_fch_origin:
     st = read(station)
     x_sta, y_sta = m(st[0].stats.sac.stlo, st[0].stats.sac.stla)
-    ax.scatter(x_sta, y_sta, 2, marker = '^', facecolors = 'none', edgecolors = 'blue', zorder = 5, linewidth = 0.2)
+    ax.scatter(x_sta, y_sta, 2, marker = '^', facecolors = 'blue', edgecolors = 'blue', zorder = 5, linewidth = 0.2)
 
-os.chdir(path + '/' + dossier + '_sac_inf100km')
-for station in lst_fch_inf100:
+#os.chdir(path + '/' + dossier + '_sac_inf100km')
+#os.chdir(path + '/' + dossier + '_vel_0-50km_' + freq + '/' + dossier + '_vel_0-50km_' + freq + '_hori_env_smooth_S')
+#for station in lst_fch_frq:
+#    st = read(station)
+#    x_sta, y_sta = m(st[0].stats.sac.stlo, st[0].stats.sac.stla)
+#    ax.scatter(x_sta, y_sta, 2, marker = '^', color = 'red', zorder = 5, linewidth = 0.2)
+
+os.chdir(path + '/' + dossier + '_vel_' + freq + '/' + dossier + '_vel_' + freq + '_hori_env_smooth_S')
+for station in lst_fch_frq1:
     st = read(station)
     x_sta, y_sta = m(st[0].stats.sac.stlo, st[0].stats.sac.stla)
-    ax.scatter(x_sta, y_sta, 2, marker = '^', color = 'blue', zorder = 5, linewidth = 0.2)
+    ax.scatter(x_sta, y_sta, 2, marker = '^', color = 'red', zorder = 5, linewidth = 0.2)
+
+#os.chdir(path + '/' + dossier + '_vel_80-100km_' + freq + '/' + dossier + '_vel_80-100km_' + freq + '_hori_env_smooth_S')
+#for station in lst_fch_frq2:
+#    st = read(station)
+#    x_sta, y_sta = m(st[0].stats.sac.stlo, st[0].stats.sac.stla)
+#    ax.scatter(x_sta, y_sta, 2, marker = '^', color = 'cyan', zorder = 5, linewidth = 0.2)
 
 os.chdir(path + '/' + dossier + '_results')
-fig.savefig('map_' + dossier + '_inf_100km.pdf')
+fig.savefig('map_' + dossier + '_inf_100km_boubou.pdf')
 
 min_lat = None
 max_lat = None
@@ -109,11 +124,11 @@ for station in lst_fch_inf100:
     x_sta, y_sta = m2(st[0].stats.sac.stlo, st[0].stats.sac.stla)
     ax2.scatter(x_sta, y_sta, 7, marker = '^', color = 'blue', zorder = 4, linewidth = 0.2)
 
-os.chdir(path + '/' + dossier + '_vel_' + freq + '/' + dossier + '_vel_' + freq + '_hori_env_smooth_S')
+os.chdir(path + '/' + dossier + '_vel_0-50km_' + freq + '/' + dossier + '_vel_0-50km_' + freq + '_hori_env_smooth_S')
 for station in lst_fch_frq:
     st = read(station)
     x_sta, y_sta = m2(st[0].stats.sac.stlo, st[0].stats.sac.stla)
     ax2.scatter(x_sta, y_sta, 7, marker = '^', color = 'red', zorder = 5, linewidth = 0.2)
 
 os.chdir(path + '/' + dossier + '_results')
-fig2.savefig('map' + dossier + '_' + freq + '.pdf')
+fig2.savefig('map' + dossier + '_50-80km_' + freq + 'latlon10.pdf')
