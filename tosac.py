@@ -13,7 +13,7 @@ with open('parametres_bin', 'rb') as my_fch:
 
 dossier = param['dossier']
 
-path = path_origin + '/Data/Kumamoto/' + dossier
+path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_brut'
 path_kik = path_data + '/' + dossier + '.kik'
 path_knt = path_data + '/' + dossier + '.knt'
