@@ -45,17 +45,22 @@ def norm1(vect):
         norm_v = norm_v + a*a
     return [50*a/pow(norm_v, 0.5) for a in vect]
 
-dossier = sys.argv[1]
+path_origin = os.getcwd()[:-6]
+os.chdir(path_origin + '/Kumamoto')
+with open('parametres_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    param = my_dpck.load()
 
-path = os.getcwd()[:-6] + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_1_2Hz_3comp_env'
+dossier = param['dossier']
+couronne = param['couronne']
+frq = param['band_freq']
+dt_type = param['composante']
+
+path = path_origin + '/Kumamoto/' + dossier
+path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth'
 path_results = path
 
-if os.path.isdir(path_results) == False:
-    os.makedirs(path_results)
-
 list_sta = os.listdir(path_data)
-#list_sta = [a for a in list_sta if ('UD' in a) == True and ('UD1' in a) == False]
 
 fig, ax = plt.subplots(1, 1)
 ax.set_xlabel('Time (s)')
