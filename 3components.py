@@ -45,8 +45,8 @@ lst_fch_z.sort()
 for station in lst_fch_x:
     os.chdir(pth_dt)
     stx = read(station)
-    sty = read(lst_fch_y.index(station))
-    stz = read(lst_fch_z.index(station))
+    sty = read(lst_fch_y[lst_fch_x.index(station)])
+    stz = read(lst_fch_z[lst_fch_x.index(station)])
     if stx[0].stats.station == sty[0].stats.station and stx[0].stats.station == stz[0].stats.station:
         stx.detrend(type = 'constant')
         sty.detrend(type = 'constant')
