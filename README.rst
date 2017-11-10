@@ -129,20 +129,21 @@ les differentes etapes sont decrites ci-dessous:
 | from */Kumamoto/dossier/dossier_vel_couronne*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq*
 
-creation d une trace a partir des 3 composantes (toujours positive)
--------------------------------------------------------------------
+python3 3components.py
+----------------------
 
 .. code-block:: python3
 
-    python3 3components.py 'YyyyMmDdHhMmSs'
+    python3 3components.py
 
-- from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz*
+| creation d'une trace a partir des 3 composantes
+| cette trace est toujours positive
+| A(ti) = sqrt(sum(a(ti)*a(ti)))
 
-  with *\**** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
+- from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq*
+- to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_****
 
-- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz_3comp*
-
-  with *\**** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
+  with *\**** = *3comp*, *hori* or *vert*
 
 obtenir les envelopes
 ---------------------
