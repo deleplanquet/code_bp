@@ -54,58 +54,80 @@ Definir les parametres ci-dessous:
 telecharger les donnees (format ASCII)
 --------------------------------------
 
-- from *http://www.kyoshin.bosai.go.jp*
-- to */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs.****
+| from *http://www.kyoshin.bosai.go.jp*
+| to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut*
 
-  with *\**** = *kik* or *knt*
-
-conversion au format 'SAC'
---------------------------
+python3 tosac.py
+----------------
 
 .. code-block:: python3
 
-    python3 tosac.py 'YyyyMmDdHhMmSs'
+    python3 tosac.py
 
-- from */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.****
+convertir les traces telechargees au fromat SAC
+
+| from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.****
 
   with *\**** = *kik* or *knt*
 
-- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac*
+| to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac*
 
-selection des stations a moins de 100km de l'hypocentre
--------------------------------------------------------
+python3 select_couronne.py
+--------------------------
 
 .. code-block:: python3
 
     python3 select_inf_100km.py 'YyyyMmDdHhMmSs'
 
-- from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac*
-- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km*
+selectionne les stations dans une couronne centree autour de l'hypocentre
+les distances considerees sont les distances hypocentrales
+
+| from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac*
+| to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_couronne*
 
 faire les pointes des arrivees P et S dans _SAC_ (a la main)
 ------------------------------------------------------------
 
-transformer les accelerations en vitesses et trimer entre 5sec avant le pointe P et 45sec apres (total 50sec)
--------------------------------------------------------------------------------------------------------------
+les pointes sont realises dans SAC sur les traces brutes
+les fichiers localises dans */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_couronne* sont modifies
+Faire attention si on reprend la procedure du debut
+
+python3 acc2vel.py
+------------------
 
 .. code-block:: python3
 
-    python3 acc2vel.py 'YyyyMmDdHhMmSs' 
+    python3 acc2vel.py
 
-- from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_inf100km*
-- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel*
+les differentes etapes sont decrites ci-dessous:
 
-filtrage selon differentes bandes de frequences
------------------------------------------------
+| detrend
+| taper hann 0.05
+| highpass 20 s
+| trim 5 s avant pointe P - 45 s apres pointe P (fenetre de 50 s)
+| taper hann 0.05
+| fft
+| division by 2iPif
+| ifft
+
+| from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_couronne*
+| to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_couronne*
+
+python3 filt_vel.py
+------------------
 
 .. code-block:: python3
 
-    python3 filt_vel.py 'YyyyMmDdHhMmSs'
+    python3 filt_vel.py
 
-- from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel*
-- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz*
+les differentes etapes sont decrites ci-dessous:
 
-  with *\**** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
+| detrend
+| taper hann 0.05
+| bandpass dans la bande de frequences definie lors de l'execution de parametres.py, corners = 4, zerophase = false
+
+| from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_couronne*
+| to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_couronne_bandefreq/YyyyMmDdHhMmSs/vel_couronne_bandefreq*
 
 creation d une trace a partir des 3 composantes (toujours positive)
 -------------------------------------------------------------------
