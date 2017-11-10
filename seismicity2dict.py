@@ -16,8 +16,8 @@ with open('seismicity.txt', 'r') as my_fch:
         a['day'] = float(my_list[2])
         a['min'] = float(my_list[3])
         a['sec'] = float(my_list[4])
-        a['lat'] = float(my_list[6])
-        a['lon'] = float(my_list[7])
+        a['lon'] = float(my_list[6])
+        a['lat'] = float(my_list[7])
         a['dep'] = float(my_list[8])
         a['Mj'] = float(my_list[9])
         A[my_list[0] + my_list[1] + my_list[2] + my_list[3] + my_list[4]] = a
