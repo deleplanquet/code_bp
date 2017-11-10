@@ -55,7 +55,7 @@ telecharger les donnees (format ASCII)
 --------------------------------------
 
 | from *http://www.kyoshin.bosai.go.jp*
-| to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut*
+| to */Kumamoto/dossier/dossier_brut*
 
 python3 tosac.py
 ----------------
@@ -66,31 +66,31 @@ python3 tosac.py
 
 convertir les traces telechargees au fromat SAC
 
-| from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_brut/YyyyMmDdHhMmSs.****
+| from */Kumamoto/dossier/dossier_brut/dossier.****
 
   with *\**** = *kik* or *knt*
 
-| to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac*
+| to */Kumamoto/dossier/dossier_sac*
 
 python3 select_couronne.py
 --------------------------
 
 .. code-block:: python3
 
-    python3 select_inf_100km.py 'YyyyMmDdHhMmSs'
+    python3 select_couronne.py
 
-selectionne les stations dans une couronne centree autour de l'hypocentre
-les distances considerees sont les distances hypocentrales
+| selectionne les stations dans une couronne centree autour de l'hypocentre
+| les distances considerees sont les distances hypocentrales
 
-| from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac*
-| to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_couronne*
+| from */Kumamoto/dossier/dossier_sac*
+| to */Kumamoto/dossier/dossier_sac_couronne*
 
 faire les pointes des arrivees P et S dans _SAC_ (a la main)
 ------------------------------------------------------------
 
-les pointes sont realises dans SAC sur les traces brutes
-les fichiers localises dans */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_couronne* sont modifies
-Faire attention si on reprend la procedure du debut
+| les pointes sont realises dans SAC sur les traces brutes
+| les fichiers localises dans */Kumamoto/dossier/dossier_sac_couronne* sont modifies
+| Faire attention si on reprend la procedure du debut
 
 python3 acc2vel.py
 ------------------
@@ -110,8 +110,8 @@ les differentes etapes sont decrites ci-dessous:
 | division by 2iPif
 | ifft
 
-| from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_sac_couronne*
-| to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_couronne*
+| from */Kumamoto/dossier/dossier_sac_couronne*
+| to */Kumamoto/dossier/dossier_vel_couronne*
 
 python3 filt_vel.py
 ------------------
@@ -126,8 +126,8 @@ les differentes etapes sont decrites ci-dessous:
 | taper hann 0.05
 | bandpass dans la bande de frequences definie lors de l'execution de parametres.py, corners = 4, zerophase = false
 
-| from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_couronne*
-| to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_couronne_bandefreq/YyyyMmDdHhMmSs/vel_couronne_bandefreq*
+| from */Kumamoto/dossier/dossier_vel_couronne*
+| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq*
 
 creation d une trace a partir des 3 composantes (toujours positive)
 -------------------------------------------------------------------
