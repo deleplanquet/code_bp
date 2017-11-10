@@ -2,20 +2,19 @@
 
 .. section-numbering::
 
-definir les parametres
-----------------------
+python3 parametres.py
+---------------------
 
 .. code-block:: python3
 
     python3 parametres.py
--------------------------
 
-list of parameters:
+Definir les parametres ci-dessous:
 
 | **path_origin**: va chercher la position absolue du dossier */Codes* (qui est au meme niveau que le dossier */Kumamoto* contenant les data)::
 
     n'est pas demande a l'utilisateur
-| **dossier**: demande le nom du dossier (seisme) qui doit etre traite au format est *YYYYMMDDHHMMSS*
+| **dossier**: demande le nom du dossier (seisme) qui doit etre traite au format *YYYYMMDDHHMMSS*
 | **R_Earth**: fixe a 6400::
 
     n'est pas demande a l'utilisateur
