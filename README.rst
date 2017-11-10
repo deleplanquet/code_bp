@@ -140,25 +140,23 @@ python3 3components.py
 | cette trace est toujours positive
 | A(ti) = sqrt(sum(a(ti)*a(ti)))
 
-- from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq*
-- to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_****
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq*
+| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_****
 
   with *\**** = *3comp*, *hori* or *vert*
 
-obtenir les envelopes
----------------------
+python3 vel2env.py
+------------------
 
 .. code-block:: python3
 
-    python3 vel2env.py 'YyyyMmDdHhMmSs'
+    python3 vel2env.py
 
-- from */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz_3comp*
+| Produit des traces en energie a partir des velocity waveforms
+| E(ti) = A(ti)*A(ti)
 
-  with *\**** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
-
-- to */Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_***Hz_3comp_env*
-
-  with *\**** = *02_05*, *05_1*, *1_2*, *2_4*, *4_8*, *8_16* or *16_30*
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante*
+| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
 
 estimation des vitesses P et S et creation d'un dictionnaire contenant le delai de starttime pour chaque station
 ----------------------------------------------------------------------------------------------------------------
