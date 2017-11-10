@@ -12,11 +12,13 @@ definir les parametres
 list of parameters:
 
 path_origin: va chercher la position absolue du dossier */Codes* (qui est au meme niveau que le dossier */Kumamoto* contenant les data)
+
   n'est pas demande a l'utilisateur
 
 dossier: demande le nom du dossier (seisme) qui doit etre traite au format est *YYYYMMDDHHMMSS*
 
 R_Earth: fixe a 6400
+
   n'est pas demande a l'utilisateur
 
 dist_min: hypocenter distance minimale pour que la station soit traite (en km)
@@ -24,6 +26,7 @@ dist_min: hypocenter distance minimale pour que la station soit traite (en km)
 dist_max: hypocenter distance maximale pour que la station soit traite (en km)
 
 couronne: associe *dist_min* et *dist_max* pour creer un string et faciliter la creation des fichiers et dossiers
+
   n'est pas demande a l'utilisateur
 
 freq_min: frequence basse pour le filtre passe bande utilise sur les velocity waveforms
@@ -31,6 +34,7 @@ freq_min: frequence basse pour le filtre passe bande utilise sur les velocity wa
 freq_max: frequence haute pour le filtre passe bande utilise sur les velocity waveforms
 
 band_freq: associe *freq_min* et *freq_max* pour creer un string et faciliter la creation des fichiers et dossiers
+
   n'est pas demande a l'utilisateur
 
 composante: demande un string parmi [3comp/hori/vert] pour definir celles qu'ils faut traiter
@@ -44,9 +48,11 @@ impulse: longueur (en s) de la fenetre dans laquelle au mois 80% de l'energie do
 angle_min: angle minimal pour la selection azimuthale des stations
 
 angle_max: angle maximal pour la selection azimuthale des stations
+
   pour les angles, deux zones sont definies, la premiere entre *angle_min* et *angle_max*, la seconde entre *angle_min* + 180 et *angle_max* + 180. C'est pour cela que les angles sont compris entre 0 et 180
 
 angle: associe *angle_min* et *angle_max* pour creer un string et faciliter la creation des fichiers et dossiers
+
   n'est pas demande a l'utilisateur
 
 vP: vitesse des ondes P utilisee pour calculer les temps de trajet des ondes P entre chaque subfault et chaque station
