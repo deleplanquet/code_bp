@@ -170,15 +170,18 @@ python3 env2smooth.py
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
 
-estimation des vitesses P et S et creation d'un dictionnaire contenant le delai de starttime pour chaque station
-----------------------------------------------------------------------------------------------------------------
+python3 vitesse_PS.py
+---------------------
 
 .. code-block:: python3
 
-    python3 vitesse_PS.py 'YyyyMmDdHhMmSs'
+    python3 vitesse_PS.py
 
-- from */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env*
-- to */Data/Kumamoto/YyyyMmDdHhMmSs*
+| calcul les delais entre temps theoriques d'arrivee et les pointes pour les ondes P et S
+| les corrections aux stations (delais calcules) sont stockes dans un dictionnaire
+
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
+| to */Kumamoto/dossier*
 
 selection des stations pour la bp
 ---------------------------------
