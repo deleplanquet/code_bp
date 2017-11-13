@@ -213,17 +213,28 @@ python3 select_station_angle.py
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
 
-bp des stations selectionnees
------------------------------
+python3 bp_env_E.py
+-------------------
 
 .. code-block:: python3
 
-    python3 bp_env_E.py 'YyyyMmDdHhMmSs' 'hypothese_ondes' 'stations_selectionnees'
+    python3 bp_env_E.py
 
-- from _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_select*_
-- to _/Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_select* _bp_
-   - hypothese_ondes: 'P' ou 'S'
-   - stations_selectionnees: 'P', 'S' ou 'all'
+| back projection des stations selectionnees
+| enregistre le stack dans un fichier
+
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
+| to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
+
+python3 plot_bp_2d.py
+---------------------
+
+.. code-block:: python3
+
+    python3 plot_bp_2d.py
+
+| from */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
+| to */Kumamoto/dossier?dossier_results/dossier_vel_couronne_bandfreq/pdf*
 
 # Arborescence
 
