@@ -158,6 +158,18 @@ python3 vel2env.py
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
 
+python3 env2smooth.py
+---------------------
+
+.. code-block:: python3
+
+    python3 env2smooth.py
+
+| fait la RMS des envelopes sur une fenetre de duree **smooth** secondes
+
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
+| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
+
 estimation des vitesses P et S et creation d'un dictionnaire contenant le delai de starttime pour chaque station
 ----------------------------------------------------------------------------------------------------------------
 
