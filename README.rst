@@ -183,17 +183,35 @@ python3 vitesse_PS.py
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
 | to */Kumamoto/dossier*
 
-selection des stations pour la bp
----------------------------------
+python3 select_stat_env.py
+--------------------------
 
 .. code-block:: python3
 
-    python3 selection_station.py 'YyyyMmDdHhMmSs'
+    python3 select_stat_env.py
 
-- from */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env*
-- to */Data/Kumamoto/YyyyMmDdHhMmSs/YyyyMmDdHhMmSs_vel_env_select****
+| compare le pic d'energie de l'onde P avec le pic d'energie de l'onde S
+| si le rapport S/P est superieur au threshold **ratioSP**, l'onde est selectionnee pour la back projection hypothese S
+| si le rapport S/P est inferieur au threshold 1/**ratioSP**, l'onde est selectionee pour la back projection hypothese P
+
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
+| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_****
 
   with *\**** = *P* or *S*
+
+python3 select_station_angle.py
+-------------------------------
+
+.. code-block:: python3
+
+    python3 select_station_angle.py
+
+| calcul l'azimuth de chaque station par rapport a l'hypocentre
+| si l'azimuth de la station est compris entre **angle_min** et **angle_max**, la station est selectionnee pour la back projection
+| si l'azimuth de la station est compris entre **angle_min** + 180 et **angle_max** + 180, la station est selectionnee pour la back projection
+
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect*
+| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
 
 bp des stations selectionnees
 -----------------------------
