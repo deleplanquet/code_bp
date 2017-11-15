@@ -240,14 +240,18 @@ Arborescence
 ------------
 
 Dossier_parent
+
 | Codes
 | Kumamoto
+
   | dossier
+
     | dossier_brut
     | dossier_sac
     | dossier_sac_couronne
     | dossier_vel_couronne
     | dossier_vel_couronne_bandfreq
+
       | dossier_vel_couronne_bandfreq
       | dossier_vel_couronne_bandfreq_3comp
       | dossier_vel_couronne_bandfreq_hori
