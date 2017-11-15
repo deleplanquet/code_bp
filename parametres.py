@@ -1,6 +1,7 @@
 import pickle
 import os
 import sys
+import datetime
 
 param = {}
 
@@ -38,7 +39,39 @@ with open('parametres_bin', 'wb') as my_exit:
     my_pck = pickle.Pickler(my_exit)
     my_pck.dump(param)
 
-with open('parametres.txt', 'w') as my_ext:
+yy = str(datetime.datetime.now().year)
+mm = str(datetime.datetime.now().month)
+dd = str(datetime.datetime.now().day)
+hh = str(datetime.datetime.now().hour)
+mi = str(datetime.datetime.now().minute)
+ss = str(datetime.datetime.now().second)
+
+while len(yy) != 4:
+    if len(yy) > 4:
+        print('Error length year')
+    yy = '0' + yy
+while len(mm) != 2:
+    if len(mm) > 2:
+        print('Error length month')
+    mm = '0' + mm
+while len(dd) != 2:
+    if len(dd) > 2:
+        print('Error length day')
+    dd = '0' + dd
+while len(hh) != 2:
+    if len(hh) > 2:
+        print('Error length hour')
+    hh = '0' + hh
+while len(mi) != 2:
+    if len(mi) > 2:
+        print('Error length minute')
+    mi = '0' + mi
+while len(ss) != 2:
+    if len(ss) > 2:
+        print('Error length second')
+    ss = '0' + ss
+
+with open('parametres_' + yy + mm + dd + '-' + hh + mi + ss + '.txt', 'w') as my_ext:
     my_ext.write('path_origin: ' + param['path_origin'] + '\n')
     my_ext.write('dossier: ' + param['dossier'] + '\n')
     my_ext.write('R_Earth: ' + str(param['R_Earth']) + ' km\n')
