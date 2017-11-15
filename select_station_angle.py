@@ -2,6 +2,7 @@ import sys
 import os
 from obspy import read
 from obspy import Trace
+import math
 import pickle
 
 def d2r(angle):
