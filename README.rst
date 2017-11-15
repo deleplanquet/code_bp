@@ -236,30 +236,27 @@ python3 plot_bp_2d.py
 | from */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
 | to */Kumamoto/dossier?dossier_results/dossier_vel_couronne_bandfreq/pdf*
 
-# Arborescence
+Arborescence
+------------
 
 Dossier_parent
 
-- Codes
-- Data
-  - Kumamoto
-    - dossiers
-      - brut
-      - sac
-      - sac_inf100km
-      - vel
-      - vel_env
-      - vel_env_selectP
-      - vel_env_selectS
-      - vel_env_selectP_bp
-      - vel_env_selectS_bp
-      - acc_env
-      - acc_env_selectP
-      - acc_env_selectS
-      - acc_env_selectP_bp
-      - acc_env_selectS_bp
-
-
+ > Codes
+ > Kumamoto
+  >> dossier
+   >>> dossier_brut
+   >>> dossier_sac
+   >>> dossier_sac_couronne
+   >>> dossier_vel_couronne
+   >>> dossier_vel_couronne_bandfreq
+    >>>> dossier_vel_couronne_bandfreq
+    >>>> dossier_vel_couronne_bandfreq_3comp
+    >>>> dossier_vel_couronne_bandfreq_hori
+    >>>> dossier_vel_couronne_bandfreq_hori_env
+    >>>> dossier_vel_couronne_bandfreq_hori_env_smooth
+    >>>> dossier_vel_couronne_bandfreq_hori_env_smooth_P
+    >>>> dossier_vel_couronne_bandfreq_hori_env_smooth_S
+    >>>> dossier_vel_couronne_bandfreq_vert
 
 
 
