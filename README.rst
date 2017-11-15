@@ -240,23 +240,22 @@ Arborescence
 ------------
 
 Dossier_parent
-  Codes
-
-  Kumamoto
-    dossier
-      dossier_brut
-      dossier_sac
-      dossier_sac_couronne
-      dossier_vel_couronne
-      dossier_vel_couronne_bandfreq
-        dossier_vel_couronne_bandfreq
-        dossier_vel_couronne_bandfreq_3comp
-        dossier_vel_couronne_bandfreq_hori
-        dossier_vel_couronne_bandfreq_hori_env
-        dossier_vel_couronne_bandfreq_hori_env_smooth
-        dossier_vel_couronne_bandfreq_hori_env_smooth_P
-        dossier_vel_couronne_bandfreq_hori_env_smooth_S
-        dossier_vel_couronne_bandfreq_vert
+| Codes
+| Kumamoto
+  | dossier
+    | dossier_brut
+    | dossier_sac
+    | dossier_sac_couronne
+    | dossier_vel_couronne
+    | dossier_vel_couronne_bandfreq
+      | dossier_vel_couronne_bandfreq
+      | dossier_vel_couronne_bandfreq_3comp
+      | dossier_vel_couronne_bandfreq_hori
+      | dossier_vel_couronne_bandfreq_hori_env
+      | dossier_vel_couronne_bandfreq_hori_env_smooth
+      | dossier_vel_couronne_bandfreq_hori_env_smooth_P
+      | dossier_vel_couronne_bandfreq_hori_env_smooth_S
+      | dossier_vel_couronne_bandfreq_vert
 
 
 
