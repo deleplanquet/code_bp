@@ -239,8 +239,6 @@ python3 plot_bp_2d.py
 Arborescence
 ------------
 
-Dossier_parent
-
 | Codes
 | Kumamoto
 
