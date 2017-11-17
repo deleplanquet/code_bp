@@ -1,8 +1,11 @@
 import pickle
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 
 lst_doss = ['182042', '191752', '160125', '160355', '150003', '142126']
+lst_doss = ['191752', '150003', '160125', '142126', '182042', '160355']
+dst_doss = [0, 22.727, 27.159, 28.122, 74.027, 75.387]
 for i in range(len(lst_doss)):
     lst_doss[i] = '201604' + lst_doss[i] + '00'
 
@@ -32,20 +35,21 @@ nbr_sta = 0
 
 for keys in lst_sta.keys():
     nbr_sta = nbr_sta + 1
+    if nbr_sta == 10:
+        break
+    vx = np.zeros(len(lst_doss))
+    vy = np.zeros(len(lst_doss))
+    vxx = []
+    vyy = []
     for kkeys in lst_sta[keys].keys():
-        if kkeys == lst_doss[0]:
-            xx = 4
-        elif kkeys == lst_doss[1]:
-            xx = 0
-        elif kkeys == lst_doss[2]:
-            xx = 2
-        elif kkeys == lst_doss[3]:
-            xx = 5
-        elif kkeys == lst_doss[4]:
-            xx = 1
-        elif kkeys == lst_doss[5]:
-            xx = 3
-        yy = nbr_sta * 2 + lst_sta[keys][kkeys]
-        ax.scatter(xx, yy, 20, marker = 'o', color = 'black')
+        vx[lst_doss.index(kkeys)] = dst_doss[lst_doss.index(kkeys)]
+        vy[lst_doss.index(kkeys)] = nbr_sta*2 + lst_sta[keys][kkeys]
+    for i in range(len(vy)):
+        if vy[i] != 0:
+            vxx.append(vx[i])
+            vyy.append(vy[i])
+    ax.plot(vxx, vyy, linewidth = 0.5)
+    ax.axhline(nbr_sta*2, 0, 5, linewidth = 0.1, color = 'black')
 
+os.chdir(path_origin + '/Kumamoto')
 fig.savefig('variability_corrsta.pdf')
