@@ -121,18 +121,18 @@ for station in list_sta:
 poptP, pcovP = curve_fit(fit_lineaire_P, list_tP, list_dist)
 poptS, pcovS = curve_fit(fit_lineaire_S, list_tS, list_dist)
 
-vP['fit'] = poptP[0]
-vS['fit'] = poptS[0]
+vP['fit'] = 5.8
+vS['fit'] = 3.4
 
 for cles in vP.keys():
     if ('fit' in cles) == False:
     	#vP[cles] = vP[cles] - (dist_hyp[cles] - poptP[1])/vP['fit']
-    	vP[cles] = vP[cles] - (dist_hyp[cles] - poptP[1])/5.8
+    	vP[cles] = vP[cles] - (dist_hyp[cles] - poptP[0])/5.8
 
 for cles in vS.keys():
     if ('fit' in cles) == False:
     	#vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[1])/vS['fit']
-    	vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[1])/3.4
+    	vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[0])/3.4
 
 #vP: correction station pointe P
 #vS: correction station pointe S
