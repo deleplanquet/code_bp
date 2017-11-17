@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 
 lst_doss = ['182042', '191752', '160125', '160355', '150003', '142126']
-for i in range(len(dossier)):
+for i in range(len(lst_doss)):
     lst_doss[i] = '201604' + lst_doss[i] + '00'
 
 path_origin = os.getcwd()[:-6]
