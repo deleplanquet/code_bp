@@ -70,7 +70,7 @@ for station in lst_fch:
         os.chdir(path_results)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(station, format = 'SAC')
-    elif az_btw_st > (azim_min + 180)%360 and az_btw_st < (azim_max + 180)%360:
+    elif az_btw_st > (azim_min + 180) and az_btw_st < (azim_max + 180):
         print('           ', 'ok')
         os.chdir(path_results)
         tr = Trace(st[0].data, st[0].stats)
