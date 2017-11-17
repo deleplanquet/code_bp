@@ -19,7 +19,7 @@ for dossier in lst_doss:
 
     corr_staS = corr_sta[1]
 
-    for cles in corr_staS.key():
+    for cles in corr_staS.keys():
         if cles in lst_sta:
             lst_sta[cles][dossier] = corr_staS[cles]
         else:
@@ -33,17 +33,17 @@ nbr_sta = 0
 for keys in lst_sta.keys():
     nbr_sta = nbr_sta + 1
     for kkeys in lst_sta[keys].keys():
-        if kkeys == dossier[0]:
+        if kkeys == lst_doss[0]:
             xx = 4
-        elif kkeys == dossier[1]:
+        elif kkeys == lst_doss[1]:
             xx = 0
-        elif kkeys == dossier[2]:
+        elif kkeys == lst_doss[2]:
             xx = 2
-        elif kkeys == dossier[3]:
+        elif kkeys == lst_doss[3]:
             xx = 5
-        elif kkeys == dossier[4]:
+        elif kkeys == lst_doss[4]:
             xx = 1
-        elif kkeys == dossier[5]:
+        elif kkeys == lst_doss[5]:
             xx = 3
         yy = nbr_sta * 2 + lst_sta[keys][kkeys]
         ax.scatter(xx, yy, 20, marker = 'o', color = 'black')
