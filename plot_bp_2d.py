@@ -47,9 +47,9 @@ for i in range(length_t):
     fig, ax = plt.subplots(1, 1)
     ax.set_xlabel('Dip (km)')
     ax.set_ylabel('Strike (km)')
-    ax.imshow(stack[:, :, i]**2, cmap = 'jet', vmin = stack[:, :, :].min(), vmax = (stack[:, :, :].max())**2, interpolation = 'none', origin = 'lower', extent = (0, w_fault, 0, l_fault))
+    ax.imshow(stack[:, :, i]**2, cmap = 'viridis', vmin = stack[:, :, :].min(), vmax = (stack[:, :, :].max())**2, interpolation = 'none', origin = 'lower', extent = (0, w_fault, 0, l_fault))
     ax.text(w_fault/4, 95*l_fault/100, 'N ' + strike + degree + ' E', fontsize = 10, ha = 'center', va = 'center', color = 'white')
-    ax.text(35*w_fault/40, 95*l_fault/100, str((i - 50)/10) + 's', fontsize = 10, ha = 'center', va = 'center', color = 'white')
+    ax.text(35*w_fault/40, 95*l_fault/100, str((i - 50)/10) + ' s', fontsize = 10, ha = 'center', va = 'center', color = 'white')
     ax.scatter(w_fault/2, l_fault/2, 20, marker = '*', color = 'white', linewidth = 0.2)
     
     os.chdir(path_rslt_pdf)
