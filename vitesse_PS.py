@@ -12,7 +12,18 @@ def fit_lineaire(x_data, a, b):
     y_data = np.zeros(len(x_data))
     for i in range(len(x_data)):
         y_data[i] = a * x_data[i] + b
+    return y_data
 
+def fit_lineaire_S(x_data, b):
+    y_data = np.zeros(len(x_data))
+    for i in range(len(x_data)):
+        y_data[i] = 3.4 * x_data[i] + b
+    return y_data
+
+def fit_lineaire_P(x_data, b):
+    y_data = np.zeros(len(x_data))
+    for i in range(len(x_data)):
+        y_data[i] = 5.8 * x_data[i] + b
     return y_data
 
 #constantes
@@ -107,8 +118,8 @@ for station in list_sta:
     vS[st[0].stats.station] = st[0].stats.sac.t0 + t[0]
     dist_hyp[st[0].stats.station] = ordo
 
-poptP, pcovP = curve_fit(fit_lineaire, list_tP, list_dist)
-poptS, pcovS = curve_fit(fit_lineaire, list_tS, list_dist)
+poptP, pcovP = curve_fit(fit_lineaire_P, list_tP, list_dist)
+poptS, pcovS = curve_fit(fit_lineaire_S, list_tS, list_dist)
 
 vP['fit'] = poptP[0]
 vS['fit'] = poptS[0]
