@@ -244,7 +244,7 @@ for station in lst_fch:
     	    for it in range(length_t):
                 #tshift = travt[ista][ix, iy] + dict_vel_used[st[0].stats.station] - 15 + it/samp_rate
                 #tshift = travt[ista][ix, iy] - dmin/v_S + tmin - 5 + it/samp_rate
-                tshift = tstart_ref - dict_delai[st[0].stats.station] + travt[ista][ix, iy] - dmin/v_S + tmin - 5 + dict_vel_used[st[0].stats.station] + it/samp_rate
+                tshift = tstart_ref - dict_delai[st[0].stats.station] + travt[ista][ix, iy] - dmin/vel_used + tmin - 5 + dict_vel_used[st[0].stats.station] + it/samp_rate
                 if ix == 0 and iy == 0 and it == 0:
                     st[0].stats.sac.user1 = 0
                     st[0].stats.sac.user2 = 0
