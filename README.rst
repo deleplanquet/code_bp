@@ -72,6 +72,26 @@ convertir les traces telechargees au fromat SAC
 
 | to */Kumamoto/dossier/dossier_sac*
 
+python3 station_inf_100km.py
+----------------------------
+
+.. code-block:: python3
+
+    python3 station_inf_100km.py
+
+| selectionne les stations a moins de 100 km de l'hypocentre
+| les distances considerees sont les distances hypocentrales
+
+| from */Kumamoto/dossier/dossier_sac*
+| to */Kumamoto/dossier/dossier_sac_inf100km*
+
+faire les pointes des arrivees P et S dans _SAC_ (a la main)
+------------------------------------------------------------
+
+| les pointes sont realises dans SAC sur les traces brutes
+| les fichiers localises dans */Kumamoto/dossier/dossier_sac_inf100km* sont modifies
+| Faire attention si on reprend la procedure du debut
+
 python3 select_couronne.py
 --------------------------
 
@@ -82,15 +102,8 @@ python3 select_couronne.py
 | selectionne les stations dans une couronne centree autour de l'hypocentre
 | les distances considerees sont les distances hypocentrales
 
-| from */Kumamoto/dossier/dossier_sac*
+| from */Kumamoto/dossier/dossier_sac_inf100km*
 | to */Kumamoto/dossier/dossier_sac_couronne*
-
-faire les pointes des arrivees P et S dans _SAC_ (a la main)
-------------------------------------------------------------
-
-| les pointes sont realises dans SAC sur les traces brutes
-| les fichiers localises dans */Kumamoto/dossier/dossier_sac_couronne* sont modifies
-| Faire attention si on reprend la procedure du debut
 
 python3 acc2vel.py
 ------------------
