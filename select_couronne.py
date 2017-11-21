@@ -38,7 +38,7 @@ dist_min = param['dist_min']
 dist_max = param['dist_max']
 
 path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_sac'
+path_data = path + '/' + dossier + '_sac_inf100km'
 path_results = path + '/' + dossier + '_sac_' + couronne + 'km'
 
 if os.path.isdir(path_results) == False:
