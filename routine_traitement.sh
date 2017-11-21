@@ -1,5 +1,6 @@
 #!/bin/bash
 
+python3 select_couronne.py
 python3 acc2vel.py
 python3 filt_vel.py
 python3 3components.py
