@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 from scipy.optimize import curve_fit
+from obspy.core import UTCDateTime
 
 #fit par une droite lineaire
 def fit_lineaire(x_data, a, b):
@@ -62,10 +63,26 @@ with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
 
+with open('ref_seismes_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    dict_seis = my_dpck.load()
+
 dossier = param['dossier']
 couronne = param['couronne']
 frq = param['band_freq']
 dt_type = param['composante']
+velP = param['vP']
+velS = param['vS']
+
+yea_seis = int(dict_seis[dossier]['nFnet'][0:4])
+mon_seis = int(dict_seis[dossier]['nFnet'][4:6])
+day_seis = int(dict_seis[dossier]['nFnet'][6:8])
+hou_seis = int(dict_seis[dossier]['nFnet'][8:10])
+min_seis = int(dict_seis[dossier]['nFnet'][10:12])
+sec_seis = int(dict_seis[dossier]['nFnet'][12:14])
+mse_seis = int(dict_seis[dossier]['nFnet'][14:16])
+
+t_origin_rupt = UTCDateTime(yea_seis, mon_seis, day_seis, hou_seis, min_seis, sec_seis, mse_seis)
 
 path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth'
@@ -74,88 +91,38 @@ path_results = path
 list_sta = os.listdir(path_data)
 
 fig, ax = plt.subplots(1, 1)
-ax.set_xlabel('Time (s)')
+ax.set_xlabel('Source time (s)')
 ax.set_ylabel('Distance from the hypocenter (km)')
 
-list_tP = []
-list_tS = []
-list_dist = []
 vP = {}
 vS = {}
-tdeb = {}
-dist_hyp = {}
 
 os.chdir(path_data)
 
-st1 = read(list_sta[0])
-tarrival = st1[0].stats.starttime
-
 for station in list_sta:
     st = read(station)
+
+    delai_rec = st[0].stats.starttime - t_origin_rupt
+
+    vP[st[0].stats.station] = st[0].stats.sac.a + delai_rec - st[0].stats.sac.dist/velP
+    vS[st[0].stats.station] = st[0].stats.sac.t0 + delai_rec - st[0].stats.sac.dist/velS
+
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-    #tsec = st[0].stats.starttime.second
-    #tmicrosec = st[0].stats.starttime.microsecond
-    #t = [a + tsec + tmicrosec/1e6 for a in t]
-    delaistart = st[0].stats.starttime - tarrival
-    tdeb[st[0].stats.station] = delaistart
-    delaistart = delaistart + 20
-    print(delaistart, st[0].stats.station)
-    t = [a + delaistart for a in t]
-#    t = [a + tsec - 40 + tmicrosec/1e6 if tsec > 10 else a + tsec + 20 + tmicrosec/1e6 for a in t]
+    t = [a + delai_rec for a in t]
 
-    pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
-    pos_hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
-    ordo = dist(pos_sta, pos_hypo)
+    ax.plot(t, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.2, color = 'black')
+    ax.text(50 + t[0], st[0].stats.sac.dist, st[0].stats.station, fontsize = 3)
+    ax.scatter(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist, s = 2, color = 'steelblue')
+    ax.scatter(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist, s = 2, color = 'darkorange')
 
-    ax.plot(t, norm1(st[0].data) + ordo, linewidth = 0.2, color = 'black')
-    ax.text(50 + t[0], ordo, st[0].stats.station, fontsize = 3)
-
-    list_tP.append(st[0].stats.sac.a + t[0])
-    list_tS.append(st[0].stats.sac.t0 + t[0])
-    list_dist.append(ordo)
-
-    vP[st[0].stats.station] = st[0].stats.sac.a + t[0]
-    vS[st[0].stats.station] = st[0].stats.sac.t0 + t[0]
-    dist_hyp[st[0].stats.station] = ordo
-
-poptP, pcovP = curve_fit(fit_lineaire_P, list_tP, list_dist)
-poptS, pcovS = curve_fit(fit_lineaire_S, list_tS, list_dist)
-
-vP['fit'] = 5.8
-vS['fit'] = 3.4
-
-for cles in vP.keys():
-    if ('fit' in cles) == False:
-    	#vP[cles] = vP[cles] - (dist_hyp[cles] - poptP[1])/vP['fit']
-    	vP[cles] = vP[cles] - (dist_hyp[cles] - poptP[0])/5.8
-
-for cles in vS.keys():
-    if ('fit' in cles) == False:
-    	#vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[1])/vS['fit']
-    	vS[cles] = vS[cles] - (dist_hyp[cles] - poptS[0])/3.4
-
-#vP: correction station pointe P
-#vS: correction station pointe S
-#tdeb: difference starttime
-to_register = [vP, vS, tdeb]
-
-print(poptP[0], poptS[0])
+to_register = [vP, vS]#, tdeb]
 
 os.chdir(path_results)
 with open(dossier + '_veldata', 'wb') as mon_fich:
     mon_pick = pickle.Pickler(mon_fich)
     mon_pick.dump(to_register)
 
-tP = np.arange(min(list_tP), max(list_tP))
-tS = np.arange(min(list_tS), max(list_tS))
-
-ax.scatter(list_tP, list_dist, s=2, color = 'steelblue')
-ax.scatter(list_tS, list_dist, s=2, color = 'darkorange')
-
-ax.text(65, 30, str(int(1000*poptP[0])) + 'm/s', color='steelblue')
-ax.text(65, 20, str(int(1000*poptS[0])) + 'm/s', color='darkorange')
-ax.text(10, 115, '2016/04/16 08:02', color = 'black')
-
-ax.plot(tP, poptP[0]*tP + poptP[1], linewidth=0.2)
-ax.plot(tS, poptS[0]*tS + poptS[1], linewidth=0.2)
+ax.text(10, 115, str(t_origin_rupt), color = 'black')
+ax.plot([0, 100./velP], [0, 100], linewidth = 0.2, color = 'steelblue')
+ax.plot([0, 100./velS], [0, 100], linewidth = 0.2, color = 'darkorange')
 fig.savefig('env_fct_dist_' + dossier + '.pdf')
