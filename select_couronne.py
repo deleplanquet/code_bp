@@ -65,13 +65,13 @@ hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
 for station in list_stat:
     os.chdir(path_data)
-    print(station)
     st = read(station)
     pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
-    print(dist(hypo, pos_sta))
+    print(station, dist(hypo, pos_sta))
     if dist(hypo, pos_sta) < dist_max and dist(hypo, pos_sta) > dist_min:
         os.chdir(path_results)
-        print('selection')
+        st[0].stats.sac.dist = dist(hypo, pos_sta)
+        print('selection', st[0].stats.sac.dist)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(station, format='SAC')
 
