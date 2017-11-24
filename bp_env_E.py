@@ -12,6 +12,7 @@ from obspy import read
 from obspy.signal.util import smooth
 from scipy import ndimage
 from obspy import Trace
+from obspy.core import UTCDateTime
 #from mpl_toolkits.basemap import Basemap
 
 #fonctions
@@ -160,7 +161,6 @@ if hyp_bp == 'P':
 elif hyp_bp == 'S':
     vel_used = param['vS']
     dict_vel_used = dict_vel[1]
-dict_delai = dict_vel[2]
 strike = param['strike']
 dip = param['dip']
 l_fault = param['l_fault']
@@ -190,6 +190,16 @@ with open('ref_seismes_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     dict_seis = my_dpck.load()
 
+yea_seis = int(dict_seis[dossier]['nFnet'][0:4])
+mon_seis = int(dict_seis[dossier]['nFnet'][4:6])
+day_seis = int(dict_seis[dossier]['nFnet'][6:8])
+hou_seis = int(dict_seis[dossier]['nFnet'][8:10])
+min_seis = int(dict_seis[dossier]['nFnet'][10:12])
+sec_seis = int(dict_seis[dossier]['nFnet'][12:14])
+mse_seis = int(dict_seis[dossier]['nFnet'][14:16])
+
+t_origin_rupt = UTCDateTime(yea_seis, mon_seis, day_seis, hou_seis, min_seis, sec_seis, mse_seis)
+
 lat_hyp = dict_seis[dossier]['lat']
 lon_hyp = dict_seis[dossier]['lon']
 dep_hyp = dict_seis[dossier]['dep']
@@ -204,15 +214,13 @@ coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp], l_fault, w_fault, nor
 length_t = int(length_time*samp_rate)
 
 tstart_ref = None
-        
+
 os.chdir(path_data)
 for fichier in lst_fch:
     st = read(fichier)
-    if tstart_ref == None or tstart_ref > dict_delai[st[0].stats.station]:
-        tstart_ref = dict_delai[st[0].stats.station]
-
-#for freq in lst_frq:
- #   os.chdir(lst_pth_dt[lst_frq.index(freq)])
+    if tstart_ref == None or tstart_ref - st[0].stats.starttime > 0:
+        tstart_ref = st[0].stats.starttime
+        
 os.chdir(path_data)
 travt = []
 tmin = None
@@ -242,9 +250,7 @@ for station in lst_fch:
     for ix in range(int(l_fault/pas_l)):
     	for iy in range(int(w_fault/pas_w)):
     	    for it in range(length_t):
-                #tshift = travt[ista][ix, iy] + dict_vel_used[st[0].stats.station] - 15 + it/samp_rate
-                #tshift = travt[ista][ix, iy] - dmin/v_S + tmin - 5 + it/samp_rate
-                tshift = tstart_ref - dict_delai[st[0].stats.station] + travt[ista][ix, iy] - dmin/vel_used + tmin - 5 + dict_vel_used[st[0].stats.station] + it/samp_rate
+                tshift = travt[ista][ix, iy] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
                 if ix == 0 and iy == 0 and it == 0:
                     st[0].stats.sac.user1 = 0
                     st[0].stats.sac.user2 = 0
