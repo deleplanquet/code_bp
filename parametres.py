@@ -34,11 +34,16 @@ param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a
 param['length_t'] = float(input('duree de la bp (> 5 sec): '))
 
 path = param['path_origin'] + '/Kumamoto/historique_parametres'
+path2 = param['path_origin'] + '/Kumamoto/' + param['dossier'] + '/' + param['dossier'] + '_results/' + param['dossier'] + '_vel_' + param['couronne'] + 'km_' + param['band_freq'] + 'Hz'
+
+lst_pth = [param['path_origin'] + '/Kumamoto', path, path2]
 
 if os.path.isdir(path) == False:
     os.makedirs(path)
+if os.path.isdir(path2) == False:
+    os.makedirs(path2)
 
-os.chdir(path)
+os.chdir(lst_pth[0])
 
 with open('parametres_bin', 'wb') as my_exit:
     my_pck = pickle.Pickler(my_exit)
@@ -76,25 +81,31 @@ while len(ss) != 2:
         print('Error length second')
     ss = '0' + ss
 
-with open('parametres_' + yy + mm + dd + '-' + hh + mi + ss + '.txt', 'w') as my_ext:
-    my_ext.write('path_origin: ' + param['path_origin'] + '\n')
-    my_ext.write('dossier: ' + param['dossier'] + '\n')
-    my_ext.write('R_Earth: ' + str(param['R_Earth']) + ' km\n')
-    my_ext.write('couronne: ' + param['couronne'] + ' km\n')
-    my_ext.write('band_freq: ' + param['band_freq'] + ' Hz\n')
-    my_ext.write('composante: ' + param['composante'] + '\n')
-    my_ext.write('ratio S/P: ' + str(param['ratioSP']) + '\n')
-    my_ext.write('fenetre smooth: ' + str(param['smooth']) + ' s\n')
-    my_ext.write('fenetre impulse: ' + str(param['impulse']) + ' s\n')
-    my_ext.write('fenetre azimuth: ' + param['angle'] + ' deg\n')
-    my_ext.write('vitesse P: ' + str(param['vP']) + ' km/s # 5.8\n')
-    my_ext.write('vitesse S: ' + str(param['vS']) + ' km/s # 3.4\n')
-    my_ext.write('hypothese de bp: ' + param['ondes_select'] + '\n')
-    my_ext.write('fault strike: ' + str(param['strike']) + ' deg # 224 for mainshock from Kubo et al. (2016)\n')
-    my_ext.write('fault dip: ' + str(param['dip']) + ' deg # 65 for mainshock from Kubo et al. (2016)\n')
-    my_ext.write('length fault: ' + str(param['l_fault']) + ' km\n')
-    my_ext.write('width fault: ' + str(param['w_fault']) + ' km\n')
-    my_ext.write('pas direction strike: ' + str(param['pas_l']) + ' km\n')
-    my_ext.write('pas direction dip: ' + str(param['pas_w']) + ' km\n')
-    my_ext.write('echantillonage bp: ' + str(param['samp_rate']) + ' im/s\n')
-    my_ext.write('duree de bp: ' + str(param['length_t']) + ' s\n')
+for ppth in lst_pth:
+    if ppth == lst_pth[0]:
+        paparam = 'current_parametres.txt'
+    else:
+        paparam = 'parametres_' + yy + mm + dd + '-' + hh + mi + ss + '.txt'
+    os.chdir(ppth)
+    with open(paparam, 'w') as my_ext:
+        my_ext.write('path_origin: ' + param['path_origin'] + '\n')
+        my_ext.write('dossier: ' + param['dossier'] + '\n')
+        my_ext.write('R_Earth: ' + str(param['R_Earth']) + ' km\n')
+        my_ext.write('couronne: ' + param['couronne'] + ' km\n')
+        my_ext.write('band_freq: ' + param['band_freq'] + ' Hz\n')
+        my_ext.write('composante: ' + param['composante'] + '\n')
+        my_ext.write('ratio S/P: ' + str(param['ratioSP']) + '\n')
+        my_ext.write('fenetre smooth: ' + str(param['smooth']) + ' s\n')
+        my_ext.write('fenetre impulse: ' + str(param['impulse']) + ' s\n')
+        my_ext.write('fenetre azimuth: ' + param['angle'] + ' deg\n')
+        my_ext.write('vitesse P: ' + str(param['vP']) + ' km/s # 5.8\n')
+        my_ext.write('vitesse S: ' + str(param['vS']) + ' km/s # 3.4\n')
+        my_ext.write('hypothese de bp: ' + param['ondes_select'] + '\n')
+        my_ext.write('fault strike: ' + str(param['strike']) + ' deg # 224 for mainshock from Kubo et al. (2016)\n')
+        my_ext.write('fault dip: ' + str(param['dip']) + ' deg # 65 for mainshock from Kubo et al. (2016)\n')
+        my_ext.write('length fault: ' + str(param['l_fault']) + ' km\n')
+        my_ext.write('width fault: ' + str(param['w_fault']) + ' km\n')
+        my_ext.write('pas direction strike: ' + str(param['pas_l']) + ' km\n')
+        my_ext.write('pas direction dip: ' + str(param['pas_w']) + ' km\n')
+        my_ext.write('echantillonage bp: ' + str(param['samp_rate']) + ' im/s\n')
+        my_ext.write('duree de bp: ' + str(param['length_t']) + ' s\n')
