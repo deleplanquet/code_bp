@@ -33,7 +33,12 @@ param['pas_w'] = float(input('pas largeur fault (km): '))
 param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
 param['length_t'] = float(input('duree de la bp (> 5 sec): '))
 
-os.chdir(param['path_origin'] + '/Kumamoto')
+path = param['path_origin'] + '/Kumamoto/historique_parametres'
+
+if os.path.isdir(path) == False:
+    os.makedirs(path)
+
+os.chdir(path)
 
 with open('parametres_bin', 'wb') as my_exit:
     my_pck = pickle.Pickler(my_exit)
