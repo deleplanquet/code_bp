@@ -14,7 +14,14 @@ import os
 def d2r(angle):
     return angle*math.pi/180
 
-
+#conversion coordonnees geographiques -> cartesien
+def geo2cart(r, lat, lon):
+    rlat = d2r(lat)
+    rlon = d2r(lon)
+    xx = r*math.cos(rlat)*math.cos(rlon)
+    yy = r*math.cos(rlat)*math.sin(rlon)
+    zz = r*math.sin(rlat)
+    return [xx, yy, zz]
 
 
 
@@ -40,15 +47,19 @@ hyp_bp = param['ondes_select']
 
 
 
+R_Earth = param['R_Earth']
 
 
 
 
 
+coord = []
 
+with open('.txt', 'r') as myf:
+    texte = myf.read()
 
-with open( '.txt', 'r') as myf:
-    mydp = pickle.Unpicker(myf)
-     = mydp.load()
+for line in texte:
+    spliit = line.split(' ')
+    coord.append(geo2cart(R_Earth - spliit[2], spliit[0], spliit[1]))
 
-
+travtime
