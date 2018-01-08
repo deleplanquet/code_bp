@@ -211,9 +211,11 @@ vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
 vect_dip = rotation(vect_perp_strike, dip, vect_strike)
 
 if param['fault'] == 0:
+    coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
+else:
     coord_fault = []
 
-    with open() as myf:
+    with open(param['fault']) as myf:
         texte = myf.read()
 
     texte.readline()
@@ -221,8 +223,6 @@ if param['fault'] == 0:
     for line in texte:
         spliit = line.split(' ')
         coord_fault.append(geo2cart(R_Earth - spliit[2], spliit[0], spliit[1]))
-else:
-    coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
 
 length_t = int(length_time*samp_rate)
 
