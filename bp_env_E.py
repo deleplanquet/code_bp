@@ -161,12 +161,13 @@ if hyp_bp == 'P':
 elif hyp_bp == 'S':
     vel_used = param['vS']
     dict_vel_used = dict_vel[1]
-strike = param['strike']
-dip = param['dip']
-l_fault = param['l_fault']
-w_fault = param['w_fault']
-pas_l = param['pas_l']
-pas_w = param['pas_w']
+if param['fault'] == 0:
+    strike = param['strike']
+    dip = param['dip']
+    l_fault = param['l_fault']
+    w_fault = param['w_fault']
+    pas_l = param['pas_l']
+    pas_w = param['pas_w']
 samp_rate = param['samp_rate']
 length_time = param['length_t']
 
@@ -204,13 +205,13 @@ lat_hyp = dict_seis[dossier]['lat']
 lon_hyp = dict_seis[dossier]['lon']
 dep_hyp = dict_seis[dossier]['dep']
 
-dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)), math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)), math.sin(d2r(lat_hyp))]
-vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
-vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
-vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
-vect_dip = rotation(vect_perp_strike, dip, vect_strike)
-
 if param['fault'] == 0:
+    dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)), math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)), math.sin(d2r(lat_hyp))]
+    vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
+    vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
+    vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
+    vect_dip = rotation(vect_perp_strike, dip, vect_strike)
+
     coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
 else:
     coord_fault = []
