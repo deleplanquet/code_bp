@@ -216,6 +216,8 @@ if param['fault'] == 0:
     with open() as myf:
         texte = myf.read()
 
+    texte.readline()
+
     for line in texte:
         spliit = line.split(' ')
         coord_fault.append(geo2cart(R_Earth - spliit[2], spliit[0], spliit[1]))
