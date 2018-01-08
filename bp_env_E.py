@@ -215,7 +215,7 @@ if param['fault'] == 0:
 else:
     coord_fault = []
 
-    with open(param['fault']) as myf:
+    with open(param['fault'], 'r') as myf:
         texte = myf.read()
 
     texte.readline()
