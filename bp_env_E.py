@@ -209,7 +209,18 @@ vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(lon_hyp)), -math.cos(d2r(l
 vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
 vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
 vect_dip = rotation(vect_perp_strike, dip, vect_strike)
-coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
+
+if param['fault'] == 0:
+    coord_fault = []
+
+    with open() as myf:
+        texte = myf.read()
+
+    for line in texte:
+        spliit = line.split(' ')
+        coord_fault.append(geo2cart(R_Earth - spliit[2], spliit[0], spliit[1]))
+else:
+    coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
 
 length_t = int(length_time*samp_rate)
 
