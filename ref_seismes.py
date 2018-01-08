@@ -2,7 +2,7 @@ import pickle
 import os
 
 path = os.getcwd()[:-6]
-path_data = path + '/Data'
+path_data = path + '/Kumamoto'
 #path_results = path + 
 
 A = {}
