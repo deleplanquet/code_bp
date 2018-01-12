@@ -322,7 +322,7 @@ else:
     tr.write(station, format = 'SAC')
 
 os.chdir(path_results)
-with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack2D_' + param['fault'][0:3] + '_' + param['fault'][4:11], 'wb') as my_fch:
+with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack2D_' + param['fault'][0:3] + '_' + param['fault'][10:15], 'wb') as my_fch:
     my_pck = pickle.Pickler(my_fch)
     my_pck.dump(stack)
 
