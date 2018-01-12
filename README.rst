@@ -247,7 +247,7 @@ python3 plot_bp_2d.py
     python3 plot_bp_2d.py
 
 | from */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
-| to */Kumamoto/dossier?dossier_results/dossier_vel_couronne_bandfreq/pdf*
+| to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq/pdf*
 
 Arborescence
 ------------
