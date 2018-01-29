@@ -84,7 +84,7 @@ veas = norm([- vhyp[1], vhyp[0], 0])
 
 
 os.chdir(path)
-with open(dossier + '_subfault_positions', 'w') as myext:
+with open(dossier + '_subfault_positions.txt', 'w') as myext:
     for i in range(12):
         for j in range(14):
             for k in range(10):
