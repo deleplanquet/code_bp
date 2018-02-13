@@ -232,6 +232,17 @@ else:
             coord_fault[tmmp, ttmppp, 1] = cf_tmp[1]
             coord_fault[tmmp, ttmppp, 2] = cf_tmp[2]
             ttmppp = ttmppp + 1
+    coord_fault[0, 0, 0] = 0
+    coord_fault[0, 1, 0] = 0
+    coord_fault[0, 10, 0] = 0
+    coord_fault[0, 13, 0] = 0
+    #cf_tmp = None
+    #cf_tmp = coord_fault
+    #for i in range(10):
+    #    for j in range(6):
+    #        for k in range(3):
+    #            coord_fault[i, 10+j, k] = cf_tmp[9-i, 15-j, 0]
+    #print(coord_fault)
     
 length_t = int(length_time*samp_rate)
 
