@@ -91,12 +91,11 @@ def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
 #calcul de la matrice des tps de trajet pour une station
 def trav_time(station, fault, velocity):
     x_sta, y_sta, z_sta = geo2cart(R_Earth + station[0]/1000, station[1], station[2])
-    mat_time = np.zeros((len(fault[:, 0, 0]), len(fault[0, :, 0])))
-    for a in range(len(fault[:, 0, 0])):
-        for b in range(len(fault[0, :, 0])):
-            mat_time[a, b] = math.sqrt(pow(x_sta - fault[a, b, 0], 2)
-                                        + pow(y_sta - fault[a, b, 1], 2)
-                                        + pow(z_sta - fault[a, b, 2], 2))/velocity
+    mat_time = np.zeros((len(fault[:, 0])))
+    for a in range(len(fault[:, 0])):
+        mat_time[a] = math.sqrt(pow(x_sta - fault[a, 0], 2)
+                                        + pow(y_sta - fault[a, 1], 2)
+                                        + pow(z_sta - fault[a, 2], 2))/velocity
     return mat_time
 
 #distance entre deux points, coordonnees cartesiennes
@@ -130,6 +129,13 @@ def dist_azim(ptA, ptB):
         return R_Earth*dist_rad, r2d(angle_brut)
     else:
         return R_Earth*dist_rad, 360 - r2d(angle_brut)
+
+#nombre de lignes d'un fichier
+def file_length(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
 
 #recuperation position stations
 print('     recuperation position stations')
@@ -185,6 +191,7 @@ if os.path.isdir(path_results_2) == False:
 lst_fch = []
 
 lst_fch = os.listdir(path_data)
+lst_fch.sort()
 
 os.chdir(path_origin + '/Kumamoto')
 with open('ref_seismes_bin', 'rb') as my_fch:
@@ -205,37 +212,50 @@ lat_hyp = dict_seis[dossier]['lat']
 lon_hyp = dict_seis[dossier]['lon']
 dep_hyp = dict_seis[dossier]['dep']
 
-if param['fault'] == 0:
-    dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)), math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)), math.sin(d2r(lat_hyp))]
-    vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
-    vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
-    vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
-    vect_dip = rotation(vect_perp_strike, dip, vect_strike)
+nbr_sfaults = file_length(dossier + '_subfault_positions.txt')
+coord_fault = np.zeros((nbr_sfaults, 3))
+cf_tmp = None
 
-    coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
-else:
-    coord_fault = np.zeros((10, 16, 3))
-    ttmppp = 0
-    tmmp = 0
-    cf_tmp = None
+with open(dossier + '_subfault_positions.txt', 'r') as myf:
+    for line in myf:
+        spliit = line.split(' ')
+        spliit = [i for i in spliit if i != '']
+        cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
+        coord_fault[i, 0] = cf_tmp[0]
+        coord_fault[i, 1] = cf_tmp[1]
+        coord_fault[i, 2] = cf_tmp[2]
 
-    with open(param['fault'], 'r') as myf:
-        myf.readline()
-        for line in myf:
-            spliit = line.split(' ')
-            spliit = [i for i in spliit if i != '']
-            if ttmppp >= 16:
-                ttmppp = 0
-                tmmp = tmmp + 1
-            cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
-            coord_fault[tmmp, ttmppp, 0] = cf_tmp[0]
-            coord_fault[tmmp, ttmppp, 1] = cf_tmp[1]
-            coord_fault[tmmp, ttmppp, 2] = cf_tmp[2]
-            ttmppp = ttmppp + 1
-    coord_fault[0, 0, 0] = 0
-    coord_fault[0, 1, 0] = 0
-    coord_fault[0, 10, 0] = 0
-    coord_fault[0, 13, 0] = 0
+#if param['fault'] == 0:
+#    dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)), math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)), math.sin(d2r(lat_hyp))]
+#    vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
+#    vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
+#    vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
+#    vect_dip = rotation(vect_perp_strike, dip, vect_strike)
+
+#    coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
+#else:
+#    coord_fault = np.zeros((10, 16, 3))
+#    ttmppp = 0
+#    tmmp = 0
+#    cf_tmp = None
+
+#    with open(param['fault'], 'r') as myf:
+#        myf.readline()
+#        for line in myf:
+#            spliit = line.split(' ')
+#            spliit = [i for i in spliit if i != '']
+#            if ttmppp >= 16:
+#                ttmppp = 0
+#                tmmp = tmmp + 1
+#            cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
+#            coord_fault[tmmp, ttmppp, 0] = cf_tmp[0]
+#            coord_fault[tmmp, ttmppp, 1] = cf_tmp[1]
+#            coord_fault[tmmp, ttmppp, 2] = cf_tmp[2]
+#            ttmppp = ttmppp + 1
+#    coord_fault[0, 0, 0] = 0
+#    coord_fault[0, 1, 0] = 0
+#    coord_fault[0, 10, 0] = 0
+#    coord_fault[0, 13, 0] = 0
     #cf_tmp = None
     #cf_tmp = coord_fault
     #for i in range(10):
@@ -267,73 +287,91 @@ for fichier in lst_fch:
         tmin = st[0].stats.sac.t0
 print(tmin)
 
-if param['fault'] == 0:
-    stack = np.zeros((int(l_fault/pas_l), int(w_fault/pas_w), length_t))
-    for station in lst_fch:
-        os.chdir(path_data)
-        st = read(station)
-        tstart = st[0].stats.starttime
-        env_norm = norm1(st[0].data)
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        f = interpolate.interp1d(t, env_norm)
+stack = np.zeros((nbr_sfaults, len(lst_fch), length_t))
+for station in lst_fch:
+    os.chdir(path_data)
+    st = read(station)
+    tstart = st[0].stats.starttime
+    env_norm = norm1(st[0].data)
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    f = interpolate.interp1d(t, env_norm)
 
-        ista = lst_fch.index(station)
-        print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))
+    ista = lst_fch.index(station)
+    print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))
 
-        for ix in range(int(l_fault/pas_l)):
-    	    for iy in range(int(w_fault/pas_w)):
-    	        for it in range(length_t):
-                    tshift = travt[ista][ix, iy] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
-                    if ix == 0 and iy == 0 and it == 0:
-                        st[0].stats.sac.user1 = 0
-                        st[0].stats.sac.user2 = 0
-                        st[0].stats.sac.user3 = 0
-                    if tshift > 0 and tshift < t[-1]:
-                        stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_fch)*f(tshift)
-                        if ix == 24 and iy == 9 and it == 60:
-                            st[0].stats.sac.user1 = tshift
-                        if ix == 26 and iy == 9 and it == 80:
-                            st[0].stats.sac.user2 = tshift
-                        if ix == 22 and iy == 9 and it == 97:
-                            st[0].stats.sac.user3 = tshift
+    for ix in range(nbr_sfaults):
+        for it in range(length_t):
+            tshift = travt[ista][ix] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
+            if tshift > 0 and tshift < t[-1]:
+                stack[ix, ista, it] = f(tshift)
 
-else:
-    stack = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), length_t))
-    for station in lst_fch:
-        os.chdir(path_data)
-        st = read(station)
-        tstart = st[0].stats.starttime
-        env_norm = norm1(st[0].data)
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        f = interpolate.interp1d(t, env_norm)
+#if param['fault'] == 0:
+#    stack = np.zeros((int(l_fault/pas_l), int(w_fault/pas_w), length_t))
+#    for station in lst_fch:
+#        os.chdir(path_data)
+#        st = read(station)
+#        tstart = st[0].stats.starttime
+#        env_norm = norm1(st[0].data)
+#        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+#        f = interpolate.interp1d(t, env_norm)
 
-        ista = lst_fch.index(station)
-        print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))
+#        ista = lst_fch.index(station)
+#        print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))
 
-        for ix in range(len(coord_fault[:, 0, 0])):
-    	    for iy in range(len(coord_fault[0, :, 0])):
-    	        for it in range(length_t):
-                    tshift = travt[ista][ix, iy] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
-                    if ix == 0 and iy == 0 and it == 0:
-                        st[0].stats.sac.user1 = 0
-                        st[0].stats.sac.user2 = 0
-                        st[0].stats.sac.user3 = 0
-                    if tshift > 0 and tshift < t[-1]:
-                        stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_fch)*f(tshift)
-                        if ix == 24 and iy == 9 and it == 60:
-                            st[0].stats.sac.user1 = tshift
-                        if ix == 26 and iy == 9 and it == 80:
-                            st[0].stats.sac.user2 = tshift
-                        if ix == 22 and iy == 9 and it == 97:
-                            st[0].stats.sac.user3 = tshift
+#        for ix in range(int(l_fault/pas_l)):
+#    	    for iy in range(int(w_fault/pas_w)):
+#    	        for it in range(length_t):
+#                    tshift = travt[ista][ix, iy] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
+#                    if ix == 0 and iy == 0 and it == 0:
+#                        st[0].stats.sac.user1 = 0
+#                        st[0].stats.sac.user2 = 0
+#                        st[0].stats.sac.user3 = 0
+#                    if tshift > 0 and tshift < t[-1]:
+#                        stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_fch)*f(tshift)
+#                        if ix == 24 and iy == 9 and it == 60:
+#                            st[0].stats.sac.user1 = tshift
+#                        if ix == 26 and iy == 9 and it == 80:
+#                            st[0].stats.sac.user2 = tshift
+#                        if ix == 22 and iy == 9 and it == 97:
+#                            st[0].stats.sac.user3 = tshift
+
+#else:
+#    stack = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), length_t))
+#    for station in lst_fch:
+#        os.chdir(path_data)
+#        st = read(station)
+#        tstart = st[0].stats.starttime
+#        env_norm = norm1(st[0].data)
+#        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+#        f = interpolate.interp1d(t, env_norm)
+
+#        ista = lst_fch.index(station)
+#        print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))
+
+#        for ix in range(len(coord_fault[:, 0, 0])):
+#    	    for iy in range(len(coord_fault[0, :, 0])):
+#    	        for it in range(length_t):
+#                    tshift = travt[ista][ix, iy] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
+#                    if ix == 0 and iy == 0 and it == 0:
+#                        st[0].stats.sac.user1 = 0
+#                        st[0].stats.sac.user2 = 0
+#                        st[0].stats.sac.user3 = 0
+#                    if tshift > 0 and tshift < t[-1]:
+#                        stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_fch)*f(tshift)
+#                        if ix == 24 and iy == 9 and it == 60:
+#                            st[0].stats.sac.user1 = tshift
+#                        if ix == 26 and iy == 9 and it == 80:
+#                            st[0].stats.sac.user2 = tshift
+#                        if ix == 22 and iy == 9 and it == 97:
+#                            st[0].stats.sac.user3 = tshift
 
 
-    tr = Trace(st[0].data, st[0].stats)
-    os.chdir(path_results_2)
-    tr.write(station, format = 'SAC')
+#    tr = Trace(st[0].data, st[0].stats)
+#    os.chdir(path_results_2)
+#    tr.write(station, format = 'SAC')
 
 os.chdir(path_results)
-with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack2D_' + param['fault'][0:3] + '_' + param['fault'][10:15], 'wb') as my_fch:
+with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D', 'wb') as my_fch:
     my_pck = pickle.Pickler(my_fch)
     my_pck.dump(stack)
 
