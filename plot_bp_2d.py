@@ -65,12 +65,28 @@ else:
     with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack2D_' + param['fault'][0:3] + '_' + param['fault'][10:15], 'rb') as my_fch:
         my_dpck = pickle.Unpickler(my_fch)
         stack = my_dpck.load()
+    for k in range(len(stack[0, 0, :])):
+        stack[5, 12, k] = 0
+    stack2 = stack
+    print(len(stack[:, 0, 0]), len(stack[0, :, 0]), len(stack[0, 0, :]))
+    #for i in range(10):
+    #    for j in range(16):
+    #        if j > 9:
+    #            for k in range(len(stack[0, 0, :])):
+    #                stack2[i, j, k] = stack[9-i, 15-(j-10), k]
+    #            print('ok')
+    #        else:
+    #            for k in range(len(stack[0, 0, :])):
+    #                stack2[i, j, k] = stack[i, j, k]
+    #            print('ok2')
+    #        print(i, j)
 
     for i in range(length_t):
         fig, ax = plt.subplots(1, 1)
         ax.set_xlabel('Dip (km)')
         ax.set_ylabel('Strike (km)')
-        ax.imshow(stack[:, :, i]**2, cmap = 'viridis', vmin = stack[:, :, :].min(), vmax = (stack[:, :, :].max())**2, interpolation = 'none', origin = 'lower', extent = (0, w_fault, 0, l_fault))
+        ax.imshow(stack2[:, :, i]**2, cmap = 'viridis', vmin = stack[:, :, :].min(), vmax = (stack[:, :, :].max())**2, interpolation = 'none', origin = 'lower', extent = (0, w_fault, 0, l_fault))
+        #ax.imshow(stack2[:, 15-k, i]**2, cmap = 'viridis', vmin = stack[:, :, :].min(), vmax = (stack[:, :, :].max())**2, interpolation = 'none', origin = 'lower', extent = (0, w_fault, 0, l_fault))
         ax.text(w_fault/4, 95*l_fault/100, 'N ' + str(int(strike)) + degree + ' E', fontsize = 10, ha = 'center', va = 'center', color = 'white')
         ax.text(35*w_fault/40, 95*l_fault/100, str((i - 50)/10) + ' s', fontsize = 10, ha = 'center', va = 'center', color = 'white')
         ax.scatter(w_fault/2, l_fault/2, 20, marker = '*', color = 'white', linewidth = 0.2)
