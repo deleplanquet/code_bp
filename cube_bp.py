@@ -92,4 +92,4 @@ with open(dossier + '_subfault_positions.txt', 'w') as myext:
                 yy = vhyp[1] + 2*(i-6)*veas[1] + 2*(j-5)*vnor[1] - 2*(k-3)*norm(vhyp)[1]
                 zz = vhyp[2] + 2*(i-6)*veas[2] + 2*(j-5)*vnor[2] - 2*(k-3)*norm(vhyp)[2]
                 rsf, latsf, lonsf = cart2geo(xx, yy, zz)
-                myext.write(str(r2d(latsf)) + ' ' + str(r2d(lonsf)) + ' ' + str(rsf - R_Earth) + '\n')
+                myext.write(str(r2d(latsf)) + ' ' + str(r2d(lonsf)) + ' ' + str(R_Earth - rsf) + '\n')
