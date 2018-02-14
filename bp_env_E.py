@@ -215,15 +215,17 @@ dep_hyp = dict_seis[dossier]['dep']
 nbr_sfaults = file_length(dossier + '_subfault_positions.txt')
 coord_fault = np.zeros((nbr_sfaults, 3))
 cf_tmp = None
+cpt = 0
 
 with open(dossier + '_subfault_positions.txt', 'r') as myf:
     for line in myf:
         spliit = line.split(' ')
         spliit = [i for i in spliit if i != '']
         cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
-        coord_fault[i, 0] = cf_tmp[0]
-        coord_fault[i, 1] = cf_tmp[1]
-        coord_fault[i, 2] = cf_tmp[2]
+        coord_fault[cpt, 0] = cf_tmp[0]
+        coord_fault[cpt, 1] = cf_tmp[1]
+        coord_fault[cpt, 2] = cf_tmp[2]
+        cpt = cpt + 1
 
 #if param['fault'] == 0:
 #    dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)), math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)), math.sin(d2r(lat_hyp))]
