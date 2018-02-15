@@ -106,7 +106,7 @@ def dist(la1, lo1, el1, la2, lo2, el2):
 
 #normalisation avec max = 1
 def norm1(vect):
-    return [10*a/vect.max() for a in vect]
+    return [a/vect.max() for a in vect]
 
 #fonction gaussienne
 def gauss(x_data, H, mu):
