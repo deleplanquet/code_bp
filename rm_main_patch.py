@@ -1,19 +1,29 @@
+import numpy as np
+import os
+from obspy import read
+from scipy import interpolate
 
 
 
 
 
 
+#nombres de lignes d'un fichier
+def file_length(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+#normalisation avec max = 1
+def norm1(vect):
+    return [a/vect.max() for a in vect]
 
 
 
 
 
-
-
-
-
-
+nbr_sfaults = file_length()
 
 stack = np.zeros((nbr_sfaults, len(lst_fch), length_t))
 for station in lst_fch:
