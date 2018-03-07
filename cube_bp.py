@@ -87,9 +87,13 @@ os.chdir(path)
 with open(dossier + '_subfault_positions.txt', 'w') as myext:
     for i in range(12):
         for j in range(14):
-            for k in range(10):
-                xx = vhyp[0] + 2*(i-6)*veas[0] + 2*(j-5)*vnor[0] - 2*(k-3)*norm(vhyp)[0]
-                yy = vhyp[1] + 2*(i-6)*veas[1] + 2*(j-5)*vnor[1] - 2*(k-3)*norm(vhyp)[1]
-                zz = vhyp[2] + 2*(i-6)*veas[2] + 2*(j-5)*vnor[2] - 2*(k-3)*norm(vhyp)[2]
+            #for k in range(10):
+            for k in range(15):
+                #xx = vhyp[0] + 2*(i-6)*veas[0] + 2*(j-5)*vnor[0] - 2*(k-3)*norm(vhyp)[0]
+                #yy = vhyp[1] + 2*(i-6)*veas[1] + 2*(j-5)*vnor[1] - 2*(k-3)*norm(vhyp)[1]
+                #zz = vhyp[2] + 2*(i-6)*veas[2] + 2*(j-5)*vnor[2] - 2*(k-3)*norm(vhyp)[2]
+                xx = vhyp[0] + 2*(i-6)*veas[0] + 2*(j-5)*vnor[0] - 2*(k-8)*norm(vhyp)[0]
+                yy = vhyp[1] + 2*(i-6)*veas[1] + 2*(j-5)*vnor[1] - 2*(k-8)*norm(vhyp)[1]
+                zz = vhyp[2] + 2*(i-6)*veas[2] + 2*(j-5)*vnor[2] - 2*(k-8)*norm(vhyp)[2]
                 rsf, latsf, lonsf = cart2geo(xx, yy, zz)
                 myext.write(str(r2d(latsf)) + ' ' + str(r2d(lonsf)) + ' ' + str(R_Earth - rsf) + '\n')
