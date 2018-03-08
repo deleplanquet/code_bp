@@ -137,34 +137,6 @@ def file_length(fname):
             pass
     return i + 1
 
-#union d'intervalles
-def interv_uni(list_inter):
-    list_debut = [ a[0] for a in list_inter]
-    list_fin = [ a[1] for a in list_inter]
-    list_debut.sort()
-    list_fin.sort()
-    list_inter_final = []
-    nb_superp = 0
-    debut_inter_courant = 0
-    while list_debut:
-        if list_debut[0] < list_fin[0]:
-            pos_debut = list_debut.pop(0)
-            if nb_superp == 0:
-                debut_inter_courant = pos_debut
-            nb_superp += 1
-        elif list_debut[0] > list_fin[0]:
-            pos_fin = list_fin.pop(0)
-            nb_superp -= 1
-            if nb_superp == 0:
-                list_inter_final.append([debut_inter_courant, pos_fin])
-        else:
-            list_debut.pop(0)
-            list_fin.pop(0)
-    if list_fin:
-        pos_fin = list_fin[-1]
-        list_inter_final.append([debut_inter_courant, pos_fin])
-    return list_inter_final
-
 #recuperation position stations
 print('     recuperation position stations')
 
@@ -208,12 +180,8 @@ length_time = param['length_t']
 
 path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
-path_data_2 = path_data + '_patch_1'
 path_results = path + '/' + dossier + '_results/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz'
 path_results_2 = path_results + '/Traces_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
-
-if os.path.isdir(path_data_2) == False:
-    os.makedirs(path_data_2)
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
@@ -323,42 +291,6 @@ for fichier in lst_fch:
         tmin = st[0].stats.sac.t0
 print(tmin)
 
-identified_patch = {}
-
-os.chdir(path)
-with open(dossier + '_premier_patch_09', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    dict_ok = my_dpck.load()
-
-os.chdir(path_data)
-for station in lst_fch:
-    list_inter = []
-    st = read(station)
-    ista = lst_fch.index(station)
-    for ix in dict_ok.keys():
-        for it in dict_ok[ix]:
-            ix = int(ix)
-            tshift = travt[ista][ix] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
-            list_inter.append([tshift, tshift + 1.01/samp_rate])
-    identified_patch[st[0].stats.station] = interv_uni(list_inter)
-
-for station in identified_patch.keys():
-    print(station, identified_patch[station][0][0], identified_patch[station][0][1])
-
-for station in lst_fch:
-    os.chdir(path_data)
-    st = read(station)
-    tr = st[0].data
-    cpt = 0
-    for dat in tr:
-        cpt = cpt + 1
-        time = cpt/st[0].stats.sampling_rate
-        if time >= identified_patch[st[0].stats.station][0][0] and time <= identified_patch[st[0].stats.station][0][1]:
-            tr[cpt] = 0.2*tr[cpt]
-    os.chdir(path_data_2)
-    tr_reg = Trace(np.asarray(tr), st[0].stats)
-    tr_reg.write(station[:-4] + '_1er_patch.sac', format = 'SAC')
-
 stack = np.zeros((nbr_sfaults, len(lst_fch), length_t))
 for station in lst_fch:
     os.chdir(path_data)
@@ -375,10 +307,7 @@ for station in lst_fch:
         for it in range(length_t):
             tshift = travt[ista][ix] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
             if tshift > 0 and tshift < t[-1]:
-                if tshift >= identified_patch[st[0].stats.station][0][0] and tshift <= identified_patch[st[0].stats.station][0][1]:
-                    stack[ix, ista, it] = 0.2*f(tshift)
-                else:
-                    stack[ix, ista, it] = f(tshift)
+                stack[ix, ista, it] = f(tshift)
 
 #if param['fault'] == 0:
 #    stack = np.zeros((int(l_fault/pas_l), int(w_fault/pas_w), length_t))
