@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from pylab import *
 import os
 import sys
 import pickle
@@ -32,6 +33,22 @@ def norm(vect):
     Norm = math.sqrt(vect[0]*vect[0] + vect[1]*vect[1] + vect[2]*vect[2])
     return [vect[0]/Norm, vect[1]/Norm, vect[2]/Norm]
 
+#rotation 3d d'angle theta et d'axe passant par l'origine porte par le vecteur (a, b, c) de norme 1, repere orthonormal direct
+def rotation(u, theta, OM):
+    """ attention OM unitaire """
+    a = norm(OM)[0]
+    b = norm(OM)[1]
+    c = norm(OM)[2]
+    radian = d2r(theta)
+    #coefficients de la matrice de rotation
+    mat = array([[a*a + (1 - a*a)*math.cos(radian), a*b*(1 - math.cos(radian)) - c*math.sin(radian), a*c*(1 - math.cos(radian)) + b*math.sin(radian)], [a*b*(1 - math.cos(radian)) + c*math.sin(radian), b*b + (1 - b*b)*math.cos(radian), b*c*(1 - math.cos(radian)) - a*math.sin(radian)], [a*c*(1 - math.cos(radian)) - b*math.sin(radian), b*c*(1 - math.cos(radian)) + a*math.sin(radian), c*c + (1 - c*c)*math.cos(radian)]])
+    #rearrangement du vecteur auquel on applique la rotation
+    vect = array([[u[0]],
+                    [u[1]],
+                    [u[2]]])
+    #rotation du vecteur u de theta autour de OM
+    vect_rot = dot(mat, vect)
+    return (vect_rot[0][0], vect_rot[1][0], vect_rot[2][0])
 
 
 path_origin = os.getcwd()[:-6]
@@ -41,7 +58,7 @@ with open('parametres_bin', 'rb') as my_fch:
     param = my_dpck.load()
 
 #dossier = param['dossier']
-dossier = '20160415000300'
+dossier = '20160414212600'
 dt_type = param['composante']
 frq = param['band_freq']
 couronne = param['couronne']
@@ -103,21 +120,43 @@ with open('SEV_slips_rake1.txt', 'r') as myf:
 u_strike = norm([coord_fault[0, 0] - coord_fault[1, 0], coord_fault[0, 1] - coord_fault[1, 1], coord_fault[0, 2] - coord_fault[1, 2]])
 u_dip = norm([coord_fault[0, 0] - coord_fault[9, 0], coord_fault[0, 1] - coord_fault[9, 1], coord_fault[0, 2] - coord_fault[9, 2]])
 
+os.chdir(path_origin + '/Kumamoto')
+with open('ref_seismes_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    dict_seis = my_dpck.load()
+
+lat_hyp = dict_seis[dossier]['lat']
+lon_hyp = dict_seis[dossier]['lon']
+dep_hyp = dict_seis[dossier]['dep']
+
+strike = 225
+dip = 65
+
+dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)), math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)), math.sin(d2r(lat_hyp))]
+vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
+vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
+vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
+vect_dip = rotation(vect_perp_strike, dip, vect_strike)
 
 #coord_flt = np.zeros((49*(file_length('SEV_slips_rake1.txt') - 1), 3))
 coord_flt = np.zeros((50*50, 3))
 #print(len(coord_flt[:, 0]), 49*len(coord_fault[:, 0]))
-for a in range(50):
-    for b in range(50):
-        #for i in range(len(coord_fault[:, 0])):
-            #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 0] = coord_fault[i, 0] + (a - 3)*u_strike[0] + (b - 3)*u_dip[0]
-            #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 1] = coord_fault[i, 1] + (a - 3)*u_strike[1] + (b - 3)*u_dip[1]
-            #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 2] = coord_fault[i, 2] + (a - 3)*u_strike[2] + (b - 3)*u_dip[2]
-        coord_flt[b + 50*a, 0] = coord_fault[0, 0] + (a - 30)*u_strike[0] + (b - 30)*u_dip[0]
-        coord_flt[b + 50*a, 1] = coord_fault[0, 1] + (a - 30)*u_strike[1] + (b - 30)*u_dip[1]
-        coord_flt[b + 50*a, 2] = coord_fault[0, 2] + (a - 30)*u_strike[2] + (b - 30)*u_dip[2]
-
-
+if dossier == '20160415000300':
+    for a in range(50):
+        for b in range(50):
+            #for i in range(len(coord_fault[:, 0])):
+                #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 0] = coord_fault[i, 0] + (a - 3)*u_strike[0] + (b - 3)*u_dip[0]
+                #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 1] = coord_fault[i, 1] + (a - 3)*u_strike[1] + (b - 3)*u_dip[1]
+                #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 2] = coord_fault[i, 2] + (a - 3)*u_strike[2] + (b - 3)*u_dip[2]
+            coord_flt[b + 50*a, 0] = coord_fault[0, 0] + (a - 30)*u_strike[0] + (b - 30)*u_dip[0]
+            coord_flt[b + 50*a, 1] = coord_fault[0, 1] + (a - 30)*u_strike[1] + (b - 30)*u_dip[1]
+            coord_flt[b + 50*a, 2] = coord_fault[0, 2] + (a - 30)*u_strike[2] + (b - 30)*u_dip[2]
+elif dossier == '20160414212600':
+    for a in range(50):
+        for b in range(50):
+            coord_flt[b + 50*a, 0] = coord_cub[5, 0] + (a - 40)*norm(vect_strike)[0] + (b - 5)*norm(vect_dip)[0]
+            coord_flt[b + 50*a, 1] = coord_cub[8, 1] + (a - 40)*norm(vect_strike)[1] + (b - 5)*norm(vect_dip)[1]
+            coord_flt[b + 50*a, 2] = coord_cub[10, 2] + (a - 40)*norm(vect_strike)[2] + (b - 5)*norm(vect_dip)[2]
 
 #coord_used = np.zeros((49*(file_length('SEV_slips_rake1.txt') - 1)))
 #coord_used = np.zeros((file_length('SEV_slips_rake1.txt') - 1))
@@ -165,7 +204,14 @@ for i in range(len(coord_flt[:, 0])):
 
 stack_used_max = stack_used[:, :, :].max()
 print(stack_used_max)
-thresh = 0.9
+ttp = 0
+for i in range(50):
+    for j in range(50):
+        for k in range(length_t):
+            if ttp < stack_used[i, j, k]:
+                ttp = stack_used[i, j, k]
+                print(i, j, k, ttp)
+thresh = 0.95
 cpt = 0
 
 dict_ok = {}
@@ -185,7 +231,8 @@ with open(dossier + '_premier_patch_09', 'wb') as my_ext:
                     lst_ok.append(k)
     my_pck.dump(dict_ok)
 
-print(dict_ok)
+for cles in dict_ok.keys():
+    print(cles, dict_ok[cles])
 
 skr = 30
 dkr = 30
@@ -196,8 +243,8 @@ for i in range(length_t):
     fig, ax = plt.subplots(1, 1)
     ax.set_xlabel('Dip (km)')
     ax.set_ylabel('Strike (km)')
-    #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower')#, extent = (0, 50, 0, 50))
-    ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(22.7667638182, 2), interpolation = 'none', origin = 'lower')#, extent = (0, 50, 0, 50))
+    ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower')#, extent = (0, 50, 0, 50))
+    #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(84.5033811494, 2), interpolation = 'none', origin = 'lower')#, extent = (0, 50, 0, 50))
     #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
     #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
     #ax.scatter(x, y, 30, marker = '*', color = 'white', linewidth = 0.2)
@@ -208,9 +255,9 @@ for i in range(length_t):
     ax.axhline(skr - strkr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
 
     os.chdir(path_rslt_pdf)
-    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_patch_09' + str(i*100) + '.pdf')
+    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.pdf')
     os.chdir(path_rslt_png)
-    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_patch_09' + str(i*100) + '.png')
+    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.png')
 
 
 
