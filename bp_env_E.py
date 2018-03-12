@@ -147,7 +147,7 @@ with open('parametres_bin', 'rb') as my_fch:
     param = my_dpck.load()
 
 #dossier = param['dossier']
-dossier = '20160415000300'
+dossier = '20160414212600'
 
 path = path_origin + '/Kumamoto/' + dossier
 
