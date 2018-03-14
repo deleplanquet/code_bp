@@ -208,7 +208,7 @@ length_time = param['length_t']
 
 path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
-path_data_2 = path_data + '_patch_1'
+path_data_2 = path_data + '_patch098_1'
 path_results = path + '/' + dossier + '_results/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz'
 path_results_2 = path_results + '/Traces_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
 
@@ -326,7 +326,7 @@ print(tmin)
 identified_patch = {}
 
 os.chdir(path)
-with open(dossier + '_premier_patch_09', 'rb') as my_fch:
+with open(dossier + '_premier_patch_098', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     dict_ok = my_dpck.load()
 
@@ -359,7 +359,7 @@ for station in lst_fch:
     st[0].stats.sac.user6 = identified_patch[st[0].stats.station][0][0]
     st[0].stats.sac.user7 = identified_patch[st[0].stats.station][0][1]
     tr_reg = Trace(np.asarray(tr), st[0].stats)
-    tr_reg.write(station[:-4] + '_1er_patch.sac', format = 'SAC')
+    tr_reg.write(station[:-4] + '_1er_patch098.sac', format = 'SAC')
 
 stack = np.zeros((nbr_sfaults, len(lst_fch), length_t))
 for station in lst_fch:
@@ -448,7 +448,7 @@ for station in lst_fch:
 #    tr.write(station, format = 'SAC')
 
 os.chdir(path_results)
-with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D_patch_095', 'wb') as my_fch:
+with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D_patch_098', 'wb') as my_fch:
     my_pck = pickle.Pickler(my_fch)
     my_pck.dump(stack)
 
