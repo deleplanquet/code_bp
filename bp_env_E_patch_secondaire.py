@@ -208,7 +208,7 @@ length_time = param['length_t']
 
 path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
-path_data_2 = path_data + '_patch098_1'
+path_data_2 = path_data + '_patch09_1'
 path_results = path + '/' + dossier + '_results/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz'
 path_results_2 = path_results + '/Traces_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
 
@@ -326,7 +326,7 @@ print(tmin)
 identified_patch = {}
 
 os.chdir(path)
-with open(dossier + '_premier_patch_098', 'rb') as my_fch:
+with open(dossier + '_premier_patch_09', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     dict_ok = my_dpck.load()
 
@@ -355,12 +355,12 @@ for station in lst_fch:
         time = cpt/st[0].stats.sampling_rate
         if time >= identified_patch[st[0].stats.station][0][0] and time <= identified_patch[st[0].stats.station][0][1]:
             #tr[cpt] = 0.2*tr[cpt]
-            tr[cpt] = math.pi/4*math.cos(math.pi*(time - identified_patch[st[0].stats.station[0][0]])/(identified_patch[st[0].stats.station[0][1]] - identified_patch[st[0].stats.station[0][0]]))*tr[cpt]
+            tr[cpt] = math.pi/4*math.cos(math.pi*(time - identified_patch[st[0].stats.station][0][0])/(identified_patch[st[0].stats.station][0][1] - identified_patch[st[0].stats.station][0][0]))*tr[cpt]
     os.chdir(path_data_2)
     st[0].stats.sac.user6 = identified_patch[st[0].stats.station][0][0]
     st[0].stats.sac.user7 = identified_patch[st[0].stats.station][0][1]
     tr_reg = Trace(np.asarray(tr), st[0].stats)
-    tr_reg.write(station[:-4] + '_1er_patch098.sac', format = 'SAC')
+    tr_reg.write(station[:-4] + '_1er_patch09.sac', format = 'SAC')
 
 stack = np.zeros((nbr_sfaults, len(lst_fch), length_t))
 for station in lst_fch:
@@ -379,7 +379,7 @@ for station in lst_fch:
             tshift = travt[ista][ix] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
             if tshift > 0 and tshift < t[-1]:
                 if tshift >= identified_patch[st[0].stats.station][0][0] and tshift <= identified_patch[st[0].stats.station][0][1]:
-                    stack[ix, ista, it] = math.pi/4*math.cos(math.pi*(tshift - identified_patch[st[0].stats.station[0][0]])/(identified_patch[st[0].stats.station[0][1]] - identified_patch[st[0].stats.station[0][0]]))*f(tshift)
+                    stack[ix, ista, it] = math.pi/4*math.cos(math.pi*(tshift - identified_patch[st[0].stats.station][0][0])/(identified_patch[st[0].stats.station][0][1] - identified_patch[st[0].stats.station][0][0]))*f(tshift)
                     #stack[ix, ista, it] = 0.2*f(tshift)
                 else:
                     stack[ix, ista, it] = f(tshift)
@@ -450,7 +450,7 @@ for station in lst_fch:
 #    tr.write(station, format = 'SAC')
 
 os.chdir(path_results)
-with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D_patch_098', 'wb') as my_fch:
+with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D_patch_09', 'wb') as my_fch:
     my_pck = pickle.Pickler(my_fch)
     my_pck.dump(stack)
 
