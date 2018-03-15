@@ -354,7 +354,8 @@ for station in lst_fch:
         cpt = cpt + 1
         time = cpt/st[0].stats.sampling_rate
         if time >= identified_patch[st[0].stats.station][0][0] and time <= identified_patch[st[0].stats.station][0][1]:
-            tr[cpt] = 0.2*tr[cpt]
+            #tr[cpt] = 0.2*tr[cpt]
+            tr[cpt] = math.pi/4*math.cos(math.pi*(time - identified_patch[st[0].stats.station[0][0]])/(identified_patch[st[0].stats.station[0][1]] - identified_patch[st[0].stats.station[0][0]]))*tr[cpt]
     os.chdir(path_data_2)
     st[0].stats.sac.user6 = identified_patch[st[0].stats.station][0][0]
     st[0].stats.sac.user7 = identified_patch[st[0].stats.station][0][1]
@@ -378,7 +379,8 @@ for station in lst_fch:
             tshift = travt[ista][ix] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
             if tshift > 0 and tshift < t[-1]:
                 if tshift >= identified_patch[st[0].stats.station][0][0] and tshift <= identified_patch[st[0].stats.station][0][1]:
-                    stack[ix, ista, it] = 0.2*f(tshift)
+                    stack[ix, ista, it] = math.pi/4*math.cos(math.pi*(tshift - identified_patch[st[0].stats.station[0][0]])/(identified_patch[st[0].stats.station[0][1]] - identified_patch[st[0].stats.station[0][0]]))*f(tshift)
+                    #stack[ix, ista, it] = 0.2*f(tshift)
                 else:
                     stack[ix, ista, it] = f(tshift)
 
