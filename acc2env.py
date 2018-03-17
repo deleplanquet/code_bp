@@ -41,3 +41,4 @@ for station in list_fich:
     tr = Trace(tr, st[0].stats)
     os.chdir(path_env)
     tr.write('env_' + station, format = 'SAC')
+
