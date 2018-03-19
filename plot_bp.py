@@ -183,7 +183,7 @@ length_t = int(length_time*samp_rate)
 
 os.chdir(path_data)
 stack = None
-with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D', 'rb') as my_fch:
+with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D_patch_09_complementaire', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     stack = my_dpck.load()
 
@@ -216,23 +216,23 @@ cpt = 0
 
 dict_ok = {}
 
-os.chdir(path)
-with open(dossier + '_premier_patch_09', 'wb') as my_ext:
-    my_pck = pickle.Pickler(my_ext)
-    for i in range(len(stack_used[:, 0, 0])):
-        for j in range(len(stack_used[0, :, 0])):
-            if cpt != 0:
-                dict_ok[str(50*i + j)] = lst_ok
-            cpt = 0
-            lst_ok = []
-            for k in range(length_t):
-                if stack_used[i, j, k] > thresh*stack_used_max:
-                    cpt = cpt + 1
-                    lst_ok.append(k)
-    my_pck.dump(dict_ok)
+#os.chdir(path)
+#with open(dossier + '_premier_patch_09', 'wb') as my_ext:
+#    my_pck = pickle.Pickler(my_ext)
+#    for i in range(len(stack_used[:, 0, 0])):
+#        for j in range(len(stack_used[0, :, 0])):
+#            if cpt != 0:
+#                dict_ok[str(50*i + j)] = lst_ok
+#            cpt = 0
+#            lst_ok = []
+#            for k in range(length_t):
+#                if stack_used[i, j, k] > thresh*stack_used_max:
+#                    cpt = cpt + 1
+#                    lst_ok.append(k)
+#    my_pck.dump(dict_ok)
 
-for cles in dict_ok.keys():
-    print(cles, dict_ok[cles])
+#for cles in dict_ok.keys():
+#    print(cles, dict_ok[cles])
 
 skr = 30
 dkr = 30
@@ -244,7 +244,7 @@ for i in range(length_t):
     ax.set_xlabel('Dip (km)')
     ax.set_ylabel('Strike (km)')
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower')#, extent = (0, 50, 0, 50))
-    ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower')#, extent = (0, 50, 0, 50))
+    ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72/2, 2), interpolation = 'none', origin = 'lower')#, extent = (0, 50, 0, 50))
     #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
     #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
     #ax.scatter(x, y, 30, marker = '*', color = 'white', linewidth = 0.2)
@@ -256,9 +256,9 @@ for i in range(length_t):
     #ax.axhline(skr - strkr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
 
     os.chdir(path_rslt_pdf)
-    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.pdf')
+    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_patch09_complementaire_' + str(i*100) + '.pdf')
     os.chdir(path_rslt_png)
-    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.png')
+    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_patch09_complementaire_' + str(i*100) + '.png')
 
 
 
