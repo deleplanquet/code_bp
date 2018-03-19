@@ -208,8 +208,8 @@ length_time = param['length_t']
 
 path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
-path_data_2 = path_data + '_patch09_1'
-path_data_3 = path_data + '_patch09_complementaire_1'
+path_data_2 = path_data + '_patch095_1'
+path_data_3 = path_data + '_patch095_complementaire_1'
 path_results = path + '/' + dossier + '_results/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz'
 path_results_2 = path_results + '/Traces_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
 
@@ -330,7 +330,7 @@ print(tmin)
 identified_patch = {}
 
 os.chdir(path)
-with open(dossier + '_premier_patch_09', 'rb') as my_fch:
+with open(dossier + '_premier_patch_095', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     dict_ok = my_dpck.load()
 
@@ -361,10 +361,10 @@ for station in lst_fch:
             #tr[cpt] = 0.2*tr[cpt]
             tr[cpt] = (1 - 1/2*math.sin(math.pi*(time - identified_patch[st[0].stats.station][0][0])/(identified_patch[st[0].stats.station][0][1] - identified_patch[st[0].stats.station][0][0])))*tr[cpt]
     os.chdir(path_data_2)
-    st[0].stats.sac.user6 = identified_patch[st[0].stats.station][0][0]
-    st[0].stats.sac.user7 = identified_patch[st[0].stats.station][0][1]
+    st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]
+    st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]
     tr_reg = Trace(np.asarray(tr), st[0].stats)
-    tr_reg.write(station[:-4] + '_1er_patch09.sac', format = 'SAC')
+    tr_reg.write(station[:-4] + '_1er_patch095.sac', format = 'SAC')
     os.chdir(path_data)
     st = read(station)
     tr = st[0].data
@@ -377,10 +377,10 @@ for station in lst_fch:
         elif cpt <= 5000:
             tr[cpt] = 0
     os.chdir(path_data_3)
-    st[0].stats.sac.user6 = identified_patch[st[0].stats.station][0][0]
-    st[0].stats.sac.user7 = identified_patch[st[0].stats.station][0][1]
+    st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]
+    st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]
     tr_reg = Trace(np.asarray(tr), st[0].stats)
-    tr_reg.write(station[:-4] + '_1er_patch09_complementaire.sac', format = 'SAC')
+    tr_reg.write(station[:-4] + '_1er_patch095_complementaire.sac', format = 'SAC')
 
 stack = np.zeros((nbr_sfaults, len(lst_fch), length_t))
 for station in lst_fch:
@@ -472,7 +472,7 @@ for station in lst_fch:
 #    tr.write(station, format = 'SAC')
 
 os.chdir(path_results)
-with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D_patch_09_complementaire', 'wb') as my_fch:
+with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D_patch_095_complementaire', 'wb') as my_fch:
     my_pck = pickle.Pickler(my_fch)
     my_pck.dump(stack)
 
