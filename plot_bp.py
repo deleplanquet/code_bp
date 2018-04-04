@@ -5,6 +5,7 @@ import sys
 import pickle
 import math
 import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
 
 np.set_printoptions(threshold=np.nan)
 
@@ -261,11 +262,23 @@ dkr = 30
 strkr = 13.5
 dipkr = 15
 
+#cmap = mpl.colors.ListedColormap(['white'], ['blue'], ['green'], ['yellow'], ['orange'], ['red'])
+#bounds = [0, 1, 50, 75, 90, 95, 100]
+#nnmm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+
+colors = [(1, 1, 1), (0, 0, 1)]
+cmap_name = 'mycmp'
+cm = LinearSegmentedColormap.from_list(cmap_name, colors, N = 100)
+v1 = np.linspace(0, 1, endpoint = True)
+levels = np.arange(0, pow(stack_used[:, :, :].max(), 2), 0.1*pow(stack_used[:, :, :].max(), 2))
+
 for i in range(length_t):
     fig, ax = plt.subplots(1, 1)
     ax.set_xlabel('Dip (km)')
     ax.set_ylabel('Strike (km)')
-    ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
+    #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
+    im = ax.imshow(stack_used[:, :, i]**2, cmap = cm, vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
+
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
     #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
     #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
@@ -281,6 +294,7 @@ for i in range(length_t):
     #ax.axvline(dkr - dipkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axhline(skr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axhline(skr - strkr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
+    fig.colorbar(im, ax = ax, ticks = v1)
 
     os.chdir(path_rslt_pdf)
     fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_patch095_complementaire_' + str(i*100) + '.pdf')
