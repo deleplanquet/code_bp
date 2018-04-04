@@ -36,15 +36,18 @@ def norm(vect):
     return [30*a/pow(norm_v, 0.5) for a in vect]
 
 #list_dossier = ['20160417054100', '20160415015900', '20160416074900', '20160416131700', '20160415124600', '20160416220600']
-list_dossier = ['20160416080200', '20160415072000']
-#list_dossier = ['20160415072000']
+#list_dossier = ['20160416080200', '20160415072000']
+list_dossier = ['20160415173900']
 #list_dossier = ['20160416080200']
 #list_dossier = ['20160414230200']
 
+doss = list_dossier[0]
+
 #path = '/localstorage/deleplanque'
-path = '/Users/deleplanque/Documents'
-path_data = path + '/Data/Kumamoto_sac'
-path_results = path + '/Results'
+path_origin = os.getcwd()[:-6]
+path = path_origin + '/Kumamoto/' + doss
+path_data = path + '/' + doss + '_vel_4_8Hz_hori_env_S'
+path_results = path + '/' + doss + '_results'
 
 fig, ax = plt.subplots(1, 1)
 ax.set_xlabel('Time (s)')
@@ -52,9 +55,9 @@ ax.set_ylabel('Distance from the hypocenter (km)')
 
 for dossier in list_dossier:
     print(dossier)
-    os.chdir(path_data + '/' + dossier)
-    list_fichier = os.listdir(path_data + '/' + dossier)
-    list_fichier = [a for a in list_fichier if (('UD' in a) == True and ('UD1' in a) == False)]
+    os.chdir(path_data)
+    list_fichier = os.listdir(path_data)
+# + '/' + dossier    list_fichier = [a for a in list_fichier if (('UD' in a) == True and ('UD1' in a) == False)]
 
     fig2, ax2 = plt.subplots(1, 1)
     ax2.set_xlabel('Time (s)')
