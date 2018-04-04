@@ -122,7 +122,11 @@ with open(dossier + '_veldata', 'wb') as mon_fich:
     mon_pick = pickle.Pickler(mon_fich)
     mon_pick.dump(to_register)
 
-ax.text(10, 115, str(t_origin_rupt), color = 'black')
+#ax.text(10, 115, str(t_origin_rupt), color = 'black')
 ax.plot([0, 100./velP], [0, 100], linewidth = 0.2, color = 'steelblue')
 ax.plot([0, 100./velS], [0, 100], linewidth = 0.2, color = 'darkorange')
+ax.set_xlim([0, 70])
+ax.set_ylim([0, 110])
+ax.xaxis.set_visible(False)
+ax.yaxis.set_visible(False)
 fig.savefig('env_fct_dist_' + dossier + '.pdf')
