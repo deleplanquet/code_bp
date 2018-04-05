@@ -24,17 +24,12 @@ param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']
 param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
 param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
 param['ondes_select'] = input('hypothese de bp [P/S]: ')
-
-param['fault'] = input('fichier contenant des coordonnees de faille particulieres (si == 0, des parametres seront demandes pour construire une faille): ')
-
-if param['fault'] == 0:
-    param['strike'] = float(input('strike (224?): '))
-    param['dip'] = float(input('dip (65?): '))
-    param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
-    param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
-    param['pas_l'] = float(input('pas longueur fault (km): '))
-    param['pas_w'] = float(input('pas largeur fault (km): '))
-
+param['strike'] = float(input('strike (224?): '))
+param['dip'] = float(input('dip (65?): '))
+param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
+param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
+param['pas_l'] = float(input('pas longueur fault (km): '))
+param['pas_w'] = float(input('pas largeur fault (km): '))
 param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
 param['length_t'] = float(input('duree de la bp (> 5 sec): '))
 
@@ -106,16 +101,11 @@ for ppth in lst_pth:
         my_ext.write('vitesse P: ' + str(param['vP']) + ' km/s # 5.8\n')
         my_ext.write('vitesse S: ' + str(param['vS']) + ' km/s # 3.4\n')
         my_ext.write('hypothese de bp: ' + param['ondes_select'] + '\n')
-        
-        my_ext.write('nom du fichier contenant les coordonnes de la faille: ' + param['fault'] + '\n')
-
-        if param['fault'] == 0:
-            my_ext.write('fault strike: ' + str(param['strike']) + ' deg # 224 for mainshock from Kubo et al. (2016)\n')
-            my_ext.write('fault dip: ' + str(param['dip']) + ' deg # 65 for mainshock from Kubo et al. (2016)\n')
-            my_ext.write('length fault: ' + str(param['l_fault']) + ' km\n')
-            my_ext.write('width fault: ' + str(param['w_fault']) + ' km\n')
-            my_ext.write('pas direction strike: ' + str(param['pas_l']) + ' km\n')
-            my_ext.write('pas direction dip: ' + str(param['pas_w']) + ' km\n')
-        
+        my_ext.write('fault strike: ' + str(param['strike']) + ' deg # 224 for mainshock from Kubo et al. (2016)\n')
+        my_ext.write('fault dip: ' + str(param['dip']) + ' deg # 65 for mainshock from Kubo et al. (2016)\n')
+        my_ext.write('length fault: ' + str(param['l_fault']) + ' km\n')
+        my_ext.write('width fault: ' + str(param['w_fault']) + ' km\n')
+        my_ext.write('pas direction strike: ' + str(param['pas_l']) + ' km\n')
+        my_ext.write('pas direction dip: ' + str(param['pas_w']) + ' km\n')
         my_ext.write('echantillonage bp: ' + str(param['samp_rate']) + ' im/s\n')
         my_ext.write('duree de bp: ' + str(param['length_t']) + ' s\n')
