@@ -3,7 +3,7 @@
 .. section-numbering::
 
 python3 parametres.py
----------------------
+=====================
 
 .. code-block:: python3
 
@@ -52,13 +52,13 @@ Definir les parametres ci-dessous:
 | **length_t**: duree de la back projection (en s) en sachant que le depart est toujours 5 sec avant le debut de la rupture
 
 telecharger les donnees (format ASCII)
---------------------------------------
+======================================
 
 | from *http://www.kyoshin.bosai.go.jp*
 | to */Kumamoto/dossier/dossier_brut*
 
 python3 tosac.py
-----------------
+================
 
 .. code-block:: python3
 
@@ -73,7 +73,7 @@ convertir les traces telechargees au fromat SAC
 | to */Kumamoto/dossier/dossier_sac*
 
 python3 station_inf_100km.py
-----------------------------
+============================
 
 .. code-block:: python3
 
@@ -86,14 +86,14 @@ python3 station_inf_100km.py
 | to */Kumamoto/dossier/dossier_sac_inf100km*
 
 faire les pointes des arrivees P et S dans _SAC_ (a la main)
-------------------------------------------------------------
+============================================================
 
 | les pointes sont realises dans SAC sur les traces brutes
 | les fichiers localises dans */Kumamoto/dossier/dossier_sac_inf100km* sont modifies
 | Faire attention si on reprend la procedure du debut
 
 python3 select_couronne.py
---------------------------
+==========================
 
 .. code-block:: python3
 
@@ -106,7 +106,7 @@ python3 select_couronne.py
 | to */Kumamoto/dossier/dossier_sac_couronne*
 
 python3 acc2vel.py
-------------------
+==================
 
 .. code-block:: python3
 
@@ -127,7 +127,7 @@ les differentes etapes sont decrites ci-dessous:
 | to */Kumamoto/dossier/dossier_vel_couronne*
 
 python3 filt_vel.py
-------------------
+===================
 
 .. code-block:: python3
 
@@ -143,7 +143,7 @@ les differentes etapes sont decrites ci-dessous:
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq*
 
 python3 3components.py
-----------------------
+======================
 
 .. code-block:: python3
 
@@ -159,7 +159,7 @@ python3 3components.py
   with *\**** = *3comp*, *hori* or *vert*
 
 python3 vel2env.py
-------------------
+==================
 
 .. code-block:: python3
 
@@ -172,7 +172,7 @@ python3 vel2env.py
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
 
 python3 env2smooth.py
----------------------
+=====================
 
 .. code-block:: python3
 
@@ -183,8 +183,20 @@ python3 env2smooth.py
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
 
+python3 carte_SoverP.py
+-----------------------
+
+.. code-block:: python3
+
+    python3 carte_SoverP.py
+
+| fait une carte affichant les stations retenues jusque la avec l'information energie S/P
+
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
+| to */Kumamoto/dossier/dossier_results*
+
 python3 vitesse_PS.py
----------------------
+=====================
 
 .. code-block:: python3
 
@@ -197,7 +209,7 @@ python3 vitesse_PS.py
 | to */Kumamoto/dossier*
 
 python3 select_stat_env.py
---------------------------
+==========================
 
 .. code-block:: python3
 
@@ -213,7 +225,7 @@ python3 select_stat_env.py
   with *\**** = *P* or *S*
 
 python3 select_station_angle.py
--------------------------------
+===============================
 
 .. code-block:: python3
 
@@ -227,7 +239,7 @@ python3 select_station_angle.py
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
 
 python3 bp_env_E.py
--------------------
+===================
 
 .. code-block:: python3
 
@@ -240,7 +252,7 @@ python3 bp_env_E.py
 | to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
 
 python3 plot_bp_2d.py
----------------------
+=====================
 
 .. code-block:: python3
 
@@ -250,7 +262,7 @@ python3 plot_bp_2d.py
 | to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq/pdf*
 
 Arborescence
-------------
+============
 
 | Codes
 | Kumamoto
