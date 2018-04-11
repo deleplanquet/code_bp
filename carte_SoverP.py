@@ -63,7 +63,7 @@ m = Basemap(projection='merc',
             llcrnrlat = s_bord,
             urcrnrlon = e_bord,
             urcrnrlat = n_bord,
-            resolution='i')
+            resolution='f')
 m.drawcoastlines(linewidth=0.2)
 m.fillcontinents('yellow')
 
