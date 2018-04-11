@@ -1,5 +1,7 @@
 #!/bin/bash
 
+python3 seismicity.py
+
 python3 select_couronne.py
 
 python3 acc2vel.py
