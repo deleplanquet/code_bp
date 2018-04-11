@@ -92,6 +92,20 @@ faire les pointes des arrivees P et S dans _SAC_ (a la main)
 | les fichiers localises dans */Kumamoto/dossier/dossier_sac_inf100km* sont modifies
 | Faire attention si on reprend la procedure du debut
 
+python3 seismicity.py
+=====================
+
+.. code-block:: python3
+
+    python3 seismicity.py
+
+| plot la sismicite dans la region du main shock
+| affiche le main shock et les deux foreshocks
+| le tout sur differentes periodes (avant, apres, entre deux evenements...)
+
+| from */Kumamoto*
+| to */Kumamoto*
+
 python3 select_couronne.py
 ==========================
 
