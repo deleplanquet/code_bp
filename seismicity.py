@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 path_origin = os.getcwd()[:-6]
-os.chdir(path_origin + '/Kumamoto')
+path = path_origin + '/Kumamoto'
+
+os.chdir(path)
 with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
@@ -19,167 +21,114 @@ with open('ref_seismes_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     ref_s = my_dpck.load()
 
-path = path_origin + '/Kumamoto'
+dossier = param['dossier']
 
-min_lat = None
-min_lon = None
-max_lat = None
-max_lon = None
+lon_eq = ref_s[dossier]['lon']
+lat_eq = ref_s[dossier]['lat']
 
-for cles in ref_s.keys():
-    if min_lat is None or ref_s[cles]['lat'] < min_lat:
-        min_lat = ref_s[cles]['lat']
-    if min_lon is None or ref_s[cles]['lon'] < min_lon:
-        min_lon = ref_s[cles]['lon']
-    if max_lat is None or ref_s[cles]['lat'] > max_lat:
-        max_lat = ref_s[cles]['lat']
-    if max_lon is None or ref_s[cles]['lon'] > max_lon:
-        max_lon = ref_s[cles]['lon']
-
-min_lat = min_lat - 0.4
-min_lon = min_lon - 0.8
-max_lat = max_lat + 0.4
-max_lon = max_lon + 0.6
+w_bord = ref_s['20160416012500']['lon'] - 1.5
+e_bord = ref_s['20160416012500']['lon'] + 1.5
+n_bord = ref_s['20160416012500']['lat'] + 1.2
+s_bord = ref_s['20160416012500']['lat'] - 1.2
 
 m = Basemap(projection = 'merc',
-            llcrnrlon = min_lon,
-            llcrnrlat = min_lat,
-            urcrnrlon = max_lon,
-            urcrnrlat = max_lat,
+            llcrnrlon = w_bord,
+            llcrnrlat = s_bord,
+            urcrnrlon = e_bord,
+            urcrnrlat = n_bord,
             resolution='f')
 
-fig, ax = plt.subplots(1, 1)
-m.drawcoastlines(linewidth = 0.2)
-m.fillcontinents('yellow')
-m.drawmapscale(130.35, 32.22, -3.25, 39.5, 100, barstyle = 'fancy')
-#m.etopo()
-#m.arcgisimage(service='ESRI_Imagery_World_2D', xpixels = 2000, verbose= True)
-#m.warpimage(image = 'bluemarble')
-#m.drawparallels(np.arange(min_lat, max_lat, 0.5),
-#                labels = [1, 0, 0, 0],
-#                linewidth = 0.2)
-#m.drawmeridians(np.arange(min_lon, max_lon, 0.5),
-#                labels = [0, 0, 0, 1],
-#                linewidth = 0.2)
+period_lst = ['7th - 24th', '7th - 14th', '14th - 15th', '15th - 16th', '16th - 24th']
+ms_lst = ['20160414212600', '20160415000300', '20160416012500']
 
-fig1, ax1 = plt.subplots(1, 1)
-#m.drawcoastlines(linewidth = 0.2)
-#m.fillcontinents('yellow')
-m.drawparallels(np.arange(min_lat, max_lat, 0.5),
-                labels = [1, 0, 0, 0],
-                linewidth = 0.2)
-m.drawmeridians(np.arange(min_lon, max_lon, 0.5),
-                labels = [0, 0, 0, 1],
-                linewidth = 0.2)
+for period in range(5):
+    fig, ax = plt.subplots(1, 1)
+    m.drawcoastlines(linewidth = 0.2)
+    m.fillcontinents('yellow')
+    m.drawmapscale(w_bord + 0.55, s_bord + 0.15, lon_eq, lat_eq, 100, barstyle = 'fancy', zorder = 6)
 
-fig2, ax2 = plt.subplots(1, 1)
-#m.drawcoastlines(linewidth = 0.2)
-#m.fillcontinents('yellow')
-m.drawparallels(np.arange(min_lat, max_lat, 0.5),
-                labels = [1, 0, 0, 0],
-                linewidth = 0.2)
-m.drawmeridians(np.arange(min_lon, max_lon, 0.5),
-                labels = [0, 0, 0, 1],
-                linewidth = 0.2)
+    for eq in seism.keys():
+        lat = seism[eq]['lat']
+        lon = seism[eq]['lon']
+        day = seism[eq]['day']
+        hou = seism[eq]['hou']
+        mnn = seism[eq]['min']
+        per = None
+        if lat < n_bord and lat > s_bord and lon < e_bord and lon > w_bord:
+            x_epi, y_epi = m(lon, lat)
+            if day < 14 or (day == 14 and hou < 21) or (day == 14 and hou == 21 and mnn < 28):
+                per = 1
+            elif day < 15 or (day == 15 and hou < 0) or (day == 15 and hou == 0 and mnn < 3):
+                per = 2
+            elif day < 16 or (day == 16 and hou < 1) or (day == 16 and hou == 1 and mnn < 25):
+                per = 3
+            else:
+                per = 4
 
-fig3, ax3 = plt.subplots(1, 1)
-#m.drawcoastlines(linewidth = 0.2)
-#m.fillcontinents('yellow')
-m.drawparallels(np.arange(min_lat, max_lat, 0.5),
-                labels = [1, 0, 0, 0],
-                linewidth = 0.2)
-m.drawmeridians(np.arange(min_lon, max_lon, 0.5),
-                labels = [0, 0, 0, 1],
-                linewidth = 0.2)
+            if period == 0 or (period == 1 and per == 1) or (period == 2 and per == 2) or (period == 3 and per == 3) or (period == 4 or per == 4):
+                ax.scatter(x_epi, y_epi, seism[eq]['Mj']**2, marker = 'o', edgecolors = 'black', facecolors = 'none', zorder = 2, linewidth = 0.1)
 
-fig4, ax4 = plt.subplots(1, 1)
-#m.drawcoastlines(linewidth = 0.2)
-#m.fillcontinents('yellow')
-m.drawparallels(np.arange(min_lat, max_lat, 0.5),
-                labels = [1, 0, 0, 0],
-                linewidth = 0.2)
-m.drawmeridians(np.arange(min_lon, max_lon, 0.5),
-                labels = [0, 0, 0, 1],
-                linewidth = 0.2)
+    for mainsh in ms_lst:
+        xx, yy = m(ref_s[mainsh]['lon'], ref_s[mainsh]['lat'])
+        angles = [ref_s[mainsh]['str1'], ref_s[mainsh]['dip1'], ref_s[mainsh]['rak1']]
+        bx, by = m(w_bord + 0.12, n_bord - 0.4 + 0.1*ms_lst.index(mainsh))
 
-mimin = None
-mamax = None
-
-for eq in seism.keys():
-    lat = seism[eq]['lat']
-    lon = seism[eq]['lon']
-    day = seism[eq]['day']
-    mnn = seism[eq]['min']
-    sec = seism[eq]['sec']
-    #if lat < max_lat and lat > min_lat and lon < max_lon and lon > min_lon:
-    if lat < 33.135 and lat > 32.385 and lon < 131.335 and lon > 130.35:
-        if mimin == None or seism[eq]['Mj'] < mimin:
-            mimin = seism[eq]['Mj']
-        elif mamax == None or seism[eq]['Mj'] > mamax:
-            mamax = seism[eq]['Mj']
-        x_epi, y_epi = m(lon, lat)
-        ax.scatter(x_epi, y_epi, seism[eq]['Mj']**2, marker = 'o', edgecolors = 'black', facecolors = 'none', zorder = 2, linewidth = 0.1)
-        if day < 14 or (day == 14 and mnn < 21) or (day == 14 and mnn == 21 and sec < 28):
-            ax1.scatter(x_epi, y_epi, seism[eq]['Mj']**2, marker = 'o', edgecolors = 'black', facecolors = 'none', zorder = 2, linewidth = 0.1)
-        elif day < 15 or (day == 15 and mnn < 0) or (day == 15 and mnn == 0 and sec < 3):
-            ax2.scatter(x_epi, y_epi, seism[eq]['Mj']**2, marker = 'o', edgecolors = 'red', facecolors = 'none', zorder = 2, linewidth = 0.1)
-        elif day < 16 or (day == 16 and mnn < 1) or (day == 16 and mnn == 1 and sec < 25):
-            ax3.scatter(x_epi, y_epi, seism[eq]['Mj']**2, marker = 'o', edgecolors = 'blue', facecolors = 'none', zorder = 2, linewidth = 0.1)
+        if mainsh == ms_lst[2]:
+            clr = 'red'
+        elif mainsh == ms_lst[1]:
+            clr = 'green'
         else:
-            ax4.scatter(x_epi, y_epi, seism[eq]['Mj']**2, marker = 'o', edgecolors = 'green', facecolors = 'none', zorder = 2, linewidth = 0.1)
+            clr = 'blue'
 
-print(mimin, mamax)
+        ax.scatter(xx, yy, 3*ref_s[mainsh]['Mw']**2, marker = '*', color = clr, zorder = 4, linewidth = 0.1)
+        bb = beach(angles, xy = (bx, by), facecolor = clr, width = 10000, linewidth = 0.1)
+        bb.set_zorder(4)
+        ax.add_collection(bb)
 
-for i in ['20160414212600', '20160415000300', '20160416012500']:
-    xx, yy = m(ref_s[i]['lon'], ref_s[i]['lat'])
-    angles = [ref_s[i]['str1'], ref_s[i]['dip1'], ref_s[i]['rak1']]
-    bx, by = m(131, 32.3 + 0.1*['20160414212600', '20160415000300', '20160416012500'].index(i))
-    if i == '20160416012500':
-        clr = 'red'
-    elif i == '20160415000300':
-        clr = 'green'
-    else:
-        clr = 'blue'
-    ax.scatter(xx, yy, 3*ref_s[i]['Mw']**2, marker = '*', color = clr, zorder = 4, linewidth = 0.1)
-    bb = beach(angles, xy = (bx, by), facecolor = clr, width = 10000, linewidth = 0.1)
-    bb.set_zorder(4)
-    ax.add_collection(bb)
-    xx, yy = m(131.09, 32.28 + 0.1*['20160414212600', '20160415000300', '20160416012500'].index(i))
-    ax.text(xx, yy, ref_s[i]['Mw'])
-    xx, yy = m(131.3, 32.28 + 0.1*['20160414212600', '20160415000300', '20160416012500'].index(i))
-    ax.text(xx, yy, i[6:8] + 'th')
+        xx, yy = m(w_bord + 0.3, n_bord - 0.4 + 0.1*ms_lst.index(mainsh))
+        ax.text(xx, yy, ref_s[mainsh]['Mw'], ha = 'center', va = 'center')
 
-xx, yy = m(131.09, 32.58)
-ax.text(xx, yy, 'Mw')
-xx, yy = m(131.22, 32.58)
-ax.text(xx, yy, '2016 April')
+        xx, yy = m(w_bord + 0.7, n_bord - 0.4 + 0.1*ms_lst.index(mainsh))
+        ax.text(xx, yy, mainsh[6:8] + 'th', ha = 'center', va = 'center')
 
-xx, yy = m(131.585, 32.35)
-ax.text(xx, yy, 'Mw')
+    #legende main shocks
+    xx, yy = m(w_bord + 0.3, n_bord - 0.1)
+    ax.text(xx, yy, 'Mw', ha = 'center', va = 'center')
 
-xx, yy = m(130.78, 32.78)
-ax.scatter(xx, yy, 40, marker = 'o', edgecolors = 'black', facecolors = 'orange', zorder = 3, linewidth = 0.1)
-xx, yy = m(130.64, 32.8)
-ax.text(xx, yy, 'Kumamoto', color = 'red', zorder = 3)
+    xx, yy = m(w_bord + 0.7, n_bord - 0.1)
+    ax.text(xx, yy, '2016 April', ha = 'center', va = 'center')
 
-xx, yy = m(131.09, 32.88)
-ax.scatter(xx, yy, 40, marker = 'o', edgecolors = 'black', facecolors = 'orange', zorder = 3, linewidth = 0.1)
-xx, yy = m(131.01, 32.9)
-ax.text(xx, yy, 'Mt. Aso', color = 'red', zorder = 3)
+    #Kumamoto city
+    xx, yy = m(130.78, 32.78)
+    ax.scatter(xx, yy, 40, marker = 'o', edgecolors = 'black', facecolors = 'orange', zorder = 3, linewidth = 0.1)
 
-for i in range(4):
-    xx, yy = m(131.585, 32.16 + 0.05*i)
-    ax.scatter(xx, yy, (i + 2)*(i + 2), marker = 'o', edgecolors = 'black', facecolors = 'none', zorder = 2, linewidth = 0.1)
-    xx, yy = m(131.585, 32.15 + 0.05*i)
-    ax.text(xx, yy, '  ' + str(i + 2))
+    xx, yy = m(130.78, 32.8)
+    ax.text(xx, yy, 'Kumamoto', color = 'red', zorder = 3, ha = 'center', va = 'center')
 
-ax.set_title('2016 April 7th - 24th seismicity')
+    #Mont Aso
+    xx, yy = m(131.09, 32.88)
+    ax.scatter(xx, yy, 40, marker = 'o', edgecolors = 'black', facecolors = 'orange', zorder = 3, linewidth = 0.1)
 
-fig.savefig('sismicite.pdf')
-fig1.savefig('sismicite_before142128.pdf')
-fig2.savefig('sismicite_before150003.pdf')
-fig3.savefig('sismicite_before160125.pdf')
-fig4.savefig('sismicite_after160125.pdf')
+    xx, yy = m(131.09, 32.9)
+    ax.text(xx, yy, 'Mt. Aso', color = 'red', zorder = 3, ha = 'center', va = 'center')
 
+    #legende magnitude sismicite
+    xx, yy = m(e_bord - 0.15, s_bord + 0.5)
+    ax.text(xx, yy, 'Mw', ha = 'center', va = 'center')
+
+    for i in range(4):
+        #cercle pour magnitude donnee
+        xx, yy = m(e_bord - 0.2, s_bord + 0.1 + 0.1*i)
+        ax.scatter(xx, yy, pow(i + 2, 2), marker = 'o', edgecolors = 'black', facecolors = 'none', zorder = 2, linewidth = 0.1)
+
+        #magnitude sismicite
+        xx, yy = m(e_bord - 0.15, s_bord + 0.1 + 0.1*i)
+        ax.text(xx, yy, '   ' + str(i + 2), ha = 'center', va = 'center')
+
+    #title figure
+    ax.set_title('2016 April ' + period_lst[period] + ' seismicity')
+
+    #save figure
+    fig.savefig('sismicite_' + period_lst[period] + '.pdf')
 
 
