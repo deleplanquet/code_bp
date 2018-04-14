@@ -58,8 +58,7 @@ with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
 
-#dossier = param['dossier']
-dossier = '20160414212600'
+dossier = param['dossier']
 dt_type = param['composante']
 frq = param['band_freq']
 couronne = param['couronne']
@@ -84,97 +83,97 @@ if os.path.isdir(path_rslt_pdf) == False:
 if os.path.isdir(path_rslt_png) == False:
     os.makedirs(path_rslt_png)
 
-os.chdir(path)
-nbr_subfaults = file_length(dossier + '_subfault_positions.txt')
-coord_cub = np.zeros((nbr_subfaults, 3))
-cf_tmp = None
-cpt = 0
+#os.chdir(path)
+#nbr_subfaults = file_length(dossier + '_subfault_positions.txt')
+#coord_cub = np.zeros((nbr_subfaults, 3))
+#cf_tmp = None
+#cpt = 0
 
-os.chdir(path)
-with open(dossier + '_subfault_positions.txt', 'r') as myf:
-    for line in myf:
-        spliit = line.split(' ')
-        spliit = [i for i in spliit if i != '']
-        cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
-        coord_cub[cpt, 0] = cf_tmp[0]
-        coord_cub[cpt, 1] = cf_tmp[1]
-        coord_cub[cpt, 2] = cf_tmp[2]
-        cpt = cpt + 1
+#os.chdir(path)
+#with open(dossier + '_subfault_positions.txt', 'r') as myf:
+#    for line in myf:
+#        spliit = line.split(' ')
+#        spliit = [i for i in spliit if i != '']
+#        cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
+#        coord_cub[cpt, 0] = cf_tmp[0]
+#        coord_cub[cpt, 1] = cf_tmp[1]
+#        coord_cub[cpt, 2] = cf_tmp[2]
+#        cpt = cpt + 1
 
-os.chdir(path_origin + '/Kumamoto')
-coord_fault = np.zeros((file_length('SEV_slips_rake1.txt') - 1, 3))
-cpt = 0
+#os.chdir(path_origin + '/Kumamoto')
+#coord_fault = np.zeros((file_length('SEV_slips_rake1.txt') - 1, 3))
+#cpt = 0
 
-os.chdir(path_origin + '/Kumamoto')
-with open('SEV_slips_rake1.txt', 'r') as myf:
-    myf.readline()
-    for line in myf:
-        spliit = line.split(' ')
-        spliit = [i for i in spliit if i != '']
-        cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
-        coord_fault[cpt, 0] = cf_tmp[0]
-        coord_fault[cpt, 1] = cf_tmp[1]
-        coord_fault[cpt, 2] = cf_tmp[2]
-        cpt = cpt + 1
+#os.chdir(path_origin + '/Kumamoto')
+#with open('SEV_slips_rake1.txt', 'r') as myf:
+#    myf.readline()
+#    for line in myf:
+#        spliit = line.split(' ')
+#        spliit = [i for i in spliit if i != '']
+#        cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
+#        coord_fault[cpt, 0] = cf_tmp[0]
+#        coord_fault[cpt, 1] = cf_tmp[1]
+#        coord_fault[cpt, 2] = cf_tmp[2]
+#        cpt = cpt + 1
 
 
-u_strike = norm([coord_fault[0, 0] - coord_fault[1, 0], coord_fault[0, 1] - coord_fault[1, 1], coord_fault[0, 2] - coord_fault[1, 2]])
-u_dip = norm([coord_fault[0, 0] - coord_fault[9, 0], coord_fault[0, 1] - coord_fault[9, 1], coord_fault[0, 2] - coord_fault[9, 2]])
+#u_strike = norm([coord_fault[0, 0] - coord_fault[1, 0], coord_fault[0, 1] - coord_fault[1, 1], coord_fault[0, 2] - coord_fault[1, 2]])
+#u_dip = norm([coord_fault[0, 0] - coord_fault[9, 0], coord_fault[0, 1] - coord_fault[9, 1], coord_fault[0, 2] - coord_fault[9, 2]])
 
-os.chdir(path_origin + '/Kumamoto')
-with open('ref_seismes_bin', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    dict_seis = my_dpck.load()
+#os.chdir(path_origin + '/Kumamoto')
+#with open('ref_seismes_bin', 'rb') as my_fch:
+#    my_dpck = pickle.Unpickler(my_fch)
+#    dict_seis = my_dpck.load()
 
-lat_hyp = dict_seis[dossier]['lat']
-lon_hyp = dict_seis[dossier]['lon']
-dep_hyp = dict_seis[dossier]['dep']
+#lat_hyp = dict_seis[dossier]['lat']
+#lon_hyp = dict_seis[dossier]['lon']
+#dep_hyp = dict_seis[dossier]['dep']
 
-strike = 225
-dip = 65
+#strike = 225
+#dip = 65
 
-dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)), math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)), math.sin(d2r(lat_hyp))]
-vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
-vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
-vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
-vect_dip = rotation(vect_perp_strike, dip, vect_strike)
+#dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)), math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)), math.sin(d2r(lat_hyp))]
+#vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
+#vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
+#vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
+#vect_dip = rotation(vect_perp_strike, dip, vect_strike)
 
 #coord_flt = np.zeros((49*(file_length('SEV_slips_rake1.txt') - 1), 3))
-coord_flt = np.zeros((50*50, 3))
+#coord_flt = np.zeros((50*50, 3))
 #print(len(coord_flt[:, 0]), 49*len(coord_fault[:, 0]))
-if dossier == '20160415000300':
-    for a in range(50):
-        for b in range(50):
+#if dossier == '20160415000300':
+#    for a in range(50):
+#        for b in range(50):
             #for i in range(len(coord_fault[:, 0])):
                 #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 0] = coord_fault[i, 0] + (a - 3)*u_strike[0] + (b - 3)*u_dip[0]
                 #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 1] = coord_fault[i, 1] + (a - 3)*u_strike[1] + (b - 3)*u_dip[1]
                 #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 2] = coord_fault[i, 2] + (a - 3)*u_strike[2] + (b - 3)*u_dip[2]
-            coord_flt[b + 50*a, 0] = coord_fault[0, 0] + (a - 30)*u_strike[0] + (b - 30)*u_dip[0]
-            coord_flt[b + 50*a, 1] = coord_fault[0, 1] + (a - 30)*u_strike[1] + (b - 30)*u_dip[1]
-            coord_flt[b + 50*a, 2] = coord_fault[0, 2] + (a - 30)*u_strike[2] + (b - 30)*u_dip[2]
-elif dossier == '20160414212600':
-    for a in range(50):
-        for b in range(50):
-            coord_flt[b + 50*a, 0] = coord_cub[5, 0] + (a - 40)*norm(vect_strike)[0] + (b - 5)*norm(vect_dip)[0]
-            coord_flt[b + 50*a, 1] = coord_cub[8, 1] + (a - 40)*norm(vect_strike)[1] + (b - 5)*norm(vect_dip)[1]
-            coord_flt[b + 50*a, 2] = coord_cub[10, 2] + (a - 40)*norm(vect_strike)[2] + (b - 5)*norm(vect_dip)[2]
+#            coord_flt[b + 50*a, 0] = coord_fault[0, 0] + (a - 30)*u_strike[0] + (b - 30)*u_dip[0]
+#            coord_flt[b + 50*a, 1] = coord_fault[0, 1] + (a - 30)*u_strike[1] + (b - 30)*u_dip[1]
+#            coord_flt[b + 50*a, 2] = coord_fault[0, 2] + (a - 30)*u_strike[2] + (b - 30)*u_dip[2]
+#elif dossier == '20160414212600':
+#    for a in range(50):
+#        for b in range(50):
+#            coord_flt[b + 50*a, 0] = coord_cub[5, 0] + (a - 40)*norm(vect_strike)[0] + (b - 5)*norm(vect_dip)[0]
+#            coord_flt[b + 50*a, 1] = coord_cub[8, 1] + (a - 40)*norm(vect_strike)[1] + (b - 5)*norm(vect_dip)[1]
+#            coord_flt[b + 50*a, 2] = coord_cub[10, 2] + (a - 40)*norm(vect_strike)[2] + (b - 5)*norm(vect_dip)[2]
 
 #coord_used = np.zeros((49*(file_length('SEV_slips_rake1.txt') - 1)))
 #coord_used = np.zeros((file_length('SEV_slips_rake1.txt') - 1))
-coord_used = np.zeros((50*50))
+#coord_used = np.zeros((50*50))
 
-for i in range(len(coord_flt[:, 0])):
+#for i in range(len(coord_flt[:, 0])):
 #for i in range(len(coord_fault[:, 0])):
-    stk_tmp = 100000000000
-    stk_tmp_old = 100000000000
-    for j in range(len(coord_cub[:, 0])):
-        stk_tmp = 0
-        for k in range(3):
-            stk_tmp = stk_tmp + pow(coord_flt[i, k] - coord_cub[j, k], 2)
+#    stk_tmp = 100000000000
+#    stk_tmp_old = 100000000000
+#    for j in range(len(coord_cub[:, 0])):
+#        stk_tmp = 0
+#        for k in range(3):
+#            stk_tmp = stk_tmp + pow(coord_flt[i, k] - coord_cub[j, k], 2)
             #stk_tmp = stk_tmp + pow(coord_fault[i, k] - coord_cub[j, k], 2)
-        if stk_tmp < stk_tmp_old:
-            stk_tmp_old = stk_tmp
-            coord_used[i] = j
+#        if stk_tmp < stk_tmp_old:
+#            stk_tmp_old = stk_tmp
+#            coord_used[i] = j
 
 
 
@@ -184,53 +183,53 @@ length_t = int(length_time*samp_rate)
 
 os.chdir(path_data)
 stack = None
-with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D_patch_095_complementaire', 'rb') as my_fch:
+with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     stack = my_dpck.load()
 
-os.chdir(path_origin + '/Kumamoto')
+#os.chdir(path_origin + '/Kumamoto')
 #stack_used = np.zeros((int(49*(file_length('SEV_slips_rake1.txt') - 1)/63), 63, length_t))
 #stack_used = np.zeros((int((file_length('SEV_slips_rake1.txt') - 1)/9), 9, length_t))
-stack_used = np.zeros((50, 50, length_t))
+#stack_used = np.zeros((50, 50, length_t))
 
-for i in range(len(coord_flt[:, 0])):
+#for i in range(len(coord_flt[:, 0])):
 #for i in range(len(coord_fault[:, 0])):
-    for j in range(len(stack[0, :, 0])):
-        for k in range(length_t):
+#    for j in range(len(stack[0, :, 0])):
+#        for k in range(length_t):
             #stack_used[int((i - i%63)/63), i%63, k] = stack_used[int((i - i%63)/63), i%63, k] + stack[int(coord_used[i]), j, k]
-            stack_used[int((i - i%50)/50), i%50, k] = stack_used[int((i - i%50)/50), i%50, k] + stack[int(coord_used[i]), j, k]
+#            stack_used[int((i - i%50)/50), i%50, k] = stack_used[int((i - i%50)/50), i%50, k] + stack[int(coord_used[i]), j, k]
 
 #stack_used[0, 0, 0] = stack_used[:, :, :].max()
 #stack_used[0, 1, 0] = stack_used[:, :, :].max()
 
-stack_used_max = stack_used[:, :, :].max()
-print(stack_used_max)
-ttp = 0
-for i in range(50):
-    for j in range(50):
-        for k in range(length_t):
-            if ttp < stack_used[i, j, k]:
-                ttp = stack_used[i, j, k]
-                print(i, j, k, ttp)
+#stack_used_max = stack_used[:, :, :].max()
+#print(stack_used_max)
+#ttp = 0
+#for i in range(50):
+#    for j in range(50):
+#        for k in range(length_t):
+#            if ttp < stack_used[i, j, k]:
+#                ttp = stack_used[i, j, k]
+#                print(i, j, k, ttp)
 thresh = 0.95
 cpt = 0
 
 dict_ok = {}
 
-#os.chdir(path)
-#with open(dossier + '_premier_patch_095', 'wb') as my_ext:
-#    my_pck = pickle.Pickler(my_ext)
-#    for i in range(len(stack_used[:, 0, 0])):
-#        for j in range(len(stack_used[0, :, 0])):
-#            if cpt != 0:
-#                dict_ok[str(50*i + j)] = lst_ok
-#            cpt = 0
-#            lst_ok = []
-#            for k in range(length_t):
-#                if stack_used[i, j, k] > thresh*stack_used_max and k < 80:
-#                    cpt = cpt + 1
-#                    lst_ok.append(k)
-#    my_pck.dump(dict_ok)
+os.chdir(path)
+with open(dossier + '_premier_patch_095', 'wb') as my_ext:
+    my_pck = pickle.Pickler(my_ext)
+    for i in range(len(stack_used[:, 0, 0])):
+        for j in range(len(stack_used[0, :, 0])):
+            if cpt != 0:
+                dict_ok[str(50*i + j)] = lst_ok
+            cpt = 0
+            lst_ok = []
+            for k in range(length_t):
+                if stack_used[i, j, k] > thresh*stack_used_max and k < 80:
+                    cpt = cpt + 1
+                    lst_ok.append(k)
+    my_pck.dump(dict_ok)
 
 #for cles in dict_ok.keys():
 #    print(cles, dict_ok[cles])
@@ -297,9 +296,9 @@ for i in range(length_t):
     fig.colorbar(im, ax = ax, ticks = v1)
 
     os.chdir(path_rslt_pdf)
-    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_patch095_complementaire_' + str(i*100) + '.pdf')
+    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.pdf')
     os.chdir(path_rslt_png)
-    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_patch095_complementaire_' + str(i*100) + '.png')
+    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.png')
 
 
 
