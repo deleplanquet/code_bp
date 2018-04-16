@@ -94,7 +94,7 @@ def trav_time(station, fault, velocity):
     mat_time = np.zeros((len(fault[:, 0, 0]), len(fault[0, :, 0])))
     for a in range(len(fault[:, 0, 0])):
         for b in range(len(fault[0, :, 0])):
-            mat_time[a] = math.sqrt(pow(x_sta - fault[a, b, 0], 2)
+            mat_time[a, b] = math.sqrt(pow(x_sta - fault[a, b, 0], 2)
                                         + pow(y_sta - fault[a, b, 1], 2)
                                         + pow(z_sta - fault[a, b, 2], 2))/velocity
     return mat_time
