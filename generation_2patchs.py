@@ -79,6 +79,7 @@ def dist_azim(ptA, ptB, R):
         return R*dist_rad, 360 - r2d(angle_brut)
 
 path_origin = os.getcwd()[:-6]
+os.chdir(path_origin + '/Kumamoto')
 with open('parametres_bin', 'rb') as myfch:
     mydpck = pickle.Unpickler(myfch)
     param = mydpck.load()
