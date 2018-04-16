@@ -120,10 +120,10 @@ if os.path.isdir(path_rslt_png) == False:
 #u_strike = norm([coord_fault[0, 0] - coord_fault[1, 0], coord_fault[0, 1] - coord_fault[1, 1], coord_fault[0, 2] - coord_fault[1, 2]])
 #u_dip = norm([coord_fault[0, 0] - coord_fault[9, 0], coord_fault[0, 1] - coord_fault[9, 1], coord_fault[0, 2] - coord_fault[9, 2]])
 
-#os.chdir(path_origin + '/Kumamoto')
-#with open('ref_seismes_bin', 'rb') as my_fch:
-#    my_dpck = pickle.Unpickler(my_fch)
-#    dict_seis = my_dpck.load()
+os.chdir(path_origin + '/Kumamoto')
+with open('ref_seismes_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    dict_seis = my_dpck.load()
 
 #lat_hyp = dict_seis[dossier]['lat']
 #lon_hyp = dict_seis[dossier]['lon']
@@ -211,25 +211,26 @@ with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_s
 #            if ttp < stack_used[i, j, k]:
 #                ttp = stack_used[i, j, k]
 #                print(i, j, k, ttp)
-thresh = 0.95
+thresh = 0.90
 cpt = 0
 
 dict_ok = {}
 
 os.chdir(path)
-with open(dossier + '_premier_patch_095', 'wb') as my_ext:
+with open(dossier + '_premier_patch_090', 'wb') as my_ext:
     my_pck = pickle.Pickler(my_ext)
-    for i in range(len(stack_used[:, 0, 0])):
-        for j in range(len(stack_used[0, :, 0])):
+    for i in range(len(stack[:, 0, 0])):
+        for j in range(len(stack[0, :, 0])):
             if cpt != 0:
-                dict_ok[str(50*i + j)] = lst_ok
+                dict_ok[str(i*len(stack[0, :, 0]) + j)] = lst_ok
             cpt = 0
             lst_ok = []
             for k in range(length_t):
-                if stack_used[i, j, k] > thresh*stack_used_max and k < 80:
+                if stack[i, j, k] > thresh*stack[:, :, :].max():# and k < 80:
                     cpt = cpt + 1
                     lst_ok.append(k)
     my_pck.dump(dict_ok)
+
 
 #for cles in dict_ok.keys():
 #    print(cles, dict_ok[cles])
@@ -237,16 +238,17 @@ with open(dossier + '_premier_patch_095', 'wb') as my_ext:
 dict_contour = {}
 
 os.chdir(path)
-with open(dossier + '_premier_patch_095', 'rb') as my_in:
+with open(dossier + '_premier_patch_090', 'rb') as my_in:
     my_dpck = pickle.Unpickler(my_in)
     dict_ook = my_dpck.load()
 
 for cles in dict_ook.keys():
     for tps in range(len(dict_ook[cles])):
-        yyy = int(cles)//50
-        xxx = int(cles)%50 - 1
+        yyy = 2*(int(cles)//len(stack[0, :, 0]))
+        xxx = 2*(int(cles)%len(stack[0, :, 0]))
         if xxx >= 0:
-            for segm in [[[xxx, xxx], [yyy, yyy + 1]], [[xxx + 1, xxx + 1], [yyy, yyy + 1]], [[xxx, xxx + 1], [yyy, yyy]], [[xxx, xxx + 1], [yyy + 1, yyy + 1]]]:
+            #print([[[xxx, xxx], [yyy, yyy + 2]], [[xxx + 2, xxx + 2], [yyy, yyy + 2]], [[xxx, xxx + 2], [yyy, yyy]], [[xxx, xxx + 2], [yyy + 2, yyy + 2]]])
+            for segm in [[[xxx, xxx], [yyy, yyy + 2]], [[xxx + 2, xxx + 2], [yyy, yyy + 2]], [[xxx, xxx + 2], [yyy, yyy]], [[xxx, xxx + 2], [yyy + 2, yyy + 2]]]:
                 if dict_ook[cles][tps] in dict_contour:
                     if (segm in dict_contour[dict_ook[cles][tps]]) == False:
                         dict_contour[dict_ook[cles][tps]].append(segm)
@@ -269,14 +271,16 @@ colors = [(1, 1, 1), (0, 0, 1)]
 cmap_name = 'mycmp'
 cm = LinearSegmentedColormap.from_list(cmap_name, colors, N = 100)
 v1 = np.linspace(0, 1, endpoint = True)
-levels = np.arange(0, pow(stack_used[:, :, :].max(), 2), 0.1*pow(stack_used[:, :, :].max(), 2))
+levels = np.arange(0, pow(stack[:, :, :].max(), 2), 0.1*pow(stack[:, :, :].max(), 2))
+
+print(len(stack[:, 0, 0]), len(stack[0, :, 0]))
 
 for i in range(length_t):
     fig, ax = plt.subplots(1, 1)
     ax.set_xlabel('Dip (km)')
     ax.set_ylabel('Strike (km)')
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
-    im = ax.imshow(stack_used[:, :, i]**2, cmap = cm, vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
+    im = ax.imshow(stack[:, :, i]**2, cmap = cm, vmin = pow(stack[:, :, :].min(), 2), vmax = pow(stack[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 2*len(stack[0, :, 0]), 0, 2*len(stack[:, 0, 0])))
 
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
     #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
@@ -284,7 +288,7 @@ for i in range(length_t):
     #ax.scatter(x, y, 30, marker = '*', color = 'white', linewidth = 0.2)
 
     if i in dict_contour:
-        print(i)
+        print(i)#, dict_contour[i])
         for segm in dict_contour[i]:
             plot(segm[0], segm[1], linestyle = '-', color = 'red', linewidth = 2)
 
