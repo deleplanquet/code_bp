@@ -79,12 +79,16 @@ def dist_azim(ptA, ptB, R):
         return R*dist_rad, 360 - r2d(angle_brut)
 
 path_origin = os.getcwd()[:-6]
-#with open('parametres_bin', 'rb') as myfch:
-#    mydpck = pickle.Unpickler(myfch)
-#    param = mydpck.load()
+with open('parametres_bin', 'rb') as myfch:
+    mydpck = pickle.Unpickler(myfch)
+    param = mydpck.load()
+
+strike = param['strike']
+dip = param['dip']
+R_Earth = param['R_Earth']
 
 #dossier = param['dossier']
-dossier = 'oneevent'
+dossier = '20160415000301'
 dossier_source = '20160415000300'
 
 path = path_origin + '/Kumamoto/' + dossier + '/' + dossier + '_sac_inf100km'
@@ -105,9 +109,9 @@ lon_hyp = dict_seis[dossier_source]['lon']
 dep_hyp = dict_seis[dossier_source]['dep']
 print(lat_hyp, lon_hyp, dep_hyp)
 
-strike = 225
-dip = 65
-R_Earth = 6400
+#strike = 225
+#dip = 65
+#R_Earth = 6400
 
 os.chdir(path_origin + '/Kumamoto')
 coord_fault = np.zeros((file_length('SEV_slips_rake1.txt') - 1, 3))
