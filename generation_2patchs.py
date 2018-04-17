@@ -174,7 +174,7 @@ for fich in lst_fch:
         print(fich, '   ', st[0].stats.sac.t0, '   ', tt, '   ',  st[0].stats.sac.t0 + tt, '   ', int(tt*st[0].stats.sampling_rate))
         st[0].stats.sac.user1 = st[0].stats.sac.t0 + tt
     tr_reg = Trace(np.asarray(tr), st[0].stats)
-    tr_reg.write(fich[:16] + '_oneevents' + fich[16:-4] + '.sac', format = 'SAC')
+    tr_reg.write(fich[:15] + '1' + fich[16:-4] + '.sac', format = 'SAC')
 
 
 
