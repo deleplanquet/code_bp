@@ -35,6 +35,9 @@ path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth'
 path_results = path + '/' + dossier + '_results'
 
+if os.path.isdir(path_results) == False:
+    os.makedirs(path_results)
+
 lst_sta = os.listdir(path_data)
 
 os.chdir(path_origin + '/Kumamoto')
