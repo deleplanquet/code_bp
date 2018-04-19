@@ -141,9 +141,9 @@ x_hyp, y_hyp, z_hyp = geo2cart(R_Earth - dep_hyp, lat_hyp, lon_hyp)
 #y_hyp_2 = y_hyp - 10*u_strike[1] - 4*u_dip[1]
 #z_hyp_2 = z_hyp - 10*u_strike[2] - 4*u_dip[2]
 
-x_hyp_2 = x_hyp - 30*u_strike[0] - 0*u_dip[0]
-y_hyp_2 = y_hyp - 30*u_strike[1] - 0*u_dip[1]
-z_hyp_2 = z_hyp - 30*u_strike[2] - 0*u_dip[2]
+x_hyp_2 = x_hyp - 30*vect_strike[0] - 0*vect_dip[0]
+y_hyp_2 = y_hyp - 30*vect_strike[1] - 0*vect_dip[1]
+z_hyp_2 = z_hyp - 30*vect_strike[2] - 0*vect_dip[2]
 
 dep_hyp_2, lat_hyp_2, lon_hyp_2 = cart2geo(x_hyp_2, y_hyp_2, z_hyp_2)
 dep_hyp_2 = R_Earth - dep_hyp_2
