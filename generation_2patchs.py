@@ -88,9 +88,9 @@ strike = param['strike']
 dip = param['dip']
 R_Earth = param['R_Earth']
 
-#dossier = param['dossier']
-dossier = '20160415000301'
-dossier_source = '20160415000300'
+dossier = param['dossier']
+nbr_ptch = dossier[-1]
+dossier = dossier_source[:-1] + '0'
 
 path = path_origin + '/Kumamoto/' + dossier + '/' + dossier + '_sac_inf100km'
 path_data = path_origin + '/Kumamoto/' + dossier_source + '/' + dossier_source + '_sac_0-100km'
@@ -109,10 +109,6 @@ lat_hyp = dict_seis[dossier_source]['lat']
 lon_hyp = dict_seis[dossier_source]['lon']
 dep_hyp = dict_seis[dossier_source]['dep']
 print(lat_hyp, lon_hyp, dep_hyp)
-
-#strike = 225
-#dip = 65
-#R_Earth = 6400
 
 os.chdir(path_origin + '/Kumamoto')
 coord_fault = np.zeros((file_length('SEV_slips_rake1.txt') - 1, 3))
@@ -141,15 +137,19 @@ vect_dip = rotation(vect_perp_strike, dip, vect_strike)
 
 x_hyp, y_hyp, z_hyp = geo2cart(R_Earth - dep_hyp, lat_hyp, lon_hyp)
 
-x_hyp_2 = x_hyp - 10*u_strike[0] - 4*u_dip[0]
-y_hyp_2 = y_hyp - 10*u_strike[1] - 4*u_dip[1]
-z_hyp_2 = z_hyp - 10*u_strike[2] - 4*u_dip[2]
+#x_hyp_2 = x_hyp - 10*u_strike[0] - 4*u_dip[0]
+#y_hyp_2 = y_hyp - 10*u_strike[1] - 4*u_dip[1]
+#z_hyp_2 = z_hyp - 10*u_strike[2] - 4*u_dip[2]
+
+x_hyp_2 = x_hyp - 30*u_strike[0] - 0*u_dip[0]
+y_hyp_2 = y_hyp - 30*u_strike[1] - 0*u_dip[1]
+z_hyp_2 = z_hyp - 30*u_strike[2] - 0*u_dip[2]
 
 dep_hyp_2, lat_hyp_2, lon_hyp_2 = cart2geo(x_hyp_2, y_hyp_2, z_hyp_2)
 dep_hyp_2 = R_Earth - dep_hyp_2
 print(lat_hyp_2, lon_hyp_2, dep_hyp_2)
 
-dst_hh, azm_hh = dist_azim([lat_hyp, lon_hyp], [lat_hyp_2, lon_hyp_2], R_Earth)
+dst_hh, azm_hh = dist_azim([lat_hyp_2, lon_hyp_2], [lat_hyp, lon_hyp], R_Earth)
 print(dst_hh, azm_hh)
 
 for fich in lst_fch:
@@ -157,24 +157,41 @@ for fich in lst_fch:
     st = read(fich)
     st.detrend(type = 'constant')
     tr = st[0].data
-    cpt = len(tr)
+    #cpt = len(tr)
 
     dst_hs, azm_hs = dist_azim([lat_hyp, lon_hyp], [st[0].stats.sac.stla, st[0].stats.sac.stlo], R_Earth)
-    tt = 1.6 + math.sqrt(dst_hh*dst_hh + dst_hs*dst_hs + 2*math.cos(azm_hs - azm_hh))/3.4 - dst_hs/3.4
+    tt = 10 + math.sqrt(dst_hh*dst_hh + dst_hs*dst_hs + 2*dst_hh*dst_hs*math.cos(azm_hs - azm_hh))/3.4 - dst_hs/3.4
 
-    for dat in tr:
-        cpt = cpt - 1
-        if cpt > tt*st[0].stats.sampling_rate and cpt < len(tr):
-            #tr[cpt] = tr[cpt] + tr[cpt - int(tt*st[0].stats.sampling_rate)]
-            tr[cpt] = tr[cpt - int(tt*st[0].stats.sampling_rate)]
-        else:
-            tr[cpt] = 0
+    if tt >= 0:
+        cpt = len(tr)
+        for dat in tr:
+            cpt = cpt - 1
+            if cpt > tt*st[0].stats.sampling_rate:
+                if nbr_ptch == '2':
+                    tr[cpt] = tr[cpt] + tr[cpt - int(tt*st[0].stats.sampling_rate)]
+                elif nbr_ptch == '1':
+                    tr[cpt] = tr[cpt - int(tt*st[0].stats.sampling_rate)]
+            else:
+                tr[cpt] = 0
+
+    else:            
+        cpt = -1
+        for dat in tr:
+            cpt = cpt + 1
+            if cpt < len(tr) + tt*st[0].stats.sampling_rate:
+                if nbr_ptch == '2':
+                    tr[cpt] = tr[cpt] + tr[cpt - int(tt*st[0].stats.sampling_rate)]
+                elif nbr_ptch == '1':
+                    tr[cpt] = tr[cpt - int(tt*st[0].stats.sampling_rate)]
+            else:
+                tr[cpt] = 0
+
     os.chdir(path)
     if 'UD' in fich:
         print(fich, '   ', st[0].stats.sac.t0, '   ', tt, '   ',  st[0].stats.sac.t0 + tt, '   ', int(tt*st[0].stats.sampling_rate))
         st[0].stats.sac.user1 = st[0].stats.sac.t0 + tt
     tr_reg = Trace(np.asarray(tr), st[0].stats)
-    tr_reg.write(fich[:15] + '1' + fich[16:-4] + '.sac', format = 'SAC')
+    tr_reg.write(fich[:15] + str(nbr_ptch) + fich[16:-4] + '.sac', format = 'SAC')
 
 
 
