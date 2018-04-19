@@ -90,7 +90,7 @@ R_Earth = param['R_Earth']
 
 dossier = param['dossier']
 nbr_ptch = dossier[-1]
-dossier = dossier_source[:-1] + '0'
+dossier_source = dossier[:-1] + '0'
 
 path = path_origin + '/Kumamoto/' + dossier + '/' + dossier + '_sac_inf100km'
 path_data = path_origin + '/Kumamoto/' + dossier_source + '/' + dossier_source + '_sac_0-100km'
