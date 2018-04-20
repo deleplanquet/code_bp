@@ -83,101 +83,10 @@ if os.path.isdir(path_rslt_pdf) == False:
 if os.path.isdir(path_rslt_png) == False:
     os.makedirs(path_rslt_png)
 
-#os.chdir(path)
-#nbr_subfaults = file_length(dossier + '_subfault_positions.txt')
-#coord_cub = np.zeros((nbr_subfaults, 3))
-#cf_tmp = None
-#cpt = 0
-
-#os.chdir(path)
-#with open(dossier + '_subfault_positions.txt', 'r') as myf:
-#    for line in myf:
-#        spliit = line.split(' ')
-#        spliit = [i for i in spliit if i != '']
-#        cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
-#        coord_cub[cpt, 0] = cf_tmp[0]
-#        coord_cub[cpt, 1] = cf_tmp[1]
-#        coord_cub[cpt, 2] = cf_tmp[2]
-#        cpt = cpt + 1
-
-#os.chdir(path_origin + '/Kumamoto')
-#coord_fault = np.zeros((file_length('SEV_slips_rake1.txt') - 1, 3))
-#cpt = 0
-
-#os.chdir(path_origin + '/Kumamoto')
-#with open('SEV_slips_rake1.txt', 'r') as myf:
-#    myf.readline()
-#    for line in myf:
-#        spliit = line.split(' ')
-#        spliit = [i for i in spliit if i != '']
-#        cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
-#        coord_fault[cpt, 0] = cf_tmp[0]
-#        coord_fault[cpt, 1] = cf_tmp[1]
-#        coord_fault[cpt, 2] = cf_tmp[2]
-#        cpt = cpt + 1
-
-
-#u_strike = norm([coord_fault[0, 0] - coord_fault[1, 0], coord_fault[0, 1] - coord_fault[1, 1], coord_fault[0, 2] - coord_fault[1, 2]])
-#u_dip = norm([coord_fault[0, 0] - coord_fault[9, 0], coord_fault[0, 1] - coord_fault[9, 1], coord_fault[0, 2] - coord_fault[9, 2]])
-
 os.chdir(path_origin + '/Kumamoto')
 with open('ref_seismes_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     dict_seis = my_dpck.load()
-
-#lat_hyp = dict_seis[dossier]['lat']
-#lon_hyp = dict_seis[dossier]['lon']
-#dep_hyp = dict_seis[dossier]['dep']
-
-#strike = 225
-#dip = 65
-
-#dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)), math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)), math.sin(d2r(lat_hyp))]
-#vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
-#vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
-#vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
-#vect_dip = rotation(vect_perp_strike, dip, vect_strike)
-
-#coord_flt = np.zeros((49*(file_length('SEV_slips_rake1.txt') - 1), 3))
-#coord_flt = np.zeros((50*50, 3))
-#print(len(coord_flt[:, 0]), 49*len(coord_fault[:, 0]))
-#if dossier == '20160415000300':
-#    for a in range(50):
-#        for b in range(50):
-            #for i in range(len(coord_fault[:, 0])):
-                #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 0] = coord_fault[i, 0] + (a - 3)*u_strike[0] + (b - 3)*u_dip[0]
-                #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 1] = coord_fault[i, 1] + (a - 3)*u_strike[1] + (b - 3)*u_dip[1]
-                #coord_flt[i + b*len(coord_fault[:, 0]) + 7*a*len(coord_fault[:, 0]), 2] = coord_fault[i, 2] + (a - 3)*u_strike[2] + (b - 3)*u_dip[2]
-#            coord_flt[b + 50*a, 0] = coord_fault[0, 0] + (a - 30)*u_strike[0] + (b - 30)*u_dip[0]
-#            coord_flt[b + 50*a, 1] = coord_fault[0, 1] + (a - 30)*u_strike[1] + (b - 30)*u_dip[1]
-#            coord_flt[b + 50*a, 2] = coord_fault[0, 2] + (a - 30)*u_strike[2] + (b - 30)*u_dip[2]
-#elif dossier == '20160414212600':
-#    for a in range(50):
-#        for b in range(50):
-#            coord_flt[b + 50*a, 0] = coord_cub[5, 0] + (a - 40)*norm(vect_strike)[0] + (b - 5)*norm(vect_dip)[0]
-#            coord_flt[b + 50*a, 1] = coord_cub[8, 1] + (a - 40)*norm(vect_strike)[1] + (b - 5)*norm(vect_dip)[1]
-#            coord_flt[b + 50*a, 2] = coord_cub[10, 2] + (a - 40)*norm(vect_strike)[2] + (b - 5)*norm(vect_dip)[2]
-
-#coord_used = np.zeros((49*(file_length('SEV_slips_rake1.txt') - 1)))
-#coord_used = np.zeros((file_length('SEV_slips_rake1.txt') - 1))
-#coord_used = np.zeros((50*50))
-
-#for i in range(len(coord_flt[:, 0])):
-#for i in range(len(coord_fault[:, 0])):
-#    stk_tmp = 100000000000
-#    stk_tmp_old = 100000000000
-#    for j in range(len(coord_cub[:, 0])):
-#        stk_tmp = 0
-#        for k in range(3):
-#            stk_tmp = stk_tmp + pow(coord_flt[i, k] - coord_cub[j, k], 2)
-            #stk_tmp = stk_tmp + pow(coord_fault[i, k] - coord_cub[j, k], 2)
-#        if stk_tmp < stk_tmp_old:
-#            stk_tmp_old = stk_tmp
-#            coord_used[i] = j
-
-
-
-
 
 length_t = int(length_time*samp_rate)
 
@@ -187,76 +96,69 @@ with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_s
     my_dpck = pickle.Unpickler(my_fch)
     stack = my_dpck.load()
 
-#os.chdir(path_origin + '/Kumamoto')
-#stack_used = np.zeros((int(49*(file_length('SEV_slips_rake1.txt') - 1)/63), 63, length_t))
-#stack_used = np.zeros((int((file_length('SEV_slips_rake1.txt') - 1)/9), 9, length_t))
-#stack_used = np.zeros((50, 50, length_t))
+thresh_1 = 90
+thresh_2 = 80
+thresh_3 = 70
+nbr_trsh = 3
 
-#for i in range(len(coord_flt[:, 0])):
-#for i in range(len(coord_fault[:, 0])):
-#    for j in range(len(stack[0, :, 0])):
-#        for k in range(length_t):
-            #stack_used[int((i - i%63)/63), i%63, k] = stack_used[int((i - i%63)/63), i%63, k] + stack[int(coord_used[i]), j, k]
-#            stack_used[int((i - i%50)/50), i%50, k] = stack_used[int((i - i%50)/50), i%50, k] + stack[int(coord_used[i]), j, k]
+dict_ok_1 = {}
+dict_ok_2 = {}
+dict_ok_3 = {}
 
-#stack_used[0, 0, 0] = stack_used[:, :, :].max()
-#stack_used[0, 1, 0] = stack_used[:, :, :].max()
+lst_trsh = [thresh_1, thresh_2, thresh_3]
+lst_cpt = [0, 0, 0]
+lst_dct_ok = [dict_ok_1, dict_ok_2, dict_ok_3]
+lst_lst_ok = [[], [], []]
 
-#stack_used_max = stack_used[:, :, :].max()
-#print(stack_used_max)
-#ttp = 0
-#for i in range(50):
-#    for j in range(50):
-#        for k in range(length_t):
-#            if ttp < stack_used[i, j, k]:
-#                ttp = stack_used[i, j, k]
-#                print(i, j, k, ttp)
-thresh = 0.90
-cpt = 0
+dict_contour_1 = {}
+dict_contour_2 = {}
+dict_contour_3 = {}
 
-dict_ok = {}
+lst_cntr = [dict_contour_1, dict_contour_2, dict_contour_3]
+lst_clr = ['red', 'orange', 'yellow']
 
-os.chdir(path)
-with open(dossier + '_premier_patch_090', 'wb') as my_ext:
-    my_pck = pickle.Pickler(my_ext)
-    for i in range(len(stack[:, 0, 0])):
-        for j in range(len(stack[0, :, 0])):
-            if cpt != 0:
-                dict_ok[str(i*len(stack[0, :, 0]) + j)] = lst_ok
-            cpt = 0
-            lst_ok = []
-            for k in range(length_t):
-                if stack[i, j, k] > thresh*stack[:, :, :].max():# and k < 80:
-                    cpt = cpt + 1
-                    lst_ok.append(k)
-    my_pck.dump(dict_ok)
-
-
-#for cles in dict_ok.keys():
-#    print(cles, dict_ok[cles])
-
-dict_contour = {}
+for i in range(len(stack[:, 0, 0])):
+    for j in range(len(stack[0, :, 0])):
+        for k in range(nbr_trsh):
+            if lst_cpt[k] != 0:
+                lst_dct_ok[k][str(i*len(stack[0, :, 0]) + j)] = lst_lst_ok[k]
+            lst_cpt[k] = 0
+            lst_lst_ok[k] = []
+        for k in range(length_t):
+            for l in range(nbr_trsh):
+                if stack[i, j, k] > 0.01*lst_trsh[l]*stack[:, :, :].max():
+                    for m in range(nbr_trsh):
+                        if m >= l:
+                            print(m)
+                            lst_cpt[m] = lst_cpt[m] + 1
+                            lst_lst_ok[m].append(k)
 
 os.chdir(path)
-with open(dossier + '_premier_patch_090', 'rb') as my_in:
-    my_dpck = pickle.Unpickler(my_in)
-    dict_ook = my_dpck.load()
+for i in range(nbr_trsh):
+    with open(dossier + '_premier_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
+        my_pck = pickle.Pickler(my_ext)
+        my_pck.dump(lst_dct_ok[i])
 
-for cles in dict_ook.keys():
-    for tps in range(len(dict_ook[cles])):
-        yyy = 2*(int(cles)//len(stack[0, :, 0]))
-        xxx = 2*(int(cles)%len(stack[0, :, 0]))
-        if xxx >= 0:
-            #print([[[xxx, xxx], [yyy, yyy + 2]], [[xxx + 2, xxx + 2], [yyy, yyy + 2]], [[xxx, xxx + 2], [yyy, yyy]], [[xxx, xxx + 2], [yyy + 2, yyy + 2]]])
-            for segm in [[[xxx, xxx], [yyy, yyy + 2]], [[xxx + 2, xxx + 2], [yyy, yyy + 2]], [[xxx, xxx + 2], [yyy, yyy]], [[xxx, xxx + 2], [yyy + 2, yyy + 2]]]:
-                if dict_ook[cles][tps] in dict_contour:
-                    if (segm in dict_contour[dict_ook[cles][tps]]) == False:
-                        dict_contour[dict_ook[cles][tps]].append(segm)
+for i in range(nbr_trsh):
+    os.chdir(path)
+    with open(dossier + '_premier_patch_' + str(lst_trsh[i]), 'rb') as my_in:
+        my_dpck = pickle.Unpickler(my_in)
+        dict_ook = my_dpck.load()
+
+    for cles in dict_ook.keys():
+        for tps in range(len(dict_ook[cles])):
+            yyy = 2*(int(cles)//len(stack[0, :, 0]))
+            xxx = 2*(int(cles)%len(stack[0, :, 0]))
+            if xxx > 0:
+                for segm in [[[xxx, xxx], [yyy, yyy + 2]], [[xxx - 2, xxx - 2], [yyy, yyy + 2]], [[xxx, xxx - 2], [yyy, yyy]], [[xxx, xxx - 2], [yyy + 2, yyy + 2]]]:
+                    if dict_ook[cles][tps] in lst_cntr[i]:
+                        if (segm in lst_cntr[i][dict_ook[cles][tps]]) == False:
+                            lst_cntr[i][dict_ook[cles][tps]].append(segm)
+                        else:
+                            lst_cntr[i][dict_ook[cles][tps]] = [i for i in lst_cntr[i][dict_ook[cles][tps]] if i != segm]
                     else:
-                        dict_contour[dict_ook[cles][tps]] = [i for i in dict_contour[dict_ook[cles][tps]] if i != segm]
-                else:
-                    dict_contour[dict_ook[cles][tps]] = [segm]
-                    print(dict_ook[cles][tps])
+                        lst_cntr[i][dict_ook[cles][tps]] = [segm]
+                        print(dict_ook[cles][tps])
 
 skr = 30
 dkr = 30
@@ -287,10 +189,11 @@ for i in range(length_t):
     #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
     #ax.scatter(x, y, 30, marker = '*', color = 'white', linewidth = 0.2)
 
-    if i in dict_contour:
-        print(i)#, dict_contour[i])
-        for segm in dict_contour[i]:
-            plot(segm[0], segm[1], linestyle = '-', color = 'red', linewidth = 2)
+    for j in range(nbr_trsh):
+        if i in lst_cntr[nbr_trsh - 1 - j]:
+            print(i, '   ', nbr_trsh, '   ', j, '   ', nbr_trsh - 1 - j)#, dict_contour[i])
+            for segm in lst_cntr[nbr_trsh - 1 - j][i]:
+                plot(segm[0], segm[1], linestyle = '-', color = lst_clr[nbr_trsh - 1 - j], linewidth = 2)
 
     ax.text(40, 45, str((i - 50)/10) + ' s', fontsize = 10, color = 'white')
     #ax.axvline(dkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
@@ -305,43 +208,6 @@ for i in range(length_t):
     fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.png')
 
 
-
-
-
-#dossier = sys.argv[1]
-#tp_data = sys.argv[2]
-
-#if tp_data != '3comp' and tp_data != 'hori' and tp_data != 'vert':
-#    print('ERROR TYPO')
-#    sys.exit(0)
-
-#path_origin = os.getcwd()[:-6]
-#path = path_origin + '/Kumamoto/' + dossier
-
-#lst_frq = ['02_05', '05_1', '1_2', '2_4', '4_10']
-#lst_pth_dt = []
-
-#for freq in lst_frq:
-#    lst_pth_dt.append(path + '/' + dossier + '_vel_' + freq + 'Hz_' + tp_data + '_env_results')
-
-#for freq in lst_frq:
-#    stack = None
-#    os.chdir(lst_pth_dt[lst_frq.index(freq)])
-#    with open('stack_vel_' + freq + 'Hz_' + tp_data + '_env', 'rb') as my_fch:
-#    	my_dpck = pickle.Unpickler(my_fch)
-#    	stack = my_dpck.load()
-
-#    fig, ax = plt.subplots(1, 1)
-#    ax.set_xlabel('Time (s)')
-#    ax.set_ylabel('Strike (km)')
-#    ax.imshow(stack, cmap = 'jet', interpolation = 'none', origin = 'lower')
-#    ax.set_aspect('auto')
-#    ax.set_xticklabels([0, 0, 5, 10, 15, 20, 25, 30])
-#    ax.set_yticklabels([0, 0, 20, 40, 60, 80, 100])
-#    print(stack.max()/len(lst_pth_dt[0]))
-
-#    fig.savefig('bp_vel_' + freq + 'Hz_' + tp_data + '_env.pdf')
-#    fig.savefig('bp_vel_' + freq + 'Hz_' + tp_data + '_env.png')
 
 
 
