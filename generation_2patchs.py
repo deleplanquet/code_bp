@@ -141,9 +141,9 @@ x_hyp, y_hyp, z_hyp = geo2cart(R_Earth - dep_hyp, lat_hyp, lon_hyp)
 #y_hyp_2 = y_hyp - 10*u_strike[1] - 4*u_dip[1]
 #z_hyp_2 = z_hyp - 10*u_strike[2] - 4*u_dip[2]
 
-x_hyp_2 = x_hyp - 30*vect_strike[0] - 0*vect_dip[0]
-y_hyp_2 = y_hyp - 30*vect_strike[1] - 0*vect_dip[1]
-z_hyp_2 = z_hyp - 30*vect_strike[2] - 0*vect_dip[2]
+x_hyp_2 = x_hyp + 10*vect_strike[0] - 0*vect_dip[0]
+y_hyp_2 = y_hyp + 10*vect_strike[1] - 0*vect_dip[1]
+z_hyp_2 = z_hyp + 10*vect_strike[2] - 0*vect_dip[2]
 
 dep_hyp_2, lat_hyp_2, lon_hyp_2 = cart2geo(x_hyp_2, y_hyp_2, z_hyp_2)
 dep_hyp_2 = R_Earth - dep_hyp_2
@@ -160,7 +160,10 @@ for fich in lst_fch:
     #cpt = len(tr)
 
     dst_hs, azm_hs = dist_azim([lat_hyp, lon_hyp], [st[0].stats.sac.stla, st[0].stats.sac.stlo], R_Earth)
-    tt = 10 + math.sqrt(dst_hh*dst_hh + dst_hs*dst_hs + 2*dst_hh*dst_hs*math.cos(azm_hs - azm_hh))/3.4 - dst_hs/3.4
+    dst_h2s, azm_h2s = dist_azim([lat_hyp_2, lon_hyp_2], [st[0].stats.sac.stla, st[0].stats.sac.stlo], R_Earth)
+    tt2 = 1.6 + math.sqrt(dst_hh*dst_hh + dst_hs*dst_hs + 2*dst_hh*dst_hs*math.cos(azm_hh - azm_hs))/3.4 - dst_hs/3.4
+    tt = 1.6 + (dst_h2s - dst_hs)/3.4
+    print(tt2, '     ', tt)
 
     if tt >= 0:
         cpt = len(tr)
@@ -188,7 +191,7 @@ for fich in lst_fch:
 
     os.chdir(path)
     if 'UD' in fich:
-        print(fich, '   ', st[0].stats.sac.t0, '   ', tt, '   ',  st[0].stats.sac.t0 + tt, '   ', int(tt*st[0].stats.sampling_rate))
+        #print(fich, '   ', st[0].stats.sac.t0, '   ', tt, '   ',  st[0].stats.sac.t0 + tt, '   ', int(tt*st[0].stats.sampling_rate))
         st[0].stats.sac.user1 = st[0].stats.sac.t0 + tt
     tr_reg = Trace(np.asarray(tr), st[0].stats)
     tr_reg.write(fich[:15] + str(nbr_ptch) + fich[16:-4] + '.sac', format = 'SAC')
