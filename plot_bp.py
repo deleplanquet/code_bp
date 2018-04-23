@@ -129,7 +129,6 @@ for i in range(len(stack[:, 0, 0])):
                 if stack[i, j, k] > 0.01*lst_trsh[l]*stack[:, :, :].max():
                     for m in range(nbr_trsh):
                         if m >= l:
-                            print(m)
                             lst_cpt[m] = lst_cpt[m] + 1
                             lst_lst_ok[m].append(k)
 
@@ -158,7 +157,6 @@ for i in range(nbr_trsh):
                             lst_cntr[i][dict_ook[cles][tps]] = [i for i in lst_cntr[i][dict_ook[cles][tps]] if i != segm]
                     else:
                         lst_cntr[i][dict_ook[cles][tps]] = [segm]
-                        print(dict_ook[cles][tps])
 
 skr = 30
 dkr = 30
