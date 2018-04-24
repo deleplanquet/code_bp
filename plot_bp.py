@@ -193,7 +193,7 @@ for i in range(length_t):
             for segm in lst_cntr[nbr_trsh - 1 - j][i]:
                 plot(segm[0], segm[1], linestyle = '-', color = lst_clr[nbr_trsh - 1 - j], linewidth = 2)
 
-    ax.text(30, 90, str((i - 50)/10) + ' s', fontsize = 15, color = 'black')
+    ax.text(28, 90, str((i - 50)/10) + ' s', fontsize = 15, color = 'black')
     #ax.axvline(dkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axvline(dkr - dipkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axhline(skr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
