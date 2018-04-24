@@ -1,4 +1,5 @@
 import os
+import sys
 from pylab import *
 import pickle
 from obspy import read
@@ -92,6 +93,10 @@ dossier = param['dossier']
 nbr_ptch = dossier[-1]
 dossier_source = dossier[:-1] + '0'
 
+if nbr_ptch == '0':
+    print('ATTENTION: original file type yyyymmddhhmm00')
+    sys.exit()
+
 path = path_origin + '/Kumamoto/' + dossier + '/' + dossier + '_sac_inf100km'
 path_data = path_origin + '/Kumamoto/' + dossier_source + '/' + dossier_source + '_sac_0-100km'
 
@@ -161,8 +166,8 @@ for fich in lst_fch:
 
     dst_hs, azm_hs = dist_azim([lat_hyp, lon_hyp], [st[0].stats.sac.stla, st[0].stats.sac.stlo], R_Earth)
     dst_h2s, azm_h2s = dist_azim([lat_hyp_2, lon_hyp_2], [st[0].stats.sac.stla, st[0].stats.sac.stlo], R_Earth)
-    tt2 = 1.6 + math.sqrt(dst_hh*dst_hh + dst_hs*dst_hs + 2*dst_hh*dst_hs*math.cos(azm_hh - azm_hs))/3.4 - dst_hs/3.4
-    tt = 1.6 + (dst_h2s - dst_hs)/3.4
+    tt2 = 2 + math.sqrt(dst_hh*dst_hh + dst_hs*dst_hs + 2*dst_hh*dst_hs*math.cos(azm_hh - azm_hs))/3.4 - dst_hs/3.4
+    tt = 2 + (dst_h2s - dst_hs)/3.4
     print(tt2, '     ', tt)
 
     if tt >= 0:
