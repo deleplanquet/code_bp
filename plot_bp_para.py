@@ -73,10 +73,13 @@ R_Earth = param['R_Earth']
 
 degree = '\u00b0'
 
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_results/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz'
-path_rslt_pdf = path_data + '/pdf_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
-path_rslt_png = path_data + '/png_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
+lst_pth = []
+lst_pth_dat = []
+for i in range(3):
+    lst_pth.append(path_origin + '/Kumamoto/' + dossier[:-1] + str(i))
+    lst_pth_dat.append(lst_pth[i] + '/' + dossier[:-1] + str(i) + '_results/' + dossier[:-1] + str(i) + '_vel_' + couronne + 'km_' + frq + 'Hz')
+path_rslt_pdf = lst_pth_dat[2] + '/pdf_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
+path_rslt_png = lst_pth_dat[2] + '/png_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
 
 if os.path.isdir(path_rslt_pdf) == False:
     os.makedirs(path_rslt_pdf)
@@ -90,73 +93,72 @@ with open('ref_seismes_bin', 'rb') as my_fch:
 
 length_t = int(length_time*samp_rate)
 
-os.chdir(path_data)
-stack = None
-with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    stack = my_dpck.load()
+lst_stk = []
+for i in range(3):
+    os.chdir(lst_pth_dat[i])
+    with open(dossier[:-1] + str(i) + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D', 'rb') as my_fch:
+        my_dpck = pickle.Unpickler(my_fch)
+        lst_stk.append(my_dpck.load())
 
 thresh_1 = 90
 thresh_2 = 80
 thresh_3 = 70
 nbr_trsh = 3
 
-dict_ok_1 = {}
-dict_ok_2 = {}
-dict_ok_3 = {}
+#dict_ok_1 = {}
+#dict_ok_2 = {}
+#dict_ok_3 = {}
 
 lst_trsh = [thresh_1, thresh_2, thresh_3]
-lst_cpt = [0, 0, 0]
-lst_dct_ok = [dict_ok_1, dict_ok_2, dict_ok_3]
-lst_lst_ok = [[], [], []]
+#lst_cpt = [0, 0, 0]
+#lst_dct_ok = [dict_ok_1, dict_ok_2, dict_ok_3]
+#lst_lst_ok = [[], [], []]
 
-dict_contour_1 = {}
-dict_contour_2 = {}
-dict_contour_3 = {}
-
-lst_cntr = [dict_contour_1, dict_contour_2, dict_contour_3]
+lst_lst_cntr = [[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]]
 lst_clr = ['red', 'orange', 'yellow']
 
-for i in range(len(stack[:, 0, 0])):
-    for j in range(len(stack[0, :, 0])):
-        for k in range(nbr_trsh):
-            if lst_cpt[k] != 0:
-                lst_dct_ok[k][str(i*len(stack[0, :, 0]) + j)] = lst_lst_ok[k]
-            lst_cpt[k] = 0
-            lst_lst_ok[k] = []
-        for k in range(length_t):
-            for l in range(nbr_trsh):
-                if stack[i, j, k] > 0.01*lst_trsh[l]*stack[:, :, :].max():
-                    for m in range(nbr_trsh):
-                        if m >= l:
-                            lst_cpt[m] = lst_cpt[m] + 1
-                            lst_lst_ok[m].append(k)
+#for i in range(len(stack[:, 0, 0])):
+#    for j in range(len(stack[0, :, 0])):
+#        for k in range(nbr_trsh):
+#            if lst_cpt[k] != 0:
+#                lst_dct_ok[k][str(i*len(stack[0, :, 0]) + j)] = lst_lst_ok[k]
+#            lst_cpt[k] = 0
+#            lst_lst_ok[k] = []
+#        for k in range(length_t):
+#            for l in range(nbr_trsh):
+#                if stack[i, j, k] > 0.01*lst_trsh[l]*stack[:, :, :].max():
+#                    for m in range(nbr_trsh):
+#                        if m >= l:
+#                            lst_cpt[m] = lst_cpt[m] + 1
+#                            lst_lst_ok[m].append(k)
 
-os.chdir(path)
-for i in range(nbr_trsh):
-    with open(dossier + '_premier_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
-        my_pck = pickle.Pickler(my_ext)
-        my_pck.dump(lst_dct_ok[i])
+#os.chdir(path)
+#for i in range(nbr_trsh):
+#    with open(dossier + '_premier_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
+#        my_pck = pickle.Pickler(my_ext)
+#        my_pck.dump(lst_dct_ok[i])
 
-for i in range(nbr_trsh):
-    os.chdir(path)
-    with open(dossier + '_premier_patch_' + str(lst_trsh[i]), 'rb') as my_in:
-        my_dpck = pickle.Unpickler(my_in)
-        dict_ook = my_dpck.load()
+for j in range(3):
+    os.chdir(lst_pth[j])
+    print(lst_pth[j])
+    for i in range(nbr_trsh):
+        with open(dossier[:-1] + str(j) + '_premier_patch_' + str(lst_trsh[i]), 'rb') as my_in:
+            my_dpck = pickle.Unpickler(my_in)
+            dict_ook = my_dpck.load()
 
-    for cles in dict_ook.keys():
-        for tps in range(len(dict_ook[cles])):
-            yyy = 2*(int(cles)//len(stack[0, :, 0]))
-            xxx = 2*(int(cles)%len(stack[0, :, 0]))
-            if xxx > 0:
-                for segm in [[[xxx, xxx], [yyy, yyy + 2]], [[xxx - 2, xxx - 2], [yyy, yyy + 2]], [[xxx, xxx - 2], [yyy, yyy]], [[xxx, xxx - 2], [yyy + 2, yyy + 2]]]:
-                    if dict_ook[cles][tps] in lst_cntr[i]:
-                        if (segm in lst_cntr[i][dict_ook[cles][tps]]) == False:
-                            lst_cntr[i][dict_ook[cles][tps]].append(segm)
+        for cles in dict_ook.keys():
+            for tps in range(len(dict_ook[cles])):
+                yyy = 2*(int(cles)//len(lst_stk[0][0, :, 0]))
+                xxx = 2*(int(cles)%len(lst_stk[0][0, :, 0]))
+                if xxx > 0:
+                    for segm in [[[xxx, xxx], [yyy, yyy + 2]], [[xxx - 2, xxx - 2], [yyy, yyy + 2]], [[xxx, xxx - 2], [yyy, yyy]], [[xxx, xxx - 2], [yyy + 2, yyy + 2]]]:
+                        if dict_ook[cles][tps] in lst_lst_cntr[j][i]:
+                            if (segm in lst_lst_cntr[j][i][dict_ook[cles][tps]]) == False:
+                                lst_lst_cntr[j][i][dict_ook[cles][tps]].append(segm)
+                            else:
+                                lst_lst_cntr[j][i][dict_ook[cles][tps]] = [i for i in lst_lst_cntr[j][i][dict_ook[cles][tps]] if i != segm]
                         else:
-                            lst_cntr[i][dict_ook[cles][tps]] = [i for i in lst_cntr[i][dict_ook[cles][tps]] if i != segm]
-                    else:
-                        lst_cntr[i][dict_ook[cles][tps]] = [segm]
+                            lst_lst_cntr[j][i][dict_ook[cles][tps]] = [segm]
 
 skr = 30
 dkr = 30
@@ -167,57 +169,24 @@ dipkr = 15
 #bounds = [0, 1, 50, 75, 90, 95, 100]
 #nnmm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
+stk_max = max([lst_stk[0][:, :, :].max(), lst_stk[1][:, :, :].max(), lst_stk[2][:, :, :].max()])
+print(stk_max)
+
 colors = [(1, 1, 1), (0, 0, 1)]
 cmap_name = 'mycmp'
 cm = LinearSegmentedColormap.from_list(cmap_name, colors, N = 100)
 v1 = np.linspace(0, 1, endpoint = True)
-levels = np.arange(0, pow(stack[:, :, :].max(), 2), 0.1*pow(stack[:, :, :].max(), 2))
+levels = np.arange(0, pow(stk_max, 2), 0.1*pow(stk_max, 2))
 
-print(len(stack[:, 0, 0]), len(stack[0, :, 0]))
+print(len(lst_stk[0][:, 0, 0]), len(lst_stk[0][0, :, 0]))
 
-stk_max = lst_stk[:][:, :, :].max()
-
-lst_stk
-
-if dossier[-1] == '2':
-    for i in range(length_t):
-        fig, ax = plt.subplots(1, 3)
-        ax[1].set_xlabel('Dip (km)')
-        ax[0].set_ylabel('Strike (km)')
-        for k in range(3):
-            #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
-            im = ax[k].imshow(lst_stk[k][:, :, i]**2, cmap = cm, vmin = 0, vmax = pow(stk_max, 2), interpolation = 'none', origin = 'lower', extent = (0, 2*len(stack[0, :, 0]), 0, 2*len(stack[:, 0, 0])))
-
-            #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
-            #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
-            #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
-            #ax.scatter(x, y, 30, marker = '*', color = 'white', linewidth = 0.2)
-
-            for j in range(nbr_trsh):
-                if i in lst_cntr[nbr_trsh - 1 - j]:
-                    print(i, '   ', nbr_trsh, '   ', j, '   ', nbr_trsh - 1 - j)#, dict_contour[i])
-                    for segm in lst_cntr[nbr_trsh - 1 - j][i]:
-                        ax[k].plot(segm[0], segm[1], linestyle = '-', color = lst_clr[nbr_trsh - 1 - j], linewidth = 2)
-
-            ax[k].text(40, 45, str((i - 50)/10) + ' s', fontsize = 10, color = 'white')
-            #ax.axvline(dkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
-            #ax.axvline(dkr - dipkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
-            #ax.axhline(skr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
-            #ax.axhline(skr - strkr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
-        fig.colorbar(im, ax = ax[1], ticks = v1)
-
-        os.chdir(path_rslt_pdf)
-        fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.pdf')
-        os.chdir(path_rslt_png)
-        fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.png')
-
-else:
-    for i in range(length_t):
-        fig, ax = plt.subplots(1, 1)
-        ax.set_xlabel('Dip (km)')
-        ax.set_ylabel('Strike (km)')
+for i in range(length_t):
+    fig, ax = plt.subplots(1, 3)
+    ax[1].set_xlabel('Dip (km)')
+    ax[0].set_ylabel('Strike (km)')
+    for k in range(3):
         #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
-        im = ax.imshow(stack[:, :, i]**2, cmap = cm, vmin = pow(stack[:, :, :].min(), 2), vmax = pow(stack[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 2*len(stack[0, :, 0]), 0, 2*len(stack[:, 0, 0])))
+        im = ax[k].imshow(lst_stk[k][:, :, i]**2, cmap = cm, vmin = 0, vmax = pow(stk_max, 2), interpolation = 'none', origin = 'lower', extent = (0, 2*len(lst_stk[0][0, :, 0]), 0, 2*len(lst_stk[0][:, 0, 0])))
 
         #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
         #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
@@ -225,34 +194,33 @@ else:
         #ax.scatter(x, y, 30, marker = '*', color = 'white', linewidth = 0.2)
 
         for j in range(nbr_trsh):
-            if i in lst_cntr[nbr_trsh - 1 - j]:
+            if i in lst_lst_cntr[k][nbr_trsh - 1 - j]:
                 print(i, '   ', nbr_trsh, '   ', j, '   ', nbr_trsh - 1 - j)#, dict_contour[i])
-                for segm in lst_cntr[nbr_trsh - 1 - j][i]:
-                    plot(segm[0], segm[1], linestyle = '-', color = lst_clr[nbr_trsh - 1 - j], linewidth = 2)
+                for segm in lst_lst_cntr[k][nbr_trsh - 1 - j][i]:
+                    ax[k].plot(segm[0], segm[1], linestyle = '-', color = lst_clr[nbr_trsh - 1 - j], linewidth = 2)
 
-        ax.text(40, 45, str((i - 50)/10) + ' s', fontsize = 10, color = 'white')
+        ax[k].text(23, 92, str((i - 50)/10) + ' s', fontsize = 15, color = 'black')
         #ax.axvline(dkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
         #ax.axvline(dkr - dipkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
         #ax.axhline(skr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
         #ax.axhline(skr - strkr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
-        fig.colorbar(im, ax = ax, ticks = v1)
+    cbar = fig.add_axes([0.92, 0.13, 0.03, 0.74])
+    #fig.colorbar(im, ax = ax[1], ticks = v1)
+    fig.colorbar(im, cax = cbar, ticks = v1)
 
-        os.chdir(path_rslt_pdf)
-        fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.pdf')
-        os.chdir(path_rslt_png)
-        fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.png')
+    if i == 0:
+        hh = '0000'
+    elif i < 10:
+        hh = '00'
+    elif i < 100:
+        hh = '0'
+    else:
+        hh = ''
 
-
-
-
-
-
-
-
-
-
-
-
+    os.chdir(path_rslt_pdf)
+    fig.savefig(dossier[:-1] + 'o' + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + hh + str(i*100) + '.pdf')
+    os.chdir(path_rslt_png)
+    fig.savefig(dossier[:-1] + 'o' + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + hh + str(i*100) + '.png')
 
 
 
