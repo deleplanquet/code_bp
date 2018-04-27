@@ -141,242 +141,190 @@ def file_length(fname):
 #recuperation position stations
 print('     recuperation position stations')
 
-path_origin = os.getcwd()[:-6]
-os.chdir(path_origin + '/Kumamoto')
-with open('parametres_bin', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    param = my_dpck.load()
+path_origin = os.getcwd()[:-6]                  #
+os.chdir(path_origin + '/Kumamoto')             #
+with open('parametres_bin', 'rb') as my_fch:    #
+    my_dpck = pickle.Unpickler(my_fch)          #
+    param = my_dpck.load()                      #   load parametres
 
-dossier = param['dossier']
+dossier = param['dossier']                                                                      #   |
+path = path_origin + '/Kumamoto/' + dossier                                                     #   v
 
-path = path_origin + '/Kumamoto/' + dossier
+os.chdir(path)                                      #
+with open(dossier + '_veldata', 'rb') as mon_fich:  #
+    mon_depick = pickle.Unpickler(mon_fich)         #
+    dict_vel = mon_depick.load()                    #   load station corrections
 
-os.chdir(path)
-with open(dossier + '_veldata', 'rb') as mon_fich:
-    mon_depick = pickle.Unpickler(mon_fich)
-    dict_vel = mon_depick.load()
+dt_type = param['composante']                                                                   #   |
+hyp_bp = param['ondes_select']                                                                  #   |
+couronne = param['couronne']                                                                    #   |
+azim = param['angle']                                                                           #   v
+frq = param['band_freq']                                                                        #
+R_Earth = param['R_Earth']                                                                      #
+if hyp_bp == 'P':                                                                               #
+    vel_used = param['vP']                                                                      #
+    dict_vel_used = dict_vel[0]                                                                 #
+elif hyp_bp == 'S':                                                                             #
+    vel_used = param['vS']                                                                      #
+    dict_vel_used = dict_vel[1]                                                                 #
+strike = param['strike']                                                                        #
+dip = param['dip']                                                                              #
+l_fault = param['l_fault']                                                                      #
+w_fault = param['w_fault']                                                                      #
+pas_l = param['pas_l']                                                                          #
+pas_w = param['pas_w']                                                                          #
+samp_rate = param['samp_rate']                                                                  #
+length_time = param['length_t']                                                                 #   parametres stockes
 
-dt_type = param['composante']
-hyp_bp = param['ondes_select']
-couronne = param['couronne']
-azim = param['angle']
-frq = param['band_freq']
-R_Earth = param['R_Earth']
-if hyp_bp == 'P':
-    vel_used = param['vP']
-    dict_vel_used = dict_vel[0]
-elif hyp_bp == 'S':
-    vel_used = param['vS']
-    dict_vel_used = dict_vel[1]
-strike = param['strike']
-dip = param['dip']
-l_fault = param['l_fault']
-w_fault = param['w_fault']
-pas_l = param['pas_l']
-pas_w = param['pas_w']
-samp_rate = param['samp_rate']
-length_time = param['length_t']
+path = path_origin                  #
+       + '/Kumamoto/'               #
+       + dossier                    #
+                                    #
+path_data = path + '/'              #
+            + dossier               #
+            + '_vel_'               #
+            + couronne + 'km_'      #
+            + frq + 'Hz/'           #
+            + dossier               #
+            + '_vel_'               #
+            + couronne + 'km_'      #
+            + frq + 'Hz_'           #
+            + dt_type               #
+            + '_env_smooth_'        #
+            + hyp_bp + '_'          #
+            + azim + 'deg'          #
+                                    #
+path_results = path + '/'           #
+               + dossier            #
+               + '_results/'        #
+               + dossier            #
+               + '_vel_'            #
+               + couronne + 'km_'   #
+               + frq + 'Hz'         #   dossiers de travail
 
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
-path_results = path + '/' + dossier + '_results/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz'
-#path_results_2 = path_results + '/Traces_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
+if os.path.isdir(path_results) == False:    #
+    os.makedirs(path_results)               #   si le dossier n'existe pas, le cree
 
-if os.path.isdir(path_results) == False:
-    os.makedirs(path_results)
+lst_fch = []                        #
+lst_fch = os.listdir(path_data)     #   recupere la liste des noms des fichiers contenant les donnees
+lst_fch.sort()                      #   les trie
 
-#if os.path.isdir(path_results_2) == False:
-#    os.makedirs(path_results_2)
+os.chdir(path_origin + '/Kumamoto')             #
+with open('ref_seismes_bin', 'rb') as my_fch:   #
+    my_dpck = pickle.Unpickler(my_fch)          #
+    dict_seis = my_dpck.load()                  #   load caracteristiques seismes
 
-lst_fch = []
+yea_seis = int(dict_seis[dossier]['nFnet'][0:4])        #
+mon_seis = int(dict_seis[dossier]['nFnet'][4:6])        #
+day_seis = int(dict_seis[dossier]['nFnet'][6:8])        #
+hou_seis = int(dict_seis[dossier]['nFnet'][8:10])       #
+min_seis = int(dict_seis[dossier]['nFnet'][10:12])      #
+sec_seis = int(dict_seis[dossier]['nFnet'][12:14])      #
+mse_seis = int(dict_seis[dossier]['nFnet'][14:16])      #
+                                                        #
+t_origin_rupt = UTCDateTime(yea_seis,                   #
+                            mon_seis,                   #
+                            day_seis,                   #
+                            hou_seis,                   #
+                            min_seis,                   #
+                            sec_seis,                   #
+                            mse_seis)                   #   temps du debut de la rupture
 
-lst_fch = os.listdir(path_data)
-lst_fch.sort()
+lat_hyp = dict_seis[dossier]['lat']     #
+lon_hyp = dict_seis[dossier]['lon']     #
+dep_hyp = dict_seis[dossier]['dep']     #   position de l'hypocentre du seisme etudie
 
-os.chdir(path_origin + '/Kumamoto')
-with open('ref_seismes_bin', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    dict_seis = my_dpck.load()
+dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)),             #
+                 math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)),             #
+                 math.sin(d2r(lat_hyp))]                                    #   defini le vecteur CH: "centre Terre" -> "hypocentre"
+                                                                            #
+vect_nord = rotation(dir_cen_fault,                                         #   defini le vecteur N: nord local
+                     90,                                                    #   par la rotation du vectuer CH de 90 degres
+                     [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])  #   autour du vecteur Ouest-Est local
+                                                                            #
+vect_strike = rotation(vect_nord,                                           #   defini le vecteur S: direction du strike
+                       - strike,                                            #   par la rotation du vecteur N de "strike" degres
+                       dir_cen_fault)                                       #   autour du vecteur CH
+                                                                            #
+vect_perp_strike = rotation(vect_nord,                                      #   defini le vecteur PS: perpendiculaire a S
+                            - strike - 90,                                  #   par la rotation du vecteur N de "strike" + 90 degres
+                            dir_cen_fault)                                  #   autour du vecteur CH
+                                                                            #
+vect_dip = rotation(vect_perp_strike,                                       #   defini le vecteur D: direction du dip
+                    dip,                                                    #   par la rotation du vecteur PS de "dip" degres
+                    vect_strike)                                            #   autour du vecteur S
+                                                                            #
+coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp],                  #
+                    l_fault,                                                #
+                    w_fault,                                                #
+                    norm(vect_strike),                                      #
+                    norm(vect_dip),                                         #   defini les coordonnees de chaque subfault
+                    pas_l,                                                  #   l'ensemble centre sur l'hypocentre
+                    pas_w)                                                  #   oriente selon les vecteurs S et D
 
-yea_seis = int(dict_seis[dossier]['nFnet'][0:4])
-mon_seis = int(dict_seis[dossier]['nFnet'][4:6])
-day_seis = int(dict_seis[dossier]['nFnet'][6:8])
-hou_seis = int(dict_seis[dossier]['nFnet'][8:10])
-min_seis = int(dict_seis[dossier]['nFnet'][10:12])
-sec_seis = int(dict_seis[dossier]['nFnet'][12:14])
-mse_seis = int(dict_seis[dossier]['nFnet'][14:16])
-
-t_origin_rupt = UTCDateTime(yea_seis, mon_seis, day_seis, hou_seis, min_seis, sec_seis, mse_seis)
-
-lat_hyp = dict_seis[dossier]['lat']
-lon_hyp = dict_seis[dossier]['lon']
-dep_hyp = dict_seis[dossier]['dep']
-
-#os.chdir(path)
-#nbr_sfaults = file_length(dossier + '_subfault_positions.txt')
-#coord_fault = np.zeros((nbr_sfaults, 3))
-#cf_tmp = None
-#cpt = 0
-
-#with open(dossier + '_subfault_positions.txt', 'r') as myf:
-#    for line in myf:
-#        spliit = line.split(' ')
-#        spliit = [i for i in spliit if i != '']
-#        cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
-#        coord_fault[cpt, 0] = cf_tmp[0]
-#        coord_fault[cpt, 1] = cf_tmp[1]
-#        coord_fault[cpt, 2] = cf_tmp[2]
-#        cpt = cpt + 1
-
-#if param['fault'] == 0:
-dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)), math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)), math.sin(d2r(lat_hyp))]
-vect_nord = rotation(dir_cen_fault, 90, [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
-vect_strike = rotation(vect_nord, -strike, dir_cen_fault)
-vect_perp_strike = rotation(vect_nord, -strike-90, dir_cen_fault)
-vect_dip = rotation(vect_perp_strike, dip, vect_strike)
-
-coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp], l_fault, w_fault, norm(vect_strike), norm(vect_dip), pas_l, pas_w)
-#else:
-#    coord_fault = np.zeros((10, 16, 3))
-#    ttmppp = 0
-#    tmmp = 0
-#    cf_tmp = None
-
-#    with open(param['fault'], 'r') as myf:
-#        myf.readline()
-#        for line in myf:
-#            spliit = line.split(' ')
-#            spliit = [i for i in spliit if i != '']
-#            if ttmppp >= 16:
-#                ttmppp = 0
-#                tmmp = tmmp + 1
-#            cf_tmp = geo2cart(R_Earth - float(spliit[2]), float(spliit[0]), float(spliit[1]))
-#            coord_fault[tmmp, ttmppp, 0] = cf_tmp[0]
-#            coord_fault[tmmp, ttmppp, 1] = cf_tmp[1]
-#            coord_fault[tmmp, ttmppp, 2] = cf_tmp[2]
-#            ttmppp = ttmppp + 1
-#    coord_fault[0, 0, 0] = 0
-#    coord_fault[0, 1, 0] = 0
-#    coord_fault[0, 10, 0] = 0
-#    coord_fault[0, 13, 0] = 0
-    #cf_tmp = None
-    #cf_tmp = coord_fault
-    #for i in range(10):
-    #    for j in range(6):
-    #        for k in range(3):
-    #            coord_fault[i, 10+j, k] = cf_tmp[9-i, 15-j, 0]
-    #print(coord_fault)
-    
-length_t = int(length_time*samp_rate)
-
-tstart_ref = None
-
-os.chdir(path_data)
-for fichier in lst_fch:
-    st = read(fichier)
-    if tstart_ref == None or tstart_ref - st[0].stats.starttime > 0:
-        tstart_ref = st[0].stats.starttime
+tstart_ref = None                                                       #
+                                                                        #
+os.chdir(path_data)                                                     #
+for fichier in lst_fch:                                                 #
+    st = read(fichier)                                                  #
+    if tstart_ref == None or tstart_ref - st[0].stats.starttime > 0:    #   sonde toutes les stations
+        tstart_ref = st[0].stats.starttime                              #   pour trouver celle qui detecte le plus tot
         
-os.chdir(path_data)
-travt = []
-tmin = None
-dmin = None
-for fichier in lst_fch:
-    st = read(fichier)
-    travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo], coord_fault, vel_used))
-    if dmin == None or dmin > st[0].stats.sac.dist:
-        dmin = st[0].stats.sac.dist
-    if tmin == None or tmin > st[0].stats.sac.t0:
-        tmin = st[0].stats.sac.t0
-print(tmin)
+os.chdir(path_data)                                                                                 #
+travt = []                                                                                          #
+tmin = None                                                                                         #
+dmin = None                                                                                         #
+                                                                                                    #
+for fichier in lst_fch:                                                                             #
+    st = read(fichier)                                                                              #
+    travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo],      #
+                           coord_fault,                                                             #
+                           vel_used))                                                               #
+    if dmin == None or dmin > st[0].stats.sac.dist:                                                 #
+        dmin = st[0].stats.sac.dist                                                                 #
+    if tmin == None or tmin > st[0].stats.sac.t0:                                                   #   calcule les temps de trajet
+        tmin = st[0].stats.sac.t0                                                                   #   entre chaque station
+print(tmin)                                                                                         #   et chaque subfault
+    
+length_t = int(length_time*samp_rate)                                                       #
+stack = np.zeros((len(coord_fault[:, 0, 0]),                                                #
+                  len(coord_fault[0, :, 0]),                                                #
+                  length_t))                                                                #   initialisation
+                                                                                            #
+for station in lst_fch:                                                                     #   boucle sur les stations
+    os.chdir(path_data)                                                                     #
+    st = read(station)                                                                      #   va chercher une station
+    tstart = st[0].stats.starttime                                                          #   norm avec max = 1
+    env_norm = norm1(st[0].data)                                                            #
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate                               #   interpole: serie de points -> fonction
+    f = interpolate.interp1d(t, env_norm)                                                   #
+                                                                                            #
+    ista = lst_fch.index(station)                                                           #
+    print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))    #
+                                                                                            #
+    for ix in range(len(coord_fault[:, 0, 0])):                                             #   boucle sur le strike
+        for iy in range(len(coord_fault[0, :, 0])):                                         #   boucle sur le dip
+            for it in range(length_t):                                                      #   boucle sur le tps
+                tshift = travt[ista][ix, iy]                                                #   tps de traj station/subfault        #
+                         - (st[0].stats.starttime - t_origin_rupt)                          #   correction debut enregistrement     #
+                         + dict_vel_used[st[0].stats.station]                               #   correction station                  #
+                         - 5                                                                #   5 sec avant la rupture              #   calcul du shift
+                         + it/samp_rate                                                     #   pas de tps                          #   pour la back p
+                if tshift > 0 and tshift < t[-1]:                                           #   si le shift ne sort pas de la trace
+                    stack[ix, iy, it] = stack[ix, iy, it]                                   #   on stocke en normalisant
+                                        + 1./len(lst_fch)*f(tshift)                         #   par le nombre de stations
 
-#stack = np.zeros((nbr_sfaults, len(lst_fch), length_t))
-#for station in lst_fch:
-#    os.chdir(path_data)
-#    st = read(station)
-#    tstart = st[0].stats.starttime
-#    env_norm = norm1(st[0].data)
-#    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-#    f = interpolate.interp1d(t, env_norm)
-#
-#    ista = lst_fch.index(station)
-#    print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))
-#
-#    for ix in range(nbr_sfaults):
-#        for it in range(length_t):
-#            tshift = travt[ista][ix] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
-#            if tshift > 0 and tshift < t[-1]:
-#                stack[ix, ista, it] = f(tshift)
-
-#if param['fault'] == 0:
-#    stack = np.zeros((int(l_fault/pas_l), int(w_fault/pas_w), length_t))
-#    for station in lst_fch:
-#        os.chdir(path_data)
-#        st = read(station)
-#        tstart = st[0].stats.starttime
-#        env_norm = norm1(st[0].data)
-#        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-#        f = interpolate.interp1d(t, env_norm)
-
-#        ista = lst_fch.index(station)
-#        print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))
-
-#        for ix in range(int(l_fault/pas_l)):
-#    	    for iy in range(int(w_fault/pas_w)):
-#    	        for it in range(length_t):
-#                    tshift = travt[ista][ix, iy] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
-#                    if ix == 0 and iy == 0 and it == 0:
-#                        st[0].stats.sac.user1 = 0
-#                        st[0].stats.sac.user2 = 0
-#                        st[0].stats.sac.user3 = 0
-#                    if tshift > 0 and tshift < t[-1]:
-#                        stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_fch)*f(tshift)
-#                        if ix == 24 and iy == 9 and it == 60:
-#                            st[0].stats.sac.user1 = tshift
-#                        if ix == 26 and iy == 9 and it == 80:
-#                            st[0].stats.sac.user2 = tshift
-#                        if ix == 22 and iy == 9 and it == 97:
-#                            st[0].stats.sac.user3 = tshift
-
-#else:
-stack = np.zeros((len(coord_fault[:, 0, 0]), len(coord_fault[0, :, 0]), length_t))
-for station in lst_fch:
-    os.chdir(path_data)
-    st = read(station)
-    tstart = st[0].stats.starttime
-    env_norm = norm1(st[0].data)
-    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-    f = interpolate.interp1d(t, env_norm)
-
-    ista = lst_fch.index(station)
-    print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))
-
-    for ix in range(len(coord_fault[:, 0, 0])):
-        for iy in range(len(coord_fault[0, :, 0])):
-            for it in range(length_t):
-                tshift = travt[ista][ix, iy] - (st[0].stats.starttime - t_origin_rupt) + dict_vel_used[st[0].stats.station] - 5 + it/samp_rate
-                #if ix == 0 and iy == 0 and it == 0:
-                #    st[0].stats.sac.user1 = 0
-                #    st[0].stats.sac.user2 = 0
-                #    st[0].stats.sac.user3 = 0
-                if tshift > 0 and tshift < t[-1]:
-                    stack[ix, iy, it] = stack[ix, iy, it] + 1./len(lst_fch)*f(tshift)
-                    #if ix == 24 and iy == 9 and it == 60:
-                    #    st[0].stats.sac.user1 = tshift
-                    #if ix == 26 and iy == 9 and it == 80:
-                    #    st[0].stats.sac.user2 = tshift
-                    #if ix == 22 and iy == 9 and it == 97:
-                    #    st[0].stats.sac.user3 = tshift
-
-
-#    tr = Trace(st[0].data, st[0].stats)
-#    os.chdir(path_results_2)
-#    tr.write(station, format = 'SAC')
-
-os.chdir(path_results)
-with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D', 'wb') as my_fch:
-    my_pck = pickle.Pickler(my_fch)
-    my_pck.dump(stack)
+os.chdir(path_results)                                  #
+with open(dossier                                       #
+          + '_vel_'                                     #
+          + couronne + 'km_'                            #
+          + frq + 'Hz_'                                 #   enregistre le stack sous forme de cube 4D:
+          + dt_type                                     #   - position selon strike
+          + '_env_smooth_'                              #   - position selon dip
+          + hyp_bp + '_'                                #   - position selon tps
+          + azim + 'deg_stack3D', 'wb') as my_fch:      #   - "position selon station", on ne somme pas encore
+    my_pck = pickle.Pickler(my_fch)                     #     pour pouvoir filtrer certaines stations a posteriori
+    my_pck.dump(stack)                                  #     sans refaire le stack
 
 
 
@@ -384,9 +332,3 @@ with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_s
 
 
 
-
-
-#lat_fault = [32.6477, 32.9858]
-#long_fault = [130.7071, 131.1216]
-
-#lat_cen_fault, long_cen_fault = milieu(lat_fault[0], long_fault[0], lat_fault[1], long_fault[1])
