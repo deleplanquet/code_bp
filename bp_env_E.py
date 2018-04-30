@@ -176,31 +176,31 @@ pas_w = param['pas_w']                                                          
 samp_rate = param['samp_rate']                                                                  #
 length_time = param['length_t']                                                                 #   parametres stockes
 
-path = path_origin                  #
-       + '/Kumamoto/'               #
-       + dossier                    #
-                                    #
-path_data = path + '/'              #
-            + dossier               #
-            + '_vel_'               #
-            + couronne + 'km_'      #
-            + frq + 'Hz/'           #
-            + dossier               #
-            + '_vel_'               #
-            + couronne + 'km_'      #
-            + frq + 'Hz_'           #
-            + dt_type               #
-            + '_env_smooth_'        #
-            + hyp_bp + '_'          #
-            + azim + 'deg'          #
-                                    #
-path_results = path + '/'           #
-               + dossier            #
-               + '_results/'        #
-               + dossier            #
-               + '_vel_'            #
-               + couronne + 'km_'   #
-               + frq + 'Hz'         #   dossiers de travail
+path = (path_origin                  #
+        + '/Kumamoto/'               #
+        + dossier)                   #
+                                     #
+path_data = (path + '/'              #
+             + dossier               #
+             + '_vel_'               #
+             + couronne + 'km_'      #
+             + frq + 'Hz/'           #
+             + dossier               #
+             + '_vel_'               #
+             + couronne + 'km_'      #
+             + frq + 'Hz_'           #
+             + dt_type               #
+             + '_env_smooth_'        #
+             + hyp_bp + '_'          #
+             + azim + 'deg')         #
+                                     #
+path_results = (path + '/'           #
+                + dossier            #
+                + '_results/'        #
+                + dossier            #
+                + '_vel_'            #
+                + couronne + 'km_'   #
+                + frq + 'Hz')        #   dossiers de travail
 
 if os.path.isdir(path_results) == False:    #
     os.makedirs(path_results)               #   si le dossier n'existe pas, le cree
@@ -214,53 +214,53 @@ with open('ref_seismes_bin', 'rb') as my_fch:   #
     my_dpck = pickle.Unpickler(my_fch)          #
     dict_seis = my_dpck.load()                  #   load caracteristiques seismes
 
-yea_seis = int(dict_seis[dossier]['nFnet'][0:4])        #
-mon_seis = int(dict_seis[dossier]['nFnet'][4:6])        #
-day_seis = int(dict_seis[dossier]['nFnet'][6:8])        #
-hou_seis = int(dict_seis[dossier]['nFnet'][8:10])       #
-min_seis = int(dict_seis[dossier]['nFnet'][10:12])      #
-sec_seis = int(dict_seis[dossier]['nFnet'][12:14])      #
-mse_seis = int(dict_seis[dossier]['nFnet'][14:16])      #
-                                                        #
-t_origin_rupt = UTCDateTime(yea_seis,                   #
-                            mon_seis,                   #
-                            day_seis,                   #
-                            hou_seis,                   #
-                            min_seis,                   #
-                            sec_seis,                   #
-                            mse_seis)                   #   temps du debut de la rupture
+yea_seis = int(dict_seis[dossier]['nFnet'][0:4])         #
+mon_seis = int(dict_seis[dossier]['nFnet'][4:6])         #
+day_seis = int(dict_seis[dossier]['nFnet'][6:8])         #
+hou_seis = int(dict_seis[dossier]['nFnet'][8:10])        #
+min_seis = int(dict_seis[dossier]['nFnet'][10:12])       #
+sec_seis = int(dict_seis[dossier]['nFnet'][12:14])       #
+mse_seis = int(dict_seis[dossier]['nFnet'][14:16])       #
+                                                         #
+t_origin_rupt = UTCDateTime(yea_seis,                    #
+                            mon_seis,                    #
+                            day_seis,                    #
+                            hou_seis,                    #
+                            min_seis,                    #
+                            sec_seis,                    #
+                            mse_seis)                    #   temps du debut de la rupture
 
 lat_hyp = dict_seis[dossier]['lat']     #
 lon_hyp = dict_seis[dossier]['lon']     #
 dep_hyp = dict_seis[dossier]['dep']     #   position de l'hypocentre du seisme etudie
 
-dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)),             #
-                 math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)),             #
-                 math.sin(d2r(lat_hyp))]                                    #   defini le vecteur CH: "centre Terre" -> "hypocentre"
-                                                                            #
-vect_nord = rotation(dir_cen_fault,                                         #   defini le vecteur N: nord local
-                     90,                                                    #   par la rotation du vectuer CH de 90 degres
-                     [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])  #   autour du vecteur Ouest-Est local
-                                                                            #
-vect_strike = rotation(vect_nord,                                           #   defini le vecteur S: direction du strike
-                       - strike,                                            #   par la rotation du vecteur N de "strike" degres
-                       dir_cen_fault)                                       #   autour du vecteur CH
-                                                                            #
-vect_perp_strike = rotation(vect_nord,                                      #   defini le vecteur PS: perpendiculaire a S
-                            - strike - 90,                                  #   par la rotation du vecteur N de "strike" + 90 degres
-                            dir_cen_fault)                                  #   autour du vecteur CH
-                                                                            #
-vect_dip = rotation(vect_perp_strike,                                       #   defini le vecteur D: direction du dip
-                    dip,                                                    #   par la rotation du vecteur PS de "dip" degres
-                    vect_strike)                                            #   autour du vecteur S
-                                                                            #
-coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp],                  #
-                    l_fault,                                                #
-                    w_fault,                                                #
-                    norm(vect_strike),                                      #
-                    norm(vect_dip),                                         #   defini les coordonnees de chaque subfault
-                    pas_l,                                                  #   l'ensemble centre sur l'hypocentre
-                    pas_w)                                                  #   oriente selon les vecteurs S et D
+dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)),              #
+                 math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)),              #
+                 math.sin(d2r(lat_hyp))]                                     #   defini le vecteur CH: "centre Terre" -> "hypocentre"
+                                                                             #
+vect_nord = rotation(dir_cen_fault,                                          #   defini le vecteur N: nord local
+                     90,                                                     #   par la rotation du vectuer CH de 90 degres
+                     [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])   #   autour du vecteur Ouest-Est local
+                                                                             #
+vect_strike = rotation(vect_nord,                                            #   defini le vecteur S: direction du strike
+                       - strike,                                             #   par la rotation du vecteur N de "strike" degres
+                       dir_cen_fault)                                        #   autour du vecteur CH
+                                                                             #
+vect_perp_strike = rotation(vect_nord,                                       #   defini le vecteur PS: perpendiculaire a S
+                            - strike - 90,                                   #   par la rotation du vecteur N de "strike" + 90 degres
+                            dir_cen_fault)                                   #   autour du vecteur CH
+                                                                             #
+vect_dip = rotation(vect_perp_strike,                                        #   defini le vecteur D: direction du dip
+                    dip,                                                     #   par la rotation du vecteur PS de "dip" degres
+                    vect_strike)                                             #   autour du vecteur S
+                                                                             #
+coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp],                   #
+                    l_fault,                                                 #
+                    w_fault,                                                 #
+                    norm(vect_strike),                                       #
+                    norm(vect_dip),                                          #   defini les coordonnees de chaque subfault
+                    pas_l,                                                   #   l'ensemble centre sur l'hypocentre
+                    pas_w)                                                   #   oriente selon les vecteurs S et D
 
 tstart_ref = None                                                       #
                                                                         #
@@ -270,49 +270,49 @@ for fichier in lst_fch:                                                 #
     if tstart_ref == None or tstart_ref - st[0].stats.starttime > 0:    #   sonde toutes les stations
         tstart_ref = st[0].stats.starttime                              #   pour trouver celle qui detecte le plus tot
         
-os.chdir(path_data)                                                                                 #
-travt = []                                                                                          #
-tmin = None                                                                                         #
-dmin = None                                                                                         #
-                                                                                                    #
-for fichier in lst_fch:                                                                             #
-    st = read(fichier)                                                                              #
-    travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo],      #
-                           coord_fault,                                                             #
-                           vel_used))                                                               #
-    if dmin == None or dmin > st[0].stats.sac.dist:                                                 #
-        dmin = st[0].stats.sac.dist                                                                 #
-    if tmin == None or tmin > st[0].stats.sac.t0:                                                   #   calcule les temps de trajet
-        tmin = st[0].stats.sac.t0                                                                   #   entre chaque station
-print(tmin)                                                                                         #   et chaque subfault
+os.chdir(path_data)                                                                                  #
+travt = []                                                                                           #
+tmin = None                                                                                          #
+dmin = None                                                                                          #
+                                                                                                     #
+for fichier in lst_fch:                                                                              #
+    st = read(fichier)                                                                               #
+    travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo],       #
+                           coord_fault,                                                              #
+                           vel_used))                                                                #
+    if dmin == None or dmin > st[0].stats.sac.dist:                                                  #
+        dmin = st[0].stats.sac.dist                                                                  #
+    if tmin == None or tmin > st[0].stats.sac.t0:                                                    #   calcule les temps de trajet
+        tmin = st[0].stats.sac.t0                                                                    #   entre chaque station
+print(tmin)                                                                                          #   et chaque subfault
     
-length_t = int(length_time*samp_rate)                                                       #
-stack = np.zeros((len(coord_fault[:, 0, 0]),                                                #
-                  len(coord_fault[0, :, 0]),                                                #
-                  length_t))                                                                #   initialisation
-                                                                                            #
-for station in lst_fch:                                                                     #   boucle sur les stations
-    os.chdir(path_data)                                                                     #
-    st = read(station)                                                                      #   va chercher une station
-    tstart = st[0].stats.starttime                                                          #   norm avec max = 1
-    env_norm = norm1(st[0].data)                                                            #
-    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate                               #   interpole: serie de points -> fonction
-    f = interpolate.interp1d(t, env_norm)                                                   #
-                                                                                            #
-    ista = lst_fch.index(station)                                                           #
-    print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))    #
-                                                                                            #
-    for ix in range(len(coord_fault[:, 0, 0])):                                             #   boucle sur le strike
-        for iy in range(len(coord_fault[0, :, 0])):                                         #   boucle sur le dip
-            for it in range(length_t):                                                      #   boucle sur le tps
-                tshift = travt[ista][ix, iy]                                                #   tps de traj station/subfault        #
-                         - (st[0].stats.starttime - t_origin_rupt)                          #   correction debut enregistrement     #
-                         + dict_vel_used[st[0].stats.station]                               #   correction station                  #
-                         - 5                                                                #   5 sec avant la rupture              #   calcul du shift
-                         + it/samp_rate                                                     #   pas de tps                          #   pour la back p
-                if tshift > 0 and tshift < t[-1]:                                           #   si le shift ne sort pas de la trace
-                    stack[ix, iy, it] = stack[ix, iy, it]                                   #   on stocke en normalisant
-                                        + 1./len(lst_fch)*f(tshift)                         #   par le nombre de stations
+length_t = int(length_time*samp_rate)                                                        #
+stack = np.zeros((len(coord_fault[:, 0, 0]),                                                 #
+                  len(coord_fault[0, :, 0]),                                                 #
+                  length_t))                                                                 #   initialisation
+                                                                                             #
+for station in lst_fch:                                                                      #   boucle sur les stations
+    os.chdir(path_data)                                                                      #
+    st = read(station)                                                                       #   va chercher une station
+    tstart = st[0].stats.starttime                                                           #   norm avec max = 1
+    env_norm = norm1(st[0].data)                                                             #
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate                                #   interpole: serie de points -> fonction
+    f = interpolate.interp1d(t, env_norm)                                                    #
+                                                                                             #
+    ista = lst_fch.index(station)                                                            #
+    print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))     #
+                                                                                             #
+    for ix in range(len(coord_fault[:, 0, 0])):                                              #   boucle sur le strike
+        for iy in range(len(coord_fault[0, :, 0])):                                          #   boucle sur le dip
+            for it in range(length_t):                                                       #   boucle sur le tps
+                tshift = (travt[ista][ix, iy]                                                #   tps de traj station/subfault        #
+                          - (st[0].stats.starttime - t_origin_rupt)                          #   correction debut enregistrement     #
+                          + dict_vel_used[st[0].stats.station]                               #   correction station                  #
+                          - 5                                                                #   5 sec avant la rupture              #   calcul du shift
+                          + it/samp_rate)                                                    #   pas de tps                          #   pour la back p
+                if tshift > 0 and tshift < t[-1]:                                            #   si le shift ne sort pas de la trace
+                    stack[ix, iy, it] = (stack[ix, iy, it]                                   #   on stocke en normalisant
+                                         + 1./len(lst_fch)*f(tshift))                        #   par le nombre de stations
 
 os.chdir(path_results)                                  #
 with open(dossier                                       #
