@@ -117,20 +117,20 @@ dict_contour_3 = {}
 lst_cntr = [dict_contour_1, dict_contour_2, dict_contour_3]
 lst_clr = ['red', 'orange', 'yellow']
 
-for i in range(len(stack[:, 0, 0])):
-    for j in range(len(stack[0, :, 0])):
-        for k in range(nbr_trsh):
-            if lst_cpt[k] != 0:
-                lst_dct_ok[k][str(i*len(stack[0, :, 0]) + j)] = lst_lst_ok[k]
-            lst_cpt[k] = 0
-            lst_lst_ok[k] = []
-        for k in range(length_t):
-            for l in range(nbr_trsh):
-                if stack[i, j, k] > 0.01*lst_trsh[l]*stack[:, :, :].max():
-                    for m in range(nbr_trsh):
-                        if m >= l:
-                            lst_cpt[m] = lst_cpt[m] + 1
-                            lst_lst_ok[m].append(k)
+for i in range(len(stack[:, 0, 0])):                                                #
+    for j in range(len(stack[0, :, 0])):                                            #
+        for k in range(nbr_trsh):                                                   #
+            if lst_cpt[k] != 0:                                                     #
+                lst_dct_ok[k][str(i*len(stack[0, :, 0]) + j)] = lst_lst_ok[k]       #
+            lst_cpt[k] = 0                                                          #
+            lst_lst_ok[k] = []                                                      #
+        for k in range(length_t):                                                   #
+            for l in range(nbr_trsh):                                               #
+                if stack[i, j, k] > 0.01*lst_trsh[l]*stack[:, :, :].max():          #
+                    for m in range(nbr_trsh):                                       #   stocke dans un dictionnaire
+                        if m >= l:                                                  #   avec pour cle la position a une dimension
+                            lst_cpt[m] = lst_cpt[m] + 1                             #   (i*len(j) + j)
+                            lst_lst_ok[m].append(k)                                 #   une liste contenant les temps verifiant le critere
 
 os.chdir(path)
 for i in range(nbr_trsh):
