@@ -324,7 +324,7 @@ with open(dossier                                       #
           + hyp_bp + '_'                                #   - position selon tps
           + azim + 'deg_stack3D', 'wb') as my_fch:      #   - "position selon station", on ne somme pas encore
     my_pck = pickle.Pickler(my_fch)                     #     pour pouvoir filtrer certaines stations a posteriori
-    my_pck.dump(stack)                                  #     sans refaire le stack
+    my_pck.dump(stack)                                  #     sans avoir a refaire le stack
 
 
 
