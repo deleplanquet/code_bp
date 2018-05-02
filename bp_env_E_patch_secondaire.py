@@ -354,8 +354,8 @@ for station in lst_fch:                                                         
     st = read(station)                                                                  #
     ista = lst_fch.index(station)                                                       #
     for ip in dict_ok.keys():                                                           #   pour chaque subfault "eclairee"
-        ix = int(ip//len(coord_fault[0, :, 0]))                                         #
-        iy = int(ip%len(coord_fault[0, :, 0]))                                          #
+        ix = int(int(ip)//len(coord_fault[0, :, 0]))                                    #
+        iy = int(int(ip)%len(coord_fault[0, :, 0]))                                     #
         for it in dict_ok[ip]:                                                          #   pour chaque tps ou il y a eu "eclairage"
             tshift = (travt[ista][ix, iy]                                               #
                       - (st[0].stats.starttime - t_origin_rupt)                         #
