@@ -42,7 +42,15 @@ def rotation(u, theta, OM):
     c = norm(OM)[2]
     radian = d2r(theta)
     #coefficients de la matrice de rotation
-    mat = array([[a*a + (1 - a*a)*math.cos(radian), a*b*(1 - math.cos(radian)) - c*math.sin(radian), a*c*(1 - math.cos(radian)) + b*math.sin(radian)], [a*b*(1 - math.cos(radian)) + c*math.sin(radian), b*b + (1 - b*b)*math.cos(radian), b*c*(1 - math.cos(radian)) - a*math.sin(radian)], [a*c*(1 - math.cos(radian)) - b*math.sin(radian), b*c*(1 - math.cos(radian)) + a*math.sin(radian), c*c + (1 - c*c)*math.cos(radian)]])
+    mat = array([[a*a + (1 - a*a)*math.cos(radian),
+                  a*b*(1 - math.cos(radian)) - c*math.sin(radian),
+                  a*c*(1 - math.cos(radian)) + b*math.sin(radian)],
+                 [a*b*(1 - math.cos(radian)) + c*math.sin(radian),
+                  b*b + (1 - b*b)*math.cos(radian),
+                  b*c*(1 - math.cos(radian)) - a*math.sin(radian)],
+                 [a*c*(1 - math.cos(radian)) - b*math.sin(radian),
+                  b*c*(1 - math.cos(radian)) + a*math.sin(radian),
+                  c*c + (1 - c*c)*math.cos(radian)]])
     #rearrangement du vecteur auquel on applique la rotation
     vect = array([[u[0]],
                     [u[1]],
@@ -73,39 +81,39 @@ R_Earth = param['R_Earth']
 
 degree = '\u00b0'
 
-path = path_origin                      #
-       + '/Kumamoto/'                   #
-       + dossier                        #
-                                        #
-path_data = path + '/'                  #
-            + dossier                   #
-            + '_results/'               #
-            + dossier                   #
-            + '_vel_'                   #
-            + couronne + 'km_'          #
-            + frq + 'Hz'                #
-                                        #
-path_rslt_pdf = path_data               #
-                + '/pdf_'               #
-                + dossier               #
-                + '_vel_'               #
-                + couronne + 'km_'      #
-                + frq + 'Hz_'           #
-                + dt_type               #
-                + '_env_smooth_'        #
-                + hyp_bp + '_'          #
-                + azim + 'deg'          #
-                                        #
-path_rslt_png = path_data               #
-                + '/png_'               #
-                + dossier               #
-                + '_vel_'               #
-                + couronne + 'km_'      #
-                + frq + 'Hz_'           #
-                + dt_type               #
-                + '_env_smooth_'        #
-                + hyp_bp + '_'          #
-                + azim + 'deg'          #   dossiers de travail
+path = (path_origin                      #
+        + '/Kumamoto/'                   #
+        + dossier)                       #
+                                         #
+path_data = (path + '/'                  #
+             + dossier                   #
+             + '_results/'               #
+             + dossier                   #
+             + '_vel_'                   #
+             + couronne + 'km_'          #
+             + frq + 'Hz')               #
+                                         #
+path_rslt_pdf = (path_data               #
+                 + '/pdf_'               #
+                 + dossier               #
+                 + '_vel_'               #
+                 + couronne + 'km_'      #
+                 + frq + 'Hz_'           #
+                 + dt_type               #
+                 + '_env_smooth_'        #
+                 + hyp_bp + '_'          #
+                 + azim + 'deg')         #
+                                         #
+path_rslt_png = (path_data               #
+                 + '/png_'               #
+                 + dossier               #
+                 + '_vel_'               #
+                 + couronne + 'km_'      #
+                 + frq + 'Hz_'           #
+                 + dt_type               #
+                 + '_env_smooth_'        #
+                 + hyp_bp + '_'          #
+                 + azim + 'deg')         #   dossiers de travail
 
 if os.path.isdir(path_rslt_pdf) == False:   #
     os.makedirs(path_rslt_pdf)              #
@@ -121,7 +129,14 @@ length_t = int(length_time*samp_rate)
 
 os.chdir(path_data)
 stack = None
-with open(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_stack3D', 'rb') as my_fch:
+with open(dossier
+          + '_vel_'
+          + couronne + 'km_'
+          + frq + 'Hz_'
+          + dt_type
+          + '_env_smooth_'
+          + hyp_bp + '_'
+          + azim + 'deg_stack3D', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     stack = my_dpck.load()
 
@@ -178,7 +193,10 @@ for i in range(nbr_trsh):
             yyy = 2*(int(cles)//len(stack[0, :, 0]))
             xxx = 2*(int(cles)%len(stack[0, :, 0]))
             if xxx > 0:
-                for segm in [[[xxx, xxx], [yyy, yyy + 2]], [[xxx - 2, xxx - 2], [yyy, yyy + 2]], [[xxx, xxx - 2], [yyy, yyy]], [[xxx, xxx - 2], [yyy + 2, yyy + 2]]]:
+                for segm in [[[xxx, xxx], [yyy, yyy + 2]],
+                             [[xxx - 2, xxx - 2], [yyy, yyy + 2]],
+                             [[xxx, xxx - 2], [yyy, yyy]],
+                             [[xxx, xxx - 2], [yyy + 2, yyy + 2]]]:
                     if dict_ook[cles][tps] in lst_cntr[i]:
                         if (segm in lst_cntr[i][dict_ook[cles][tps]]) == False:
                             lst_cntr[i][dict_ook[cles][tps]].append(segm)
@@ -200,7 +218,9 @@ colors = [(1, 1, 1), (0, 0, 1)]
 cmap_name = 'mycmp'
 cm = LinearSegmentedColormap.from_list(cmap_name, colors, N = 100)
 v1 = np.linspace(0, 1, endpoint = True)
-levels = np.arange(0, pow(stack[:, :, :].max(), 2), 0.1*pow(stack[:, :, :].max(), 2))
+levels = np.arange(0,
+                   pow(stack[:, :, :].max(), 2),
+                   0.1*pow(stack[:, :, :].max(), 2))
 
 print(len(stack[:, 0, 0]), len(stack[0, :, 0]))
 
@@ -209,7 +229,16 @@ for i in range(length_t):
     ax.set_xlabel('Dip (km)')
     ax.set_ylabel('Strike (km)')
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
-    im = ax.imshow(stack[:, :, i]**2, cmap = cm, vmin = pow(stack[:, :, :].min(), 2), vmax = pow(stack[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 2*len(stack[0, :, 0]), 0, 2*len(stack[:, 0, 0])))
+    im = ax.imshow(stack[:, :, i]**2,
+                   cmap = cm,
+                   vmin = pow(stack[:, :, :].min(), 2),
+                   vmax = pow(stack[:, :, :].max(), 2),
+                   interpolation = 'none',
+                   origin = 'lower',
+                   extent = (0,
+                             2*len(stack[0, :, 0]),
+                             0,
+                             2*len(stack[:, 0, 0])))
 
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
     #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
@@ -220,9 +249,17 @@ for i in range(length_t):
         if i in lst_cntr[nbr_trsh - 1 - j]:
             print(i, '   ', nbr_trsh, '   ', j, '   ', nbr_trsh - 1 - j)#, dict_contour[i])
             for segm in lst_cntr[nbr_trsh - 1 - j][i]:
-                plot(segm[0], segm[1], linestyle = '-', color = lst_clr[nbr_trsh - 1 - j], linewidth = 2)
+                plot(segm[0],
+                     segm[1],
+                     linestyle = '-',
+                     color = lst_clr[nbr_trsh - 1 - j],
+                     linewidth = 2)
 
-    ax.text(28, 90, str((i - 50)/10) + ' s', fontsize = 15, color = 'black')
+    ax.text(28,
+            90,
+            str((i - 50)/10) + ' s',
+            fontsize = 15,
+            color = 'black')
     #ax.axvline(dkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axvline(dkr - dipkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axhline(skr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
@@ -230,9 +267,23 @@ for i in range(length_t):
     fig.colorbar(im, ax = ax, ticks = v1)
 
     os.chdir(path_rslt_pdf)
-    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.pdf')
+    fig.savefig(dossier
+                + '_vel_'
+                + couronne + 'km_'
+                + frq + 'Hz_'
+                + dt_type
+                + '_env_'
+                + hyp_bp + '_'
+                + azim + 'deg_stack3D_' + str(i*100) + '.pdf')
     os.chdir(path_rslt_png)
-    fig.savefig(dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_' + hyp_bp + '_' + azim + 'deg_stack3D_' + str(i*100) + '.png')
+    fig.savefig(dossier
+                + '_vel_'
+                + couronne + 'km_'
+                + frq + 'Hz_'
+                + dt_type
+                + '_env_'
+                + hyp_bp + '_'
+                + azim + 'deg_stack3D_' + str(i*100) + '.png')
 
 
 
