@@ -73,15 +73,44 @@ R_Earth = param['R_Earth']
 
 degree = '\u00b0'
 
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_results/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz'
-path_rslt_pdf = path_data + '/pdf_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
-path_rslt_png = path_data + '/png_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
+path = path_origin                      #
+       + '/Kumamoto/'                   #
+       + dossier                        #
+                                        #
+path_data = path + '/'                  #
+            + dossier                   #
+            + '_results/'               #
+            + dossier                   #
+            + '_vel_'                   #
+            + couronne + 'km_'          #
+            + frq + 'Hz'                #
+                                        #
+path_rslt_pdf = path_data               #
+                + '/pdf_'               #
+                + dossier               #
+                + '_vel_'               #
+                + couronne + 'km_'      #
+                + frq + 'Hz_'           #
+                + dt_type               #
+                + '_env_smooth_'        #
+                + hyp_bp + '_'          #
+                + azim + 'deg'          #
+                                        #
+path_rslt_png = path_data               #
+                + '/png_'               #
+                + dossier               #
+                + '_vel_'               #
+                + couronne + 'km_'      #
+                + frq + 'Hz_'           #
+                + dt_type               #
+                + '_env_smooth_'        #
+                + hyp_bp + '_'          #
+                + azim + 'deg'          #   dossiers de travail
 
-if os.path.isdir(path_rslt_pdf) == False:
-    os.makedirs(path_rslt_pdf)
-if os.path.isdir(path_rslt_png) == False:
-    os.makedirs(path_rslt_png)
+if os.path.isdir(path_rslt_pdf) == False:   #
+    os.makedirs(path_rslt_pdf)              #
+if os.path.isdir(path_rslt_png) == False:   #
+    os.makedirs(path_rslt_png)              #   si un des dossiers n'existe pas, le cree
 
 os.chdir(path_origin + '/Kumamoto')
 with open('ref_seismes_bin', 'rb') as my_fch:
