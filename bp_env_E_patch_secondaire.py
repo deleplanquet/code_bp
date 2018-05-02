@@ -426,7 +426,7 @@ for station in lst_fch:                                                         
     ista = lst_fch.index(station)                                                                                       #
     print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))                                #
                                                                                                                         #
-    for ix in range(coord_fault[:, 0, 0]):                                                                              #   boucle strike
+    for ix in range(len(coord_fault[:, 0, 0])):                                                                         #   boucle strike
         for iy in range(len(coord_fault[0, :, 0])):                                                                     #   boucle dip
             for it in range(length_t):                                                                                  #   boucle tps
                 tshift = (travt[ista][ix, iy]                                                                           #   tps stat/subfault   #
