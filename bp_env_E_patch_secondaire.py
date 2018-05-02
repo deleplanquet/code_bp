@@ -441,12 +441,12 @@ for station in lst_fch:                                                         
                         #                                                       - identified_patch[st[0].stats.station][0][0])
                         #                                                     /(identified_patch[st[0].stats.station][0][1]
                         #                                                       - identified_patch[st[0].stats.station][0][0])))*f(tshift)
-                        stack[ix, ista, it] = 1/2*math.sin(math.pi*(tshift                                              #
-                                                                    - identified_patch[st[0].stats.station][0][0])      #
-                                                                  /(identified_patch[st[0].stats.station][0][1]         #
-                                                                    - identified_patch[st[0].stats.station][0][0]))*f(tshift)
+                        stack[ix, iy, it] = 1/2*math.sin(math.pi*(tshift                                                #
+                                                                  - identified_patch[st[0].stats.station][0][0])        #
+                                                                /(identified_patch[st[0].stats.station][0][1]           #
+                                                                  - identified_patch[st[0].stats.station][0][0]))*f(tshift)
                     else:                                                                                               #
-                        stack[ix, ista, it] = 0                                                                         #
+                        stack[ix, iy, it] = 0                                                                           #
 
 os.chdir(path_results)                                                          #
 with open(dossier                                                               #
@@ -456,7 +456,7 @@ with open(dossier                                                               
           + dt_type                                                             #   enregistre le stack sous forme de cube 4D:
           + '_env_smooth_'                                                      #   - position selon strike
           + hyp_bp + '_'                                                        #   - position selon dip
-          + azim + 'deg_stack3D_'                                               #   - position selon tps
+          + azim + 'deg_stack3D_'                                               #   - position selon tps    <---- a faire
           + selected_patch + '_complementaire', 'wb') as my_fch:                #   - "position selon station", on ne somme pas encore
     my_pck = pickle.Pickler(my_fch)                                             #   pour pouvoir filtrer certaines stations a posteriori
     my_pck.dump(stack)                                                          #   sans avoir a refaire le stack
