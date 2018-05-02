@@ -205,48 +205,48 @@ samp_rate = param['samp_rate']                                                  
 length_time = param['length_t']                                                                     #   parametres stockes
 selected_patch = 'premier_patch_90'
 
-path = (path_origin                                 #
-        + '/Kumamoto/'                              #
-        + dossier)                                  #
-                                                    #
-path_data = (path + '/'                             #
-             + dossier                              #
-             + '_vel_'                              #
-             + couronne + 'km_'                     #
-             + frq + 'Hz/'                          #
-             + dossier                              #
-             + '_vel_'                              #
-             + couronne + 'km_'                     #
-             + frq + 'Hz_'                          #
-             + dt_type                              #
-             + '_env_smooth_'                       #
-             + hyp_bp + '_'                         #
-             + azim + 'deg')                        #
-                                                    #
-path_data_2 = (path_data                            #
-               + '_patch095_1')                     #
-                                                    #
-path_data_3 = (path_data                            #
-               + '_patch095_complementaire_1')      #
-                                                    #
-path_results = (path + '/'                          #
-                + dossier                           #
-                + '_results/'                       #
-                + dossier                           #
-                + '_vel_'                           #
-                + couronne + 'km_'                  #
-                + frq + 'Hz')                       #
-                                                    #
-path_results_2 = (path_results                      #
-                  + '/Traces_'                      #
-                  + dossier                         #
-                  + '_vel_'                         #
-                  + couronne + 'km_'                #
-                  + frq + 'Hz_'                     #
-                  + dt_type                         #
-                  + '_env_smooth_'                  #
-                  + hyp_bp + '_'                    #
-                  + azim + 'deg')                   #   dossiers de travail
+path = (path_origin                                     #
+        + '/Kumamoto/'                                  #
+        + dossier)                                      #
+                                                        #
+path_data = (path + '/'                                 #
+             + dossier                                  #
+             + '_vel_'                                  #
+             + couronne + 'km_'                         #
+             + frq + 'Hz/'                              #
+             + dossier                                  #
+             + '_vel_'                                  #
+             + couronne + 'km_'                         #
+             + frq + 'Hz_'                              #
+             + dt_type                                  #
+             + '_env_smooth_'                           #
+             + hyp_bp + '_'                             #
+             + azim + 'deg')                            #
+                                                        #
+path_data_2 = (path_data + '_'                          #
+               + selected_patch)                        #
+                                                        #
+path_data_3 = (path_data + '_'                          #
+               + selected_patch + '_complementaire')    #
+                                                        #
+path_results = (path + '/'                              #
+                + dossier                               #
+                + '_results/'                           #
+                + dossier                               #
+                + '_vel_'                               #
+                + couronne + 'km_'                      #
+                + frq + 'Hz')                           #
+                                                        #
+path_results_2 = (path_results                          #
+                  + '/Traces_'                          #
+                  + dossier                             #
+                  + '_vel_'                             #
+                  + couronne + 'km_'                    #
+                  + frq + 'Hz_'                         #
+                  + dt_type                             #
+                  + '_env_smooth_'                      #
+                  + hyp_bp + '_'                        #
+                  + azim + 'deg')                       #   dossiers de travail
 
 if os.path.isdir(path_data_2) == False:         #
     os.makedirs(path_data_2)                    #
@@ -387,7 +387,7 @@ for station in lst_fch:                                                         
     st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #   
     st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #   trace modifiee =
     tr_reg = Trace(np.asarray(tr), st[0].stats)                                                                 #   trace originale
-    tr_reg.write(station[:-4] + '_1er_patch095.sac', format = 'SAC')                                            #   - partie contribuant au patch
+    tr_reg.write(station[:-4] + '_' + selected_patch + '.sac', format = 'SAC')                                  #   - partie contribuant au patch
                                                                                                                 #
     os.chdir(path_data)                                                                                         #
     st = read(station)                                                                                          #
@@ -408,7 +408,7 @@ for station in lst_fch:                                                         
     st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #
     st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #
     tr_reg = Trace(np.asarray(tr), st[0].stats)                                                                 #   enregistre les
-    tr_reg.write(station[:-4] + '_1er_patch095_complementaire.sac', format = 'SAC')                             #   traces complementaires
+    tr_reg.write(station[:-4] + '_' + selected_patch + '_complementaire.sac', format = 'SAC')                   #   traces complementaires
 
 length_t = int(length_time*samp_rate)                                                                                   #
 stack = np.zeros((len(coord_fault[:, 0, 0]),                                                                            #
@@ -452,11 +452,12 @@ os.chdir(path_results)                                                          
 with open(dossier                                                               #
           + '_vel_'                                                             #
           + couronne + 'km_'                                                    #
-          + frq + 'Hz_'                                                         #   enregistre le stack sous forme de cub 4D:
-          + dt_type                                                             #   - position selon strike
-          + '_env_smooth_'                                                      #   - position selon dip
-          + hyp_bp + '_'                                                        #   - position selon tps
-          + azim + 'deg_stack3D_patch_095_complementaire', 'wb') as my_fch:     #   - "position selon station", on ne somme pas encore
+          + frq + 'Hz_'                                                         #   
+          + dt_type                                                             #   enregistre le stack sous forme de cube 4D:
+          + '_env_smooth_'                                                      #   - position selon strike
+          + hyp_bp + '_'                                                        #   - position selon dip
+          + azim + 'deg_stack3D_'                                               #   - position selon tps
+          + selected_patch + '_complementaire', 'wb') as my_fch:                #   - "position selon station", on ne somme pas encore
     my_pck = pickle.Pickler(my_fch)                                             #   pour pouvoir filtrer certaines stations a posteriori
     my_pck.dump(stack)                                                          #   sans avoir a refaire le stack
 
