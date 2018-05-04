@@ -60,26 +60,22 @@ def rotation(u, theta, OM):
     return (vect_rot[0][0], vect_rot[1][0], vect_rot[2][0])
 
 
-path_origin = os.getcwd()[:-6]
-os.chdir(path_origin + '/Kumamoto')
-with open('parametres_bin', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    param = my_dpck.load()
+path_origin = os.getcwd()[:-6]                  #
+os.chdir(path_origin + '/Kumamoto')             #
+with open('parametres_bin', 'rb') as my_fch:    #
+    my_dpck = pickle.Unpickler(my_fch)          #
+    param = my_dpck.load()                      #   load parametres
 
-dossier = param['dossier']
-dt_type = param['composante']
-frq = param['band_freq']
-couronne = param['couronne']
-length_time = param['length_t']
-samp_rate = param['samp_rate']
-hyp_bp = param['ondes_select']
-azim = param['angle']
-R_Earth = param['R_Earth']
-
-
-
-
-degree = '\u00b0'
+dossier = param['dossier']          #
+dt_type = param['composante']       #
+frq = param['band_freq']            #
+couronne = param['couronne']        #
+length_time = param['length_t']     #
+samp_rate = param['samp_rate']      #
+hyp_bp = param['ondes_select']      #
+azim = param['angle']               #
+R_Earth = param['R_Earth']          #
+degree = '\u00b0'                   #   parametres stockes
 
 path = (path_origin                      #
         + '/Kumamoto/'                   #
@@ -120,25 +116,25 @@ if os.path.isdir(path_rslt_pdf) == False:   #
 if os.path.isdir(path_rslt_png) == False:   #
     os.makedirs(path_rslt_png)              #   si un des dossiers n'existe pas, le cree
 
-os.chdir(path_origin + '/Kumamoto')
-with open('ref_seismes_bin', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    dict_seis = my_dpck.load()
+os.chdir(path_origin + '/Kumamoto')                 #
+with open('ref_seismes_bin', 'rb') as my_fch:       #
+    my_dpck = pickle.Unpickler(my_fch)              #
+    dict_seis = my_dpck.load()                      #   load caracteristiques seismes
 
 length_t = int(length_time*samp_rate)
 
-os.chdir(path_data)
-stack = None
-with open(dossier
-          + '_vel_'
-          + couronne + 'km_'
-          + frq + 'Hz_'
-          + dt_type
-          + '_env_smooth_'
-          + hyp_bp + '_'
-          + azim + 'deg_stack3D', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    stack = my_dpck.load()
+os.chdir(path_data)                                     #
+stack = None                                            #
+with open(dossier                                       #
+          + '_vel_'                                     #
+          + couronne + 'km_'                            #
+          + frq + 'Hz_'                                 #
+          + dt_type                                     #
+          + '_env_smooth_'                              #
+          + hyp_bp + '_'                                #
+          + azim + 'deg_stack3D', 'rb') as my_fch:      #
+    my_dpck = pickle.Unpickler(my_fch)                  #
+    stack = my_dpck.load()                              #   load stack
 
 thresh_1 = 90
 thresh_2 = 80
