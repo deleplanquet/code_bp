@@ -228,6 +228,8 @@ path_data_2 = (path_data + '_'                          #
                                                         #
 path_data_3 = (path_data + '_'                          #
                + selected_patch + '_complementaire')    #
+
+pth_ptch = [path_data_2, path_data_3]
                                                         #
 path_results = (path + '/'                              #
                 + dossier                               #
@@ -368,98 +370,78 @@ for station in lst_fch:                                                         
 for station in identified_patch.keys():                                                 #
     print(station, identified_patch[station][0][0], identified_patch[station][0][1])    #   affiche dans le terminal
 
+length_t = int(length_time*samp_rate)
+stack_0 = np.zeros((len(coord_fault[:, 0, 0]),
+                     len(coord_fault[0, :, 0]),
+                     length_t))
+stack_1 = np.zeros((len(coord_fault[:, 0, 0]),
+                     len(coord_fault[0, :, 0]),
+                     length_t))
+stack = [stack_0, stack_1]
+scission = ['', '_complementaire']
+
 for station in lst_fch:                                                                                         #
-    os.chdir(path_data)                                                                                         #
-    st = read(station)                                                                                          #
-    tr = st[0].data                                                                                             #
-    cpt = 0                                                                                                     #
-    for dat in tr:                                                                                              #
-        cpt = cpt + 1                                                                                           #
-        time = cpt/st[0].stats.sampling_rate                                                                    #
-        if (time >= identified_patch[st[0].stats.station][0][0]                                                 #
-            and time <= identified_patch[st[0].stats.station][0][1]):                                           #
-            #tr[cpt] = 0.2*tr[cpt]                                                                              #
-            tr[cpt] = (1 - 1/2*math.sin(math.pi*(time                                                           #
-                                                 - identified_patch[st[0].stats.station][0][0])                 #
-                                               /(identified_patch[st[0].stats.station][0][1]                    #
-                                                 - identified_patch[st[0].stats.station][0][0])))*tr[cpt]       #
-    os.chdir(path_data_2)                                                                                       #   enregistre les traces modifiees
-    st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #   
-    st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #   trace modifiee =
-    tr_reg = Trace(np.asarray(tr), st[0].stats)                                                                 #   trace originale
-    tr_reg.write(station[:-4] + '_' + selected_patch + '.sac', format = 'SAC')                                  #   - partie contribuant au patch
-                                                                                                                #
-    os.chdir(path_data)                                                                                         #
-    st = read(station)                                                                                          #
-    tr = st[0].data                                                                                             #
-    cpt = 0                                                                                                     #
-    for dat in tr:                                                                                              #
-        cpt = cpt + 1                                                                                           #
-        time = cpt/st[0].stats.sampling_rate                                                                    #
-        if (time >= identified_patch[st[0].stats.station][0][0]                                                 #
-            and time <= identified_patch[st[0].stats.station][0][1]):                                           #
-            tr[cpt] = 1/2*math.sin(math.pi*(time                                                                #
-                                            - identified_patch[st[0].stats.station][0][0])                      #
-                                          /(identified_patch[st[0].stats.station][0][1]                         #
-                                            - identified_patch[st[0].stats.station][0][0]))*tr[cpt]             #
-        elif cpt <= 5000:                                                                                       #
-            tr[cpt] = 0                                                                                         #
-    os.chdir(path_data_3)                                                                                       #
-    st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #
-    st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #
-    tr_reg = Trace(np.asarray(tr), st[0].stats)                                                                 #   enregistre les
-    tr_reg.write(station[:-4] + '_' + selected_patch + '_complementaire.sac', format = 'SAC')                   #   traces complementaires
+    for scis in scission:
+        os.chdir(path_data)                                                                                         #
+        st = read(station)                                                                                          #
+        tr = st[0].data                                                                                             #
+        cpt = 0                                                                                                     #
+        for dat in tr:                                                                                              #
+            cpt = cpt + 1                                                                                           #
+            time = cpt/st[0].stats.sampling_rate                                                                    #
+            if (time >= identified_patch[st[0].stats.station][0][0]                                                 #
+                and time <= identified_patch[st[0].stats.station][0][1]):                                           #
+                #tr[cpt] = 0.2*tr[cpt]                                                                              #
+                tmp = 1/2*math.sin(math.pi*(time
+                                            - identified_patch[st[0].stats.station][0][0])
+                                          /(identified_patch[st[0].stats.station][0][1]
+                                            - identified_patch[st[0].stats.station][0][0]))
+                if scis == scission[0]:
+                    tr[cpt] = tmp*tr[cpt]
+                else:
+                    tr[cpt] = (1 - tmp)*tr[cpt]
+            elif cpt < 5000:
+                if scis == scission[0]:
+                    tr[cpt] = 0
 
-length_t = int(length_time*samp_rate)                                                                                   #
-stack = np.zeros((len(coord_fault[:, 0, 0]),                                                                            #
-                  len(coord_fault[0, :, 0]),                                                                            #
-                  length_t))                                                                                            #   initialisation
-                                                                                                                        #
-for station in lst_fch:                                                                                                 #   boucle stations
-    os.chdir(path_data)                                                                                                 #
-    st = read(station)                                                                                                  #   prend station
-    tstart = st[0].stats.starttime                                                                                      #   norm avec max = 1
-    env_norm = norm1(st[0].data)                                                                                        #
-    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate                                                           #   interpole
-    f = interpolate.interp1d(t, env_norm)                                                                               #
-                                                                                                                        #
-    ista = lst_fch.index(station)                                                                                       #
-    print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))                                #
-                                                                                                                        #
-    for ix in range(len(coord_fault[:, 0, 0])):                                                                         #   boucle strike
-        for iy in range(len(coord_fault[0, :, 0])):                                                                     #   boucle dip
-            for it in range(length_t):                                                                                  #   boucle tps
-                tshift = (travt[ista][ix, iy]                                                                           #   tps stat/subfault   #
-                          - (st[0].stats.starttime - t_origin_rupt)                                                     #   correc debut rec    #
-                          + dict_vel_used[st[0].stats.station]                                                          #   correc station      #
-                          - 5                                                                                           #   5 sec before rupt   #   shift
-                          + it/samp_rate)                                                                               #   pas de tps          #   back p
-                if tshift > 0 and tshift < t[-1]:                                                                       #   si shift dans trace
-                    if (tshift >= identified_patch[st[0].stats.station][0][0]                                           #   
-                        and tshift <= identified_patch[st[0].stats.station][0][1]):                                     #
-                        #stack[ix, ista, it] = (1 - math.pi/4*math.sin(math.pi*(tshift
-                        #                                                       - identified_patch[st[0].stats.station][0][0])
-                        #                                                     /(identified_patch[st[0].stats.station][0][1]
-                        #                                                       - identified_patch[st[0].stats.station][0][0])))*f(tshift)
-                        stack[ix, iy, it] = 1/2*math.sin(math.pi*(tshift                                                #
-                                                                  - identified_patch[st[0].stats.station][0][0])        #
-                                                                /(identified_patch[st[0].stats.station][0][1]           #
-                                                                  - identified_patch[st[0].stats.station][0][0]))*f(tshift)
-                    else:                                                                                               #
-                        stack[ix, iy, it] = 0                                                                           #
+        os.chdir(pth_ptch[scission.index(scis)])                                                                    #   enregistre les traces modifiees
+        st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #   
+        st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #   trace modifiee =
+        tr_reg = Trace(np.asarray(tr), st[0].stats)                                                                 #   trace originale
+        tr_reg.write(station[:-4] + '_' + selected_patch + scis + '.sac', format = 'SAC')                                  #   - partie contribuant au patch
 
-os.chdir(path_results)                                                          #
-with open(dossier                                                               #
-          + '_vel_'                                                             #
-          + couronne + 'km_'                                                    #
-          + frq + 'Hz_'                                                         #   
-          + dt_type                                                             #   enregistre le stack sous forme de cube 4D:
-          + '_env_smooth_'                                                      #   - position selon strike
-          + hyp_bp + '_'                                                        #   - position selon dip
-          + azim + 'deg_stack3D_'                                               #   - position selon tps    <---- a faire
-          + selected_patch + '_complementaire', 'wb') as my_fch:                #   - "position selon station", on ne somme pas encore
-    my_pck = pickle.Pickler(my_fch)                                             #   pour pouvoir filtrer certaines stations a posteriori
-    my_pck.dump(stack)                                                          #   sans avoir a refaire le stack
+        st = read(station[:-4] + '_' + selected_patch + scis + '.sac')
+        tstart = st[0].stats.starttime
+        env_norm = norm1(st[0].data)
+        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+        f = interpolate.interp1d(t, env_norm)
+        ista = lst_fch.index(station)
+        print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch), '     ', scission.index(scis)) 
+        for ix in range(len(coord_fault[:, 0, 0])):
+            for iy in range(len(coord_fault[0, :, 0])):
+                for it in range(length_t):
+                    tshift = (travt[ista][ix, iy]
+                              - (st[0].stats.starttime - t_origin_rupt)
+                              + dict_vel_used[st[0].stats.station]
+                              - 5
+                              + it/samp_rate)
+                    if tshift > 0 and tshift < t[-1]:
+                        stack[scission.index(scis)][ix, iy, it] = (stack[scission.index(scis)][ix, iy, it]
+                                                                   + 1./len(lst_fch)*f(tshift))
+
+os.chdir(path_results)
+for scis in scission:
+    with open(dossier
+              + '_vel_'
+              + couronne + 'km_'
+              + frq + 'Hz_'
+              + dt_type
+              + '_env_smooth_'
+              + hyp_bp + '_'
+              + azim + 'deg_stack3D_'
+              + selected_patch + scis, 'wb') as my_fch:
+        my_pck = pickle.Pickler(my_fch)
+        my_pck.dump(stack[scission.index(scis)])
 
 
 
