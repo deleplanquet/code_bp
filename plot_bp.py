@@ -174,13 +174,13 @@ for i in range(len(stack[:, 0, 0])):                                            
 
 os.chdir(path)
 for i in range(nbr_trsh):
-    with open(dossier + '_premier_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
+    with open(dossier + '_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
         my_pck = pickle.Pickler(my_ext)
         my_pck.dump(lst_dct_ok[i])
 
 for i in range(nbr_trsh):
     os.chdir(path)
-    with open(dossier + '_premier_patch_' + str(lst_trsh[i]), 'rb') as my_in:
+    with open(dossier + '_patch_' + str(lst_trsh[i]), 'rb') as my_in:
         my_dpck = pickle.Unpickler(my_in)
         dict_ook = my_dpck.load()
 
