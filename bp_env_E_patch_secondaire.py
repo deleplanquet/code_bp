@@ -203,7 +203,7 @@ pas_l = param['pas_l']                                                          
 pas_w = param['pas_w']                                                                              #
 samp_rate = param['samp_rate']                                                                      #
 length_time = param['length_t']                                                                     #   parametres stockes
-selected_patch = 'premier_patch_90'
+selected_patch = 'patch_90'
 
 path = (path_origin                                     #
         + '/Kumamoto/'                                  #
