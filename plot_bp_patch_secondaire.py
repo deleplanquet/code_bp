@@ -75,10 +75,17 @@ samp_rate = param['samp_rate']      #
 hyp_bp = param['ondes_select']      #
 azim = param['angle']               #
 R_Earth = param['R_Earth']          #
+l_fault = param['l_fault']
+w_fault = param['w_fault']
 degree = '\u00b0'                   #   parametres stockes
-past = 'premier_patch_90'
 selected_patch = 'patch_90'
 scission = ['', '_complementaire']
+
+################################
+################################
+past = ''
+################################
+################################
 
 path = (path_origin                      #
         + '/Kumamoto/'                   #
@@ -105,7 +112,8 @@ for scis in scission:
                                            + dt_type               #
                                            + '_env_smooth_'        #
                                            + hyp_bp + '_'          #
-                                           + azim + 'deg'
+                                           + azim + 'deg_'
+                                           + past
                                            + selected_patch + scis)         #
                                          #
     path_rslt_png.append(path_data               #
@@ -117,13 +125,28 @@ for scis in scission:
                                            + dt_type               #
                                            + '_env_smooth_'        #
                                            + hyp_bp + '_'          #
-                                           + azim + 'deg'
+                                           + azim + 'deg_'
+                                           + past
                                            + selected_patch + scis)         #   dossiers de travail
 for scis in scission:
     if os.path.isdir(path_rslt_pdf[scission.index(scis)]) == False:   #
         os.makedirs(path_rslt_pdf[scission.index(scis)])              #
     if os.path.isdir(path_rslt_png[scission.index(scis)]) == False:   #
         os.makedirs(path_rslt_png[scission.index(scis)])              #   si un des dossiers n'existe pas, le cree
+
+os.chdir(path_data)
+with open(dossier
+          + '_vel_'
+          + couronne + 'km_'
+          + frq + 'Hz_'
+          + dt_type
+          + '_env_smooth_'
+          + hyp_bp + '_'
+          + azim + 'deg_stack3D', 'rb') as mfc:
+    mdp = pickle.Unpickler(mfc)
+    stk_origin = mdp.load()
+
+stckmx = stk_origin[:, :, :].max()
 
 os.chdir(path_origin + '/Kumamoto')                 #
 with open('ref_seismes_bin', 'rb') as my_fch:       #
@@ -147,6 +170,7 @@ for scis in scission:
               + '_env_smooth_'                              #
               + hyp_bp + '_'                                #
               + azim + 'deg_stack3D_'
+              + past
               + selected_patch + scis, 'rb') as my_fch:      #
         my_dpck = pickle.Unpickler(my_fch)                  #
         stack = my_dpck.load()                              #   load stack
@@ -189,13 +213,13 @@ for scis in scission:
 
     os.chdir(path)
     for i in range(nbr_trsh):
-        with open(dossier + past + '_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
+        with open(dossier + '_' + past + 'patch_90' + '_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
             my_pck = pickle.Pickler(my_ext)
             my_pck.dump(lst_dct_ok[i])
 
     for i in range(nbr_trsh):
         os.chdir(path)
-        with open(dossier + past + '_patch_' + str(lst_trsh[i]), 'rb') as my_in:
+        with open(dossier + '_' + past + 'patch_90' + '_patch_' + str(lst_trsh[i]), 'rb') as my_in:
             my_dpck = pickle.Unpickler(my_in)
             dict_ook = my_dpck.load()
 
@@ -228,10 +252,11 @@ for scis in scission:
     colors = [(1, 1, 1), (0, 0, 1)]
     cmap_name = 'mycmp'
     cm = LinearSegmentedColormap.from_list(cmap_name, colors, N = 100)
-    v1 = np.linspace(0, 1, endpoint = True)
+    #v1 = np.linspace(0, 1, endpoint = True)
+    v1 = [0, 0.2, 0.4, 0.6, 0.8, 1]
     levels = np.arange(0,
-                       pow(stack[:, :, :].max(), 2),
-                       0.1*pow(stack[:, :, :].max(), 2))
+                       1,
+                       0.1)
 
     print(len(stack[:, 0, 0]), len(stack[0, :, 0]))
 
@@ -240,21 +265,28 @@ for scis in scission:
         ax.set_xlabel('Dip (km)')
         ax.set_ylabel('Strike (km)')
         #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
-        im = ax.imshow(stack[:, :, i]**2,
+        im = ax.imshow(stack[:, :, i]**2/stckmx**2,
                        cmap = cm,
-                       vmin = pow(stack[:, :, :].min(), 2),
-                       vmax = pow(stack[:, :, :].max(), 2),
+                       vmin = 0,
+                       vmax = 1,
                        interpolation = 'none',
                        origin = 'lower',
                        extent = (0,
-                                 2*len(stack[0, :, 0]),
+                                 w_fault,
                                  0,
-                                 2*len(stack[:, 0, 0])))
+                                 l_fault))
 
+        ax.set_xlim(0, w_fault)
+        ax.set_ylim(0, l_fault)
         #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
         #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
         #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
-        #ax.scatter(x, y, 30, marker = '*', color = 'white', linewidth = 0.2)
+        ax.scatter(w_fault/2,
+                   l_fault/2,
+                   300,
+                   marker = '*',
+                   color = 'red',
+                   linewidth = 0.2)
 
         for j in range(nbr_trsh):
             if i in lst_cntr[nbr_trsh - 1 - j]:
@@ -266,11 +298,12 @@ for scis in scission:
                          color = lst_clr[nbr_trsh - 1 - j],
                          linewidth = 2)
 
-        ax.text(28,
+        ax.text(38,
                 90,
                 str((i - 50)/10) + ' s',
                 fontsize = 15,
-                color = 'black')
+                color = 'black',
+                ha = 'right')
         #ax.axvline(dkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
         #ax.axvline(dkr - dipkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
         #ax.axhline(skr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
@@ -286,6 +319,7 @@ for scis in scission:
                     + '_env_'
                     + hyp_bp + '_'
                     + azim + 'deg_stack3D_'
+                    + past
                     + selected_patch + scis
                     + str(i*100) + '.pdf')
         os.chdir(path_rslt_png[scission.index(scis)])
@@ -297,6 +331,7 @@ for scis in scission:
                     + '_env_'
                     + hyp_bp + '_'
                     + azim + 'deg_stack3D_'
+                    + past
                     + selected_patch + scis
                     + str(i*100) + '.png')
 
