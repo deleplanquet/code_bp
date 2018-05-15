@@ -67,8 +67,8 @@ samp_rate = param['samp_rate']
 hyp_bp = param['ondes_select']
 azim = param['angle']
 R_Earth = param['R_Earth']
-
-
+l_fault = param['l_fault']
+w_fault = param['w_fault']
 
 
 degree = '\u00b0'
@@ -169,16 +169,22 @@ dipkr = 15
 #bounds = [0, 1, 50, 75, 90, 95, 100]
 #nnmm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
-stk_max = max([lst_stk[0][:, :, :].max(), lst_stk[1][:, :, :].max(), lst_stk[2][:, :, :].max()])
-print(stk_max)
+#stk_max = max([lst_stk[0][:, :, :].max(), lst_stk[1][:, :, :].max(), lst_stk[2][:, :, :].max()])
+#print(stk_max)
 
 colors = [(1, 1, 1), (0, 0, 1)]
 cmap_name = 'mycmp'
 cm = LinearSegmentedColormap.from_list(cmap_name, colors, N = 100)
-v1 = np.linspace(0, 1, endpoint = True)
-levels = np.arange(0, pow(stk_max, 2), 0.1*pow(stk_max, 2))
+#v1 = np.linspace(0, 1, endpoint = True)
+v1 = [0, 0.2, 0.4, 0.6, 0.8, 1]
+levels = np.arange(0, 1, 0.1)
 
 print(len(lst_stk[0][:, 0, 0]), len(lst_stk[0][0, :, 0]))
+
+stckmx1 = lst_stk[0][:, :, :].max()
+stckmx2 = lst_stk[1][:, :, :].max()
+stckmx3 = lst_stk[2][:, :, :].max()
+stckmx = max([stckmx1, stckmx2, stckmx3])
 
 for i in range(length_t):
     fig, ax = plt.subplots(1, 3)
@@ -186,12 +192,23 @@ for i in range(length_t):
     ax[0].set_ylabel('Strike (km)')
     for k in range(3):
         #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
-        im = ax[k].imshow(lst_stk[k][:, :, i]**2, cmap = cm, vmin = 0, vmax = pow(stk_max, 2), interpolation = 'none', origin = 'lower', extent = (0, 2*len(lst_stk[0][0, :, 0]), 0, 2*len(lst_stk[0][:, 0, 0])))
+        im = ax[k].imshow(lst_stk[k][:, :, i]**2/stckmx**2,
+                          cmap = cm,
+                          vmin = 0,
+                          vmax = 1,
+                          interpolation = 'none',
+                          origin = 'lower',
+                          extent = (0,
+                                    w_fault,
+                                    0,
+                                    l_fault))
 
+        ax[k].set_xlim(0, w_fault)
+        ax[k].set_ylim(0, l_fault)
         #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
         #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
         #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
-        #ax.scatter(x, y, 30, marker = '*', color = 'white', linewidth = 0.2)
+        ax[k].scatter(w_fault/2, l_fault/2, 300, marker = '*', color = 'red', linewidth = 0.2)
 
         for j in range(nbr_trsh):
             if i in lst_lst_cntr[k][nbr_trsh - 1 - j]:
@@ -199,7 +216,12 @@ for i in range(length_t):
                 for segm in lst_lst_cntr[k][nbr_trsh - 1 - j][i]:
                     ax[k].plot(segm[0], segm[1], linestyle = '-', color = lst_clr[nbr_trsh - 1 - j], linewidth = 2)
 
-        ax[k].text(23, 92, str((i - 50)/10) + ' s', fontsize = 15, color = 'black')
+        ax[k].text(38,
+                   92,
+                   str((i - 50)/10) + ' s',
+                   fontsize = 15,
+                   color = 'black',
+                   ha = 'right')
         #ax.axvline(dkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
         #ax.axvline(dkr - dipkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
         #ax.axhline(skr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
