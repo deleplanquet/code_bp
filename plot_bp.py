@@ -215,29 +215,34 @@ dipkr = 15
 colors = [(1, 1, 1), (0, 0, 1)]
 cmap_name = 'mycmp'
 cm = LinearSegmentedColormap.from_list(cmap_name, colors, N = 100)
-v1 = np.linspace(0, 1, endpoint = True)
+#v1 = np.linspace(0, 1, endpoint = True)
+v1 = [0, 0.2, 0.4, 0.6, 0.8, 1]
 levels = np.arange(0,
                    1,
                    0.1*(pow(stack[:, :, :].max(), 2)/pow(stack[:, :, :].max(), 2)))
 
 print(len(stack[:, 0, 0]), len(stack[0, :, 0]))
 
+stckmx = stack[:, :, :].max()
+
 for i in range(length_t):
     fig, ax = plt.subplots(1, 1)
     ax.set_xlabel('Dip (km)')
     ax.set_ylabel('Strike (km)')
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
-    im = ax.imshow(stack[:, :, i]**2,
+    im = ax.imshow(stack[:, :, i]**2/stckmx**2,
                    cmap = cm,
-                   vmin = pow(stack[:, :, :].min(), 2),
-                   vmax = pow(stack[:, :, :].max(), 2),
+                   vmin = 0,
+                   vmax = 1,
                    interpolation = 'none',
                    origin = 'lower',
                    extent = (0,
-                             2*len(stack[0, :, 0]),
+                             w_fault,
                              0,
-                             2*len(stack[:, 0, 0])))
+                             l_fault))
 
+    ax.set_xlim(0, w_fault)
+    ax.set_ylim(0, l_fault)
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
     #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
     #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
