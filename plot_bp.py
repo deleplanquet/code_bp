@@ -76,6 +76,8 @@ hyp_bp = param['ondes_select']      #
 azim = param['angle']               #
 R_Earth = param['R_Earth']          #
 degree = '\u00b0'                   #   parametres stockes
+l_fault = param['l_fault']
+w_fault = param['w_fault']
 
 path = (path_origin                      #
         + '/Kumamoto/'                   #
@@ -215,8 +217,8 @@ cmap_name = 'mycmp'
 cm = LinearSegmentedColormap.from_list(cmap_name, colors, N = 100)
 v1 = np.linspace(0, 1, endpoint = True)
 levels = np.arange(0,
-                   pow(stack[:, :, :].max(), 2),
-                   0.1*pow(stack[:, :, :].max(), 2))
+                   1,
+                   0.1*(pow(stack[:, :, :].max(), 2)/pow(stack[:, :, :].max(), 2)))
 
 print(len(stack[:, 0, 0]), len(stack[0, :, 0]))
 
@@ -239,7 +241,7 @@ for i in range(length_t):
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
     #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
     #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
-    #ax.scatter(x, y, 30, marker = '*', color = 'white', linewidth = 0.2)
+    ax.scatter(w_fault/2, l_fault/2, 300, marker = '*', color = 'red', linewidth = 0.2)
 
     for j in range(nbr_trsh):
         if i in lst_cntr[nbr_trsh - 1 - j]:
@@ -251,11 +253,12 @@ for i in range(length_t):
                      color = lst_clr[nbr_trsh - 1 - j],
                      linewidth = 2)
 
-    ax.text(28,
+    ax.text(38,
             90,
             str((i - 50)/10) + ' s',
             fontsize = 15,
-            color = 'black')
+            color = 'black',
+            ha = 'right')
     #ax.axvline(dkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axvline(dkr - dipkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axhline(skr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
