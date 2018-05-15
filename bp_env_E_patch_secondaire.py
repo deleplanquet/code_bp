@@ -205,6 +205,12 @@ samp_rate = param['samp_rate']                                                  
 length_time = param['length_t']                                                                     #   parametres stockes
 selected_patch = 'patch_90'
 
+###########################
+###########################
+past = ''
+###########################
+###########################
+
 path = (path_origin                                     #
         + '/Kumamoto/'                                  #
         + dossier)                                      #
@@ -224,9 +230,11 @@ path_data = (path + '/'                                 #
              + azim + 'deg')                            #
                                                         #
 path_data_2 = (path_data + '_'                          #
+               + past
                + selected_patch)                        #
                                                         #
 path_data_3 = (path_data + '_'                          #
+               + past
                + selected_patch + '_complementaire')    #
 
 pth_ptch = [path_data_2, path_data_3]
@@ -344,7 +352,7 @@ for fichier in lst_fch:                                                         
 print(tmin)                                                                                     #   et chaque subfault
 
 os.chdir(path)                                                  #
-with open(dossier + '_' + selected_patch, 'rb') as my_fch:      #
+with open(dossier + '_' + past + selected_patch, 'rb') as my_fch:      #
     my_dpck = pickle.Unpickler(my_fch)                          #
     dict_ok = my_dpck.load()                                    #   load le patch
     
@@ -386,13 +394,14 @@ for station in lst_fch:                                                         
         st = read(station)                                                                                          #
         tr = st[0].data                                                                                             #
         cpt = 0                                                                                                     #
+        tr[-1] = tr.max()
         for dat in tr:                                                                                              #
             cpt = cpt + 1                                                                                           #
             time = cpt/st[0].stats.sampling_rate                                                                    #
             if (time >= identified_patch[st[0].stats.station][0][0]                                                 #
                 and time <= identified_patch[st[0].stats.station][0][1]):                                           #
                 #tr[cpt] = 0.2*tr[cpt]                                                                              #
-                tmp = 1/2*math.sin(math.pi*(time
+                tmp = math.pi/4*math.sin(math.pi*(time
                                             - identified_patch[st[0].stats.station][0][0])
                                           /(identified_patch[st[0].stats.station][0][1]
                                             - identified_patch[st[0].stats.station][0][0]))
@@ -408,9 +417,9 @@ for station in lst_fch:                                                         
         st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #   
         st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #   trace modifiee =
         tr_reg = Trace(np.asarray(tr), st[0].stats)                                                                 #   trace originale
-        tr_reg.write(station[:-4] + '_' + selected_patch + scis + '.sac', format = 'SAC')                                  #   - partie contribuant au patch
+        tr_reg.write(station[:-4] + '_' + past + selected_patch + scis + '.sac', format = 'SAC')                    #   - partie contribuant au patch
 
-        st = read(station[:-4] + '_' + selected_patch + scis + '.sac')
+        st = read(station[:-4] + '_' + past + selected_patch + scis + '.sac')
         tstart = st[0].stats.starttime
         env_norm = norm1(st[0].data)
         t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
@@ -439,6 +448,7 @@ for scis in scission:
               + '_env_smooth_'
               + hyp_bp + '_'
               + azim + 'deg_stack3D_'
+              + past
               + selected_patch + scis, 'wb') as my_fch:
         my_pck = pickle.Pickler(my_fch)
         my_pck.dump(stack[scission.index(scis)])
