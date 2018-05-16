@@ -203,14 +203,14 @@ pas_l = param['pas_l']                                                          
 pas_w = param['pas_w']                                                                              #
 samp_rate = param['samp_rate']                                                                      #
 length_time = param['length_t']                                                                     #   parametres stockes
-selected_patch = 'patch_90'
+selected_patch = 'patch_80'
 
 ###########################
 ###########################
-past = ''
-#past = 'patch_90_'
-pastpast = ''
-#pastpast = '_patch_90_complementaire'
+#past = ''
+past = 'patch_80_'
+#pastpast = ''
+pastpast = '_patch_80_complementaire'
 ###########################
 ###########################
 
