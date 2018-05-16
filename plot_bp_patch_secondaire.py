@@ -78,13 +78,13 @@ R_Earth = param['R_Earth']          #
 l_fault = param['l_fault']
 w_fault = param['w_fault']
 degree = '\u00b0'                   #   parametres stockes
-selected_patch = 'patch_90'
+selected_patch = 'patch_80'
 scission = ['', '_complementaire']
 
 ################################
 ################################
-past = ''
-#past = 'patch_90_'
+#past = ''
+past = 'patch_80_'
 ################################
 ################################
 
@@ -214,13 +214,13 @@ for scis in scission:
 
     os.chdir(path)
     for i in range(nbr_trsh):
-        with open(dossier + '_' + past + 'patch_90' + '_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
+        with open(dossier + '_' + past + selected_patch + '_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
             my_pck = pickle.Pickler(my_ext)
             my_pck.dump(lst_dct_ok[i])
 
     for i in range(nbr_trsh):
         os.chdir(path)
-        with open(dossier + '_' + past + 'patch_90' + '_patch_' + str(lst_trsh[i]), 'rb') as my_in:
+        with open(dossier + '_' + past + selected_patch + '_patch_' + str(lst_trsh[i]), 'rb') as my_in:
             my_dpck = pickle.Unpickler(my_in)
             dict_ook = my_dpck.load()
 
