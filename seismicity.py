@@ -66,12 +66,12 @@ for period in range(5):
                 per = 4
 
             if period == 0 or (period == 1 and per == 1) or (period == 2 and per == 2) or (period == 3 and per == 3) or (period == 4 or per == 4):
-                ax.scatter(x_epi, y_epi, seism[eq]['Mj']**2, marker = 'o', edgecolors = 'black', facecolors = 'none', zorder = 2, linewidth = 0.1)
+                ax.scatter(x_epi, y_epi, 3*seism[eq]['Mj']**2, marker = 'o', edgecolors = 'black', facecolors = 'none', zorder = 2, linewidth = 0.1)
 
     for mainsh in ms_lst:
         xx, yy = m(ref_s[mainsh]['lon'], ref_s[mainsh]['lat'])
         angles = [ref_s[mainsh]['str1'], ref_s[mainsh]['dip1'], ref_s[mainsh]['rak1']]
-        bx, by = m(w_bord + 0.12, n_bord - 0.4 + 0.1*ms_lst.index(mainsh))
+        bx, by = m(w_bord + 0.12, n_bord - 0.6 + 0.2*ms_lst.index(mainsh))
 
         if mainsh == ms_lst[2]:
             clr = 'red'
@@ -80,37 +80,37 @@ for period in range(5):
         else:
             clr = 'blue'
 
-        ax.scatter(xx, yy, 3*ref_s[mainsh]['Mw']**2, marker = '*', color = clr, zorder = 4, linewidth = 0.1)
-        bb = beach(angles, xy = (bx, by), facecolor = clr, width = 10000, linewidth = 0.1)
+        ax.scatter(xx, yy, 20*ref_s[mainsh]['Mw']**2, marker = '*', color = clr, zorder = 4, linewidth = 0.1)
+        bb = beach(angles, xy = (bx, by), facecolor = clr, width = 20000, linewidth = 0.1)
         bb.set_zorder(4)
         ax.add_collection(bb)
 
-        xx, yy = m(w_bord + 0.3, n_bord - 0.4 + 0.1*ms_lst.index(mainsh))
-        ax.text(xx, yy, ref_s[mainsh]['Mw'], ha = 'center', va = 'center')
+        xx, yy = m(w_bord + 0.4, n_bord - 0.62 + 0.2*ms_lst.index(mainsh))
+        ax.text(xx, yy, ref_s[mainsh]['Mw'], ha = 'center', va = 'center', fontsize = 20)
 
-        xx, yy = m(w_bord + 0.7, n_bord - 0.4 + 0.1*ms_lst.index(mainsh))
-        ax.text(xx, yy, mainsh[6:8] + 'th', ha = 'center', va = 'center')
+        xx, yy = m(w_bord + 1.0, n_bord - 0.62 + 0.2*ms_lst.index(mainsh))
+        ax.text(xx, yy, mainsh[6:8] + 'th', ha = 'center', va = 'center', fontsize = 20)
 
     #legende main shocks
-    xx, yy = m(w_bord + 0.3, n_bord - 0.1)
-    ax.text(xx, yy, 'Mw', ha = 'center', va = 'center')
+    xx, yy = m(w_bord + 0.4, n_bord - 0.07)
+    ax.text(xx, yy, 'Mw', ha = 'center', va = 'center', fontsize = 20)
 
-    xx, yy = m(w_bord + 0.7, n_bord - 0.1)
-    ax.text(xx, yy, '2016 April', ha = 'center', va = 'center')
+    xx, yy = m(w_bord + 1.0, n_bord - 0.07)
+    ax.text(xx, yy, '2016 April', ha = 'center', va = 'center', fontsize = 20)
 
     #Kumamoto city
     xx, yy = m(130.78, 32.78)
-    ax.scatter(xx, yy, 40, marker = 'o', edgecolors = 'black', facecolors = 'orange', zorder = 3, linewidth = 0.1)
+    ax.scatter(xx, yy, 120, marker = 'o', edgecolors = 'black', facecolors = 'orange', zorder = 3, linewidth = 0.1)
 
-    xx, yy = m(130.78, 32.8)
-    ax.text(xx, yy, 'Kumamoto', color = 'red', zorder = 3, ha = 'center', va = 'center')
+    xx, yy = m(130.85, 32.8)
+    ax.text(xx, yy, 'Kumamoto', color = 'red', zorder = 3, ha = 'left', va = 'center', fontsize = 20)
 
     #Mont Aso
     xx, yy = m(131.09, 32.88)
-    ax.scatter(xx, yy, 40, marker = 'o', edgecolors = 'black', facecolors = 'orange', zorder = 3, linewidth = 0.1)
+    ax.scatter(xx, yy, 120, marker = 'o', edgecolors = 'black', facecolors = 'orange', zorder = 3, linewidth = 0.1)
 
-    xx, yy = m(131.09, 32.9)
-    ax.text(xx, yy, 'Mt. Aso', color = 'red', zorder = 3, ha = 'center', va = 'center')
+    xx, yy = m(131.14, 32.9)
+    ax.text(xx, yy, 'Mt. Aso', color = 'red', zorder = 3, ha = 'left', va = 'center', fontsize = 20)
 
     #legende magnitude sismicite
     xx, yy = m(e_bord - 0.15, s_bord + 0.5)
@@ -126,7 +126,7 @@ for period in range(5):
         ax.text(xx, yy, '   ' + str(i + 2), ha = 'center', va = 'center')
 
     #title figure
-    ax.set_title('2016 April ' + period_lst[period] + ' seismicity')
+    ax.set_title('2016 April ' + period_lst[period] + ' seismicity', fontsize = 24)
 
     #save figure
     fig.savefig('sismicite_' + period_lst[period] + '.pdf')
