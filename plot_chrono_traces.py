@@ -35,12 +35,12 @@ t4 = np.arange(st4[0].stats.npts)/st4[0].stats.sampling_rate
 
 dat5 = smooth(st4[0].data, int(0.5/st4[0].stats.delta))
 
-ax[0].plot(t1, st1[0])
+ax[0].plot(t1, st1[0], color = 'black')
 ax[0].set_xlim([3.6, 3.6 + 50])
-ax[1].plot(t2, st2[0])
-ax[2].plot(t3, st3[0])
-ax[3].plot(t4, st4[0])
-ax[4].plot(t4, dat5)
+ax[1].plot(t2, st2[0], color = 'black')
+ax[2].plot(t3, st3[0], color = 'black')
+ax[3].plot(t4, st4[0], color = 'black')
+ax[4].plot(t4, dat5, color = 'black')
 
 plt.subplots_adjust(hspace = 0.001)
 ax[0].xaxis.set_visible(False)
