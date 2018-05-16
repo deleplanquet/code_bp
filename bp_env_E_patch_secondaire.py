@@ -208,6 +208,9 @@ selected_patch = 'patch_90'
 ###########################
 ###########################
 past = ''
+#past = 'patch_90_'
+pastpast = ''
+#pastpast = '_patch_90_complementaire'
 ###########################
 ###########################
 
@@ -229,6 +232,9 @@ path_data = (path + '/'                                 #
              + hyp_bp + '_'                             #
              + azim + 'deg')                            #
                                                         #
+path_data_1 = (path_data
+               + pastpast)
+
 path_data_2 = (path_data + '_'                          #
                + past
                + selected_patch)                        #
@@ -271,7 +277,7 @@ if os.path.isdir(path_results_2) == False:      #   creation des dossiers de tra
     os.makedirs(path_results_2)                 #   dans le cas ou il n'existe pas deja
             
 lst_fch = []                        #
-lst_fch = os.listdir(path_data)     #   recupere la liste des noms des fichiers contenant les donnees
+lst_fch = os.listdir(path_data_1)     #   recupere la liste des noms des fichiers contenant les donnees
 lst_fch.sort()                      #   les trie
 
 os.chdir(path_origin + '/Kumamoto')             #
@@ -329,13 +335,13 @@ coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp],                      
 
 tstart_ref = None                                                       #
                                                                         #
-os.chdir(path_data)                                                     #
+os.chdir(path_data_1)                                                     #
 for fichier in lst_fch:                                                 #
     st = read(fichier)                                                  #
     if tstart_ref == None or tstart_ref - st[0].stats.starttime > 0:    #   sonde toutes les stations
         tstart_ref = st[0].stats.starttime                              #   pour trouver celle qui detecte le plus tot
         
-os.chdir(path_data)                                                                             #
+os.chdir(path_data_1)                                                                             #
 travt = []                                                                                      #
 tmin = None                                                                                     #
 dmin = None                                                                                     #
@@ -358,7 +364,7 @@ with open(dossier + '_' + past + selected_patch, 'rb') as my_fch:      #
     
 identified_patch = {}                                                                   #
                                                                                         #
-os.chdir(path_data)                                                                     #
+os.chdir(path_data_1)                                                                     #
 for station in lst_fch:                                                                 #   pour chaque station
     list_inter = []                                                                     #
     st = read(station)                                                                  #
@@ -390,7 +396,7 @@ scission = ['', '_complementaire']
 
 for station in lst_fch:                                                                                         #
     for scis in scission:
-        os.chdir(path_data)                                                                                         #
+        os.chdir(path_data_1)                                                                                         #
         st = read(station)                                                                                          #
         tr = st[0].data                                                                                             #
         cpt = 0                                                                                                     #
