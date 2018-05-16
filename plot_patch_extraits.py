@@ -41,14 +41,16 @@ lst_sta = [os.listdir(lst_pth_dat[0])]
 lst_sta[0].sort()
 lst_clr = ['yellow', 'orange', 'red', 'blue']
 
-for i in range(1):
+for i in range(2):
     lst_pth_dat.append(lst_pth_dat[i]
                        + '_patch_90')
 
-for i in range(1):
+for i in range(2):
     lst_pth_dat[i + 1] = lst_pth_dat[i + 1] + '_complementaire'
     lst_sta.append(os.listdir(lst_pth_dat[i+1]))
     lst_sta[i+1].sort()
+
+print(lst_pth_dat)
 
 path_results = (path + '/'
                 + dossier
@@ -82,11 +84,21 @@ for station in lst_sta[0]:
     t = np.arange(st[0][0].stats.npts)/st[0][0].stats.sampling_rate
 
     for elt in st:
-        ax.fill_between(t,
+        ax.fill_between(t[:-1],
                         0,
-                        elt[0].data,
+                        elt[0].data[:-1],
                         linewidth = 0.2,
                         color = lst_clr[st.index(elt)])
+        ax.plot(t[:-1],
+                elt[0].data[:-1],
+                linewidth = 0.5,
+                color = 'black')
+
+    ax.set_xlim(0, 50)
+    ax.set_ylim(0, 1.1*st[-1][0].data[-1])
+
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
 
     os.chdir(pth_png)
     fig.savefig(station[:-4] + '.png')
