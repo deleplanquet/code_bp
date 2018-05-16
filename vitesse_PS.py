@@ -110,10 +110,10 @@ for station in list_sta:
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
     t = [a + delai_rec for a in t]
 
-    ax.plot(t, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.2, color = 'black')
+    ax.plot(t, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.5, color = 'black')
     ax.text(50 + t[0], st[0].stats.sac.dist, st[0].stats.station, fontsize = 3)
-    ax.scatter(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist, s = 2, color = 'steelblue')
-    ax.scatter(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist, s = 2, color = 'darkorange')
+    ax.scatter(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist, s = 30, color = 'steelblue')
+    ax.scatter(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist, s = 30, color = 'darkorange')
 
 to_register = [vP, vS]#, tdeb]
 
@@ -123,9 +123,9 @@ with open(dossier + '_veldata', 'wb') as mon_fich:
     mon_pick.dump(to_register)
 
 #ax.text(10, 115, str(t_origin_rupt), color = 'black')
-ax.plot([0, 100./velP], [0, 100], linewidth = 0.2, color = 'steelblue')
-ax.plot([0, 100./velS], [0, 100], linewidth = 0.2, color = 'darkorange')
-ax.set_xlim([0, 70])
+ax.plot([0, 100./velP], [0, 100], linewidth = 2, color = 'steelblue')
+ax.plot([0, 100./velS], [0, 100], linewidth = 2, color = 'darkorange')
+ax.set_xlim([0, 40])
 ax.set_ylim([0, 110])
 ax.xaxis.set_visible(False)
 ax.yaxis.set_visible(False)
