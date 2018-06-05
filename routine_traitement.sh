@@ -20,3 +20,5 @@ python3 vitesse_PS.py
 python3 select_stat_env.py
 
 python3 select_station_angle.py
+
+python3 plot_traces.py
