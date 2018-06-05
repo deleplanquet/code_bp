@@ -252,6 +252,18 @@ python3 select_station_angle.py
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
 
+python3 plot_traces.py
+----------------------
+
+.. code-block:: python3
+
+    python3 plot_traces.py
+
+| plot
+
+| from
+| to
+
 python3 bp_env_E.py
 ===================
 
