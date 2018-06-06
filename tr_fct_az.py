@@ -162,21 +162,36 @@ lst_fch = os.listdir(path_data)
 fig1, ax1 = plt.subplots(1, 1)
 ax1.set_xlabel('Time (s)')
 ax1.set_ylabel('Azimuth (deg)')
-ax1.set_title('0 < Hyp. Dist. < 50 km')
+ax1.set_title(dossier[:4] + '/' 
+              + dossier[4:6] + '/'
+              + dossier[6:8] + ' '
+              + dossier[8:10] + ':'
+              + dossier[10:12] + ' JST   '
+              + '0 < Hyp. Dist. < 50 km')
 ax1.set_xlim([-10, 40])
 ax1.set_ylim([0, 380])
 
 fig2, ax2 = plt.subplots(1, 1)
 ax2.set_xlabel('Time (s)')
 ax2.set_ylabel('Azimuth (deg)')
-ax2.set_title('50 < Hyp. Dist. < 80 km')
+ax2.set_title(dossier[:4] + '/' 
+              + dossier[4:6] + '/'
+              + dossier[6:8] + ' '
+              + dossier[8:10] + ':'
+              + dossier[10:12] + ' JST   '
+              + '50 < Hyp. Dist. < 80 km')
 ax2.set_xlim([-15, 35])
 ax2.set_ylim([0, 380])
 
 fig3, ax3 = plt.subplots(1, 1)
 ax3.set_xlabel('Time (s)')
 ax3.set_ylabel('Azimuth (deg)')
-ax3.set_title('80 < Hyp. Dist. < 100 km')
+ax3.set_title(dossier[:4] + '/' 
+              + dossier[4:6] + '/'
+              + dossier[6:8] + ' '
+              + dossier[8:10] + ':'
+              + dossier[10:12] + ' JST   '
+              + '80 < Hyp. Dist. < 100 km')
 ax3.set_xlim([-20, 30])
 ax3.set_ylim([0, 380])
 
