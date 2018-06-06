@@ -264,6 +264,18 @@ python3 plot_traces.py
 | from
 | to
 
+python3 tr_fct_az.py
+--------------------
+
+.. code-block:: python3
+
+    python3 tr_fct_az.py
+
+| plot
+
+| from
+| to
+
 python3 bp_env_E.py
 ===================
 
