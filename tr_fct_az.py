@@ -1,6 +1,7 @@
 import numpy as np
 from pylab import *
 import math
+import pickle
 import matplotlib.pyplot as plt
 import os
 from obspy import read
@@ -36,8 +37,8 @@ def norm(vect):
 def norm1(vect):
     norm_v = 0
     for a in vect:
-        norm_v = norm_v + a*a
-    return [90*a/pow(norm_v, 0.5) for a in vect]
+        norm_v = max([norm_v, a])
+    return [a/norm_v for a in vect]
 
 #rotation 3d d'angle theta et d'axe passant par l'origine porte par le vecteur (a, b, c) de norme 1, repere orthonormal direct
 def rotation(u, theta, OM):
@@ -99,60 +100,143 @@ def dist_azim(ptA, ptB, R):
     else:
         return R*dist_rad, 360 - r2d(angle_brut)
 
-#list_dossier = ['20160416080200']#, '20160415072000']#, '20160414230200']
-#list_dossier = ['20160415072000']
-list_dossier = ['oneevent']
-dossier = list_dossier[0]
-dossier_source = '20160415000300'
-
-#path = '/localstorage/deleplanque'
 path_origin = os.getcwd()[:-6]
-path_data = path_origin + '/Kumamoto/' + dossier + '/' + dossier + '_vel_0-100km_4.0-8.0Hz/' + dossier + '_vel_0-100km_4.0-8.0Hz_hori_env_smooth_S_0-180deg/'
-#path_data_2 = path_origin + '/Kumamoto/' + dossier + '/' + dossier + '_vel_0-100km_4.0-8.0Hz/' + dossier + '_vel_0-100km_4.0-8.0Hz_hori_env_smooth_S_0-180deg_patch095_complementaire_1/'
-#path_data_3 = path_origin + '/Kumamoto/' + dossier + '/' + dossier + '_vel_0-100km_4.0-8.0Hz/' + dossier + '_vel_0-100km_4.0-8.0Hz_hori_env_smooth_S_0-180deg_patch095_complementaire_2/'
-#path_data_4 = path_origin + '/Kumamoto/' + dossier + '/' + dossier + '_vel_0-100km_4.0-8.0Hz/' + dossier + '_vel_0-100km_4.0-8.0Hz_hori_env_smooth_S_0-180deg_patch_1/'
-path_data_5 = path_origin + '/Kumamoto/' + dossier_source + '/' + dossier_source + '_vel_0-100km_4.0-8.0Hz/' + dossier_source + '_vel_0-100km_4.0-8.0Hz_hori_env_smooth_S_0-180deg/'
-path_results = path_origin + '/Kumamoto'
 
-fig, ax = plt.subplots(1, 1)
-ax.set_xlabel('Time (s)')
-ax.set_ylabel('Azimuth (deg)')
+os.chdir(path_origin + '/Kumamoto')         #
+with open('parametres_bin', 'rb') as mfch:  #
+    mdpck = pickle.Unpickler(mfch)          #
+    param = mdpck.load()                    #   load parametres
 
-for dossier in list_dossier:
-    print(dossier)
-    os.chdir(path_data)
-    list_fichier = os.listdir(path_data)
-    #list_fichier = [a for a in list_fichier if (('UD' in a) == True and ('UD1' in a) == False)]
-    print(list_fichier)
+dossier = param['dossier']
+couronne = param['couronne']
+frq = param['band_freq']
+dt_type = param['composante']
+hyp_bp = param['ondes_select']
+azim = param['angle']
 
-    fig2, ax2 = plt.subplots(1, 1)
-    ax2.set_xlabel('Time (s)')
-    ax2.set_ylabel('Azimuth (deg)')
+path = (path_origin
+        + '/Kumamoto/'
+        + dossier)
 
-    for fichier in list_fichier:
-        st = read(fichier)
-        hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
-        pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
+path_data = (path + '/'
+             + dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz/'
+             + dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz_'
+             + dt_type
+             + '_env_smooth_'
+             + hyp_bp + '_'
+             + azim + 'deg')
 
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
-        print(dst, azm)
+path_results = (path + '/'
+                + dossier
+                + '_results/'
+                + dossier
+                + '_vel_'
+                + couronne + 'km_'
+                + frq + 'Hz')
 
-        if dst > 50 and dst < 80:
-            clr = 'red'
-        #elif dst < 80:
-        #    clr = 'white'
-        #else:
-        #    clr = 'white'
+path_pdf = (path_results + '/'
+            + 'Traces_azimuth_pdf')
 
+path_png = (path_results + '/'
+            + 'Traces_azimuth_png')
+
+if os.path.isdir(path_pdf) == False:
+    os.makedirs(path_pdf)
+
+if os.path.isdir(path_png) == False:
+    os.makedirs(path_png)
+
+lst_fch = os.listdir(path_data)
+
+
+
+
+
+
+fig1, ax1 = plt.subplots(1, 1)
+ax1.set_xlabel('Time (s)')
+ax1.set_ylabel('Azimuth (deg)')
+ax1.set_title('0 < Hyp. Dist. < 50 km')
+ax1.set_xlim([-10, 40])
+ax1.set_ylim([0, 380])
+
+fig2, ax2 = plt.subplots(1, 1)
+ax2.set_xlabel('Time (s)')
+ax2.set_ylabel('Azimuth (deg)')
+ax2.set_title('50 < Hyp. Dist. < 80 km')
+ax2.set_xlim([-15, 35])
+ax2.set_ylim([0, 380])
+
+fig3, ax3 = plt.subplots(1, 1)
+ax3.set_xlabel('Time (s)')
+ax3.set_ylabel('Azimuth (deg)')
+ax3.set_title('80 < Hyp. Dist. < 100 km')
+ax3.set_xlim([-20, 30])
+ax3.set_ylim([0, 380])
+
+os.chdir(path_data)
+for fichier in lst_fch:
+    print(fichier)
+    st = read(fichier)
+    hypo = [R_Earth - st[0].stats.sac.evdp,
+            st[0].stats.sac.evla,
+            st[0].stats.sac.evlo]
+    pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel,
+            st[0].stats.sac.stla,
+            st[0].stats.sac.stlo]
+
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
+    print(dst, azm)
+
+    if dst > 50 and dst < 80:
+        clr = 'red'
+    elif dst < 80:
+        clr = 'white'
+    else:
+        clr = 'white'
+
+    if dst <= 50:
         #ax.plot([a - st[0].stats.sac.t0 for a in t], [5*a + azim for a in norm1(st[0].data)], linewidth = 0.2, color = clr)
-            ax.fill_between([a - dst/3.4 + dst/5.8 - 5 for a in t], azm, [2*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = clr, alpha = 0.2)
-            ax2.fill_between([a - dst/3.4 + dst/5.8 - 5 for a in t], azm, [2*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = clr, alpha = 0.2)
-            ax.scatter(st[0].stats.sac.t0 - dst/3.4 + dst/5.8 - 5, azm, 3)
-            ax.scatter(st[0].stats.sac.a - dst/3.4 + dst/5.8 - 5, azm, 3, color = 'blue')
-            ax.text(-5, azm + 1, st[0].stats.station, fontsize = 3)
-            ax2.text(-5, azm + 1, st[0].stats.station, fontsize = 3)
-            ax.scatter(st[0].stats.sac.user1 - dst/3.4 + dst/5.8 - 5, azm, 3, color = 'red')
+        ax1.fill_between([a - st[0].stats.sac.t0 for a in t], azm, [10*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = 'black', alpha = 0.2)
+    #ax2.fill_between([a - dst/3.4 + dst/5.8 - 5 for a in t], azm, [2*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = 'black', alpha = 0.2)
+        ax1.scatter(0, azm, 3, color = 'darkorange')
+        ax1.scatter(st[0].stats.sac.a - st[0].stats.sac.t0, azm, 3, color = 'steelblue')
+        ax1.text(38, azm + 1, st[0].stats.station, fontsize = 6, ha = 'right')
+    #ax2.text(-5, azm + 1, st[0].stats.station, fontsize = 3)
+        #ax1.scatter(st[0].stats.sac.user1 - dst/3.4 + dst/5.8 - 5, azm, 3, color = 'red')
+    elif dst <= 80:
+        ax2.fill_between([a - st[0].stats.sac.t0 for a in t], azm, [10*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = 'black', alpha = 0.2)
+        ax2.scatter(0, azm, 3, color = 'darkorange')
+        ax2.scatter(st[0].stats.sac.a - st[0].stats.sac.t0, azm, 3, color = 'steelblue')
+        ax2.text(33, azm + 1, st[0].stats.station, fontsize = 6, ha = 'right')
+        #ax2.scatter(st[0].stats.sac.user1 - dst/3.4 + dst/5.8 - 5, azm, 3, color = 'red')
+    else:
+        ax3.fill_between([a - st[0].stats.sac.t0 for a in t], azm, [10*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = 'black', alpha = 0.2)
+        ax3.scatter(0, azm, 3, color = 'darkorange')
+        ax3.scatter(st[0].stats.sac.a - st[0].stats.sac.t0, azm, 3, color = 'steelblue')
+        ax3.text(28, azm + 1, st[0].stats.station, fontsize = 6, ha = 'right')
+        #ax3.scatter(st[0].stats.sac.user1 - dst/3.4 + dst/5.8 - 5, azm, 3, color = 'red')
+
+os.chdir(path_results)
+fig1.savefig(dossier
+             + 'envelopes_0-50km_fct_azimuth.pdf')
+fig1.savefig(dossier
+             + 'envelopes_0-50km_fct_azimuth.png')
+fig2.savefig(dossier
+             + 'envelopes_50-80km_fct_azimuth.pdf')
+fig2.savefig(dossier
+             + 'envelopes_50-80km_fct_azimuth.png')
+fig3.savefig(dossier
+             + 'envelopes_80-100km_fct_azimuth.pdf')
+fig3.savefig(dossier
+             + 'envelopes_80-100km_fct_azimuth.png')
 
         #if dist(hypo, pos_sta) > 20 and dist(hypo, pos_sta) < 80:
         #    st = st.detrend(type = 'constant')
@@ -192,75 +276,75 @@ for dossier in list_dossier:
 
         #    ax2.scatter(15 - st[0].stats.sac.t0 + st[0].stats.sac.a, ordo, s = 2, color = 'steelblue')
 
-    os.chdir(path_data_5)
-    list_fichier = os.listdir(path_data_5)
+ #   os.chdir(path_data_5)
+#    list_fichier = os.listdir(path_data_5)
 
-    for fichier in list_fichier:
-        st = read(fichier)
-        hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
-        pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
+#    for fichier in list_fichier:
+#        st = read(fichier)
+#        hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
+#        pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
 
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
+#        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+#        dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
 
-        if dst > 50 and dst < 80:
-            clr = 'black'
+#        if dst > 50 and dst < 80:
+#            clr = 'black'
 
-            ax.fill_between([a - dst/3.4 + dst/5.8 - 5 for a in t], azm, [2*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = clr, alpha = 0.2)
+#            ax.fill_between([a - dst/3.4 + dst/5.8 - 5 for a in t], azm, [2*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = clr, alpha = 0.2)
             #ax.fill_between([a - dst/3.4 + dst/5.8 - 5 for a in t], azm, [5*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = clr, alpha = 0.2)
 
     #os.chdir(path_data_2)
     #list_fichier = os.listdir(path_data_2)
 
-    for fichier in list_fichier:
-        st = read(fichier)
-        hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
-        pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
+#    for fichier in list_fichier:
+#        st = read(fichier)
+#        hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
+#        pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
 
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
+#        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+#        dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
 
-        if dst > 80 and dst < 100:
-            clr = 'red'
+#        if dst > 80 and dst < 100:
+#            clr = 'red'
 
 #            ax.fill_between([a - dst/3.4 for a in t], azm, [5*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = clr, alpha = 0.2)
             
     #os.chdir(path_data_3)
     #list_fichier = os.listdir(path_data_3)
 
-    for fichier in list_fichier:
-        st = read(fichier)
-        hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
-        pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
+#    for fichier in list_fichier:
+#        st = read(fichier)
+#        hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
+#        pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
 
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
+#        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+#        dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
 
-        if dst > 80 and dst < 100:
-            clr = 'blue'
+#        if dst > 80 and dst < 100:
+#            clr = 'blue'
 
 #            ax.fill_between([a - dst/3.4 for a in t], azm, [5*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = clr, alpha = 0.2)
 
     #os.chdir(path_data_4)
     #list_fichier = os.listdir(path_data_4)
 
-    for fichier in list_fichier:
-        st = read(fichier)
-        hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
-        pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
+#    for fichier in list_fichier:
+#        st = read(fichier)
+#        hypo = [R_Earth - st[0].stats.sac.evdp, st[0].stats.sac.evla, st[0].stats.sac.evlo]
+#        pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
 
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
+#        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+#        dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
 
-        if dst > 80 and dst < 100:
-            clr = 'red'
+#        if dst > 80 and dst < 100:
+#            clr = 'red'
 
 #            ax.fill_between([a - dst/3.4 + dst/5.8 - 5 for a in t], azm, [5*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = clr, alpha = 0.2)
 
-    os.chdir(path_results)
-    ax2.axvline(0, linewidth = 0.5, color = 'darkorange')
+#    os.chdir(path_results)
+#    ax2.axvline(0, linewidth = 0.5, color = 'darkorange')
     #ax2.text(30, 185, '2016/04/16 08:02', color = 'black')
-    fig2.savefig('tt_sta_angle' + dossier + 'inf80th.pdf')
+#    fig2.savefig('tt_sta_angle' + dossier + 'inf80th.pdf')
 
-ax.axvline(0, linewidth = 0.5, color = 'darkorange')
-fig.savefig('tt_sta_angle_tt_seisme_inf80th' + dossier + '.pdf')
+#ax.axvline(0, linewidth = 0.5, color = 'darkorange')
+#fig.savefig('tt_sta_angle_tt_seisme_inf80th' + dossier + '.pdf')
