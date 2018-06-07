@@ -24,7 +24,7 @@ param['R_Earth'] = float(6400)
 param['dist_min'] = None
 while ((type(param['dist_min']) is float) == False
        or param['dist_min'] < 0
-       or param['dist_min'] > 100):
+       or param['dist_min'] >= 100):
     print('Expected value: integer or float between 0 and 100 km')
     param['dist_min'] = float(input('distance min [0 -> 100]: '))
 print('')
@@ -42,7 +42,7 @@ param['couronne'] = str(int(param['dist_min'])) + '-' + str(int(param['dist_max'
 param['freq_min'] = None
 while ((type(param['freq_min']) is float) == False
        or param['freq_min'] < 0.2
-       or param['freq_min'] > 30):
+       or param['freq_min'] >= 30):
     print('Expected value: integer or float between 0.2 and 30 Hz')
     print('Suggested values: 0.2 / 0.5 / 1 / 2 / 4 / 8 / 16 Hz')
     param['freq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
@@ -93,7 +93,15 @@ while (type(param['impulse'] is float) == False
     param['impulse'] = float(input('longueur fenetre impulse (s): '))
 print('')
 
-param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
+param['angle_min'] = None
+while (type(param['angle_min'] is float) == False
+       or param['angle_min'] < 0
+       or param['angle_min'] >= 180):
+    print('Expected value: integer of float between 0 and 180 deg')
+    print('0 deg is North, counting clockwise')
+    param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
+print('')
+
 param['angle_max'] = float(input('angle_max (sens horaire) [angle_min -> 180]: '))
 param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']))
 param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
