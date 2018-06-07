@@ -76,7 +76,15 @@ while (type(param['ratioSP'] is float) == False
     param['ratioSP'] = float(input('ratio S/P (> 1): '))
 print('')
 
-param['smooth'] = float(input('longueur fenetre smooth (s): '))
+param['smooth'] = None
+while (type(param['smooth'] is float) == False
+       or param['smooth'] < 0):
+    print('Expected value: integer or float > 0')
+    print('If the value is smaller than delay between two snapshots,')
+    print('   the value will be adapted to this delay')
+    param['smooth'] = float(input('longueur fenetre smooth (s): '))
+print('')
+
 param['impulse'] = float(input('longueur fenetre impulse (s): '))
 param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
 param['angle_max'] = float(input('angle_max (sens horaire) [angle_min -> 180]: '))
