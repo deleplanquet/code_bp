@@ -139,7 +139,17 @@ while (param['ondes_select'] != 'P'
     param['ondes_select'] = input('hypothese de bp [P/S]: ')
 print('')
 
-param['strike'] = float(input('strike (224?): '))
+param['strike'] = None
+while ((type(param['strike']) is float) == False
+       or param['strike'] < 0
+       or param['strike'] >= 360):
+    print('Strike direction of the fault')
+    print('Expected value: integer or float from 0 to 360 deg')
+    print('0 deg is North, counting clockwise')
+    print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/04/16 Kumamoto EQ')
+    param['strike'] = float(input('strike (224?): '))
+print('')
+
 param['dip'] = float(input('dip (65?): '))
 param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
 param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
