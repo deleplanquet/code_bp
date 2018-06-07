@@ -192,7 +192,16 @@ while ((type(param['pas_l']) is float) == False
     param['pas_l'] = float(input('pas longueur fault (km): '))
 print('')
 
-param['pas_w'] = float(input('pas largeur fault (km): '))
+param['pas_w'] = None
+while ((type(param['pas_w']) is float) == False
+       or param['pas_w'] <= 0
+       or param['pas_w'] >= param['w_fault']):
+    print('Width of each subfault in the direction of the dip')
+    print('Expected value: strickly positive integer or float in km')
+    print('Should be smaller than w_fault to have at least few points')
+    param['pas_w'] = float(input('pas largeur fault (km): '))
+print('')
+
 param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
 param['length_t'] = float(input('duree de la bp (> 5 sec): '))
 
