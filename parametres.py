@@ -165,13 +165,23 @@ param['l_fault'] = None
 while ((type(param['l_fault']) is float) == False
        or param['l_fault'] <= 0):
     print('Length of the fault, that means in the direction of the strike')
-    print('Width if the fault can be bigger than length')
-    print('Expected value: stricly positive integer of float in km')
+    print('Width can be bigger than length, no restriction')
+    print('Expected value: stricly positive integer or float in km')
     print('No matter the length, hypocenter is always at the center')
     param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
 print('')
 
-param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
+param['w_fault'] = None
+while ((type(param['w_fault']) is float) == False
+       or param['w_fault'] <= 0):
+    print('Width of the fault, that means in the direction of the dip')
+    print('Width can be bigger than length, no restriction')
+    print('Expected value: stricly positive integer or float in km')
+    print('No matter the width, hypocenter is always at the center')
+    print('   due to that, some points of the grid may be above the surface')
+    param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
+print('')
+
 param['pas_l'] = float(input('pas longueur fault (km): '))
 param['pas_w'] = float(input('pas largeur fault (km): '))
 param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
