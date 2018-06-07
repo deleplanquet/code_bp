@@ -99,10 +99,20 @@ while (type(param['angle_min'] is float) == False
        or param['angle_min'] >= 180):
     print('Expected value: integer of float between 0 and 180 deg')
     print('0 deg is North, counting clockwise')
+    print('The other angle, by point(hypocenter) reflection, will be also considered')
     param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
 print('')
 
-param['angle_max'] = float(input('angle_max (sens horaire) [angle_min -> 180]: '))
+param['angle_max'] = None
+while (type(param['angle_max'] is float) == False
+       or param['angle_max'] <= param['angle_min']
+       or param['angle_max'] > 180):
+    print('Expected value: integer or float between angle_min(previous value) and 180 deg')
+    print('0 deg is North, counting clockwise')
+    print('The other angle, by point(hypocenter) reflection, will be also considered')
+    param['angle_max'] = float(input('angle_max (sens horaire) [angle_min -> 180]: '))
+print('')
+
 param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']))
 param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
 param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
