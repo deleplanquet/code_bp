@@ -85,7 +85,14 @@ while (type(param['smooth'] is float) == False
     param['smooth'] = float(input('longueur fenetre smooth (s): '))
 print('')
 
-param['impulse'] = float(input('longueur fenetre impulse (s): '))
+param['impulse'] = None
+while (type(param['impulse'] is float) == False
+       or param['impulse'] <= 0):
+    print('Expected value: integer or float > 0')
+    print('Too small values are non sense')
+    param['impulse'] = float(input('longueur fenetre impulse (s): '))
+print('')
+
 param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
 param['angle_max'] = float(input('angle_max (sens horaire) [angle_min -> 180]: '))
 param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']))
