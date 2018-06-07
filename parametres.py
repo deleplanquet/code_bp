@@ -21,7 +21,14 @@ while (param['dossier'] in dict_seis.keys()) == False:
     param['dossier'] = input('dossier au format YYYYMMDDHHMMSS: ')
 
 param['R_Earth'] = float(6400)
-param['dist_min'] = float(input('distance min [0 -> 100]: '))
+
+param['dist_min'] = None
+while ((type(param['dist_min']) != 'float'
+        and type(param['dist_min'] != 'int'))
+       or param['dist_min'] < 0
+       or param['dist_min'] > 100):
+    print('Expecting value: integer or float between 0 and 100')
+    param['dist_min'] = float(input('distance min [0 -> 100]: '))
 param['dist_max'] = float(input('distance max [dist_min -> 100]: '))
 param['couronne'] = str(int(param['dist_min'])) + '-' + str(int(param['dist_max']))
 param['freq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
