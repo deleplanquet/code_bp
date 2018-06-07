@@ -17,6 +17,7 @@ param['dossier'] = None
 while (param['dossier'] in dict_seis.keys()) == False:
     print('Enter EQ name from ref_seismes.txt')
     param['dossier'] = input('dossier au format YYYYMMDDHHMMSS: ')
+print('')
 
 param['R_Earth'] = float(6400)
 
@@ -24,17 +25,29 @@ param['dist_min'] = None
 while ((type(param['dist_min']) is float) == False
        or param['dist_min'] < 0
        or param['dist_min'] > 100):
-    print('Expecting value: integer or float between 0 and 100')
+    print('Expected value: integer or float between 0 and 100 km')
     param['dist_min'] = float(input('distance min [0 -> 100]: '))
+print('')
 
 param['dist_max'] = None
 while ((type(param['dist_max']) is float) == False
        or param['dist_max'] < param['dist_min']
        or param['dist_max'] > 100):
-    print('Expecting value: interget or float between dist_min(previous value) and 100')
+    print('Expected value: integer or float between dist_min(previous value) and 100 km')
     param['dist_max'] = float(input('distance max [dist_min -> 100]: '))
+print('')
+
 param['couronne'] = str(int(param['dist_min'])) + '-' + str(int(param['dist_max']))
-param['freq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
+
+param['freq_min'] = None
+while ((type(param['freq_min']) is float) == False
+       or param['freq_min'] < 0.2
+       or param['freq_min'] > 30):
+    print('Expected value: integer or float between 0.2 and 30 Hz')
+    print('Suggested values: 0.2 / 0.5 / 1 / 2 / 4 / 8 / 16 Hz')
+    param['freq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
+print('')
+
 param['freq_max'] = float(input('frequence max [05/1/2/4/8/16/30] (> freq_min): '))
 param['band_freq'] = str(param['freq_min']) + '-' + str(param['freq_max'])
 param['composante'] = input('composante [3comp/hori/vert]: ')
