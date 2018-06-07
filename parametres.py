@@ -161,7 +161,16 @@ while ((type(param['dip']) is float) == False
     param['dip'] = float(input('dip (65?): '))
 print('')
 
-param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
+param['l_fault'] = None
+while ((type(param['l_fault']) is float) == False
+       or param['l_fault'] <= 0):
+    print('Length of the fault, that means in the direction of the strike')
+    print('Width if the fault can be bigger than length')
+    print('Expected value: stricly positive integer of float in km')
+    print('No matter the length, hypocenter is always at the center')
+    param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
+print('')
+
 param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
 param['pas_l'] = float(input('pas longueur fault (km): '))
 param['pas_w'] = float(input('pas largeur fault (km): '))
