@@ -150,7 +150,17 @@ while ((type(param['strike']) is float) == False
     param['strike'] = float(input('strike (224?): '))
 print('')
 
-param['dip'] = float(input('dip (65?): '))
+param['dip'] = None
+while ((type(param['dip']) is float) == False
+       or param['dip'] <= 0
+       or param['dip'] > 90):
+    print('Dip direction of the fault')
+    print('Expected value: integer or float from 0 to 90 deg')
+    print('0 deg is horizontal fault plane, 90 deg is vertical one')
+    print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/;04/16 Kumamoto EQ')
+    param['dip'] = float(input('dip (65?): '))
+print('')
+
 param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
 param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
 param['pas_l'] = float(input('pas longueur fault (km): '))
