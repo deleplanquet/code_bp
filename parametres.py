@@ -9,8 +9,6 @@ with open('ref_seismes_bin', 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     dict_seis = mdpk.load()
 
-print(dict_seis.keys())
-
 param = {}
 
 param['path_origin'] = path_origin
@@ -23,13 +21,18 @@ while (param['dossier'] in dict_seis.keys()) == False:
 param['R_Earth'] = float(6400)
 
 param['dist_min'] = None
-while ((type(param['dist_min']) != 'float'
-        and type(param['dist_min'] != 'int'))
+while ((type(param['dist_min']) is float) == False
        or param['dist_min'] < 0
        or param['dist_min'] > 100):
     print('Expecting value: integer or float between 0 and 100')
     param['dist_min'] = float(input('distance min [0 -> 100]: '))
-param['dist_max'] = float(input('distance max [dist_min -> 100]: '))
+
+param['dist_max'] = None
+while ((type(param['dist_max']) is float) == False
+       or param['dist_max'] < param['dist_min']
+       or param['dist_max'] > 100):
+    print('Expecting value: interget or float between dist_min(previous value) and 100')
+    param['dist_max'] = float(input('distance max [dist_min -> 100]: '))
 param['couronne'] = str(int(param['dist_min'])) + '-' + str(int(param['dist_max']))
 param['freq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
 param['freq_max'] = float(input('frequence max [05/1/2/4/8/16/30] (> freq_min): '))
