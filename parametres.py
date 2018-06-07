@@ -208,11 +208,21 @@ while ((type(param['samp_rate']) is float) == False
        or param['samp_rate'] <= 0):
     print('Number of snapshots per sec')
     print('Expected value: strickly positive integer or float below 100 (station sampling rate))')
-    print('Ideally between 0.5 and 10')
+    print('Suggested values are between 0.5 and 10')
     param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
 print('')
 
-param['length_t'] = float(input('duree de la bp (> 5 sec): '))
+param['length_t'] = None
+while ((type(param['length_t']) is float) == False
+       or param['length_t'] <= 5
+       or param['length_t'] >= 50):
+    print('Period of back projection, from 5 seconds before the start of the rupture')
+    print('Expected value: integer or float between 5 and 50 sec')
+    print('Suggested values are between 10 and 30 sec')
+    print('For Mw ~6~ 20 sec')
+    print('For Mw ~7~ 30 sec')
+    param['length_t'] = float(input('duree de la bp (> 5 sec): '))
+print('')
 
 path = param['path_origin'] + '/Kumamoto/historique_parametres'
 path2 = param['path_origin'] + '/Kumamoto/' + param['dossier'] + '/' + param['dossier'] + '_results/' + param['dossier'] + '_vel_' + param['couronne'] + 'km_' + param['band_freq'] + 'Hz'
