@@ -64,7 +64,7 @@ while (param['composante'] != '3comp'
        and param['composante'] != 'hori'
        and param['composante'] != 'vert'):
     print('Expected value: > 3comp <, > hori < or > vert <')
-    print('Other values will not be accepted')
+    print('Other values are not accepted')
     param['composante'] = input('composante [3comp/hori/vert]: ')
 print('')
 
@@ -131,7 +131,14 @@ while ((type(param['vS']) is float) == False
     param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
 print('')
 
-param['ondes_select'] = input('hypothese de bp [P/S]: ')
+param['ondes_select'] = None
+while (param['ondes_select'] != 'P'
+       and param['ondes_select'] != 'S'):
+    print('Expected value: > P < or > S <')
+    print('Other values are not accepted')
+    param['ondes_select'] = input('hypothese de bp [P/S]: ')
+print('')
+
 param['strike'] = float(input('strike (224?): '))
 param['dip'] = float(input('dip (65?): '))
 param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
