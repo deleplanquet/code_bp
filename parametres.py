@@ -58,7 +58,16 @@ while ((type(param['freq_max']) is float) == False
 print('')
 
 param['band_freq'] = str(param['freq_min']) + '-' + str(param['freq_max'])
-param['composante'] = input('composante [3comp/hori/vert]: ')
+
+param['composante'] = None
+while (param['composante'] != '3comp'
+       and param['composante'] != 'hori'
+       and param['composante'] != 'vert'):
+    print('Expected value: > 3comp <, > hori < or > vert <')
+    print('Other values will not be accepted')
+    param['composante'] = input('composante [3comp/hori/vert]: ')
+print('')
+
 param['ratioSP'] = float(input('ratio S/P (> 1): '))
 param['smooth'] = float(input('longueur fenetre smooth (s): '))
 param['impulse'] = float(input('longueur fenetre impulse (s): '))
