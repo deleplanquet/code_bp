@@ -3,10 +3,23 @@ import os
 import sys
 import datetime
 
+path_origin = os.getcwd()[:-6]
+os.chdir(path_origin + '/Kumamoto')
+with open('ref_seismes_bin', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    dict_seis = mdpk.load()
+
+print(dict_seis.keys())
+
 param = {}
 
-param['path_origin'] = os.getcwd()[:-6]
-param['dossier'] = input('dossier au format YYYYMMDDHHMMSS: ')
+param['path_origin'] = path_origin
+
+param['dossier'] = None
+while (param['dossier'] in dict_seis.keys()) == False:
+    print('Enter EQ name from ref_seismes.txt')
+    param['dossier'] = input('dossier au format YYYYMMDDHHMMSS: ')
+
 param['R_Earth'] = float(6400)
 param['dist_min'] = float(input('distance min [0 -> 100]: '))
 param['dist_max'] = float(input('distance max [dist_min -> 100]: '))
