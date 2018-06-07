@@ -69,7 +69,7 @@ while (param['composante'] != '3comp'
 print('')
 
 param['ratioSP'] = None
-while (type(param['ratioSP'] is float) == False
+while ((type(param['ratioSP']) is float) == False
        or param['ratioSP'] <= 0):
     print('Comparison between maximum amplitude of S and P waves')
     print('To have higher P waves, ratio must be < 1')
@@ -77,7 +77,7 @@ while (type(param['ratioSP'] is float) == False
 print('')
 
 param['smooth'] = None
-while (type(param['smooth'] is float) == False
+while ((type(param['smooth']) is float) == False
        or param['smooth'] < 0):
     print('Expected value: integer or float > 0')
     print('If the value is smaller than delay between two snapshots,')
@@ -86,7 +86,7 @@ while (type(param['smooth'] is float) == False
 print('')
 
 param['impulse'] = None
-while (type(param['impulse'] is float) == False
+while ((type(param['impulse']) is float) == False
        or param['impulse'] <= 0):
     print('Expected value: integer or float > 0')
     print('Too small values are non sense')
@@ -94,7 +94,7 @@ while (type(param['impulse'] is float) == False
 print('')
 
 param['angle_min'] = None
-while (type(param['angle_min'] is float) == False
+while ((type(param['angle_min']) is float) == False
        or param['angle_min'] < 0
        or param['angle_min'] >= 180):
     print('Expected value: integer of float between 0 and 180 deg')
@@ -104,7 +104,7 @@ while (type(param['angle_min'] is float) == False
 print('')
 
 param['angle_max'] = None
-while (type(param['angle_max'] is float) == False
+while ((type(param['angle_max']) is float) == False
        or param['angle_max'] <= param['angle_min']
        or param['angle_max'] > 180):
     print('Expected value: integer or float between angle_min(previous value) and 180 deg')
@@ -114,7 +114,14 @@ while (type(param['angle_max'] is float) == False
 print('')
 
 param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']))
-param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
+
+param['vP'] = None
+while ((type(param['vP']) is float) == False
+       or param['vp'] <= 0):
+    print('Expected value: positive integer or float in km.s-1')
+    param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
+print('')
+
 param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
 param['ondes_select'] = input('hypothese de bp [P/S]: ')
 param['strike'] = float(input('strike (224?): '))
