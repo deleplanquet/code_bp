@@ -68,7 +68,14 @@ while (param['composante'] != '3comp'
     param['composante'] = input('composante [3comp/hori/vert]: ')
 print('')
 
-param['ratioSP'] = float(input('ratio S/P (> 1): '))
+param['ratioSP'] = None
+while (type(param['ratioSP'] is float) == False
+       or param['ratioSP'] <= 0):
+    print('Comparison between maximum amplitude of S and P waves')
+    print('To have higher P waves, ratio must be < 1')
+    param['ratioSP'] = float(input('ratio S/P (> 1): '))
+print('')
+
 param['smooth'] = float(input('longueur fenetre smooth (s): '))
 param['impulse'] = float(input('longueur fenetre impulse (s): '))
 param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
