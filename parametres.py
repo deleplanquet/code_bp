@@ -31,7 +31,7 @@ print('')
 
 param['dist_max'] = None
 while ((type(param['dist_max']) is float) == False
-       or param['dist_max'] < param['dist_min']
+       or param['dist_max'] <= param['dist_min']
        or param['dist_max'] > 100):
     print('Expected value: integer or float between dist_min(previous value) and 100 km')
     param['dist_max'] = float(input('distance max [dist_min -> 100]: '))
@@ -48,7 +48,15 @@ while ((type(param['freq_min']) is float) == False
     param['freq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
 print('')
 
-param['freq_max'] = float(input('frequence max [05/1/2/4/8/16/30] (> freq_min): '))
+param['freq_max'] = None
+while ((type(param['freq_max']) is float) == False
+       or param['freq_max'] <= param['freq_min']
+       or param['freq_max'] > 30):
+    print('Expected value: integer or float between freq_min(previous value) and 30 Hz')
+    print('Suggested values: 0.5 / 1 / 2 / 4 / 8 / 16 / 30 Hz')
+    param['freq_max'] = float(input('frequence max [05/1/2/4/8/16/30] (> freq_min): '))
+print('')
+
 param['band_freq'] = str(param['freq_min']) + '-' + str(param['freq_max'])
 param['composante'] = input('composante [3comp/hori/vert]: ')
 param['ratioSP'] = float(input('ratio S/P (> 1): '))
