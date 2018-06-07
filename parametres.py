@@ -202,7 +202,16 @@ while ((type(param['pas_w']) is float) == False
     param['pas_w'] = float(input('pas largeur fault (km): '))
 print('')
 
-param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
+param['samp_rate'] = None
+while ((type(param['samp_rate']) is float) == False
+       or param['samp_rate'] > 100
+       or param['samp_rate'] <= 0):
+    print('Number of snapshots per sec')
+    print('Expected value: strickly positive integer or float below 100 (station sampling rate))')
+    print('Ideally between 0.5 and 10')
+    param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
+print('')
+
 param['length_t'] = float(input('duree de la bp (> 5 sec): '))
 
 path = param['path_origin'] + '/Kumamoto/historique_parametres'
