@@ -122,7 +122,15 @@ while ((type(param['vP']) is float) == False
     param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
 print('')
 
-param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
+param['vS'] = None
+while ((type(param['vS']) is float) == False
+       or param['vS'] <= 0
+       or param['vS'] >= param['vP']):
+    print('Expected value: positive integer of float in km.s-1')
+    print('Of course P-waves are faster so value should be smaller than vP(previous value)')
+    param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
+print('')
+
 param['ondes_select'] = input('hypothese de bp [P/S]: ')
 param['strike'] = float(input('strike (224?): '))
 param['dip'] = float(input('dip (65?): '))
