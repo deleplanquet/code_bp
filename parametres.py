@@ -87,7 +87,7 @@ while ((type(param['smooth']) is float) == False
 print('')
 
 param['impulse'] = None
-print('Expected value: stricktly positive integer or float')
+print('Expected value: strictly positive integer or float')
 print('Too small values are non sense')
 while ((type(param['impulse']) is float) == False
        or param['impulse'] <= 0):
@@ -119,7 +119,7 @@ param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']
 param['vP'] = None
 print('Expected value: strictly positive integer or float in km.s-1')
 while ((type(param['vP']) is float) == False
-       or param['vp'] <= 0):
+       or param['vP'] <= 0):
     param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
 print('')
 
