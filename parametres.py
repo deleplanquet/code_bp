@@ -14,7 +14,7 @@ param = {}
 param['path_origin'] = path_origin
 
 param['dossier'] = None
-print('Enter EQ name from ref_seismes.txt')
+print('   Enter EQ name from ref_seismes.txt')
 while (param['dossier'] in dict_seis.keys()) == False:
     param['dossier'] = input('dossier au format YYYYMMDDHHMMSS: ')
 print('')
@@ -22,7 +22,7 @@ print('')
 param['R_Earth'] = float(6400)
 
 param['dist_min'] = None
-print('Expected value: integer or float between 0 and 100 km')
+print('   Expected value: integer or float between 0 and 100 km')
 while ((type(param['dist_min']) is float) == False
        or param['dist_min'] < 0
        or param['dist_min'] >= 100):
@@ -30,7 +30,7 @@ while ((type(param['dist_min']) is float) == False
 print('')
 
 param['dist_max'] = None
-print('Expected value: integer or float between dist_min(previous value) and 100 km')
+print('   Expected value: integer or float between dist_min(previous value) and 100 km')
 while ((type(param['dist_max']) is float) == False
        or param['dist_max'] <= param['dist_min']
        or param['dist_max'] > 100):
@@ -40,8 +40,8 @@ print('')
 param['couronne'] = str(int(param['dist_min'])) + '-' + str(int(param['dist_max']))
 
 param['freq_min'] = None
-print('Expected value: integer or float between 0.2 and 30 Hz')
-print('Suggested values: 0.2 / 0.5 / 1 / 2 / 4 / 8 / 16 Hz')
+print('   Expected value: integer or float between 0.2 and 30 Hz')
+print('   Suggested values: 0.2 / 0.5 / 1 / 2 / 4 / 8 / 16 Hz')
 while ((type(param['freq_min']) is float) == False
        or param['freq_min'] < 0.2
        or param['freq_min'] >= 30):
@@ -49,8 +49,8 @@ while ((type(param['freq_min']) is float) == False
 print('')
 
 param['freq_max'] = None
-print('Expected value: integer or float between freq_min(previous value) and 30 Hz')
-print('Suggested values: 0.5 / 1 / 2 / 4 / 8 / 16 / 30 Hz')
+print('   Expected value: integer or float between freq_min(previous value) and 30 Hz')
+print('   Suggested values: 0.5 / 1 / 2 / 4 / 8 / 16 / 30 Hz')
 while ((type(param['freq_max']) is float) == False
        or param['freq_max'] <= param['freq_min']
        or param['freq_max'] > 30):
@@ -60,8 +60,8 @@ print('')
 param['band_freq'] = str(param['freq_min']) + '-' + str(param['freq_max'])
 
 param['composante'] = None
-print('Expected value: > 3comp <, > hori < or > vert <')
-print('Other values are not accepted')
+print('   Expected value: > 3comp <, > hori < or > vert <')
+print('   Other values are not accepted')
 while (param['composante'] != '3comp'
        and param['composante'] != 'hori'
        and param['composante'] != 'vert'):
@@ -69,17 +69,17 @@ while (param['composante'] != '3comp'
 print('')
 
 param['ratioSP'] = None
-print('Comparison between maximum amplitude of S and P waves')
-print('Expected value: strictly positive integer or float')
-print('To have higher P waves, ratio must be < 1')
+print('   Comparison between maximum amplitude of S and P waves')
+print('   Expected value: strictly positive integer or float')
+print('   To have higher P waves, ratio must be < 1')
 while ((type(param['ratioSP']) is float) == False
        or param['ratioSP'] <= 0):
     param['ratioSP'] = float(input('ratio S/P (> 1): '))
 print('')
 
 param['smooth'] = None
-print('Expected value: positive integer or float')
-print('If the value is smaller than delay between two snapshots,')
+print('   Expected value: positive integer or float')
+print('   If the value is smaller than delay between two snapshots,')
 print('   the value will be adapted to this delay')
 while ((type(param['smooth']) is float) == False
        or param['smooth'] < 0):
@@ -87,17 +87,17 @@ while ((type(param['smooth']) is float) == False
 print('')
 
 param['impulse'] = None
-print('Expected value: strictly positive integer or float')
-print('Too small values are non sense')
+print('   Expected value: strictly positive integer or float')
+print('   Too small values are non sense')
 while ((type(param['impulse']) is float) == False
        or param['impulse'] <= 0):
     param['impulse'] = float(input('longueur fenetre impulse (s): '))
 print('')
 
 param['angle_min'] = None
-print('Expected value: positive integer of float between up to 180 deg')
-print('0 deg is North, counting clockwise')
-print('The other angle, by point(hypocenter) reflection, will be also considered')
+print('   Expected value: positive integer of float between up to 180 deg')
+print('   0 deg is North, counting clockwise')
+print('   The other angle, by point(hypocenter) reflection, will be also considered')
 while ((type(param['angle_min']) is float) == False
        or param['angle_min'] < 0
        or param['angle_min'] >= 180):
@@ -105,9 +105,9 @@ while ((type(param['angle_min']) is float) == False
 print('')
 
 param['angle_max'] = None
-print('Expected value: positive integer or float between angle_min(previous value) and 180 deg')
-print('0 deg is North, counting clockwise')
-print('The other angle, by point(hypocenter) reflection, will be also considered')
+print('   Expected value: positive integer or float between angle_min(previous value) and 180 deg')
+print('   0 deg is North, counting clockwise')
+print('   The other angle, by point(hypocenter) reflection, will be also considered')
 while ((type(param['angle_max']) is float) == False
        or param['angle_max'] <= param['angle_min']
        or param['angle_max'] > 180):
@@ -117,15 +117,15 @@ print('')
 param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']))
 
 param['vP'] = None
-print('Expected value: strictly positive integer or float in km.s-1')
+print('   Expected value: strictly positive integer or float in km.s-1')
 while ((type(param['vP']) is float) == False
        or param['vP'] <= 0):
     param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
 print('')
 
 param['vS'] = None
-print('Expected value: strictly positive integer of float in km.s-1')
-print('Of course P-waves are faster so value should be smaller than vP(previous value)')
+print('   Expected value: strictly positive integer of float in km.s-1')
+print('   Of course P-waves are faster so value should be smaller than vP(previous value)')
 while ((type(param['vS']) is float) == False
        or param['vS'] <= 0
        or param['vS'] >= param['vP']):
@@ -133,18 +133,18 @@ while ((type(param['vS']) is float) == False
 print('')
 
 param['ondes_select'] = None
-print('Expected value: > P < or > S <')
-print('Other values are not accepted')
+print('   Expected value: > P < or > S <')
+print('   Other values are not accepted')
 while (param['ondes_select'] != 'P'
        and param['ondes_select'] != 'S'):
     param['ondes_select'] = input('hypothese de bp [P/S]: ')
 print('')
 
 param['strike'] = None
-print('Strike direction of the fault')
-print('Expected value: positive integer or float up to 360 deg')
-print('0 deg is North, counting clockwise')
-print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/04/16 Kumamoto EQ')
+print('   Strike direction of the fault')
+print('   Expected value: positive integer or float up to 360 deg')
+print('   0 deg is North, counting clockwise')
+print('   Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/04/16 Kumamoto EQ')
 while ((type(param['strike']) is float) == False
        or param['strike'] < 0
        or param['strike'] >= 360):
@@ -152,10 +152,10 @@ while ((type(param['strike']) is float) == False
 print('')
 
 param['dip'] = None
-print('Dip direction of the fault')
-print('Expected value: positive integer or float up to 90 deg')
-print('0 deg is horizontal fault plane, 90 deg is vertical one')
-print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/;04/16 Kumamoto EQ')
+print('   Dip direction of the fault')
+print('   Expected value: positive integer or float up to 90 deg')
+print('   0 deg is horizontal fault plane, 90 deg is vertical one')
+print('   Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/;04/16 Kumamoto EQ')
 while ((type(param['dip']) is float) == False
        or param['dip'] <= 0
        or param['dip'] > 90):
@@ -163,20 +163,20 @@ while ((type(param['dip']) is float) == False
 print('')
 
 param['l_fault'] = None
-print('Length of the fault, that means in the direction of the strike')
-print('Width can be bigger than length, no restriction')
-print('Expected value: stricly positive integer or float in km')
-print('No matter the length, hypocenter is always at the center')
+print('   Length of the fault, that means in the direction of the strike')
+print('   Width can be bigger than length, no restriction')
+print('   Expected value: stricly positive integer or float in km')
+print('   No matter the length, hypocenter is always at the center')
 while ((type(param['l_fault']) is float) == False
        or param['l_fault'] <= 0):
     param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
 print('')
 
 param['w_fault'] = None
-print('Width of the fault, that means in the direction of the dip')
-print('Width can be bigger than length, no restriction')
-print('Expected value: stricly positive integer or float in km')
-print('No matter the width, hypocenter is always at the center')
+print('   Width of the fault, that means in the direction of the dip')
+print('   Width can be bigger than length, no restriction')
+print('   Expected value: stricly positive integer or float in km')
+print('   No matter the width, hypocenter is always at the center')
 print('   due to that, some points of the grid may be above the surface')
 while ((type(param['w_fault']) is float) == False
        or param['w_fault'] <= 0):
@@ -184,9 +184,9 @@ while ((type(param['w_fault']) is float) == False
 print('')
 
 param['pas_l'] = None
-print('Length of each subfault in the direction of the strike')
-print('Expected value: strictly positive integer of float in km')
-print('Should be smaller than l_fault to have at least few points')
+print('   Length of each subfault in the direction of the strike')
+print('   Expected value: strictly positive integer of float in km')
+print('   Should be smaller than l_fault to have at least few points')
 while ((type(param['pas_l']) is float) == False
        or param['pas_l'] <= 0
        or param['pas_l'] >= param['l_fault']):
@@ -194,9 +194,9 @@ while ((type(param['pas_l']) is float) == False
 print('')
 
 param['pas_w'] = None
-print('Width of each subfault in the direction of the dip')
-print('Expected value: strictly positive integer or float in km')
-print('Should be smaller than w_fault to have at least few points')
+print('   Width of each subfault in the direction of the dip')
+print('   Expected value: strictly positive integer or float in km')
+print('   Should be smaller than w_fault to have at least few points')
 while ((type(param['pas_w']) is float) == False
        or param['pas_w'] <= 0
        or param['pas_w'] >= param['w_fault']):
@@ -204,9 +204,9 @@ while ((type(param['pas_w']) is float) == False
 print('')
 
 param['samp_rate'] = None
-print('Number of snapshots per sec')
-print('Expected value: strictly positive integer or float below 100 (station sampling rate))')
-print('Suggested values are between 0.5 and 10')
+print('   Number of snapshots per sec')
+print('   Expected value: strictly positive integer or float below 100 (station sampling rate))')
+print('   Suggested values are between 0.5 and 10')
 while ((type(param['samp_rate']) is float) == False
        or param['samp_rate'] > 100
        or param['samp_rate'] <= 0):
@@ -214,11 +214,11 @@ while ((type(param['samp_rate']) is float) == False
 print('')
 
 param['length_t'] = None
-print('Period of back projection, from 5 seconds before the start of the rupture')
-print('Expected value: integer or float between 5 and 50 sec')
-print('Suggested values are between 10 and 30 sec')
-print('For Mw ~6~ 20 sec')
-print('For Mw ~7~ 30 sec')
+print('   Period of back projection, from 5 seconds before the start of the rupture')
+print('   Expected value: integer or float between 5 and 50 sec')
+print('   Suggested values are between 10 and 30 sec')
+print('   For Mw ~6~ 20 sec')
+print('   For Mw ~7~ 30 sec')
 while ((type(param['length_t']) is float) == False
        or param['length_t'] <= 5
        or param['length_t'] >= 50):
