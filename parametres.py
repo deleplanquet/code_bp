@@ -13,32 +13,33 @@ param = {}
 
 param['path_origin'] = path_origin
 
+print('')
 param['dossier'] = None
 print('   Enter EQ name from ref_seismes.txt')
 while (param['dossier'] in dict_seis.keys()) == False:
     param['dossier'] = input('dossier au format YYYYMMDDHHMMSS: ')
-print('')
 
 param['R_Earth'] = float(6400)
 
+print('')
 param['dist_min'] = None
 print('   Expected value: integer or float between 0 and 100 km')
 while ((type(param['dist_min']) is float) == False
        or param['dist_min'] < 0
        or param['dist_min'] >= 100):
     param['dist_min'] = float(input('distance min [0 -> 100]: '))
-print('')
 
+print('')
 param['dist_max'] = None
 print('   Expected value: integer or float between dist_min(previous value) and 100 km')
 while ((type(param['dist_max']) is float) == False
        or param['dist_max'] <= param['dist_min']
        or param['dist_max'] > 100):
     param['dist_max'] = float(input('distance max [dist_min -> 100]: '))
-print('')
 
 param['couronne'] = str(int(param['dist_min'])) + '-' + str(int(param['dist_max']))
 
+print('')
 param['freq_min'] = None
 print('   Expected value: integer or float between 0.2 and 30 Hz')
 print('   Suggested values: 0.2 / 0.5 / 1 / 2 / 4 / 8 / 16 Hz')
@@ -46,8 +47,8 @@ while ((type(param['freq_min']) is float) == False
        or param['freq_min'] < 0.2
        or param['freq_min'] >= 30):
     param['freq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
-print('')
 
+print('')
 param['freq_max'] = None
 print('   Expected value: integer or float between freq_min(previous value) and 30 Hz')
 print('   Suggested values: 0.5 / 1 / 2 / 4 / 8 / 16 / 30 Hz')
@@ -55,10 +56,10 @@ while ((type(param['freq_max']) is float) == False
        or param['freq_max'] <= param['freq_min']
        or param['freq_max'] > 30):
     param['freq_max'] = float(input('frequence max [05/1/2/4/8/16/30] (> freq_min): '))
-print('')
 
 param['band_freq'] = str(param['freq_min']) + '-' + str(param['freq_max'])
 
+print('')
 param['composante'] = None
 print('   Expected value: > 3comp <, > hori < or > vert <')
 print('   Other values are not accepted')
@@ -66,8 +67,8 @@ while (param['composante'] != '3comp'
        and param['composante'] != 'hori'
        and param['composante'] != 'vert'):
     param['composante'] = input('composante [3comp/hori/vert]: ')
-print('')
 
+print('')
 param['ratioSP'] = None
 print('   Comparison between maximum amplitude of S and P waves')
 print('   Expected value: strictly positive integer or float')
@@ -75,8 +76,8 @@ print('   To have higher P waves, ratio must be < 1')
 while ((type(param['ratioSP']) is float) == False
        or param['ratioSP'] <= 0):
     param['ratioSP'] = float(input('ratio S/P (> 1): '))
-print('')
 
+print('')
 param['smooth'] = None
 print('   Expected value: positive integer or float')
 print('   If the value is smaller than delay between two snapshots,')
@@ -84,16 +85,16 @@ print('   the value will be adapted to this delay')
 while ((type(param['smooth']) is float) == False
        or param['smooth'] < 0):
     param['smooth'] = float(input('longueur fenetre smooth (s): '))
-print('')
 
+print('')
 param['impulse'] = None
 print('   Expected value: strictly positive integer or float')
 print('   Too small values are non sense')
 while ((type(param['impulse']) is float) == False
        or param['impulse'] <= 0):
     param['impulse'] = float(input('longueur fenetre impulse (s): '))
-print('')
 
+print('')
 param['angle_min'] = None
 print('   Expected value: positive integer of float between up to 180 deg')
 print('   0 deg is North, counting clockwise')
@@ -102,8 +103,8 @@ while ((type(param['angle_min']) is float) == False
        or param['angle_min'] < 0
        or param['angle_min'] >= 180):
     param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
-print('')
 
+print('')
 param['angle_max'] = None
 print('   Expected value: positive integer or float between angle_min(previous value) and 180 deg')
 print('   0 deg is North, counting clockwise')
@@ -112,17 +113,17 @@ while ((type(param['angle_max']) is float) == False
        or param['angle_max'] <= param['angle_min']
        or param['angle_max'] > 180):
     param['angle_max'] = float(input('angle_max (sens horaire) [angle_min -> 180]: '))
-print('')
 
 param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']))
 
+print('')
 param['vP'] = None
 print('   Expected value: strictly positive integer or float in km.s-1')
 while ((type(param['vP']) is float) == False
        or param['vP'] <= 0):
     param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
-print('')
 
+print('')
 param['vS'] = None
 print('   Expected value: strictly positive integer of float in km.s-1')
 print('   Of course P-waves are faster so value should be smaller than vP(previous value)')
@@ -130,16 +131,16 @@ while ((type(param['vS']) is float) == False
        or param['vS'] <= 0
        or param['vS'] >= param['vP']):
     param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
-print('')
 
+print('')
 param['ondes_select'] = None
 print('   Expected value: > P < or > S <')
 print('   Other values are not accepted')
 while (param['ondes_select'] != 'P'
        and param['ondes_select'] != 'S'):
     param['ondes_select'] = input('hypothese de bp [P/S]: ')
-print('')
 
+print('')
 param['strike'] = None
 print('   Strike direction of the fault')
 print('   Expected value: positive integer or float up to 360 deg')
@@ -149,8 +150,8 @@ while ((type(param['strike']) is float) == False
        or param['strike'] < 0
        or param['strike'] >= 360):
     param['strike'] = float(input('strike (224?): '))
-print('')
 
+print('')
 param['dip'] = None
 print('   Dip direction of the fault')
 print('   Expected value: positive integer or float up to 90 deg')
@@ -160,8 +161,8 @@ while ((type(param['dip']) is float) == False
        or param['dip'] <= 0
        or param['dip'] > 90):
     param['dip'] = float(input('dip (65?): '))
-print('')
 
+print('')
 param['l_fault'] = None
 print('   Length of the fault, that means in the direction of the strike')
 print('   Width can be bigger than length, no restriction')
@@ -170,8 +171,8 @@ print('   No matter the length, hypocenter is always at the center')
 while ((type(param['l_fault']) is float) == False
        or param['l_fault'] <= 0):
     param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
-print('')
 
+print('')
 param['w_fault'] = None
 print('   Width of the fault, that means in the direction of the dip')
 print('   Width can be bigger than length, no restriction')
@@ -181,8 +182,8 @@ print('   due to that, some points of the grid may be above the surface')
 while ((type(param['w_fault']) is float) == False
        or param['w_fault'] <= 0):
     param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
-print('')
 
+print('')
 param['pas_l'] = None
 print('   Length of each subfault in the direction of the strike')
 print('   Expected value: strictly positive integer of float in km')
@@ -191,8 +192,8 @@ while ((type(param['pas_l']) is float) == False
        or param['pas_l'] <= 0
        or param['pas_l'] >= param['l_fault']):
     param['pas_l'] = float(input('pas longueur fault (km): '))
-print('')
 
+print('')
 param['pas_w'] = None
 print('   Width of each subfault in the direction of the dip')
 print('   Expected value: strictly positive integer or float in km')
@@ -201,8 +202,8 @@ while ((type(param['pas_w']) is float) == False
        or param['pas_w'] <= 0
        or param['pas_w'] >= param['w_fault']):
     param['pas_w'] = float(input('pas largeur fault (km): '))
-print('')
 
+print('')
 param['samp_rate'] = None
 print('   Number of snapshots per sec')
 print('   Expected value: strictly positive integer or float below 100 (station sampling rate))')
@@ -211,8 +212,8 @@ while ((type(param['samp_rate']) is float) == False
        or param['samp_rate'] > 100
        or param['samp_rate'] <= 0):
     param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
-print('')
 
+print('')
 param['length_t'] = None
 print('   Period of back projection, from 5 seconds before the start of the rupture')
 print('   Expected value: integer or float between 5 and 50 sec')
@@ -223,7 +224,6 @@ while ((type(param['length_t']) is float) == False
        or param['length_t'] <= 5
        or param['length_t'] >= 50):
     param['length_t'] = float(input('duree de la bp (> 5 sec): '))
-print('')
 
 path = param['path_origin'] + '/Kumamoto/historique_parametres'
 path2 = param['path_origin'] + '/Kumamoto/' + param['dossier'] + '/' + param['dossier'] + '_results/' + param['dossier'] + '_vel_' + param['couronne'] + 'km_' + param['band_freq'] + 'Hz'
