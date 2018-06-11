@@ -16,6 +16,7 @@ dossier = param['dossier']
 couronne = param['couronne']
 frq = param['band_freq']
 dt_type = param['composante']
+rSP = param['ratioSP']
 
 path = path_origin + '/Kumamoto/' + dossier
 path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth'
@@ -46,12 +47,15 @@ for station in lst_fch:
     trP = stP[0]
     trS = stS[0]
     rapport_PS = math.log10(trS.max()/trP.max())
-    if rapport_PS > math.log10(3):
+    print(trS.max()/trP.max())
+    if rapport_PS > math.log10(rSP):
+        print('   S')
         st = read(station)
         os.chdir(path_results_S)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(station, format = 'SAC')
-    elif rapport_PS < math.log10(1./3):
+    if rapport_PS < math.log10(1./rSP):
+        print('   P')
         st = read(station)
         os.chdir(path_results_P)
         tr = Trace(st[0].data, st[0].stats)
