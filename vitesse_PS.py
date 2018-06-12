@@ -100,7 +100,13 @@ path_data = (path + '/'
              + dt_type
              + '_env_smooth')
 
-path_results = path
+path_results = (path + '/'
+                + dossier
+                + '_results/'
+                + dossier
+                + '_vel_'
+                + couronne + 'km_'
+                + frq + 'Hz'
 
 list_sta = os.listdir(path_data)
 
