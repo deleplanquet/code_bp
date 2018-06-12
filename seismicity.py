@@ -5,6 +5,9 @@ from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import numpy as np
 
+print('')
+print('      python3 seismicity.py')
+
 path_origin = os.getcwd()[:-6]
 path = path_origin + '/Kumamoto'
 
