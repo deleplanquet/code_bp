@@ -109,7 +109,7 @@ path_results = (path + '/'
                 + dossier
                 + '_vel_'
                 + couronne + 'km_'
-                + frq + 'Hz'
+                + frq + 'Hz')
 
 list_sta = os.listdir(path_data)
 
