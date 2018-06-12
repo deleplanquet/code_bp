@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 import sys
 import os
 
+print('')
+print('      python3 plot_traces.py')
+
 path_origin = os.getcwd()[:-6]              #
 os.chdir(path_origin + '/Kumamoto')         #
 with open('parametres_bin', 'rb') as mfch:  #
@@ -88,7 +91,7 @@ for fich in lst_fch_smt:
         lst_tmp.append(fich)
 for fich in lst_tmp:
     lst_fch_smt.remove(fich)
-    print(fich)
+    #print(fich)
 
 lst_tmp = []
 lst_fch_env = os.listdir(path_env)
@@ -98,7 +101,7 @@ for fich in lst_fch_env:
         lst_tmp.append(fich)
 for fich in lst_tmp:
     lst_fch_env.remove(fich)
-    print(fich)
+    #print(fich)
 
 lst_tmp = []
 lst_fch_flt = os.listdir(path_flt)
@@ -108,7 +111,7 @@ for fich in lst_fch_flt:
         lst_tmp.append(fich)
 for fich in lst_tmp:
     lst_fch_flt.remove(fich)
-    print(fich)
+    #print(fich)
 
 lst_tmp = []
 lst_fch_vel = os.listdir(path_vel)
@@ -118,7 +121,7 @@ for fich in lst_fch_vel:
         lst_tmp.append(fich)
 for fich in lst_tmp:
     lst_fch_vel.remove(fich)
-    print(fich)
+    #print(fich)
 
 lst_tmp = []
 lst_fch_acc = os.listdir(path_acc)
@@ -128,7 +131,7 @@ for fich in lst_fch_acc:
         lst_tmp.append(fich)
 for fich in lst_tmp:
     lst_fch_acc.remove(fich)
-    print(fich)
+    #print(fich)
 
 print(len(lst_fch_slt),
       len(lst_fch_smt),
