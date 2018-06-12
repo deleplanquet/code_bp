@@ -100,6 +100,9 @@ def dist_azim(ptA, ptB, R):
     else:
         return R*dist_rad, 360 - r2d(angle_brut)
 
+print('')
+print('      python3 tr_fct_az.py')
+
 path_origin = os.getcwd()[:-6]
 
 os.chdir(path_origin + '/Kumamoto')         #
@@ -197,7 +200,7 @@ ax3.set_ylim([0, 380])
 
 os.chdir(path_data)
 for fichier in lst_fch:
-    print(fichier)
+    #print(fichier)
     st = read(fichier)
     hypo = [R_Earth - st[0].stats.sac.evdp,
             st[0].stats.sac.evla,
@@ -208,7 +211,7 @@ for fichier in lst_fch:
 
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
     dst, azm = dist_azim(hypo[1:], pos_sta[1:], R_Earth)
-    print(dst, azm)
+    #print(dst, azm)
 
     if dst > 50 and dst < 80:
         clr = 'red'
