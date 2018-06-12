@@ -219,7 +219,7 @@ if 1./param['samp_rate'] > param['smooth']:
     print('Input value for smooth window length was: ' + str(param['smooth']) + ' s')
     print('However,  the delay between two bp snapshots is higher: ' + str(1./param['samp_rate']) + ' s')
     param['smooth'] = 1./param['samp_rate']
-    print('Therefore, the smooth window length is defined again by the following value: ' str(param['smooth']) + ' s')
+    print('Therefore, the smooth window length is defined again by the following value: ' + str(param['smooth']) + ' s')
     print('####################################################################')
 
 print('')
