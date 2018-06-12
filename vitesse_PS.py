@@ -57,6 +57,9 @@ def norm1(vect):
         norm_v = norm_v + a*a
     return [50*a/pow(norm_v, 0.5) for a in vect]
 
+print('')
+print('      python3 vitesse_PS.py')
+
 path_origin = os.getcwd()[:-6]
 os.chdir(path_origin + '/Kumamoto')
 with open('parametres_bin', 'rb') as my_fch:
