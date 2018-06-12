@@ -6,6 +6,9 @@ import math
 import numpy as np
 import pickle
 
+print('')
+print('      python3 3components.py')
+
 path_origin = os.getcwd()[:-6]
 os.chdir(path_origin + '/Kumamoto')
 with open('parametres_bin', 'rb') as my_fch:
