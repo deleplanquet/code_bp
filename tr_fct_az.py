@@ -160,7 +160,17 @@ lst_fch = os.listdir(path_data)
 
 
 
-
+fig, ax = plt.subplots(1, 1)
+ax.set_xlabel('Time (s)')
+ax.set_ylabel('Azimuth (deg)')
+ax.set_title(dossier[:4] + '/'
+             + dossier[4:6] + '/'
+             + dossier[6:8] + ' '
+             + dossier[8:10] + ':'
+             + dossier[10:12] + ' JST   '
+             + '0 < Hyp. Dist. < 100 km')
+ax.set_xlim([-10, 30])
+ax.set_ylim([0, 380])
 
 fig1, ax1 = plt.subplots(1, 1)
 ax1.set_xlabel('Time (s)')
@@ -220,6 +230,21 @@ for fichier in lst_fch:
     else:
         clr = 'white'
 
+    ax.fill_between([a - st[0].stats.sac.t0 for a in t],
+                    azm,
+                    [10*a + azm for a in norm1(st[0].data)],
+                    linewidth = 0.2,
+                    color = 'black',
+                    alpha = 0.2)
+    ax.scatter(0,
+               azm,
+               3,
+               color = 'darkorange')
+    ax.text(28,
+            azm + 1,
+            st[0].stats.station,
+            fontsize = 6,
+            ha = 'right')
     if dst <= 50:
         #ax.plot([a - st[0].stats.sac.t0 for a in t], [5*a + azim for a in norm1(st[0].data)], linewidth = 0.2, color = clr)
         ax1.fill_between([a - st[0].stats.sac.t0 for a in t], azm, [10*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = 'black', alpha = 0.2)
@@ -243,6 +268,24 @@ for fichier in lst_fch:
         #ax3.scatter(st[0].stats.sac.user1 - dst/3.4 + dst/5.8 - 5, azm, 3, color = 'red')
 
 os.chdir(path_results)
+fig.savefig(dossier
+            + '_vel_'
+            + couronne + 'km_'
+            + frq + 'Hz_'
+            + dt_type
+            + '_env_smooth_'
+            + hyp_bp + '_'
+            + azim + '_deg_'
+            + 'envelopes_fct_azimuth.png')
+fig.savefig(dossier
+            + '_vel_'
+            + couronne + 'km_'
+            + frq + 'Hz_'
+            + dt_type
+            + '_env_smooth_'
+            + hyp_bp + '_'
+            + azim + '_deg_'
+            + 'envelopes_fct_azimuth.pdf')
 fig1.savefig(dossier
              + '_vel_'
              + couronne + 'km_'
