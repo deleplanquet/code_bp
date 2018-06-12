@@ -6,6 +6,9 @@ from obspy import Trace
 import numpy as np
 import pickle
 
+print('')
+print('      python3 select_stat_env.py')
+
 path_origin = os.getcwd()[:-6]
 os.chdir(path_origin + '/Kumamoto')
 with open('parametres_bin', 'rb') as my_fch:
@@ -47,15 +50,15 @@ for station in lst_fch:
     trP = stP[0]
     trS = stS[0]
     rapport_PS = math.log10(trS.max()/trP.max())
-    print(trS.max()/trP.max())
+    #print(trS.max()/trP.max())
     if rapport_PS > math.log10(rSP):
-        print('   S')
+        #print('   S')
         st = read(station)
         os.chdir(path_results_S)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(station, format = 'SAC')
     if rapport_PS < math.log10(1./rSP):
-        print('   P')
+        #print('   P')
         st = read(station)
         os.chdir(path_results_P)
         tr = Trace(st[0].data, st[0].stats)
