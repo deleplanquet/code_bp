@@ -25,6 +25,9 @@ def dist(vect1, vect2):
     x2, y2, z2 = geo2cart(vect2)
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
+print('')
+print('      python3 select_couronne.py')
+
 path_origin = os.getcwd()[:-6]
 os.chdir(path_origin + '/Kumamoto')
 with open('parametres_bin', 'rb') as my_fch:
@@ -67,11 +70,11 @@ for station in list_stat:
     os.chdir(path_data)
     st = read(station)
     pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
-    print(station, dist(hypo, pos_sta))
+    #print(station, dist(hypo, pos_sta))
     if dist(hypo, pos_sta) < dist_max and dist(hypo, pos_sta) > dist_min:
         os.chdir(path_results)
         st[0].stats.sac.dist = dist(hypo, pos_sta)
-        print('selection', st[0].stats.sac.dist)
+        #print('selection', st[0].stats.sac.dist)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(station, format='SAC')
 
