@@ -38,8 +38,15 @@ m = Basemap(projection = 'merc',
             urcrnrlat = n_bord,
             resolution='f')
 
-period_lst = ['7th - 24th', '7th - 14th', '14th - 15th', '15th - 16th', '16th - 24th']
-ms_lst = ['20160414212600', '20160415000300', '20160416012500']
+period_lst = ['7th - 24th',
+              '7th - 14th',
+              '14th - 15th',
+              '15th - 16th',
+              '16th - 24th']
+
+ms_lst = ['20160414212600',
+          '20160415000300',
+          '20160416012500']
 
 for period in range(5):
     fig, ax = plt.subplots(1, 1)
