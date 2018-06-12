@@ -5,6 +5,9 @@ import os
 import sys
 import pickle
 
+print('')
+print('      python3 filt_vel.py')
+
 path_origin = os.getcwd()[:-6]
 os.chdir(path_origin + '/Kumamoto')
 with open('parametres_bin', 'rb') as my_fch:
