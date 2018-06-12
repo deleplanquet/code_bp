@@ -84,8 +84,22 @@ mse_seis = int(dict_seis[dossier]['nFnet'][14:16])
 
 t_origin_rupt = UTCDateTime(yea_seis, mon_seis, day_seis, hou_seis, min_seis, sec_seis, mse_seis)
 
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth'
+path = (path_origin
+        + '/Kumamoto/'
+        + dossier)
+
+path_data = (path + '/'
+             + dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz/'
+             + dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz_'
+             + dt_type
+             + '_env_smooth')
+
 path_results = path
 
 list_sta = os.listdir(path_data)
@@ -129,4 +143,11 @@ ax.set_xlim([0, 40])
 ax.set_ylim([0, 110])
 ax.xaxis.set_visible(False)
 ax.yaxis.set_visible(False)
-fig.savefig('env_fct_dist_' + dossier + '.pdf')
+fig.savefig('env_fct_dist_'
+            + dossier
+            + '_env_'
+            + couronne + 'km_'
+            + frq + 'Hz_'
+            + dt_type
+            + '_env_smooth'
+            + '.pdf')
