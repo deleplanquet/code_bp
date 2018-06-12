@@ -24,6 +24,9 @@ def dist_azim(ptA, ptB, R):
     else:
         return R*dist_rad, 360 - r2d(angle_brut)
 
+print('')
+print('      python3 select_stat_angle.py')
+
 path_origin = os.getcwd()[:-6]
 os.chdir(path_origin + '/Kumamoto')
 with open('parametres_bin', 'rb') as my_fch:
@@ -60,18 +63,18 @@ lon_hyp = dict_seis[dossier]['lon']
 dep_hyp = dict_seis[dossier]['dep']
 
 for station in lst_fch:
-    print('     ', station)
+    #print('     ', station)
     os.chdir(path_data)
     st = read(station)
     d_btw_st, az_btw_st = dist_azim([lat_hyp, lon_hyp], [st[0].stats.sac.stla, st[0].stats.sac.stlo], R_Earth)
-    print('        ', d_btw_st, az_btw_st)
+    #print('        ', d_btw_st, az_btw_st)
     if az_btw_st > azim_min and az_btw_st < azim_max:
-        print('           ', 'ok')
+        #print('           ', 'ok')
         os.chdir(path_results)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(station, format = 'SAC')
     elif az_btw_st > (azim_min + 180) and az_btw_st < (azim_max + 180):
-        print('           ', 'ok')
+        #print('           ', 'ok')
         os.chdir(path_results)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(station, format = 'SAC')
