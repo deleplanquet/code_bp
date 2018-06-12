@@ -213,6 +213,15 @@ while ((type(param['samp_rate']) is float) == False
        or param['samp_rate'] <= 0):
     param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
 
+if 1./param['samp_rate'] > param['smooth']:
+    print('')
+    print('####################################################################')
+    print('Input value for smooth window length was: ' + str(param['smooth']) + ' s')
+    print('However,  the delay between two bp snapshots is higher: ' + str(1./param['samp_rate']) + ' s')
+    param['smooth'] = 1./param['samp_rate']
+    print('Therefore, the smooth window length is defined again by the following value: ' str(param['smooth']) + ' s')
+    print('####################################################################')
+
 print('')
 param['length_t'] = None
 print('   Period of back projection, from 5 seconds before the start of the rupture')
