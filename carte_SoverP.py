@@ -19,6 +19,9 @@ import pickle
 def d2r(angle):
     return angle*math.pi/180
 
+print('')
+print('      python3 carte_SoverP.py')
+
 path_origin = os.getcwd()[:-6]
 os.chdir(path_origin + '/Kumamoto')
 with open('parametres_bin', 'rb') as mfch:
