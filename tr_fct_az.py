@@ -241,16 +241,58 @@ for fichier in lst_fch:
 
 os.chdir(path_results)
 fig1.savefig(dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz_'
+             + dt_type
+             + '_env_smooth_'
+             + hyp_bp + '_'
+             + azim + '_deg_'
              + 'envelopes_0-50km_fct_azimuth.pdf')
 fig1.savefig(dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz_'
+             + dt_type
+             + '_env_smooth_'
+             + hyp_bp + '_'
+             + azim + '_deg_'
              + 'envelopes_0-50km_fct_azimuth.png')
 fig2.savefig(dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz_'
+             + dt_type
+             + '_env_smooth_'
+             + hyp_bp + '_'
+             + azim + '_deg_'
              + 'envelopes_50-80km_fct_azimuth.pdf')
 fig2.savefig(dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz_'
+             + dt_type
+             + '_env_smooth_'
+             + hyp_bp + '_'
+             + azim + '_deg_'
              + 'envelopes_50-80km_fct_azimuth.png')
 fig3.savefig(dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz_'
+             + dt_type
+             + '_env_smooth_'
+             + hyp_bp + '_'
+             + azim + '_deg_'
              + 'envelopes_80-100km_fct_azimuth.pdf')
 fig3.savefig(dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz_'
+             + dt_type
+             + '_env_smooth_'
+             + hyp_bp + '_'
+             + azim + '_deg_'
              + 'envelopes_80-100km_fct_azimuth.png')
 
         #if dist(hypo, pos_sta) > 20 and dist(hypo, pos_sta) < 80:
