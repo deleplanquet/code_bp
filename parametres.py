@@ -225,10 +225,22 @@ while ((type(param['length_t']) is float) == False
        or param['length_t'] >= 50):
     param['length_t'] = float(input('duree de la bp (> 5 sec): '))
 
-path = param['path_origin'] + '/Kumamoto/historique_parametres'
-path2 = param['path_origin'] + '/Kumamoto/' + param['dossier'] + '/' + param['dossier'] + '_results/' + param['dossier'] + '_vel_' + param['couronne'] + 'km_' + param['band_freq'] + 'Hz'
+path = (param['path_origin']
+        + '/Kumamoto/historique_parametres')
 
-lst_pth = [param['path_origin'] + '/Kumamoto', path, path2]
+path2 = (param['path_origin']
+         + '/Kumamoto/'
+         + param['dossier'] + '/'
+         + param['dossier']
+         + '_results/'
+         + param['dossier']
+         + '_vel_'
+         + param['couronne'] + 'km_'
+         + param['band_freq'] + 'Hz')
+
+lst_pth = [param['path_origin'] + '/Kumamoto',
+           path,
+           path2]
 
 if os.path.isdir(path) == False:
     os.makedirs(path)
@@ -301,3 +313,26 @@ for ppth in lst_pth:
         my_ext.write('   pas direction dip: ' + str(param['pas_w']) + ' km\n')
         my_ext.write('   echantillonage bp: ' + str(param['samp_rate']) + ' im/s\n')
         my_ext.write('         duree de bp: ' + str(param['length_t']) + ' s\n')
+        
+print('')
+print('')
+print('      You have defined the following parameters:')
+print('   EQ: ' + param['dossier'])
+print('   Hyp. Dist.: ' + param['couronne'] + ' km')
+print('   Freq. Band: ' + param['band_freq'] + ' Hz')
+print('   Composante: ' + param['composante'])
+print('   S/P ratio: ' + param['ratioSP'])
+print('   Smooth window: ' + param['smooth'] + ' s')
+print('   Impulse window: ' + param['impulse'] + ' s')
+print('   Azimuth: ' + param['angle'] + ' deg')
+print('   P vel.: ' + param['vP'] + ' km.s-1')
+print('   S vel.: ' + param['vS'] + ' km.s-1')
+print('   Used waves: ' + param['ondes_select'])
+print('   Grid strike: ' + param['strike'] + ' deg')
+print('   Grid dip: ' + param['dip'] + ' deg')
+print('   Grid length: ' + param['l_fault'] + ' km')
+print('   Grid width: ' + param['w_fault'] + ' km')
+print('   Reso. length: ' + param['pas_l'] + ' km')
+print('   Reso. width: ' + param['pas_w'] + ' km')
+print('   Nbre bp snapshots: ' + param['samp_rate'] + ' s-1')
+print('   Bp duration: ' + param['length_t'] + ' s')
