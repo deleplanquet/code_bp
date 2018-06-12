@@ -169,7 +169,7 @@ ax.set_title(dossier[:4] + '/'
              + dossier[8:10] + ':'
              + dossier[10:12] + ' JST   '
              + '0 < Hyp. Dist. < 100 km')
-ax.set_xlim([-10, 30])
+ax.set_xlim([-2, 13])
 ax.set_ylim([0, 380])
 
 fig1, ax1 = plt.subplots(1, 1)
@@ -240,11 +240,11 @@ for fichier in lst_fch:
                azm,
                3,
                color = 'darkorange')
-    ax.text(28,
-            azm + 1,
-            st[0].stats.station,
-            fontsize = 6,
-            ha = 'right')
+    #ax.text(28,
+    #        azm + 1,
+    #        st[0].stats.station,
+    #        fontsize = 6,
+    #        ha = 'right')
     if dst <= 50:
         #ax.plot([a - st[0].stats.sac.t0 for a in t], [5*a + azim for a in norm1(st[0].data)], linewidth = 0.2, color = clr)
         ax1.fill_between([a - st[0].stats.sac.t0 for a in t], azm, [10*a + azm for a in norm1(st[0].data)], linewidth = 0.2, color = 'black', alpha = 0.2)
