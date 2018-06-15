@@ -44,7 +44,7 @@ param['freq_min'] = None
 print('   Expected value: integer or float between 0.2 and 30 Hz')
 print('   Suggested values: 0.2 / 0.5 / 1 / 2 / 4 / 8 / 16 Hz')
 while ((type(param['freq_min']) is float) == False
-       or param['freq_min'] < 0.2
+       or param['freq_min'] <= 0
        or param['freq_min'] >= 30):
     param['freq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
 
