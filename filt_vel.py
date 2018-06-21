@@ -20,10 +20,22 @@ fqmi = param['freq_min']
 fqma = param['freq_max']
 bdfrq = param['band_freq']
 
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_' + couronne + 'km'
+path = (path_origin
+        + '/Kumamoto/'
+        + dossier)
 
-pth_rslt = path_data + '_' + bdfrq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + bdfrq + 'Hz'
+path_data = (path + '/'
+             + dossier
+             + '_vel_'
+             + couronne + 'km')
+
+pth_rslt = (path_data + '_'
+            + bdfrq + 'Hz/'
+            + dossier
+            + '_vel_'
+            + couronne + 'km_'
+            + bdfrq + 'Hz')
+
 if os.path.isdir(pth_rslt) == False:
     os.makedirs(pth_rslt)
 
@@ -37,26 +49,55 @@ lst_fch_z.sort()
 
 for station in lst_fch_x:
     os.chdir(path_data)
+
     stx = read(station)
     sty = read(lst_fch_y[lst_fch_x.index(station)])
     stz = read(lst_fch_z[lst_fch_x.index(station)])
+
     stx.detrend(type = 'constant')
     sty.detrend(type = 'constant')
     stz.detrend(type = 'constant')
-    stx[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
-    sty[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
-    stz[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
-    tr_x = stx[0].filter('bandpass', freqmin = fqmi, freqmax = fqma, corners = 4, zerophase = False)
-    tr_y = sty[0].filter('bandpass', freqmin = fqmi, freqmax = fqma, corners = 4, zerophase = False)
-    tr_z = stz[0].filter('bandpass', freqmin = fqmi, freqmax = fqma, corners = 4, zerophase = False)
+
+    stx[0].taper(0.05,
+                 type = 'hann',
+                 max_length = None,
+                 side = 'both')
+    sty[0].taper(0.05,
+                 type = 'hann',
+                 max_length = None,
+                 side = 'both')
+    stz[0].taper(0.05,
+                 type = 'hann',
+                 max_length = None,
+                 side = 'both')
+
+    tr_x = stx[0].filter('bandpass',
+                         freqmin = fqmi,
+                         freqmax = fqma,
+                         corners = 4,
+                         zerophase = False)
+    tr_y = sty[0].filter('bandpass',
+                         freqmin = fqmi,
+                         freqmax = fqma,
+                         corners = 4,
+                         zerophase = False)
+    tr_z = stz[0].filter('bandpass',
+                         freqmin = fqmi,
+                         freqmax = fqma,
+                         corners = 4,
+                         zerophase = False)
+
     stx[0].stats.sac.a = stz[0].stats.sac.a
     stx[0].stats.sac.t0 = stz[0].stats.sac.t0
     sty[0].stats.sac.a = stz[0].stats.sac.a
     sty[0].stats.sac.t0 = stz[0].stats.sac.t0
 
-    tr_x = Trace(np.asarray(tr_x), stx[0].stats)
-    tr_y = Trace(np.asarray(tr_y), sty[0].stats)
-    tr_z = Trace(np.asarray(tr_z), stz[0].stats)
+    tr_x = Trace(np.asarray(tr_x),
+                 stx[0].stats)
+    tr_y = Trace(np.asarray(tr_y),
+                 sty[0].stats)
+    tr_z = Trace(np.asarray(tr_z),
+                 stz[0].stats)
 
     os.chdir(pth_rslt)
     tr_x.write(station[:-4] + '_' + bdfrq + 'Hz.sac', format = 'SAC')
