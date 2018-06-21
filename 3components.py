@@ -19,9 +19,22 @@ dossier = param['dossier']
 couronne = param['couronne']
 frq = param['band_freq']
 
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_' + couronne + 'km'
-pth_dt = path_data + '_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz'
+path = (path_origin
+        + '/Kumamoto/'
+        + dossier)
+
+path_data = (path + '/'
+             + dossier
+             + '_vel_'
+             + couronne + 'km')
+
+pth_dt = (path_data + '_'
+          + frq + 'Hz/'
+          + dossier
+          + '_vel_'
+          + couronne + 'km_'
+          + frq + 'Hz')
+
 pth_rslt = pth_dt + '_3comp'
 pth_rslt_h = pth_dt + '_hori'
 pth_rslt_v = pth_dt + '_vert'
