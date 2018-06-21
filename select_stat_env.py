@@ -21,8 +21,22 @@ frq = param['band_freq']
 dt_type = param['composante']
 rSP = param['ratioSP']
 
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth'
+path = (path_origin
+        + '/Kumamoto/'
+        + dossier)
+
+path_data = (path + '/'
+             + dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz/'
+             + dossier
+             + '_vel_'
+             + couronne + 'km_'
+             + frq + 'Hz_'
+             + dt_type
+             + '_env_smooth')
+
 path_results_P = path_data + '_P'
 path_results_S = path_data + '_S'
 
