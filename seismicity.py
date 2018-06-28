@@ -57,7 +57,7 @@ m = Basemap(projection = 'merc',
             llcrnrlat = s_bord,
             urcrnrlon = e_bord,
             urcrnrlat = n_bord,
-            resolution='f')
+            resolution = 'f')
 
 ms_lst = ['20160414212600',
           '20160415000300',
@@ -76,11 +76,11 @@ m.drawmapscale(w_bord + 0.55,
                zorder = 6)
 m.drawparallels(np.arange(0., 90, 1),
                 labels=[1, 1, 0, 0],
-                labelstyle = '+/-',
+                #labelstyle = '+/-',
                 linewidth = 0.01)
 m.drawmeridians(np.arange(0., 180, 1),
                 labels=[0, 0, 1, 1],
-                labelstyle = '+/-',
+                #labelstyle = '+/-',
                 linewidth = 0.01)
 
 x_bef = []
@@ -96,7 +96,6 @@ for eq in sorted(seism.keys(), reverse = True):
     day = seism[eq]['day']
     hou = seism[eq]['hou']
     mnn = seism[eq]['min']
-    per = None
     if lat < n_bord and lat > s_bord and lon < e_bord and lon > w_bord and seism[eq]['Mj'] > 3:
         x_epi, y_epi = m(lon, lat)
 
@@ -132,7 +131,7 @@ axa.scatter(x_aft,
             facecolors = 'none',
             zorder = 2,
             linewidth = 0.1,
-            label = 'JMA hypo. Mw 7.1 - 5days after')
+            label = 'JMA hypo. Mw 7.1 - 5 days after')
 
 os.chdir(path_sta)
 lst_sta = os.listdir(path_sta)
@@ -261,6 +260,18 @@ for i in range(len(xpref)):
              va = 'center',
              fontsize = 7)
 
+xc = [130.5, 131, 131, 130.5, 130.5]
+yc = [33, 33, 32.5, 32.5, 33]
+
+for i in range(len(xc) - 1):
+    xx1, yy1 = m(xc[i], yc[i])
+    xx2, yy2 = m(xc[i + 1], yc[i + 1])
+    axa.plot([xx1, xx2],
+             [yy1, yy2],
+             color = 'black',
+             linewidth = 0.5,
+             zorder = 3)
+
 #legend
 axa.legend(fontsize = 6,
            loc = 1)
@@ -270,3 +281,145 @@ axa.legend(fontsize = 6,
 #save figure
 os.chdir(path)
 figa.savefig('seismicite_article.pdf')
+
+
+
+m2 = Basemap(projection = 'merc',
+             llcrnrlon = 130.5,
+             llcrnrlat = 32.5,
+             urcrnrlon = 131,
+             urcrnrlat = 33,
+             resolution = 'f')
+
+fig2, ax2 = plt.subplots(1, 1)
+m2.drawcoastlines(linewidth = 0.1)
+m2.drawmapboundary(fill_color = '0.7')
+m2.fillcontinents(color = '0.9',
+                 lake_color = '0.7')
+m2.drawmapscale(130.9,
+                32.53,
+                lon_eq,
+                lat_eq,
+                20,
+                zorder = 6)
+m2.drawparallels(np.arange(0., 90, 0.2),
+                 labels = [1, 1, 0, 0],
+                 linewidth = 0.01)
+m2.drawmeridians(np.arange(0., 180, 0.2),
+                 labels = [0, 0, 1, 1],
+                 linewidth = 0.01)
+x2_bef = []
+y2_bef = []
+s2_bef = []
+x2_aft = []
+y2_aft = []
+s2_aft = []
+
+for eq in sorted(seism.keys(), reverse = True):
+    lat = seism[eq]['lat']
+    lon = seism[eq]['lon']
+    day = seism[eq]['day']
+    hou = seism[eq]['hou']
+    mnn = seism[eq]['min']
+    if lat < 33 and lat > 32.5 and lon < 131 and lon > 130.5 and seism[eq]['Mj'] > 3:
+        x_epi, y_epi = m2(lon, lat)
+
+        if ((day == 14 and ((hou == 21 and mnn > 26) or hou > 21))
+            or (day == 15)
+            or (day == 16 and (hou < 1 or (hou == 1 and mnn < 25)))):
+            x2_bef.append(x_epi)
+            y2_bef.append(y_epi)
+            s2_bef.append(seism[eq]['Mj']**2)
+
+        elif ((day == 16 and ((hou == 1 and mnn > 25) or hou > 1))
+            or (day > 16 and day < 21)
+            or (day == 21 and (hou < 1 or (hou == 1 and mnn < 25)))):
+            x2_aft.append(x_epi)
+            y2_aft.append(y_epi)
+            s2_aft.append(seism[eq]['Mj']**2)
+
+ax2.scatter(x2_bef,
+            y2_bef,
+            1*s2_bef,
+            marker = 'o',
+            edgecolors = 'dodgerblue',
+            facecolors = 'none',
+            zorder = 2,
+            linewidth = 0.1,
+            label = 'JMA hypo. Mw 6.1 - Mw 7.1')
+
+ax2.scatter(x2_aft,
+            y2_aft,
+            1*s2_aft,
+            marker = 'o',
+            edgecolors = 'black',
+            facecolors = 'none',
+            zorder = 2,
+            linewidth = 0.1,
+            label = 'JMA hypo. Mw 7.1 - 5 days after')
+
+#Kumamoto sequence
+for mnsh in ms_lst:
+    xx, yy = m2(ref_s[mnsh]['lon'],
+                ref_s[mnsh]['lat'])
+    angles = [ref_s[mnsh]['str1'],
+              ref_s[mnsh]['dip1'],
+              ref_s[mnsh]['rak1']]
+            
+    if mnsh == ms_lst[2]:
+        clr = 'white'
+        clr2 = 'orangered'
+        bx, by = m2(130.65,
+                    32.88)
+        bx2, by2 = m2(130.65,
+                      32.915)
+    else:
+        clr = '0.7'
+        clr2 = 'dodgerblue'
+        if ms_lst.index(mnsh) == 1:
+            bx, by = m2(130.86,
+                        32.64)
+            bx2, by2 = m2(130.86,
+                          32.675)
+        else:
+            bx, by = m2(130.92,
+                        32.74)
+            bx2, by2 = m2(130.92,
+                          32.775)
+
+    ax2.plot([bx, xx],
+             [by, yy],
+             color = 'black',
+             zorder = 3,
+             linewidth = 0.1)
+
+    ax2.scatter(xx,
+                yy,
+                5*ref_s[mnsh]['Mw']**2,
+                marker = '*',
+                edgecolors = 'black',
+                facecolors = clr,
+                zorder = 4,
+                linewidth = 0.3)
+
+    bb = beach(angles,
+               xy = (bx, by),
+               facecolor = clr2,
+               width = 7000,
+               linewidth = 0.1)
+    bb.set_zorder(4)
+    ax2.add_collection(bb)
+
+    ax2.text(bx2,
+             by2,
+             'Mw ' + str(ref_s[mnsh]['Mw']),
+             zorder = 5,
+             fontsize = 8,
+             ha = 'center',
+             va = 'center',
+             color = 'black')
+
+ax2.legend(fontsize = 6,
+           loc = 1)
+
+fig2.savefig('seismicite_article_zoom.pdf')
