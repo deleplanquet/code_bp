@@ -74,14 +74,14 @@ m.drawmapscale(w_bord + 0.55,
                lat_eq,
                100,
                zorder = 6)
-m.drawparallels(np.arange(0., 90, 1),
+m.drawparallels(np.arange(0., 90, 0.5),
                 labels=[1, 1, 0, 0],
                 #labelstyle = '+/-',
-                linewidth = 0.01)
-m.drawmeridians(np.arange(0., 180, 1),
+                linewidth = 0)
+m.drawmeridians(np.arange(0., 180, 0.5),
                 labels=[0, 0, 1, 1],
                 #labelstyle = '+/-',
-                linewidth = 0.01)
+                linewidth = 0)
 
 x_bef = []
 y_bef = []
@@ -302,10 +302,10 @@ m2.drawmapscale(130.9,
                 lat_eq,
                 20,
                 zorder = 6)
-m2.drawparallels(np.arange(0., 90, 0.2),
+m2.drawparallels(np.arange(0., 90, 0.1),
                  labels = [1, 1, 0, 0],
                  linewidth = 0.01)
-m2.drawmeridians(np.arange(0., 180, 0.2),
+m2.drawmeridians(np.arange(0., 180, 0.1),
                  labels = [0, 0, 1, 1],
                  linewidth = 0.01)
 x2_bef = []
