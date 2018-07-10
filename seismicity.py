@@ -77,11 +77,13 @@ m.drawmapscale(w_bord + 0.55,
 m.drawparallels(np.arange(0., 90, 0.5),
                 labels=[1, 1, 0, 0],
                 #labelstyle = '+/-',
-                linewidth = 0)
+                linewidth = 0,
+                fontsize = 8)
 m.drawmeridians(np.arange(0., 180, 0.5),
                 labels=[0, 0, 1, 1],
                 #labelstyle = '+/-',
-                linewidth = 0)
+                linewidth = 0,
+                fontsize = 8)
 
 x_bef = []
 y_bef = []
@@ -285,10 +287,10 @@ figa.savefig('seismicite_article.pdf')
 
 
 m2 = Basemap(projection = 'merc',
-             llcrnrlon = 130.5,
-             llcrnrlat = 32.5,
-             urcrnrlon = 131,
-             urcrnrlat = 33,
+             llcrnrlon = 130.501,
+             llcrnrlat = 32.501,
+             urcrnrlon = 130.999,
+             urcrnrlat = 32.999,
              resolution = 'f')
 
 fig2, ax2 = plt.subplots(1, 1)
@@ -304,10 +306,12 @@ m2.drawmapscale(130.9,
                 zorder = 6)
 m2.drawparallels(np.arange(0., 90, 0.1),
                  labels = [1, 1, 0, 0],
-                 linewidth = 0.01)
+                 linewidth = 0,
+                 fontsize = 8)
 m2.drawmeridians(np.arange(0., 180, 0.1),
                  labels = [0, 0, 1, 1],
-                 linewidth = 0.01)
+                 linewidth = 0,
+                 fontsize = 8)
 x2_bef = []
 y2_bef = []
 s2_bef = []
