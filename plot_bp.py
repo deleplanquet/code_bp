@@ -240,6 +240,9 @@ for i in range(length_t):
                              w_fault,
                              0,
                              l_fault))
+                   
+    cs = ax.contour(stack[:, 0, 0], stack[0, :, 0], stack[:, :, i].reshape((len(stack[0, :, 0]), len(stack[:, 0, 0]))), [0.9*stckmx], zorder = 10)
+    ax.clabel(cs, [0.9*stckmx], inline = True, fontsize = 10)
 
     ax.set_xlim(0, w_fault)
     ax.set_ylim(0, l_fault)
