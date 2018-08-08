@@ -241,8 +241,15 @@ for i in range(length_t):
                              0,
                              l_fault))
                    
-    cs = ax.contour(stack[:, 0, 0], stack[0, :, 0], stack[:, :, i].reshape((len(stack[0, :, 0]), len(stack[:, 0, 0]))), [0.9*stckmx], zorder = 10)
-    ax.clabel(cs, [0.9*stckmx], inline = True, fontsize = 10)
+    cs = ax.contour(np.arange(len(stack[0, :, 0]))/2,
+                    np.arange(len(stack[:, 0, 0]))/2,
+                    (stack[:, :, i]**2/stckmx**2).reshape((len(stack[:, 0, 0]), len(stack[0, :, 0]))),
+                    [0.7, 0.8, 0.9],
+                    origin = 'lower',
+                    linestyle = '-',
+                    extent = (0, w_fault, 0, l_fault),
+                    colors = 'white')
+    ax.clabel(cs, [0.7, 0.8, 0.9])
 
     ax.set_xlim(0, w_fault)
     ax.set_ylim(0, l_fault)
