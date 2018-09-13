@@ -203,14 +203,14 @@ pas_l = param['pas_l']                                                          
 pas_w = param['pas_w']                                                                              #
 samp_rate = param['samp_rate']                                                                      #
 length_time = param['length_t']                                                                     #   parametres stockes
-selected_patch = 'patch_80'
+selected_patch = 'patch_85'
 
 ###########################
 ###########################
-#past = ''
-past = 'patch_80_'
-#pastpast = ''
-pastpast = '_patch_80_complementaire'
+past = ''
+#past = 'patch_85_'
+pastpast = ''
+#pastpast = '_patch_85_complementaire'
 ###########################
 ###########################
 
@@ -362,6 +362,7 @@ with open(dossier + '_' + past + selected_patch, 'rb') as my_fch:      #
     my_dpck = pickle.Unpickler(my_fch)                          #
     dict_ok = my_dpck.load()                                    #   load le patch
     
+print(dossier + '_' + past + selected_patch + ' loaded')
 identified_patch = {}                                                                   #
                                                                                         #
 os.chdir(path_data_1)                                                                     #
@@ -407,7 +408,8 @@ for station in lst_fch:                                                         
             if (time >= identified_patch[st[0].stats.station][0][0]                                                 #
                 and time <= identified_patch[st[0].stats.station][0][1]):                                           #
                 #tr[cpt] = 0.2*tr[cpt]                                                                              #
-                tmp = math.pi/4*math.sin(math.pi*(time
+                #tmp = math.pi/4*math.sin(math.pi*(time
+                tmp = math.sin(math.pi*(time
                                             - identified_patch[st[0].stats.station][0][0])
                                           /(identified_patch[st[0].stats.station][0][1]
                                             - identified_patch[st[0].stats.station][0][0]))

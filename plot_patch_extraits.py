@@ -55,9 +55,12 @@ lst_sta[0].sort()
 lst_clr = ['gold', 'yellowgreen', 'lightskyblue']#, 'blue']
 #lst_clr = ['orange', 'red', 'blue']
 
-for i in range(2):
-    lst_pth_dat.append(lst_pth_dat[i]
-                       + '_patch_80')
+lst_pth_dat.append(lst_pth_dat[-1] + '_patch_85')
+lst_pth_dat.append(lst_pth_dat[-1] + '_patch_85')
+
+#for i in range(2):
+#    lst_pth_dat.append(lst_pth_dat[i]
+#                       + '_patch_80')
 
 for i in range(2):
     lst_pth_dat[i + 1] = lst_pth_dat[i + 1] + '_complementaire'
@@ -161,7 +164,7 @@ stack = np.zeros((int(l_fault/2),
                   length_t))
 stack_tmp = None
 
-lst_patch = ['_patch_80', '_patch_80_patch_80', '_patch_80_patch_80_patch_80']
+lst_patch = ['_patch_85', '_patch_85_patch_85']#, '_patch_85_patch_85_patch_85']
 
 os.chdir(path_patch)
 for i in range(2):

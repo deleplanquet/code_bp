@@ -14,6 +14,7 @@ python3 vel2env.py
 
 python3 env2smooth.py
 python3 carte_SoverP.py
+python3 cumul_released_E.py
 
 python3 vitesse_PS.py
 

@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from pylab import *
 import os
 import sys
@@ -78,13 +79,14 @@ R_Earth = param['R_Earth']          #
 l_fault = param['l_fault']
 w_fault = param['w_fault']
 degree = '\u00b0'                   #   parametres stockes
-selected_patch = 'patch_80'
+selected_patch = 'patch_85'
 scission = ['', '_complementaire']
+strike = param['strike']
 
 ################################
 ################################
-#past = ''
-past = 'patch_80_'
+past = ''
+#past = 'patch_85_'
 ################################
 ################################
 
@@ -176,9 +178,12 @@ for scis in scission:
         my_dpck = pickle.Unpickler(my_fch)                  #
         stack = my_dpck.load()                              #   load stack
 
-    thresh_1 = 90
-    thresh_2 = 80
-    thresh_3 = 70
+    stckmx2 = stack[:, :, :].max()
+    print('max modified stack', stack[:, :, :].min(), stckmx2)
+
+    thresh_1 = 95
+    thresh_2 = 90
+    thresh_3 = 85
     nbr_trsh = 3
 
     dict_ok_1 = {}
@@ -263,53 +268,68 @@ for scis in scission:
 
     for i in range(length_t):
         fig, ax = plt.subplots(1, 1)
-        ax.set_xlabel('Dip (km)')
-        ax.set_ylabel('Strike (km)')
+        ax.set_xlabel('Along strike (km)')
+        ax.set_ylabel('Down dip (km)')
         #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
-        im = ax.imshow(stack[:, :, i]**2/stckmx**2,
-                       cmap = cm,
+        im = ax.imshow(list(zip(*stack[:, :, i]))/stckmx,
+                       cmap = 'jet', #cm,
                        vmin = 0,
                        vmax = 1,
                        interpolation = 'none',
                        origin = 'lower',
-                       extent = (0,
-                                 w_fault,
-                                 0,
-                                 l_fault))
+                       extent = (-l_fault/2,
+                                 l_fault/2,
+                                 -w_fault/2,
+                                 w_fault/2))
 
-        ax.set_xlim(0, w_fault)
-        ax.set_ylim(0, l_fault)
+        cs = ax.contour(np.arange(-len(stack[:, 0, 0])/2, len(stack[:, 0, 0])/2),
+                        np.arange(-len(stack[0, :, 0])/2, len(stack[0, :, 0])/2),
+                        (list(zip(*stack[:, :, i]))/stckmx2).reshape((len(stack[0, :, 0]), len(stack[:, 0, 0]))),
+                        [0.85, 0.9, 0.95],
+                        origin = 'lower',
+                        linestyle = '-',
+                        extent = (-l_fault/2, l_fault/2, -w_fault/2, w_fault/2),
+                        colors = 'white')
+        ax.clabel(cs, [0.85, 0.9, 0.95])
+
+        ax.set_xlim(-l_fault/2, l_fault/2)
+        ax.set_ylim(-w_fault/2, w_fault/2)
         #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
         #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
         #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
-        ax.scatter(w_fault/2,
-                   l_fault/2,
+        ax.scatter(0,
+                   0,
                    300,
                    marker = '*',
                    color = 'red',
                    linewidth = 0.2)
 
-        for j in range(nbr_trsh):
-            if i in lst_cntr[nbr_trsh - 1 - j]:
-                print(i, '   ', nbr_trsh, '   ', j, '   ', nbr_trsh - 1 - j)#, dict_contour[i])
-                for segm in lst_cntr[nbr_trsh - 1 - j][i]:
-                    plot(segm[0],
-                         segm[1],
-                         linestyle = '-',
-                         color = lst_clr[nbr_trsh - 1 - j],
-                         linewidth = 2)
+        #for j in range(nbr_trsh):
+        #    if i in lst_cntr[nbr_trsh - 1 - j]:
+        #        print(i, '   ', nbr_trsh, '   ', j, '   ', nbr_trsh - 1 - j)#, dict_contour[i])
+        #        for segm in lst_cntr[nbr_trsh - 1 - j][i]:
+        #            plot(segm[0],
+        #                 segm[1],
+        #                 linestyle = '-',
+        #                 color = lst_clr[nbr_trsh - 1 - j],
+        #                 linewidth = 2)
 
-        ax.text(38,
-                90,
-                str((i - 50)/10) + ' s',
+        ax.text(l_fault/2 - 2,
+                -w_fault/2 + 4,
+                str((i - 5*samp_rate)/samp_rate) + ' s',
                 fontsize = 15,
-                color = 'black',
+                color = 'white', #'black',
                 ha = 'right')
+
+        ax.set_title('N' + str(strike) + str(degree) + 'E ' + '$\longrightarrow$', loc = 'right')
+        plt.gca().invert_yaxis()
         #ax.axvline(dkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
         #ax.axvline(dkr - dipkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
         #ax.axhline(skr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
         #ax.axhline(skr - strkr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
-        fig.colorbar(im, ax = ax, ticks = v1)
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes('right', size = '3%', pad = 0.1)
+        fig.colorbar(im, cax = cax, ticks = v1)
 
         os.chdir(path_rslt_pdf[scission.index(scis)])
         fig.savefig(dossier
