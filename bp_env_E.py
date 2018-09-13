@@ -150,10 +150,10 @@ with open('parametres_bin', 'rb') as my_fch:    #
 dossier = param['dossier']                                                                      #   |
 path = path_origin + '/Kumamoto/' + dossier                                                     #   v
 
-os.chdir(path)                                      #
-with open(dossier + '_veldata', 'rb') as mon_fich:  #
-    mon_depick = pickle.Unpickler(mon_fich)         #
-    dict_vel = mon_depick.load()                    #   load station corrections
+#os.chdir(path)                                      #
+#with open(dossier + '_veldata', 'rb') as mon_fich:  #
+#    mon_depick = pickle.Unpickler(mon_fich)         #
+#    dict_vel = mon_depick.load()                    #   load station corrections
 
 dt_type = param['composante']                                                                   #   |
 hyp_bp = param['ondes_select']                                                                  #   |
@@ -161,12 +161,6 @@ couronne = param['couronne']                                                    
 azim = param['angle']                                                                           #   v
 frq = param['band_freq']                                                                        #
 R_Earth = param['R_Earth']                                                                      #
-if hyp_bp == 'P':                                                                               #
-    vel_used = param['vP']                                                                      #
-    dict_vel_used = dict_vel[0]                                                                 #
-elif hyp_bp == 'S':                                                                             #
-    vel_used = param['vS']                                                                      #
-    dict_vel_used = dict_vel[1]                                                                 #
 strike = param['strike']                                                                        #
 dip = param['dip']                                                                              #
 l_fault = param['l_fault']                                                                      #
@@ -204,6 +198,18 @@ path_results = (path + '/'           #
 
 if os.path.isdir(path_results) == False:    #
     os.makedirs(path_results)               #   si le dossier n'existe pas, le cree
+
+os.chdir(path_results)
+with open(dossier + '_veldata', 'rb') as mon_fich:
+    mon_depick = pickle.Unpickler(mon_fich)
+    dict_vel = mon_depick.load()
+
+if hyp_bp == 'P':                                                                               #
+    vel_used = param['vP']                                                                      #
+    dict_vel_used = dict_vel[0]                                                                 #
+elif hyp_bp == 'S':                                                                             #
+    vel_used = param['vS']                                                                      #
+    dict_vel_used = dict_vel[1]                                                                 #
 
 lst_fch = []                        #
 lst_fch = os.listdir(path_data)     #   recupere la liste des noms des fichiers contenant les donnees
