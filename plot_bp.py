@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from pylab import *
 import os
 import sys
@@ -78,6 +79,7 @@ R_Earth = param['R_Earth']          #
 degree = '\u00b0'                   #   parametres stockes
 l_fault = param['l_fault']
 w_fault = param['w_fault']
+strike = param['strike']
 
 path = (path_origin                      #
         + '/Kumamoto/'                   #
@@ -138,47 +140,52 @@ with open(dossier                                       #
     my_dpck = pickle.Unpickler(my_fch)                  #
     stack = my_dpck.load()                              #   load stack
 
-thresh_1 = 90
-thresh_2 = 80
-thresh_3 = 70
-nbr_trsh = 3
+thresh_1 = 95
+thresh_2 = 90
+thresh_3 = 85
+thresh_4 = 80
+nbr_trsh = 4
 
 dict_ok_1 = {}
 dict_ok_2 = {}
 dict_ok_3 = {}
+dict_ok_4 = {}
 
-lst_trsh = [thresh_1, thresh_2, thresh_3]
-lst_cpt = [0, 0, 0]
-lst_dct_ok = [dict_ok_1, dict_ok_2, dict_ok_3]
-lst_lst_ok = [[], [], []]
+lst_trsh = [thresh_1, thresh_2, thresh_3, thresh_4]
+lst_cpt = [0, 0, 0, 0]
+lst_dct_ok = [dict_ok_1, dict_ok_2, dict_ok_3, dict_ok_4]
+lst_lst_ok = [[], [], [], []]
 
 dict_contour_1 = {}
 dict_contour_2 = {}
 dict_contour_3 = {}
+dict_contour_4 = {}
 
-lst_cntr = [dict_contour_1, dict_contour_2, dict_contour_3]
-lst_clr = ['red', 'orange', 'yellow']
+lst_cntr = [dict_contour_1, dict_contour_2, dict_contour_3, dict_contour_4]
+lst_clr = ['red', 'orange', 'yellow', 'blue']
 
-#for i in range(len(stack[:, 0, 0])):                                                #
-#    for j in range(len(stack[0, :, 0])):                                            #
-#        for k in range(nbr_trsh):                                                   #
-#            if lst_cpt[k] != 0:                                                     #
-#                lst_dct_ok[k][str(i*len(stack[0, :, 0]) + j)] = lst_lst_ok[k]       #
-#            lst_cpt[k] = 0                                                          #
-#            lst_lst_ok[k] = []                                                      #
-#        for k in range(length_t):                                                   #
-#            for l in range(nbr_trsh):                                               #
-#                if stack[i, j, k] > 0.01*lst_trsh[l]*stack[:, :, :].max():          #
-#                    for m in range(nbr_trsh):                                       #   stocke dans un dictionnaire
-#                        if m >= l:                                                  #   avec pour cle la position a une dimension
-#                            lst_cpt[m] = lst_cpt[m] + 1                             #   (i*len(j) + j)
-#                            lst_lst_ok[m].append(k)                                 #   une liste contenant les temps verifiant le critere
+stckmx = stack[:, :, :].max()
 
-#os.chdir(path)
-#for i in range(nbr_trsh):
-#    with open(dossier + '_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
-#        my_pck = pickle.Pickler(my_ext)
-#        my_pck.dump(lst_dct_ok[i])
+for i in range(len(stack[:, 0, 0])):                                                #
+    for j in range(len(stack[0, :, 0])):                                            #
+        for k in range(nbr_trsh):                                                   #
+            if lst_cpt[k] != 0:                                                     #
+                lst_dct_ok[k][str(i*len(stack[0, :, 0]) + j)] = lst_lst_ok[k]       #
+            lst_cpt[k] = 0                                                          #
+            lst_lst_ok[k] = []                                                      #
+        for k in range(length_t):                                                   #
+            for l in range(nbr_trsh):                                               #
+                if stack[i, j, k] > 0.01*lst_trsh[l]*stckmx:          #
+                    for m in range(nbr_trsh):                                       #   stocke dans un dictionnaire
+                        if m >= l:                                                  #   avec pour cle la position a une dimension
+                            lst_cpt[m] = lst_cpt[m] + 1                             #   (i*len(j) + j)
+                            lst_lst_ok[m].append(k)                                 #   une liste contenant les temps verifiant le critere
+
+os.chdir(path)
+for i in range(nbr_trsh):
+    with open(dossier + '_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
+        my_pck = pickle.Pickler(my_ext)
+        my_pck.dump(lst_dct_ok[i])
 
 #for i in range(nbr_trsh):
 #    os.chdir(path)
@@ -216,48 +223,48 @@ colors = [(1, 1, 1), (0, 0, 1)]
 cmap_name = 'mycmp'
 cm = LinearSegmentedColormap.from_list(cmap_name, colors, N = 100)
 #v1 = np.linspace(0, 1, endpoint = True)
-v1 = [0, 0.2, 0.4, 0.6, 0.8, 1]
+v1 = [1, 0.8, 0.6, 0.4, 0.2, 0]#, 0.2, 0.4, 0.6, 0.8, 1]
 levels = np.arange(0,
                    1,
-                   0.1*(pow(stack[:, :, :].max(), 2)/pow(stack[:, :, :].max(), 2)))
+                   0.1)
 
 print(len(stack[:, 0, 0]), len(stack[0, :, 0]))
 
-stckmx = stack[:, :, :].max()
-
 for i in range(length_t):
     fig, ax = plt.subplots(1, 1)
-    ax.set_xlabel('Dip (km)')
-    ax.set_ylabel('Strike (km)')
+    ax.set_xlabel('Along strike (km)')
+    ax.set_ylabel('Down dip (km)')
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(stack_used[:, :, :].max(), 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
-    im = ax.imshow(stack[:, :, i]**2/stckmx**2,
+    im = ax.imshow(list(zip(*stack[:, :, i]))/stckmx,
                    cmap = 'jet', #cm,
                    vmin = 0,
                    vmax = 1,
                    interpolation = 'none',
                    origin = 'lower',
-                   extent = (0,
-                             w_fault,
-                             0,
-                             l_fault))
-                   
-    cs = ax.contour(np.arange(len(stack[0, :, 0]))/2,
-                    np.arange(len(stack[:, 0, 0]))/2,
-                    (stack[:, :, i]**2/stckmx**2).reshape((len(stack[:, 0, 0]), len(stack[0, :, 0]))),
-                    [0.7, 0.8, 0.9],
+                   extent = (-l_fault/2,
+                             l_fault/2,
+                             -w_fault/2,
+                             w_fault/2))
+
+    cs = ax.contour(np.arange(-len(stack[:, 0, 0])/2, len(stack[:, 0, 0])/2),
+                    np.arange(-len(stack[0, :, 0])/2, len(stack[0, :, 0])/2),
+                    (list(zip(*stack[:, :, i]))/stckmx).reshape((len(stack[0, :, 0]), len(stack[:, 0, 0]))),
+                    [0.85, 0.9, 0.95], #, 0.8, 0.9],
                     origin = 'lower',
                     linestyle = '-',
-                    extent = (0, w_fault, 0, l_fault),
+                    extent = (-l_fault/2, l_fault/2, -w_fault/2, w_fault/2),
                     colors = 'white')
-    ax.clabel(cs, [0.7, 0.8, 0.9])
+    ax.clabel(cs, [0.85, 0.9, 0.95])
 
-    ax.set_xlim(0, w_fault)
-    ax.set_ylim(0, l_fault)
+    ax.set_xlim(-l_fault/2, l_fault/2)
+    ax.set_ylim(-w_fault/2, w_fault/2)
+    #ax.xaxis.tick_top()
+    #ax.xaxis.set_label_position('top')
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
     #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
     #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
-    ax.scatter(w_fault/2,
-               l_fault/2,
+    ax.scatter(0,
+               0,
                300,
                marker = '*',
                color = 'red',
@@ -273,17 +280,22 @@ for i in range(length_t):
     #                 color = lst_clr[nbr_trsh - 1 - j],
     #                 linewidth = 2)
 
-    ax.text(w_fault - 2,
-            l_fault - 10,
+    ax.text(l_fault/2 - 2,
+            -w_fault/2 + 4,
             str((i - 5*samp_rate)/samp_rate) + ' s',
             fontsize = 15,
             color = 'white', #'black',
             ha = 'right')
+
+    ax.set_title('N' + str(strike) + str(degree) + 'E' + '$\longrightarrow$', loc = 'right')
+    plt.gca().invert_yaxis()
     #ax.axvline(dkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axvline(dkr - dipkr, (skr - strkr + 0.5)/50, (skr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axhline(skr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
     #ax.axhline(skr - strkr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
-    fig.colorbar(im, ax = ax, ticks = v1)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes('right', size = '3%', pad = 0.1)
+    fig.colorbar(im, cax = cax, ticks = v1)
 
     os.chdir(path_rslt_pdf)
     fig.savefig(dossier
