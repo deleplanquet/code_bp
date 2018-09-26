@@ -87,14 +87,24 @@ for fichier in lst_fch_W:
                lw = 0.5,
                color = 'dodgerblue',
                label = fichier[:6] + ' NS vel.')
-    ax[0].axvline(5,
-                  ymin = zero - 0.2,
-                  ymax = zero + 0.2,
-                  color = 'forestgreen')
-    ax[0].axvline(t0,
-                  ymin = zero - 0.2,
-                  ymax = zero + 0.2,
-                  color = 'darkorchid')
+    #ax[0].axvline(5,
+    #              ymin = zero - 0.2,
+    #              ymax = zero + 0.2,
+    #              color = 'forestgreen')
+    #ax[0].axvline(t0,
+    #              ymin = zero - 0.2,
+    #              ymax = zero + 0.2,
+    #              color = 'darkorchid')
+    ax[0].arrow(5, zero + 0.5*max(Wmax, Nmax),
+                0, - (max(Wmax, Nmax) - min(Wmin, Nmin))/6,
+                head_width = 0.5,
+                head_length = 2000,
+                color = 'forestgreen')
+    ax[0].arrow(t0, zero + 0.5*max(Wmax, Nmax),
+                0, - (max(Wmax, Nmax) - min(Wmin, Nmin))/6,
+                head_width = 0.5,
+                head_length = 2000,
+                color = 'darkorchid')
 
     ax[0].set_xlim([0, 50])
     ax[0].ticklabel_format(style = 'scientific',
