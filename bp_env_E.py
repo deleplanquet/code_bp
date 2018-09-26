@@ -380,9 +380,9 @@ for sta in lst_fch:
     bpinv = np.zeros(st[0].stats.npts)
     with open(sta[:6], 'rb') as mfch:
         mdpk = pickle.Unpickler(mfch)
-        station = mdpck.load()
-    for key, value in station.iteritems():
-        bpinv[int(key*100)] = bpinv[int(key*100)] + value
+        station = mdpk.load()
+    for key in station.keys():
+        bpinv[int(key*100)] = bpinv[int(key*100)] + station[key]
     os.chdir(path_bpinvtr)
     tr = Trace(bpinv, st[0].stats)
     tr.write(sta[:6], format = 'SAC')
