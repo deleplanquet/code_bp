@@ -188,6 +188,14 @@ path_data = (path + '/'              #
              + hyp_bp + '_'          #
              + azim + 'deg')         #
                                      #
+path_bpinv = (path_data + '_'        #
+              + 'bpinv/'             #
+              + 'releves')           #
+                                     #
+path_bpinvtr = (path_data + '_'      #
+                + 'bpinv/'           #
+                + 'traces')          #
+                                     #
 path_results = (path + '/'           #
                 + dossier            #
                 + '_results/'        #
@@ -198,6 +206,10 @@ path_results = (path + '/'           #
 
 if os.path.isdir(path_results) == False:    #
     os.makedirs(path_results)               #   si le dossier n'existe pas, le cree
+if os.path.isdir(path_bpinv) == False:      #
+    os.makedirs(path_bpinv)                 #
+if os.path.isdir(path_bpinvtr) == False:    #
+    os.makedirs(path_bpinvtr)               #
 
 os.chdir(path_results)
 with open(dossier + '_veldata', 'rb') as mon_fich:
@@ -332,9 +344,45 @@ with open(dossier                                       #
     my_pck = pickle.Pickler(my_fch)                     #     pour pouvoir filtrer certaines stations a posteriori
     my_pck.dump(stack)                                  #     sans avoir a refaire le stack
 
+################################
+# bp inverse
+################################
 
+stckmx = stack[:, :, :].max()
+thresh = 85 *0.01
 
+for sta in lst_fch:                                                     # pour chaque station
+    os.chdir(path_data)                                                 #
+    st = read(sta)                                                      #
+    ista = lst_fch.index(sta)                                           #
+    station = {}                                                        #
+    for i in range(len(stack[:, 0, 0])):                                #
+        for j in range(len(stack[0, :, 0])):                            #
+            for k in range(len(stack[0, 0, :])):                        # pour chaque element du cube de bp
+                if stack[i, j, k] > thresh*stckmx:                      # si la valeur du stack est superieure au threshold
+                    tshift = (travt[ista][ix, iy]                       #
+                              - (st[0].stats.starttime - t_origin_rupt) #
+                              + dict_vel_used[st[0].stats.station]      #
+                              - 5                                       #
+                              + k/samp_rate)                            #
+                    station[tshift] = stack[i, j, k]                    #
+    os.chdir(path_bpinv)
+    with open(st[0].stats.station, 'wb') as mfch:
+        mpck = pickle.Pickler(mfch)
+        mpck.dump(station)
 
+lst_bpinv = os.listdir(path_bpinv)
 
-
-
+for sta in lst_fch:
+    os.chdir(path_data)
+    st = read(sta)
+    os.chdir(path_bpinv)
+    bpinv = np.zeros(st[0].stats.npts)
+    with open(sta[:6], 'rb') as mfch:
+        mdpk = pickle.Unpickler(mfch)
+        station = mdpck.load()
+    for key, value in station.iteritems():
+        bpinv[int(key*100)] = bpinv[int(key*100)] + value
+    os.chdir(path_bpinvtr)
+    tr = Trace(bpinv, st[0].stats)
+    tr.write(sta[:6], format = 'SAC')
