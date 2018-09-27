@@ -254,7 +254,7 @@ for i in range(length_t):
                     linestyle = '-',
                     extent = (-l_fault/2, l_fault/2, -w_fault/2, w_fault/2),
                     colors = 'white')
-    ax.clabel(cs, [0.85, 0.9, 0.95])
+    #ax.clabel(cs, [0.85, 0.9, 0.95])
 
     ax.set_xlim(-l_fault/2, l_fault/2)
     ax.set_ylim(-w_fault/2, w_fault/2)
@@ -263,6 +263,7 @@ for i in range(length_t):
     #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
     #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
     #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
+    ax.scatter(0, 0, 500, marker = '*', color = 'white', linewidth = 0.2)
     ax.scatter(0,
                0,
                300,
