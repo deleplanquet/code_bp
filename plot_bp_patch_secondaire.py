@@ -85,8 +85,8 @@ strike = param['strike']
 
 ################################
 ################################
-past = ''
-#past = 'patch_85_'
+#past = ''
+past = 'patch_85_'
 ################################
 ################################
 
@@ -223,28 +223,28 @@ for scis in scission:
             my_pck = pickle.Pickler(my_ext)
             my_pck.dump(lst_dct_ok[i])
 
-    for i in range(nbr_trsh):
-        os.chdir(path)
-        with open(dossier + '_' + past + selected_patch + '_patch_' + str(lst_trsh[i]), 'rb') as my_in:
-            my_dpck = pickle.Unpickler(my_in)
-            dict_ook = my_dpck.load()
+    #for i in range(nbr_trsh):
+    #    os.chdir(path)
+    #    with open(dossier + '_' + past + selected_patch + '_patch_' + str(lst_trsh[i]), 'rb') as my_in:
+    #        my_dpck = pickle.Unpickler(my_in)
+    #        dict_ook = my_dpck.load()
 
-        for cles in dict_ook.keys():
-            for tps in range(len(dict_ook[cles])):
-                yyy = 2*(int(cles)//len(stack[0, :, 0]))
-                xxx = 2*(int(cles)%len(stack[0, :, 0]))
-                if xxx > 0:
-                    for segm in [[[xxx, xxx], [yyy, yyy + 2]],
-                                 [[xxx - 2, xxx - 2], [yyy, yyy + 2]],
-                                 [[xxx, xxx - 2], [yyy, yyy]],
-                                 [[xxx, xxx - 2], [yyy + 2, yyy + 2]]]:
-                        if dict_ook[cles][tps] in lst_cntr[i]:
-                            if (segm in lst_cntr[i][dict_ook[cles][tps]]) == False:
-                                lst_cntr[i][dict_ook[cles][tps]].append(segm)
-                            else:
-                                lst_cntr[i][dict_ook[cles][tps]] = [i for i in lst_cntr[i][dict_ook[cles][tps]] if i != segm]
-                        else:
-                            lst_cntr[i][dict_ook[cles][tps]] = [segm]
+    #    for cles in dict_ook.keys():
+    #        for tps in range(len(dict_ook[cles])):
+    #            yyy = 2*(int(cles)//len(stack[0, :, 0]))
+    #            xxx = 2*(int(cles)%len(stack[0, :, 0]))
+    #            if xxx > 0:
+    #                for segm in [[[xxx, xxx], [yyy, yyy + 2]],
+    #                             [[xxx - 2, xxx - 2], [yyy, yyy + 2]],
+    #                             [[xxx, xxx - 2], [yyy, yyy]],
+    #                             [[xxx, xxx - 2], [yyy + 2, yyy + 2]]]:
+    #                    if dict_ook[cles][tps] in lst_cntr[i]:
+    #                        if (segm in lst_cntr[i][dict_ook[cles][tps]]) == False:
+    #                            lst_cntr[i][dict_ook[cles][tps]].append(segm)
+    #                        else:
+    #                            lst_cntr[i][dict_ook[cles][tps]] = [i for i in lst_cntr[i][dict_ook[cles][tps]] if i != segm]
+    #                    else:
+    #                        lst_cntr[i][dict_ook[cles][tps]] = [segm]
 
     #skr = 30
     #dkr = 30
@@ -290,13 +290,14 @@ for scis in scission:
                         linestyle = '-',
                         extent = (-l_fault/2, l_fault/2, -w_fault/2, w_fault/2),
                         colors = 'white')
-        ax.clabel(cs, [0.85, 0.9, 0.95])
+        #ax.clabel(cs, [0.85, 0.9, 0.95])
 
         ax.set_xlim(-l_fault/2, l_fault/2)
         ax.set_ylim(-w_fault/2, w_fault/2)
         #ax.imshow(stack_used[:, :, i]**2, cmap = 'viridis', vmin = pow(stack_used[:, :, :].min(), 2), vmax = pow(66.72, 2), interpolation = 'none', origin = 'lower', extent = (0, 50, 0, 50))
         #ax.text(x, y, 'position' + degree, fontsize = 20, ha = 'center', va = 'center' color = 'white')
         #ax.text(x, y, 'position', fontsize = 20, ha = 'center', va = 'center', color = 'white')
+        ax.scatter(0, 0, 500, marker = '*', color = 'white', linewidth = 0.2)
         ax.scatter(0,
                    0,
                    300,
