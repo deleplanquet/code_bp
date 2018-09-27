@@ -169,6 +169,7 @@ pas_l = param['pas_l']                                                          
 pas_w = param['pas_w']                                                                          #
 samp_rate = param['samp_rate']                                                                  #
 length_time = param['length_t']                                                                 #   parametres stockes
+l_smooth = param['smooth']
 
 path = (path_origin                  #
         + '/Kumamoto/'               #
@@ -196,6 +197,10 @@ path_bpinvtr = (path_data + '_'      #
                 + 'bpinv/'           #
                 + 'traces')          #
                                      #
+path_bpinvsm = (path_data + '_'      #
+                + 'bpinv/'           #
+                + 'smoothed_traces') #
+                                     #
 path_results = (path + '/'           #
                 + dossier            #
                 + '_results/'        #
@@ -210,6 +215,8 @@ if os.path.isdir(path_bpinv) == False:      #
     os.makedirs(path_bpinv)                 #
 if os.path.isdir(path_bpinvtr) == False:    #
     os.makedirs(path_bpinvtr)               #
+if os.path.isdir(path_bpinvsm) == False:    #
+    os.makedirs(path_bpinvsm)               #
 
 os.chdir(path_results)
 with open(dossier + '_veldata', 'rb') as mon_fich:
@@ -360,7 +367,7 @@ for sta in lst_fch:                                                     # pour c
         for j in range(len(stack[0, :, 0])):                            #
             for k in range(len(stack[0, 0, :])):                        # pour chaque element du cube de bp
                 if stack[i, j, k] > thresh*stckmx:                      # si la valeur du stack est superieure au threshold
-                    tshift = (travt[ista][ix, iy]                       #
+                    tshift = (travt[ista][i, j]                       #
                               - (st[0].stats.starttime - t_origin_rupt) #
                               + dict_vel_used[st[0].stats.station]      #
                               - 5                                       #
@@ -383,6 +390,24 @@ for sta in lst_fch:
         station = mdpk.load()
     for key in station.keys():
         bpinv[int(key*100)] = bpinv[int(key*100)] + station[key]
+        print(bpinv[int(key*100)])
     os.chdir(path_bpinvtr)
     tr = Trace(bpinv, st[0].stats)
     tr.write(sta[:6], format = 'SAC')
+
+for sta in lst_fch:
+    os.chdir(path_bpinvtr)
+    st = read(sta[:6])
+    tr = Trace(smooth(st[0].data, int(l_smooth/st[0].stats.delta)), st[0].stats)
+    os.chdir(path_bpinvsm)
+    tr.write(sta[:6], format = 'SAC')
+
+
+
+
+
+
+
+
+
+
