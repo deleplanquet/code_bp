@@ -204,13 +204,14 @@ pas_w = param['pas_w']                                                          
 samp_rate = param['samp_rate']                                                                      #
 length_time = param['length_t']                                                                     #   parametres stockes
 selected_patch = 'patch_85'
+l_smooth = param['smooth']
 
 ###########################
 ###########################
-past = ''
-#past = 'patch_85_'
-pastpast = ''
-#pastpast = '_patch_85_complementaire'
+#past = ''
+past = 'patch_85_'
+#pastpast = ''
+pastpast = '_patch_85_complementaire'
 ###########################
 ###########################
 
@@ -235,6 +236,10 @@ path_data = (path + '/'                                 #
 path_data_1 = (path_data
                + pastpast)
 
+path_retrait = (path_data + '_'
+                + 'bpinv/'
+                + 'smoothed_traces')
+
 path_data_2 = (path_data + '_'                          #
                + past
                + selected_patch)                        #
@@ -242,6 +247,18 @@ path_data_2 = (path_data + '_'                          #
 path_data_3 = (path_data + '_'                          #
                + past
                + selected_patch + '_complementaire')    #
+
+path_bpinv = (path_data_3 + '_'
+              + 'bp_inv/'
+              + 'releves')
+
+path_bpinvtr = (path_data_3 + '_'
+                + 'bp_inv/'
+                + 'traces')
+
+path_bpinvsm = (path_data_3 + '_'
+                + 'bp_inv/'
+                + 'smoothed_traces')
 
 pth_ptch = [path_data_2, path_data_3]
                                                         #
@@ -275,6 +292,15 @@ if os.path.isdir(path_results) == False:        #
                                                 #
 if os.path.isdir(path_results_2) == False:      #   creation des dossiers de travail
     os.makedirs(path_results_2)                 #   dans le cas ou il n'existe pas deja
+
+if os.path.isdir(path_bpinv) == False:
+    os.makedirs(path_bpinv)
+
+if os.path.isdir(path_bpinvtr) == False:
+    os.makedirs(path_bpinvtr)
+
+if os.path.isdir(path_bpinvsm) == False:
+    os.makedirs(path_bpinvsm)
             
 lst_fch = []                        #
 lst_fch = os.listdir(path_data_1)     #   recupere la liste des noms des fichiers contenant les donnees
@@ -357,33 +383,33 @@ for fichier in lst_fch:                                                         
         tmin = st[0].stats.sac.t0                                                               #   entre chaque station
 print(tmin)                                                                                     #   et chaque subfault
 
-os.chdir(path)                                                  #
-with open(dossier + '_' + past + selected_patch, 'rb') as my_fch:      #
-    my_dpck = pickle.Unpickler(my_fch)                          #
-    dict_ok = my_dpck.load()                                    #   load le patch
+#os.chdir(path)                                                  #
+#with open(dossier + '_' + past + selected_patch, 'rb') as my_fch:      #
+#    my_dpck = pickle.Unpickler(my_fch)                          #
+#    dict_ok = my_dpck.load()                                    #   load le patch
     
-print(dossier + '_' + past + selected_patch + ' loaded')
-identified_patch = {}                                                                   #
+#print(dossier + '_' + past + selected_patch + ' loaded')
+#identified_patch = {}                                                                   #
                                                                                         #
-os.chdir(path_data_1)                                                                     #
-for station in lst_fch:                                                                 #   pour chaque station
-    list_inter = []                                                                     #
-    st = read(station)                                                                  #
-    ista = lst_fch.index(station)                                                       #
-    for ip in dict_ok.keys():                                                           #   pour chaque subfault "eclairee"
-        ix = int(int(ip)//len(coord_fault[0, :, 0]))                                    #
-        iy = int(int(ip)%len(coord_fault[0, :, 0]))                                     #
-        for it in dict_ok[ip]:                                                          #   pour chaque tps ou il y a eu "eclairage"
-            tshift = (travt[ista][ix, iy]                                               #
-                      - (st[0].stats.starttime - t_origin_rupt)                         #
-                      + dict_vel_used[st[0].stats.station]                              #
-                      - 5                                                               #
-                      + it/samp_rate)                                                   #   on stocke l'interval temporel
-            list_inter.append([tshift, tshift + 1.01/samp_rate])                        #   associe a la trace
-    identified_patch[st[0].stats.station] = interv_uni(list_inter)                      #   fait l'union des intervales
-                                                                                        #
-for station in identified_patch.keys():                                                 #
-    print(station, identified_patch[station][0][0], identified_patch[station][0][1])    #   affiche dans le terminal
+#os.chdir(path_data_1)                                                                     #
+#for station in lst_fch:                                                                 #   pour chaque station
+#    list_inter = []                                                                     #
+#    st = read(station)                                                                  #
+#    ista = lst_fch.index(station)                                                       #
+#    for ip in dict_ok.keys():                                                           #   pour chaque subfault "eclairee"
+#        ix = int(int(ip)//len(coord_fault[0, :, 0]))                                    #
+#        iy = int(int(ip)%len(coord_fault[0, :, 0]))                                     #
+#        for it in dict_ok[ip]:                                                          #   pour chaque tps ou il y a eu "eclairage"
+#            tshift = (travt[ista][ix, iy]                                               #
+#                      - (st[0].stats.starttime - t_origin_rupt)                         #
+#                      + dict_vel_used[st[0].stats.station]                              #
+#                      - 5                                                               #
+#                      + it/samp_rate)                                                   #   on stocke l'interval temporel
+#            list_inter.append([tshift, tshift + 1.01/samp_rate])                        #   associe a la trace
+#    identified_patch[st[0].stats.station] = interv_uni(list_inter)                      #   fait l'union des intervales
+#                                                                                        #
+#for station in identified_patch.keys():                                                 #
+#    print(station, identified_patch[station][0][0], identified_patch[station][0][1])    #   affiche dans le terminal
 
 length_t = int(length_time*samp_rate)
 stack_0 = np.zeros((len(coord_fault[:, 0, 0]),
@@ -399,31 +425,37 @@ for station in lst_fch:                                                         
     for scis in scission:
         os.chdir(path_data_1)                                                                                         #
         st = read(station)                                                                                          #
-        tr = st[0].data                                                                                             #
+        os.chdir(path_retrait)
+        st_r = read(st[0].stats.station)
+        tr = np.zeros(st[0].stats.npts)                                                                                             #
         cpt = 0                                                                                                     #
-        tr[-1] = tr.max()
-        for dat in tr:                                                                                              #
+        for i in range(len(tr)):                                                                                              #
             cpt = cpt + 1                                                                                           #
             time = cpt/st[0].stats.sampling_rate                                                                    #
-            if (time >= identified_patch[st[0].stats.station][0][0]                                                 #
-                and time <= identified_patch[st[0].stats.station][0][1]):                                           #
+            if scis == scission[0]:
+                tr[i] = st[0].data[i]*st_r[0].data[i]
+            else:
+                tr[i] = st[0].data[i]*((st_r[0].data).max() - st_r[0].data[i])
+            #if (time >= identified_patch[st[0].stats.station][0][0]                                                 #
+            #    and time <= identified_patch[st[0].stats.station][0][1]):                                           #
                 #tr[cpt] = 0.2*tr[cpt]                                                                              #
                 #tmp = math.pi/4*math.sin(math.pi*(time
-                tmp = math.sin(math.pi*(time
-                                            - identified_patch[st[0].stats.station][0][0])
-                                          /(identified_patch[st[0].stats.station][0][1]
-                                            - identified_patch[st[0].stats.station][0][0]))
-                if scis == scission[0]:
-                    tr[cpt] = tmp*tr[cpt]
-                else:
-                    tr[cpt] = (1 - tmp)*tr[cpt]
-            elif cpt < 5000:
-                if scis == scission[0]:
-                    tr[cpt] = 0
+            #    tmp = math.sin(math.pi*(time
+            #                                - identified_patch[st[0].stats.station][0][0])
+            #                              /(identified_patch[st[0].stats.station][0][1]
+            #                                - identified_patch[st[0].stats.station][0][0]))
+            #    if scis == scission[0]:
+            #        tr[cpt] = tmp*tr[cpt]
+            #    else:
+            #        tr[cpt] = (1 - tmp)*tr[cpt]
+            #elif cpt < 5000:
+            #    if scis == scission[0]:
+            #        tr[cpt] = 0
+        tr[-1] = (st[0].data).max()
 
         os.chdir(pth_ptch[scission.index(scis)])                                                                    #   enregistre les traces modifiees
-        st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #   
-        st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #   trace modifiee =
+        #st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #   
+        #st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #   trace modifiee =
         tr_reg = Trace(np.asarray(tr), st[0].stats)                                                                 #   trace originale
         tr_reg.write(station[:-4] + '_' + past + selected_patch + scis + '.sac', format = 'SAC')                    #   - partie contribuant au patch
 
@@ -460,6 +492,69 @@ for scis in scission:
               + selected_patch + scis, 'wb') as my_fch:
         my_pck = pickle.Pickler(my_fch)
         my_pck.dump(stack[scission.index(scis)])
+
+###############################
+# bp inverse
+###############################
+
+stckmx = stack[1][:, :, :].max()
+thresh = 85 *0.01
+
+for sta in lst_fch:
+    os.chdir(path_data_1)
+    st = read(sta)
+    ista = lst_fch.index(sta)
+    station = {}
+    for i in range(len(stack[1][:, 0, 0])):
+        for j in range(len(stack[1][0, :, 0])):
+            for k in range(len(stack[1][0, 0, :])):
+                if stack[1][i, j, k] > thresh*stckmx:
+                    tshift = (travt[ista][i,j]
+                              - (st[0].stats.starttime - t_origin_rupt)
+                              + dict_vel_used[st[0].stats.station]
+                              - 5
+                              + k/samp_rate)
+                    station[tshift] = stack[1][i, j, k]
+    os.chdir(path_bpinv)
+    with open(st[0].stats.station, 'wb') as mfch:
+        mpck = pickle.Pickler(mfch)
+        mpck.dump(station)
+
+lst_bpinv = os.listdir(path_bpinv)
+
+for sta in lst_fch:
+    os.chdir(path_data_1)
+    st = read(sta)
+    os.chdir(path_bpinv)
+    bpinv = np.zeros(st[0].stats.npts)
+    with open(sta[:6], 'rb') as mfch:
+        mdpk = pickle.Unpickler(mfch)
+        station = mdpk.load()
+    for key in station.keys():
+        bpinv[int(key*100)] = bpinv[int(key*100)] + station[key]
+        print(bpinv[int(key*100)])
+    os.chdir(path_bpinvtr)
+    tr = Trace(bpinv, st[0].stats)
+    tr.write(sta[:6], format = 'SAC')
+
+for sta in lst_fch:
+    os.chdir(path_bpinvtr)
+    st = read(sta[:6])
+    tr = Trace(smooth(st[0].data, int(l_smooth/st[0].stats.delta)), st[0].stats)
+    os.chdir(path_bpinvsm)
+    tr.write(sta[:6], format = 'SAC')
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
