@@ -390,7 +390,7 @@ for sta in lst_fch:
         station = mdpk.load()
     for key in station.keys():
         bpinv[int(key*100)] = bpinv[int(key*100)] + station[key]
-        print(bpinv[int(key*100)])
+        #print(bpinv[int(key*100)])
     os.chdir(path_bpinvtr)
     tr = Trace(bpinv, st[0].stats)
     tr.write(sta[:6], format = 'SAC')
