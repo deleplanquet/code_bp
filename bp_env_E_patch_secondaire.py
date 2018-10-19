@@ -209,11 +209,16 @@ l_smooth = param['smooth']
 ###########################
 ###########################
 past = ''
-#past = 'patch_85_'
+#past = 'patch_85'
 pastpast = ''
-#pastpast = '_patch_85_complementaire'
+#pastpast = 'patch_85_complementaire'
 ###########################
 ###########################
+
+if past != '':
+    past = '_' + past
+if pastpast != '':
+    pastpast = '_' + pastpast
 
 path = (path_origin                                     #
         + '/Kumamoto/'                                  #
@@ -233,6 +238,7 @@ path_data = (path + '/'                                 #
              + hyp_bp + '_'                             #
              + azim + 'deg')                            #
                                                         #
+
 path_data_1 = (path_data
                + pastpast)
 
@@ -241,12 +247,12 @@ path_retrait = (path_data + '_'
                 + 'smoothed_traces')
 
 path_data_2 = (path_data + '_'                          #
-               + past
-               + selected_patch)                        #
+               + selected_patch
+               + past)                        #
                                                         #
 path_data_3 = (path_data + '_'                          #
-               + past
-               + selected_patch + '_complementaire')    #
+               + selected_patch
+               + past + '_complementaire')    #
 
 path_bpinv = (path_data_3 + '_'
               + 'bp_inv/'
@@ -457,9 +463,9 @@ for station in lst_fch:                                                         
         #st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #   
         #st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #   trace modifiee =
         tr_reg = Trace(np.asarray(tr), st[0].stats)                                                                 #   trace originale
-        tr_reg.write(station[:-4] + '_' + past + selected_patch + scis + '.sac', format = 'SAC')                    #   - partie contribuant au patch
+        tr_reg.write(station[:-4] + '_' + selected_patch + past + scis + '.sac', format = 'SAC')                    #   - partie contribuant au patch
 
-        st = read(station[:-4] + '_' + past + selected_patch + scis + '.sac')
+        st = read(station[:-4] + '_' + selected_patch + past + scis + '.sac')
         tstart = st[0].stats.starttime
         env_norm = norm1(st[0].data)
         t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
@@ -488,8 +494,8 @@ for scis in scission:
               + '_env_smooth_'
               + hyp_bp + '_'
               + azim + 'deg_stack3D_'
-              + past
-              + selected_patch + scis, 'wb') as my_fch:
+              + selected_patch
+              + past + scis, 'wb') as my_fch:
         my_pck = pickle.Pickler(my_fch)
         my_pck.dump(stack[scission.index(scis)])
 
