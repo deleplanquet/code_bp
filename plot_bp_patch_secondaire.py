@@ -118,9 +118,9 @@ for scis in scission:
                                            + dt_type               #
                                            + '_env_smooth_'        #
                                            + hyp_bp + '_'          #
-                                           + azim + 'deg_'
-                                           + selected_patch
-                                           + past + scis)         #
+                                           + azim + 'deg'
+                                           + past + '_'
+                                           + selected_patch + scis)         #
                                          #
     path_rslt_png.append(path_data               #
                                            + '/png_'               #
@@ -131,9 +131,9 @@ for scis in scission:
                                            + dt_type               #
                                            + '_env_smooth_'        #
                                            + hyp_bp + '_'          #
-                                           + azim + 'deg_'
-                                           + selected_patch
-                                           + past + scis)         #   dossiers de travail
+                                           + azim + 'deg'
+                                           + past + '_'
+                                           + selected_patch + scis)         #   dossiers de travail
 for scis in scission:
     if os.path.isdir(path_rslt_pdf[scission.index(scis)]) == False:   #
         os.makedirs(path_rslt_pdf[scission.index(scis)])              #
@@ -175,9 +175,9 @@ for scis in scission:
               + dt_type                                     #
               + '_env_smooth_'                              #
               + hyp_bp + '_'                                #
-              + azim + 'deg_stack3D_'
-              + selected_patch
-              + past + scis, 'rb') as my_fch:      #
+              + azim + 'deg_stack3D'
+              + past + '_'
+              + selected_patch + scis, 'rb') as my_fch:      #
         my_dpck = pickle.Unpickler(my_fch)                  #
         stack = my_dpck.load()                              #   load stack
 
@@ -222,7 +222,7 @@ for scis in scission:
 
     os.chdir(path)
     for i in range(nbr_trsh):
-        with open(dossier + '_' + selected_patch + past + '_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
+        with open(dossier + past + '_' + selected_patch + '_patch_' + str(lst_trsh[i]), 'wb') as my_ext:
             my_pck = pickle.Pickler(my_ext)
             my_pck.dump(lst_dct_ok[i])
 
@@ -343,9 +343,9 @@ for scis in scission:
                     + dt_type
                     + '_env_'
                     + hyp_bp + '_'
-                    + azim + 'deg_stack3D_'
-                    + selected_patch
-                    + past + scis
+                    + azim + 'deg_stack3D'
+                    + past + '_'
+                    + selected_patch + scis
                     + str(i*100) + '.pdf')
         os.chdir(path_rslt_png[scission.index(scis)])
         fig.savefig(dossier
@@ -355,9 +355,9 @@ for scis in scission:
                     + dt_type
                     + '_env_'
                     + hyp_bp + '_'
-                    + azim + 'deg_stack3D_'
-                    + selected_patch
-                    + past + scis
+                    + azim + 'deg_stack3D'
+                    + past + '_'
+                    + selected_patch + scis
                     + str(i*100) + '.png')
 
 
