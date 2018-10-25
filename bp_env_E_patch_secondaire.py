@@ -211,7 +211,7 @@ l_smooth = param['smooth']
 past = ''
 #past = 'patch_85' # ce qui va avant slected_patch
 pastpast = ''
-#pastpast = 'patch_85_complementaire' # le dossier des fichiers utilises
+#pastpast = 'patch_85' # le dossier des fichiers utilises
 ###########################
 ###########################
 
@@ -427,6 +427,7 @@ stack_1 = np.zeros((len(coord_fault[:, 0, 0]),
 stack = [stack_0, stack_1]
 scission = ['', '_complementaire']
 
+print(path_data_1)
 for station in lst_fch:                                                                                         #
     for scis in scission:
         os.chdir(path_data_1)                                                                                         #
@@ -463,9 +464,9 @@ for station in lst_fch:                                                         
         #st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #   
         #st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #   trace modifiee =
         tr_reg = Trace(np.asarray(tr), st[0].stats)                                                                 #   trace originale
-        tr_reg.write(station[:-4] + past + '_' + selected_patch + scis + '.sac', format = 'SAC')                    #   - partie contribuant au patch
+        tr_reg.write(station[:-4] + '_' + selected_patch + scis + '.sac', format = 'SAC')                    #   - partie contribuant au patch
 
-        st = read(station[:-4] + past + '_' + selected_patch + scis + '.sac')
+        st = read(station[:-4] + '_' + selected_patch + scis + '.sac')
         tstart = st[0].stats.starttime
         env_norm = norm1(st[0].data)
         t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
