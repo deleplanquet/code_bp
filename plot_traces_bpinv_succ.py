@@ -61,6 +61,15 @@ for station in lst_sta:
                 lw = 0.5,
                 label = lab)
 
+        cpt = 0
+        tmp = 0
+
+        while tmp == 0:
+            if st[0].data[-cpt] > 0:
+                tmp = 1
+                print(lab, cpt)
+            cpt = cpt + 1
+
         if lab == 0:
             megamax = max(st[0].data)
             cpt = 0
@@ -80,7 +89,7 @@ for station in lst_sta:
 
         lab = str(int(lab) + 1)
 
-    ax.set_xlim([vleft - 1, vright + 1])
+    ax.set_xlim([vleft - 6, vright + 1])
     ax.set_xlabel('Time(s)', fontsize = 8)
     ax.set_ylabel('Normalised energy', fontsize = 8)
     os.chdir(pth_rslt_png)
