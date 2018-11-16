@@ -3,70 +3,132 @@ import os
 import sys
 import datetime
 
-path_origin = os.getcwd()[:-6]
-os.chdir(path_origin + '/Kumamoto')
+# root: root of the /Codes folder
+# load events dictionnary
+# be careful, folder containing data has relative position to /Codes folder
+root = os.getcwd()[:-6]
+os.chdir(root + '/Kumamoto')
 with open('ref_seismes_bin', 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     dict_seis = mdpk.load()
 
+# parameters dictionnary
 param = {}
 
-param['path_origin'] = path_origin
+# root of the /Codes folder
+param['root'] = root
 
+# print name of available events
+# initialisation of the name of the selected event
+# the name of the event is stored in the parameters dictionnary with the key 'event'
+# the name of the selected event is then asked
+# check if the name is corresponding to one of the key of the events dictionnary
+# - if yes, stored in parammeters dictionnary with the corresponding key 'event'
+# - else, the name is asked again
+print('#############')
+print('### event ###')
+print('#############')
+print('   list of available events')
+for eq in dict_seis.keys():
+    print('   ', eq)
+param['event'] = None
 print('')
-param['dossier'] = None
 print('   Enter EQ name from ref_seismes.txt')
-while (param['dossier'] in dict_seis.keys()) == False:
-    param['dossier'] = input('dossier au format YYYYMMDDHHMMSS: ')
+while (param['event'] in dict_seis.keys()) == False:
+    param['event'] = input('dossier au format YYYYMMDDHHMMSS: ')
 
+# Earth radius 6400 km
 param['R_Earth'] = float(6400)
 
-print('')
-param['dist_min'] = None
+# initialisation of the minimum value for the hypocenter distance
+# stations which hypocenter distance is less than the minimum value will be ignored
+# check if the type of the given value is float
+# check if the value is positive and lower than 100 km (limit due to preprocessing)
+# - if everything is ok, stored in the parameters dictionnary with the key 'hypo_min'
+# - else, the value is asked again
+print('################')
+print('### hypo_min ###')
+print('################')
+param['hypo_min'] = None
 print('   Expected value: integer or float between 0 and 100 km')
-while ((type(param['dist_min']) is float) == False
-       or param['dist_min'] < 0
-       or param['dist_min'] >= 100):
-    param['dist_min'] = float(input('distance min [0 -> 100]: '))
+while ((type(param['hypo_min']) is float) == False
+       or param['hypo_min'] < 0
+       or param['hypo_min'] >= 100):
+    param['hypo_min'] = float(input('distance min [0 -> 100]: '))
 
-print('')
-param['dist_max'] = None
+# initialisation of the maximum value for the hypocenter distance
+# station which hypocenter distance is higher than the maximum value will be ignored
+# check if the type of the given value is float
+# check if the value is higher than 'hypo_min' to be consistent
+# check if the value is lower than 100 km (limit due to preprocessing)
+# - if everything is ok, stored in the parameters dictionnary with the key 'hypo_max'
+# - else, the value is asked again
+print('################')
+print('### hypo_max ###')
+print('################')
+param['hypo_max'] = None
 print('   Expected value: integer or float between dist_min(previous value) and 100 km')
-while ((type(param['dist_max']) is float) == False
-       or param['dist_max'] <= param['dist_min']
-       or param['dist_max'] > 100):
-    param['dist_max'] = float(input('distance max [dist_min -> 100]: '))
+while ((type(param['hypo_max']) is float) == False
+       or param['hypo_max'] <= param['dist_min']
+       or param['hypo_max'] > 100):
+    param['hypo_max'] = float(input('distance max [dist_min -> 100]: '))
 
-param['couronne'] = str(int(param['dist_min'])) + '-' + str(int(param['dist_max']))
+# a combination of 'hypo_min' and 'hypo_max' is created as a new parameter
+# this parameter represents the considered interval for the hypocenter distances
+# it is stored in the parameters dictionnary with the key 'hypo_interv'
+param['hypo_interv'] = str(int(param['hypo_min'])) + '-' + str(int(param['hypo_max']))
 
-print('')
-param['freq_min'] = None
+# initialisation of the minimum value of the frequency
+# a filter band will be applied on the velocity traces
+# check if the type of the given value is float
+# check if the value is strictly positive and lower than 30 Hz (limit imposed by the network)
+# - if everything is ok, stored in the parameters dictionnary with the key 'frq_min'
+# - else, the value is asked again
+print('###############')
+print('### frq_min ###')
+print('###############')
+param['frq_min'] = None
 print('   Expected value: integer or float between 0.2 and 30 Hz')
 print('   Suggested values: 0.2 / 0.5 / 1 / 2 / 4 / 8 / 16 Hz')
-while ((type(param['freq_min']) is float) == False
-       or param['freq_min'] <= 0
-       or param['freq_min'] >= 30):
-    param['freq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
+while ((type(param['frq_min']) is float) == False
+       or param['frq_min'] <= 0
+       or param['frq_min'] >= 30):
+    param['frq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
 
-print('')
-param['freq_max'] = None
+# initialisation of the maximum value of the frequency
+# a filter band will be applied on the velocity traces
+# check if the type of the given value is float
+# check if the value is higher than 'frq_min' to be consistent
+# check if the value is lower than 30 Hz (limit imposed by the network)
+# - if everything is ok, stored in the parameters dictionnary with the key 'frq_max'
+# - else, the value is asked again
+print('###############')
+print('### frq_max ###')
+print('###############')
+param['frq_max'] = None
 print('   Expected value: integer or float between freq_min(previous value) and 30 Hz')
 print('   Suggested values: 0.5 / 1 / 2 / 4 / 8 / 16 / 30 Hz')
-while ((type(param['freq_max']) is float) == False
-       or param['freq_max'] <= param['freq_min']
-       or param['freq_max'] > 30):
-    param['freq_max'] = float(input('frequence max [05/1/2/4/8/16/30] (> freq_min): '))
+while ((type(param['frq_max']) is float) == False
+       or param['frq_max'] <= param['freq_min']
+       or param['frq_max'] > 30):
+    param['frq_max'] = float(input('frequence max [05/1/2/4/8/16/30] (> freq_min): '))
 
-param['band_freq'] = str(param['freq_min']) + '-' + str(param['freq_max'])
+# a combination of 'frq_min' and 'frq_max' is created as a new parameter
+# this parameter represents the considered frequency band for the filtering
+# it is stored in the parameters dictionnary with the kry 'frq_band'
+param['frq_band'] = str(param['frq_min']) + '-' + str(param['frq_max'])
 
-print('')
-param['composante'] = None
+# initialisation of 
+print('#################')
+print('### component ###')
+print('#################')
+param['component'] = None
 print('   Expected value: > 3comp <, > hori < or > vert <')
 print('   Other values are not accepted')
-while (param['composante'] != '3comp'
-       and param['composante'] != 'hori'
-       and param['composante'] != 'vert'):
-    param['composante'] = input('composante [3comp/hori/vert]: ')
+while (param['component'] != '3comp'
+       and param['component'] != 'hori'
+       and param['component'] != 'vert'):
+    param['component'] = input('composante [3comp/hori/vert]: ')
 
 print('')
 param['ratioSP'] = None
