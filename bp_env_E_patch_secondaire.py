@@ -434,6 +434,7 @@ for station in lst_fch:                                                         
         st = read(station)                                                                                          #
         os.chdir(path_retrait)
         st_r = read(st[0].stats.station)
+        st_r_max = (st_r[0].data).max()
         tr = np.zeros(st[0].stats.npts)                                                                                             #
         cpt = 0                                                                                                     #
         for i in range(len(tr)):                                                                                              #
@@ -442,7 +443,7 @@ for station in lst_fch:                                                         
             if scis == scission[0]:
                 tr[i] = st[0].data[i]*st_r[0].data[i]
             else:
-                tr[i] = st[0].data[i]*((st_r[0].data).max() - st_r[0].data[i])
+                tr[i] = st[0].data[i]*(st_r_max - st_r[0].data[i])
             #if (time >= identified_patch[st[0].stats.station][0][0]                                                 #
             #    and time <= identified_patch[st[0].stats.station][0][1]):                                           #
                 #tr[cpt] = 0.2*tr[cpt]                                                                              #
