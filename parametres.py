@@ -118,7 +118,8 @@ while ((type(param['frq_max']) is float) == False
 # it is stored in the parameters dictionnary with the kry 'frq_band'
 param['frq_band'] = str(param['frq_min']) + '-' + str(param['frq_max'])
 
-# initialisation of 
+# initialisation of the component
+# 
 print('#################')
 print('### component ###')
 print('#################')
@@ -130,7 +131,9 @@ while (param['component'] != '3comp'
        and param['component'] != 'vert'):
     param['component'] = input('composante [3comp/hori/vert]: ')
 
-print('')
+print('###############')
+print('### ratioSP ###')
+print('###############')
 param['ratioSP'] = None
 print('   Comparison between maximum amplitude of S and P waves')
 print('   Expected value: strictly positive integer or float')
@@ -139,24 +142,30 @@ while ((type(param['ratioSP']) is float) == False
        or param['ratioSP'] <= 0):
     param['ratioSP'] = float(input('ratio S/P (> 1): '))
 
-print('')
-param['smooth'] = None
+print('################')
+print('### l_smooth ###')
+print('################')
+param['l_smooth'] = None
 print('   Expected value: positive integer or float')
 print('   If the value is smaller than delay between two snapshots,')
 print('   the value will be adapted to this delay')
-while ((type(param['smooth']) is float) == False
-       or param['smooth'] < 0):
-    param['smooth'] = float(input('longueur fenetre smooth (s): '))
+while ((type(param['l_smooth']) is float) == False
+       or param['l_smooth'] < 0):
+    param['l_smooth'] = float(input('longueur fenetre smooth (s): '))
 
-print('')
-param['impulse'] = None
+print('#################')
+print('### l_impulse ###')
+print('#################')
+param['l_impulse'] = None
 print('   Expected value: strictly positive integer or float')
 print('   Too small values are non sense')
-while ((type(param['impulse']) is float) == False
-       or param['impulse'] <= 0):
-    param['impulse'] = float(input('longueur fenetre impulse (s): '))
+while ((type(param['l_impulse']) is float) == False
+       or param['l_impulse'] <= 0):
+    param['l_impulse'] = float(input('longueur fenetre impulse (s): '))
 
-print('')
+print('#################')
+print('### angle_min ###')
+print('#################')
 param['angle_min'] = None
 print('   Expected value: positive integer of float between up to 180 deg')
 print('   0 deg is North, counting clockwise')
@@ -166,7 +175,9 @@ while ((type(param['angle_min']) is float) == False
        or param['angle_min'] >= 180):
     param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
 
-print('')
+print('#################')
+print('### angle_max ###')
+print('#################')
 param['angle_max'] = None
 print('   Expected value: positive integer or float between angle_min(previous value) and 180 deg')
 print('   0 deg is North, counting clockwise')
@@ -178,14 +189,18 @@ while ((type(param['angle_max']) is float) == False
 
 param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']))
 
-print('')
+print('##########')
+print('### vP ###')
+print('##########')
 param['vP'] = None
 print('   Expected value: strictly positive integer or float in km.s-1')
 while ((type(param['vP']) is float) == False
        or param['vP'] <= 0):
     param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
 
-print('')
+print('##########')
+print('### vS ###')
+print('##########')
 param['vS'] = None
 print('   Expected value: strictly positive integer of float in km.s-1')
 print('   Of course P-waves are faster so value should be smaller than vP(previous value)')
@@ -194,15 +209,19 @@ while ((type(param['vS']) is float) == False
        or param['vS'] >= param['vP']):
     param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
 
-print('')
-param['ondes_select'] = None
+print('######################')
+print('### selected_waves ###')
+print('######################')
+param['selected_waves'] = None
 print('   Expected value: > P < or > S <')
 print('   Other values are not accepted')
-while (param['ondes_select'] != 'P'
-       and param['ondes_select'] != 'S'):
-    param['ondes_select'] = input('hypothese de bp [P/S]: ')
+while (param['selected_waves'] != 'P'
+       and param['selected_waves'] != 'S'):
+    param['selected_waves'] = input('hypothese de bp [P/S]: ')
 
-print('')
+print('##############')
+print('### strike ###')
+print('##############')
 param['strike'] = None
 print('   Strike direction of the fault')
 print('   Expected value: positive integer or float up to 360 deg')
@@ -213,7 +232,9 @@ while ((type(param['strike']) is float) == False
        or param['strike'] >= 360):
     param['strike'] = float(input('strike (224?): '))
 
-print('')
+print('###########')
+print('### dip ###')
+print('###########')
 param['dip'] = None
 print('   Dip direction of the fault')
 print('   Expected value: positive integer or float up to 90 deg')
@@ -224,7 +245,9 @@ while ((type(param['dip']) is float) == False
        or param['dip'] > 90):
     param['dip'] = float(input('dip (65?): '))
 
-print('')
+print('###############')
+print('### l_fault ###')
+print('###############')
 param['l_fault'] = None
 print('   Length of the fault, that means in the direction of the strike')
 print('   Width can be bigger than length, no restriction')
@@ -234,7 +257,9 @@ while ((type(param['l_fault']) is float) == False
        or param['l_fault'] <= 0):
     param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
 
-print('')
+print('###############')
+print('### w_fault ###')
+print('###############')
 param['w_fault'] = None
 print('   Width of the fault, that means in the direction of the dip')
 print('   Width can be bigger than length, no restriction')
@@ -245,56 +270,64 @@ while ((type(param['w_fault']) is float) == False
        or param['w_fault'] <= 0):
     param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
 
-print('')
-param['pas_l'] = None
+print('####################')
+print('### l_fault_step ###')
+print('####################')
+param['l_fault_step'] = None
 print('   Length of each subfault in the direction of the strike')
 print('   Expected value: strictly positive integer of float in km')
 print('   Should be smaller than l_fault to have at least few points')
-while ((type(param['pas_l']) is float) == False
-       or param['pas_l'] <= 0
-       or param['pas_l'] >= param['l_fault']):
-    param['pas_l'] = float(input('pas longueur fault (km): '))
+while ((type(param['l_fault_step']) is float) == False
+       or param['l_fault_step'] <= 0
+       or param['l_fault_step'] >= param['l_fault']):
+    param['l_fault_step'] = float(input('pas longueur fault (km): '))
 
-print('')
-param['pas_w'] = None
+print('####################')
+print('### w_fault_step ###')
+print('####################')
+param['w_fault_step'] = None
 print('   Width of each subfault in the direction of the dip')
 print('   Expected value: strictly positive integer or float in km')
 print('   Should be smaller than w_fault to have at least few points')
-while ((type(param['pas_w']) is float) == False
-       or param['pas_w'] <= 0
-       or param['pas_w'] >= param['w_fault']):
-    param['pas_w'] = float(input('pas largeur fault (km): '))
+while ((type(param['w_fault_step']) is float) == False
+       or param['w_fault_step'] <= 0
+       or param['w_fault_step'] >= param['w_fault']):
+    param['w_fault_step'] = float(input('pas largeur fault (km): '))
 
-print('')
-param['samp_rate'] = None
+print('####################')
+print('### bp_samp_rate ###')
+print('####################')
+param['bp_samp_rate'] = None
 print('   Number of snapshots per sec')
 print('   Expected value: strictly positive integer or float below 100 (station sampling rate))')
 print('   Suggested values are between 0.5 and 10')
-while ((type(param['samp_rate']) is float) == False
-       or param['samp_rate'] > 100
-       or param['samp_rate'] <= 0):
-    param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
+while ((type(param['bp_samp_rate']) is float) == False
+       or param['bp_samp_rate'] > 100
+       or param['bp_samp_rate'] <= 0):
+    param['bp_samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
 
-if 1./param['samp_rate'] > param['smooth']:
+if 1./param['bp_samp_rate'] > param['l_smooth']:
     print('')
     print('####################################################################')
-    print('Input value for smooth window length was: ' + str(param['smooth']) + ' s')
-    print('However,  the delay between two bp snapshots is higher: ' + str(1./param['samp_rate']) + ' s')
-    param['smooth'] = 1./param['samp_rate']
-    print('Therefore, the smooth window length is defined again by the following value: ' + str(param['smooth']) + ' s')
+    print('Input value for smooth window length was: ' + str(param['l_smooth']) + ' s')
+    print('However,  the delay between two bp snapshots is higher: ' + str(1./param['bp_samp_rate']) + ' s')
+    param['l_smooth'] = 1./param['bp_samp_rate']
+    print('Therefore, the smooth window length is defined again by the following value: ' + str(param['l_smooth']) + ' s')
     print('####################################################################')
 
-print('')
-param['length_t'] = None
+print('#################')
+print('### bp_l_time ###')
+print('#################')
+param['bp_l_time'] = None
 print('   Period of back projection, from 5 seconds before the start of the rupture')
 print('   Expected value: integer or float between 5 and 50 sec')
 print('   Suggested values are between 10 and 30 sec')
 print('   For Mw ~6~ 20 sec')
 print('   For Mw ~7~ 30 sec')
-while ((type(param['length_t']) is float) == False
-       or param['length_t'] <= 5
-       or param['length_t'] >= 50):
-    param['length_t'] = float(input('duree de la bp (> 5 sec): '))
+while ((type(param['bp_l_time']) is float) == False
+       or param['bp_l_time'] <= 5
+       or param['bp_l_time'] >= 50):
+    param['bp_l_time'] = float(input('duree de la bp (> 5 sec): '))
 
 path = (param['path_origin']
         + '/Kumamoto/historique_parametres')
@@ -363,47 +396,47 @@ for ppth in lst_pth:
         paparam = 'parametres_' + yy + mm + dd + '-' + hh + mi + ss + '.txt'
     os.chdir(ppth)
     with open(paparam, 'w') as my_ext:
-        my_ext.write('         path_origin: ' + param['path_origin'] + '\n')
-        my_ext.write('             dossier: ' + param['dossier'] + '\n')
+        my_ext.write('         root folder: ' + param['root'] + '\n')
+        my_ext.write('               event: ' + param['event'] + '\n')
         my_ext.write('             R_Earth: ' + str(param['R_Earth']) + ' km\n')
-        my_ext.write('            couronne: ' + param['couronne'] + ' km\n')
-        my_ext.write('           band_freq: ' + param['band_freq'] + ' Hz\n')
-        my_ext.write('          composante: ' + param['composante'] + '\n')
+        my_ext.write('         hypo_interv: ' + param['hypo_interv'] + ' km\n')
+        my_ext.write('            frq_band: ' + param['frq_band'] + ' Hz\n')
+        my_ext.write('           component: ' + param['component'] + '\n')
         my_ext.write('           ratio S/P: ' + str(param['ratioSP']) + '\n')
-        my_ext.write('      fenetre smooth: ' + str(param['smooth']) + ' s\n')
-        my_ext.write('     fenetre impulse: ' + str(param['impulse']) + ' s\n')
-        my_ext.write('     fenetre azimuth: ' + param['angle'] + ' deg\n')
-        my_ext.write('           vitesse P: ' + str(param['vP']) + ' km/s # 5.8\n')
-        my_ext.write('           vitesse S: ' + str(param['vS']) + ' km/s # 3.4\n')
-        my_ext.write('     hypothese de bp: ' + param['ondes_select'] + '\n')
+        my_ext.write('       smooth window: ' + str(param['l_smooth']) + ' s\n')
+        my_ext.write('      impulse window: ' + str(param['l_impulse']) + ' s\n')
+        my_ext.write('      azimuth window: ' + param['angle'] + ' deg\n')
+        my_ext.write('          P-velocity: ' + str(param['vP']) + ' km/s # 5.8\n')
+        my_ext.write('          S-velocity: ' + str(param['vS']) + ' km/s # 3.4\n')
+        my_ext.write('      selected waves: ' + param['selected_waves'] + '\n')
         my_ext.write('        fault strike: ' + str(param['strike']) + ' deg # 224 for mainshock from Kubo et al. (2016)\n')
         my_ext.write('           fault dip: ' + str(param['dip']) + ' deg # 65 for mainshock from Kubo et al. (2016)\n')
         my_ext.write('        length fault: ' + str(param['l_fault']) + ' km\n')
         my_ext.write('         width fault: ' + str(param['w_fault']) + ' km\n')
-        my_ext.write('pas direction strike: ' + str(param['pas_l']) + ' km\n')
-        my_ext.write('   pas direction dip: ' + str(param['pas_w']) + ' km\n')
-        my_ext.write('   echantillonage bp: ' + str(param['samp_rate']) + ' im/s\n')
-        my_ext.write('         duree de bp: ' + str(param['length_t']) + ' s\n')
+        my_ext.write('   length fault step: ' + str(param['l_fault_step']) + ' km\n')
+        my_ext.write('    width fault step: ' + str(param['w_fault_step']) + ' km\n')
+        my_ext.write('    bp sampling rate: ' + str(param['bp_samp_rate']) + ' im/s\n')
+        my_ext.write('      bp length time: ' + str(param['bp_l_time']) + ' s\n')
         
 print('')
 print('')
 print('      You have defined the following parameters:')
-print('                  EQ: ' + param['dossier'])
-print('          Hyp. Dist.: ' + param['couronne'] + '          km')
-print('          Freq. Band: ' + param['band_freq'] + '        Hz')
-print('          Composante: ' + param['composante'])
+print('               event: ' + param['event'])
+print('        Hyp. Interv.: ' + param['hypo_interv'] + '          km')
+print('          Freq. Band: ' + param['frq_band'] + '        Hz')
+print('           Component: ' + param['component'])
 print('           S/P ratio: ' + str(param['ratioSP']))
-print('       Smooth window: ' + str(param['smooth']) + '            s')
-print('      Impulse window: ' + str(param['impulse']) + '            s')
+print('       Smooth window: ' + str(param['l_smooth']) + '            s')
+print('      Impulse window: ' + str(param['l_impulse']) + '            s')
 print('             Azimuth: ' + str(param['angle']) + '          deg')
 print('              P vel.: ' + str(param['vP']) + '            km.s-1')
 print('              S vel.: ' + str(param['vS']) + '            km.s-1')
-print('          Used waves: ' + param['ondes_select'])
+print('      Selected waves: ' + param['selected_waves'])
 print('         Grid strike: ' + str(param['strike']) + '          deg')
 print('            Grid dip: ' + str(param['dip']) + '           deg')
 print('         Grid length: ' + str(param['l_fault']) + '           km')
 print('          Grid width: ' + str(param['w_fault']) + '           km')
-print('        Reso. length: ' + str(param['pas_l']) + '            km')
-print('         Reso. width: ' + str(param['pas_w']) + '            km')
-print('   Nbre bp snapshots: ' + str(param['samp_rate']) + '            s-1')
-print('         Bp duration: ' + str(param['length_t']) + '           s')
+print('        Reso. length: ' + str(param['l_fault_step']) + '            km')
+print('         Reso. width: ' + str(param['w_fault_step']) + '            km')
+print('   Nbre bp snapshots: ' + str(param['bp_samp_rate']) + '            s-1')
+print('         Bp duration: ' + str(param['bp_l_time']) + '           s')
