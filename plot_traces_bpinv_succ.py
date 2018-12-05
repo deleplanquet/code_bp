@@ -24,9 +24,15 @@ path = (path_origin + '/'
 path_data = (path + '/'
              + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz')
 
+#lst_pth_dt = [path_data + '/'
+#              + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_bpinv/'
+#              + 'smoothed_traces']
+
+#lst_pth_dt.append(lst_pth_dt[0][:-22]
 lst_pth_dt = [path_data + '/'
-              + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg_patch_85_complementaire_bp_inv/'
-              + 'smoothed_traces']
+             + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg'
+              + '_patch_90_patch_90_complementaire_bp_inv/'
+              + 'smoothed_traces']#)
 
 path_results = (path + '/'
                 + dossier + '_results/'
@@ -41,13 +47,15 @@ if os.path.isdir(pth_rslt_png) == False:
 if os.path.isdir(pth_rslt_pdf) == False:
     os.makedirs(pth_rslt_pdf)
 
-for i in range(17):
-    lst_pth_dt.append(lst_pth_dt[i][:-38] + '_patch_85_complementaire_bp_inv/smoothed_traces')
+for i in range(15):
+    lst_pth_dt.append(lst_pth_dt[i][:-38] + '_patch_90_complementaire_bp_inv/smoothed_traces')
 
 lst_sta = os.listdir(lst_pth_dt[0])
+clr = ['red', 'orange', 'yellow', 'green', 'blue', 'violet']
 
 for station in lst_sta:
     fig, ax = plt.subplots(1, 1)
+    ax.set_color_cycle(['red', 'black', 'yellow'])
     lab = 0
     vleft = 0
     vright = 50
@@ -56,10 +64,15 @@ for station in lst_sta:
         os.chdir(succ)
         st = read(station)
         t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        ax.plot(t,
-                st[0].data,
-                lw = 0.5,
-                label = lab)
+        #ax.plot(t,
+        #        st[0].data,
+        #        lw = 0.5,
+        #        label = lab)
+        ax.fill_between(t,
+                        0,
+                        st[0].data,
+                        color = clr[lst_pth_dt.index(succ)%6],
+                        label = lab)
 
         cpt = 0
         tmp = 0
@@ -77,19 +90,19 @@ for station in lst_sta:
             while tmp == 0:
                 if st[0].data[cpt] > 0:
                     tmp = 1
-                    vleft = cpt/100
+                    vleft = cpt/st[0].stats.sampling_rate
                 cpt = cpt + 1
             cpt = 0
             tmp = 0
             while tmp == 0:
                 if st[0].data[-cpt] > 0:
                     tmp = 1
-                    vright = 50 - cpt/100
+                    vright = 50 - cpt/st[0].stats.sampling_rate
                 cpt = cpt + 1
 
         lab = str(int(lab) + 1)
 
-    ax.set_xlim([vleft - 6, vright + 1])
+    ax.set_xlim([vleft - 1, vright + 1])
     ax.set_xlabel('Time(s)', fontsize = 8)
     ax.set_ylabel('Normalised energy', fontsize = 8)
     os.chdir(pth_rslt_png)
