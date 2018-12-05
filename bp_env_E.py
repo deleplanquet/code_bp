@@ -138,6 +138,8 @@ def file_length(fname):
             pass
     return i + 1
 
+print('Ne pas oublier de changer la valeur de thresh si on souhaite autre chose qu\'un threshold a 85 %')
+
 #recuperation position stations
 print('     recuperation position stations')
 
