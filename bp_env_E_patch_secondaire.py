@@ -505,24 +505,25 @@ for scis in scission:
 # bp inverse
 ###############################
 
-stckmx = stack[1][:, :, :].max()
-thresh = 85 *0.01
+stckmx = stack[0][:, :, :].max()
+thresh = int(selected_patch[-2:]) *0.01
 
 for sta in lst_fch:
     os.chdir(path_data_1)
     st = read(sta)
+    #print(sta, st[0].stats.starttime, dict_vel_used[st[0].stats.station], t_origin_rupt)
     ista = lst_fch.index(sta)
     station = {}
     for i in range(len(stack[1][:, 0, 0])):
         for j in range(len(stack[1][0, :, 0])):
             for k in range(len(stack[1][0, 0, :])):
-                if stack[1][i, j, k] > thresh*stckmx:
+                if stack[0][i, j, k] > thresh*stckmx:
                     tshift = (travt[ista][i,j]
                               - (st[0].stats.starttime - t_origin_rupt)
                               + dict_vel_used[st[0].stats.station]
                               - 5
                               + k/samp_rate)
-                    station[tshift] = stack[1][i, j, k]
+                    station[tshift] = stack[0][i, j, k]
     os.chdir(path_bpinv)
     with open(st[0].stats.station, 'wb') as mfch:
         mpck = pickle.Pickler(mfch)
