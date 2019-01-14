@@ -40,26 +40,31 @@ ax[0].plot(t1, st1[0],
            color = 'black',
            lw = 0.5)
 ax[0].set_xlim([3.8, 3.8 + 50])
+#ax[0].set_ylim([-3e3, 4e3])
 ax[1].plot(t2, st2[0],
            color = 'black',
            lw = 0.5)
 ax[1].set_xlim([0, 50])
+#ax[1].set_ylim([-3e5, 4e5])
 ax[2].plot(t3, st3[0],
            color = 'black',
            lw = 0.5)
 ax[2].set_xlim([0, 50])
+#ax[2].set_ylim([-3e5, 4e5])
 ax[3].plot(t4, st4[0],
            color = 'black',
            lw = 0.5)
 ax[3].set_xlim([0, 50])
 ax[3].set_ylim(bottom = 0)
+#ax[3].set_ylim([0, 1e11])
 ax[4].plot(t4, dat5,
            color = 'black',
            lw = 0.5)
 ax[4].set_xlim([0, 50])
 ax[4].set_ylim(bottom = 0)
+#ax[4].set_ylim([0, 1e11])
 
-plt.subplots_adjust(hspace = 0.001)
+plt.subplots_adjust(hspace = 0.1)
 ax[0].xaxis.set_visible(False)
 ax[1].xaxis.set_visible(False)
 ax[2].xaxis.set_visible(False)
@@ -88,11 +93,19 @@ ax[4].ticklabel_format(style = 'scientific',
                        axis = 'y',
                        scilimits = (0, 2))
 
-ax[0].text(4, 0.8*max(st1[0].data), '1e3', fontsize = 8)
-ax[1].text(0.2, 0.8*max(st2[0].data), '1e5', fontsize = 8)
-ax[2].text(0.2, 0.8*max(st3[0].data), '1e5', fontsize = 8)
-ax[3].text(0.2, 0.9*max(st4[0].data), '1e11', fontsize = 8)
-ax[4].text(0.2, 0.9*max(dat5), '1e10', fontsize = 8)
+ax[0].yaxis.set_label_position('right')
+ax[1].yaxis.set_label_position('right')
+ax[2].yaxis.set_label_position('right')
+ax[3].yaxis.set_label_position('right')
+ax[4].yaxis.set_label_position('right')
+
+offset1 = ax[0].yaxis.get_major_formatter().get_offset()
+print(offset1)
+ax[0].text(53.6, 0.8*max(st1[0].data), offset1, fontsize = 8, ha = 'right')
+ax[1].text(49.8, 0.8*max(st2[0].data), '1e5', fontsize = 8, ha = 'right')
+ax[2].text(49.8, 0.8*max(st3[0].data), '1e5', fontsize = 8, ha = 'right')
+ax[3].text(49.8, 0.9*max(st4[0].data), '1e11', fontsize = 8, ha = 'right')
+ax[4].text(49.8, 0.9*max(dat5), '1e10', fontsize = 8, ha = 'right')
 
 ax[0].tick_params(labelsize = 8)
 ax[1].tick_params(labelsize = 8)
@@ -106,11 +119,11 @@ ax[2].yaxis.offsetText.set_fontsize(8)
 ax[3].yaxis.offsetText.set_fontsize(8)
 ax[4].yaxis.offsetText.set_fontsize(8)
 
-ax[0].yaxis.set_offset_position('right')
-ax[1].yaxis.set_offset_position('right')
-ax[2].yaxis.set_offset_position('right')
-ax[3].yaxis.set_offset_position('right')
-ax[4].yaxis.set_offset_position('right')
+#ax[0].yaxis.set_offset_position('right')
+#ax[1].yaxis.set_offset_position('right')
+#ax[2].yaxis.set_offset_position('right')
+#ax[3].yaxis.set_offset_position('right')
+#ax[4].yaxis.set_offset_position('right')
 
 ax[4].set_xlabel('Time (s)',
                  fontsize = 8)
