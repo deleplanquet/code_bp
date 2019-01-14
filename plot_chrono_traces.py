@@ -39,7 +39,7 @@ dat5 = smooth(st4[0].data, int(0.1/st4[0].stats.delta))
 ax[0].plot(t1, st1[0],
            color = 'black',
            lw = 0.5)
-ax[0].set_xlim([3.8, 3.6 + 50])
+ax[0].set_xlim([3.8, 3.8 + 50])
 ax[1].plot(t2, st2[0],
            color = 'black',
            lw = 0.5)
@@ -52,10 +52,12 @@ ax[3].plot(t4, st4[0],
            color = 'black',
            lw = 0.5)
 ax[3].set_xlim([0, 50])
+ax[3].set_ylim(bottom = 0)
 ax[4].plot(t4, dat5,
            color = 'black',
            lw = 0.5)
 ax[4].set_xlim([0, 50])
+ax[4].set_ylim(bottom = 0)
 
 plt.subplots_adjust(hspace = 0.001)
 ax[0].xaxis.set_visible(False)
@@ -86,6 +88,12 @@ ax[4].ticklabel_format(style = 'scientific',
                        axis = 'y',
                        scilimits = (0, 2))
 
+ax[0].text(4, 0.8*max(st1[0].data), '1e3', fontsize = 8)
+ax[1].text(0.2, 0.8*max(st2[0].data), '1e5', fontsize = 8)
+ax[2].text(0.2, 0.8*max(st3[0].data), '1e5', fontsize = 8)
+ax[3].text(0.2, 0.9*max(st4[0].data), '1e11', fontsize = 8)
+ax[4].text(0.2, 0.9*max(dat5), '1e10', fontsize = 8)
+
 ax[0].tick_params(labelsize = 8)
 ax[1].tick_params(labelsize = 8)
 ax[2].tick_params(labelsize = 8)
@@ -98,17 +106,23 @@ ax[2].yaxis.offsetText.set_fontsize(8)
 ax[3].yaxis.offsetText.set_fontsize(8)
 ax[4].yaxis.offsetText.set_fontsize(8)
 
+ax[0].yaxis.set_offset_position('right')
+ax[1].yaxis.set_offset_position('right')
+ax[2].yaxis.set_offset_position('right')
+ax[3].yaxis.set_offset_position('right')
+ax[4].yaxis.set_offset_position('right')
+
 ax[4].set_xlabel('Time (s)',
                  fontsize = 8)
-ax[0].set_ylabel('Acceleration (cm/s/s)',
+ax[0].set_ylabel('Acceleration\n(cm/s/s)',
                  fontsize = 8)
-ax[1].set_ylabel('Velocity (cm/s)',
+ax[1].set_ylabel('Velocity\n(cm/s)',
                  fontsize = 8)
-ax[2].set_ylabel('2 to 8 Hz velocity (cm/s)',
+ax[2].set_ylabel('2 to 8 Hz\nvelocity\n(cm/s)',
                  fontsize = 8)
-ax[3].set_ylabel('Envelope (cm*cm/s/s)',
+ax[3].set_ylabel('Envelope\n(cm*cm/s/s)',
                  fontsize = 8)
-ax[4].set_ylabel('Smoothed envelope (cm*cm/s/s)',
+ax[4].set_ylabel('Smoothed\nenvelope\n(cm*cm/s/s)',
                  fontsize = 8)
 
 os.chdir(path)
