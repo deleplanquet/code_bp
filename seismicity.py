@@ -156,17 +156,17 @@ for i in range(len(x_flt1)):
     xx2, yy2 = m(x_flt1[i][1], y_flt1[i][1])
     axa.plot((xx1, xx2),
              (yy1, yy2),
-             color = 'pink',
+             color = 'fuchsia',
              zorder = 3,
-             linewidth = 0.8)
+             linewidth = 1.5)
 for i in range(len(x_flt2)):
     xx1, yy1 = m(x_flt2[i][0], y_flt2[i][0])
     xx2, yy2 = m(x_flt2[i][1], y_flt2[i][1])
     axa.plot((xx1, xx2),
              (yy1, yy2),
-             color = 'pink',
+             color = 'fuchsia',
              zorder = 3,
-             linewidth = 0.8)
+             linewidth = 1.5)
 
 os.chdir(path_sta)
 lst_sta = os.listdir(path_sta)
@@ -402,17 +402,17 @@ for i in range(len(x_flt1)):
     xx2, yy2 = m2(x_flt1[i][1], y_flt1[i][1])
     ax2.plot((xx1, xx2),
              (yy1, yy2),
-             color = 'pink',
+             color = 'fuchsia',
              zorder = 3,
-             linewidth = 0.8)
+             linewidth = 1.5)
 for i in range(len(x_flt2)):
     xx1, yy1 = m2(x_flt2[i][0], y_flt2[i][0])
     xx2, yy2 = m2(x_flt2[i][1], y_flt2[i][1])
     ax2.plot((xx1, xx2),
              (yy1, yy2),
-             color = 'pink',
+             color = 'fuchsia',
              zorder = 3,
-             linewidth = 0.8)
+             linewidth = 1.5)
 
 #Kumamoto sequence
 for mnsh in ms_lst:
