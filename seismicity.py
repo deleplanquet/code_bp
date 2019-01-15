@@ -150,13 +150,15 @@ x_flt2 = [[130.82, 130.75],
 y_flt2 = [[32.77, 32.63],
           [32.63, 32.35],
           [32.37, 32.18]]
+fltclr = ['fuchsia',
+          'pink']
 
 for i in range(len(x_flt1)):
     xx1, yy1 = m(x_flt1[i][0], y_flt1[i][0])
     xx2, yy2 = m(x_flt1[i][1], y_flt1[i][1])
     axa.plot((xx1, xx2),
              (yy1, yy2),
-             color = 'fuchsia',
+             color = fltclr[0],
              zorder = 3,
              linewidth = 1.5)
 for i in range(len(x_flt2)):
@@ -164,7 +166,7 @@ for i in range(len(x_flt2)):
     xx2, yy2 = m(x_flt2[i][1], y_flt2[i][1])
     axa.plot((xx1, xx2),
              (yy1, yy2),
-             color = 'fuchsia',
+             color = fltclr[1],
              zorder = 3,
              linewidth = 1.5)
 
@@ -307,6 +309,25 @@ for i in range(len(xc) - 1):
              linewidth = 0.5,
              zorder = 3)
 
+#nom de faille
+xnflt = [130.65,
+         130.6]
+ynflt = [32.95,
+         32.55]
+nflt = ['Futagawa Fault',
+        'Hinagu Fault']
+rotflt = [62,
+          41]
+
+for i in range(len(nflt)):
+    xx, yy = m(xnflt[i], ynflt[i])
+    axa.text(xx, yy,
+             nflt[i],
+             zorder = 3,
+             color = fltclr[i],
+             ha = 'center',
+             rotation = 90 - rotflt[i])
+
 #legend
 axa.legend(fontsize = 6,
            loc = 1)
@@ -397,12 +418,13 @@ ax2.scatter(x2_aft,
             linewidth = 0.1,
             label = 'JMA hypo. Mw 7.1 - 5 days after')
 
+#Failles
 for i in range(len(x_flt1)):
     xx1, yy1 = m2(x_flt1[i][0], y_flt1[i][0])
     xx2, yy2 = m2(x_flt1[i][1], y_flt1[i][1])
     ax2.plot((xx1, xx2),
              (yy1, yy2),
-             color = 'fuchsia',
+             color = fltclr[0],
              zorder = 3,
              linewidth = 1.5)
 for i in range(len(x_flt2)):
@@ -410,7 +432,7 @@ for i in range(len(x_flt2)):
     xx2, yy2 = m2(x_flt2[i][1], y_flt2[i][1])
     ax2.plot((xx1, xx2),
              (yy1, yy2),
-             color = 'fuchsia',
+             color = fltclr[1],
              zorder = 3,
              linewidth = 1.5)
 
@@ -474,6 +496,21 @@ for mnsh in ms_lst:
              ha = 'center',
              va = 'center',
              color = 'black')
+
+#Nom de faille
+xnflt = [130.72,
+         130.75]
+ynflt = [32.81,
+         32.6]
+
+for i in range(len(nflt)):
+    xx, yy = m2(xnflt[i], ynflt[i])
+    ax2.text(xx, yy,
+             nflt[i],
+             zorder = 3,
+             color = fltclr[i],
+             ha = 'center',
+             rotation = 90 - rotflt[i])
 
 ax2.legend(fontsize = 6,
            loc = 1)
