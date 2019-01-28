@@ -1,0 +1,96 @@
+import os
+from obspy import read
+from obspy import Trace
+import numpy as np
+import math
+import pickle
+
+#conversion angle degre -> radian
+def d2r(angle):
+    return angle*math.pi/180
+
+#conversion coordonnees geographiques -> cartesien
+def geo2cart(vect):
+    r = vect[0]
+    rlat = d2r(vect[1])
+    rlon = d2r(vect[2])
+    xx = r*math.cos(rlat)*math.cos(rlon)
+    yy = r*math.cos(rlat)*math.sin(rlon)
+    zz = r*math.sin(rlat)
+    return [xx, yy, zz]
+
+#distance entre deux points, coordonnees cartesiennes
+def dist(vect1, vect2):
+    x1, y1, z1 = geo2cart(vect1)
+    x2, y2, z2 = geo2cart(vect2)
+    return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
+
+#sigma gaussienne
+# la largeur a mi-hauteur d'une gaussienne est egale a 2,3548 fois son ecart type (wikipwdia, a verifier)
+# on va supposer un signal d'amplitude maximale egale a 1 (facteur egale a 1 devant l'exponentielle)
+# et une largeur a mi-hauteur de 1 (sec) (sigma = 1/2.3548)
+sigma = 1./2.3548
+#        /    (x - dist)*(x - dist)  \
+# f = exp| -  ---------------------  |
+#        \        2*sigma*sigma      /
+
+path_origin = os.getcwd()[:-6]
+os.chdir(path_origin + '/Kumamoto')
+with open('parametres_bin', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    param = mdpk.load()
+
+R_Earth = param['R_Earth']
+vS = param['vS']
+dossier_ms = '20160416012500'
+dossier_dirac = '20160400000001'
+
+os.chdir(path_origin + '/Kumamoto')
+with open('ref_seismes_bin', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    dict_seis = mdpk.load()
+
+lat_hyp = dict_seis[dossier_ms]['lat']
+lon_hyp = dict_seis[dossier_ms]['lon']
+dep_hyp = dict_seis[dossier_ms]['dep']
+
+pos_hyp = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
+
+path_data = (path_origin + '/'
+             + 'Kumamoto/'
+             + dossier_ms + '/'
+             + dossier_ms + '_sac')
+
+path_results = (path_origin + '/'
+                + 'Kumamoto/'
+                + dossier_dirac + '/'
+                + dossier_dirac + '_sac')
+
+if os.path.isdir(path_results) == False:
+    os.makedirs(path_results)
+
+lst_fch = []
+lst_fch = os.listdir(path_data)
+
+for fichier in lst_fch:
+    if (('EW1' in fichier) or ('NS1' in fichier) or ('UD1' in fichier)) == False:
+        os.chdir(path_data)
+        st = read(fichier)
+        #vecteur de base pour creer le signal dirac
+        vect = np.linspace(0, st[0].stats.npts/st[0].stats.sampling_rate, st[0].stats.npts)
+        #position station et distance a l'hypocentre
+        pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel,
+                   st[0].stats.sac.stla,
+                   st[0].stats.sac.stlo]
+        dst = dist(pos_hyp, pos_sta)
+        if dst <= 100:
+            #bruit blanc distribution normale
+            nois = np.random.normal(0, 1, st[0].stats.npts)
+            tr = [math.exp(-(pow(a - dst/vS, 2))/(2*pow(sigma, 2))) + 0.1*b for a, b in zip(vect, nois)]
+            tr = Trace(np.asarray(tr, np.ndarray), st[0].stats)
+            os.chdir(path_results)
+            if dst <= 100:
+                if ('EW2' in fichier) or ('NS2' in fichier) or ('UD2' in fichier) == True:
+                    tr.write(fichier[:6] + fichier[-8:], format = 'SAC')
+                else:
+                    tr.write(fichier[:6] + fichier[-7:], format = 'SAC')
