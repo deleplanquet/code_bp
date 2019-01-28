@@ -101,8 +101,8 @@ for station in lst_fch_x:
 
     os.chdir(pth_rslt)
     tr_x.write(station[:-4] + '_' + bdfrq + 'Hz.sac', format = 'SAC')
-    tr_y.write(lst_fch_y[lst_fch_x.index(station)][:-4] + '-' + bdfrq + 'Hz.sac', format = 'SAC')
-    tr_z.write(lst_fch_z[lst_fch_x.index(station)][:-4] + '-' + bdfrq + 'Hz.sac', format = 'SAC')
+    tr_y.write(lst_fch_y[lst_fch_x.index(station)][:-4] + '_' + bdfrq + 'Hz.sac', format = 'SAC')
+    tr_z.write(lst_fch_z[lst_fch_x.index(station)][:-4] + '_' + bdfrq + 'Hz.sac', format = 'SAC')
 
 
 
