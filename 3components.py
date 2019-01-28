@@ -74,13 +74,16 @@ for station in lst_fch_x:
         tr3 = [math.sqrt(a**2 + b**2 + c**2) for a,b,c in zip(tr_x, tr_y, tr_z)]
         os.chdir(pth_rslt_v)
         trv = Trace(np.asarray(tr_z), stz[0].stats)
-        trv.write(station[:17] + 'vel_' + couronne + 'km_' + frq + 'Hz_vert.sac', format = 'SAC')
+        trv.write(station[:6]
+                  + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_vert.sac', format = 'SAC')
         os.chdir(pth_rslt_h)
         trh = Trace(np.asarray(trh), stz[0].stats)
-        trh.write(station[:17] + 'vel_' + couronne + 'km_' + frq + 'Hz_hori.sac', format = 'SAC')
+        trh.write(station[:6]
+                  + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_hori.sac', format = 'SAC')
         os.chdir(pth_rslt)
         tr3 = Trace(np.asarray(tr3), stz[0].stats)
-        tr3.write(station[:17] + 'vel_' + couronne + 'km_' + frq + 'Hz.sac', format = 'SAC')
+        tr3.write(station[:6]
+                  + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz.sac', format = 'SAC')
     else:
         print('     ', stx[0].stats.station, sty[0].stats.station, stz[0].stats.station)
 
