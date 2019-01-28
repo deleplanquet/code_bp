@@ -72,6 +72,8 @@ if os.path.isdir(path_results) == False:
 lst_fch = []
 lst_fch = os.listdir(path_data)
 
+factor = 1*100*100
+
 for fichier in lst_fch:
     if (('EW1' in fichier) or ('NS1' in fichier) or ('UD1' in fichier)) == False:
         os.chdir(path_data)
@@ -85,8 +87,8 @@ for fichier in lst_fch:
         dst = dist(pos_hyp, pos_sta)
         if dst <= 100:
             #bruit blanc distribution normale
-            nois = np.random.normal(0, 1, st[0].stats.npts)
-            tr = [math.exp(-(pow(a - dst/vS, 2))/(2*pow(sigma, 2))) + 0.1*b for a, b in zip(vect, nois)]
+            nois = np.random.normal(0, 0.5, st[0].stats.npts)
+            tr = [math.exp(-(pow(a - dst/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2) + 0.1*b for a, b in zip(vect, nois)]
             tr = Trace(np.asarray(tr, np.ndarray), st[0].stats)
             os.chdir(path_results)
             if dst <= 100:
