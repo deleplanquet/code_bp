@@ -43,7 +43,7 @@ with open('parametres_bin', 'rb') as mfch:
 R_Earth = param['R_Earth']
 vS = param['vS']
 dossier_ms = '20160416012500'
-dossier_dirac = '20160400000001'
+dossier_dirac = '20160401000001'
 
 os.chdir(path_origin + '/Kumamoto')
 with open('ref_seismes_bin', 'rb') as mfch:
