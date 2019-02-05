@@ -42,7 +42,6 @@ with open('parametres_bin', 'rb') as mfch:
 
 R_Earth = param['R_Earth']
 vS = param['vS']
-dossier_ms = '20160416012500'
 dossier_dirac = '20160401000001'
 
 os.chdir(path_origin + '/Kumamoto')
@@ -50,21 +49,21 @@ with open('ref_seismes_bin', 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     dict_seis = mdpk.load()
 
-lat_hyp = dict_seis[dossier_ms]['lat']
-lon_hyp = dict_seis[dossier_ms]['lon']
-dep_hyp = dict_seis[dossier_ms]['dep']
+lat_hyp = dict_seis[dossier_dirac]['lat']
+lon_hyp = dict_seis[dossier_dirac]['lon']
+dep_hyp = dict_seis[dossier_dirac]['dep']
 
 pos_hyp = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
 path_data = (path_origin + '/'
              + 'Kumamoto/'
-             + dossier_ms + '/'
-             + dossier_ms + '_sac')
+             + dossier_dirac + '/'
+             + dossier_dirac + '_sac_inf100km_picks-save')
 
 path_results = (path_origin + '/'
                 + 'Kumamoto/'
                 + dossier_dirac + '/'
-                + dossier_dirac + '_sac')
+                + dossier_dirac + '_sac_inf100km')
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
@@ -87,7 +86,7 @@ for fichier in lst_fch:
         dst = dist(pos_hyp, pos_sta)
         if dst <= 100:
             #bruit blanc distribution normale
-            nois = np.random.normal(0, 0.5, st[0].stats.npts)
+            nois = np.random.normal(0, 1, st[0].stats.npts)
             tr = [math.exp(-(pow(a - dst/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2) + 0.1*b for a, b in zip(vect, nois)]
             tr = Trace(np.asarray(tr, np.ndarray), st[0].stats)
             os.chdir(path_results)
