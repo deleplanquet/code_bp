@@ -6,32 +6,42 @@ import numpy as np
 
 path_origin = os.getcwd()[:-6]
 
-dossier = '20160415173900'
+dossier = '20160401000001'
 
 path = path_origin + '/Kumamoto/' + dossier
 
-path_data_1 = path + '/' + dossier + '_sac_inf100km'
-path_data_2 = path + '/' + dossier + '_vel_0-100km'
-path_data_3 = path + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier + '_vel_0-100km_2.0-8.0Hz'
-path_data_4 = path + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier + '_vel_0-100km_2.0-8.0Hz_hori_env'
+#path_data_1 = path + '/' + dossier + '_sac_inf100km'
+#path_data_2 = path + '/' + dossier + '_vel_0-100km'
+#path_data_3 = path + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier + '_vel_0-100km_2.0-8.0Hz'
+#path_data_4 = path + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier + '_vel_0-100km_2.0-8.0Hz_hori_env'
+
+path_data_1 = path + '/' + dossier + '_sac_inf100km_picks-save'
+path_data_int = path + '/' + 'noise_02'
+path_data_2 = path_data_int + '/' + dossier + '_vel_0-100km'
+path_data_3 = path_data_int + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier + '_vel_0-100km_2.0-8.0Hz'
+path_data_4 = path_data_int + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier + '_vel_0-100km_2.0-8.0Hz_hori_env'
 
 fig, ax = plt.subplots(5, 1)
 
 os.chdir(path_data_1)
-st1 = read('KMM0181604151739.NS.sac')
+#st1 = read('KMM0181604151739.NS.sac')
+st1 = read('KMM006.NS.sac')
 st1.detrend(type = 'constant')
 t1 = np.arange(st1[0].stats.npts)/st1[0].stats.sampling_rate
 
 os.chdir(path_data_2)
-st2 = read('KMM0181604151739.NS_vel_0-100km.sac')
+#st2 = read('KMM0181604151739.NS_vel_0-100km.sac')
+st2 = read('KMM006_NS_20160401000001_vel_0-100km.sac')
 t2 = np.arange(st2[0].stats.npts)/st2[0].stats.sampling_rate
 
 os.chdir(path_data_3)
-st3 = read('KMM0181604151739.NS_vel_0-100km-2.0-8.0Hz.sac')
+#st3 = read('KMM0181604151739.NS_vel_0-100km-2.0-8.0Hz.sac')
+st3 = read('KMM006_NS_20160401000001_vel_0-100km_2.0-8.0Hz.sac')
 t3 = np.arange(st3[0].stats.npts)/st3[0].stats.sampling_rate
 
 os.chdir(path_data_4)
-st4 = read('KMM0181604151739.vel_0-100km_2.0-8.0Hz_hori_env.sac')
+#st4 = read('KMM0181604151739.vel_0-100km_2.0-8.0Hz_hori_env.sac')
+st4 = read('KMM00620160401000001_vel_0-100km_2.0-8.0Hz_hori_env.sac')
 t4 = np.arange(st4[0].stats.npts)/st4[0].stats.sampling_rate
 
 dat5 = smooth(st4[0].data, int(0.1/st4[0].stats.delta))
@@ -39,7 +49,8 @@ dat5 = smooth(st4[0].data, int(0.1/st4[0].stats.delta))
 ax[0].plot(t1, st1[0],
            color = 'black',
            lw = 0.5)
-ax[0].set_xlim([3.8, 3.8 + 50])
+#ax[0].set_xlim([3.8, 3.8 + 50])
+ax[0].set_xlim([-3.1, -3.1 + 50])
 #ax[0].set_ylim([-3e3, 4e3])
 ax[1].plot(t2, st2[0],
            color = 'black',
@@ -152,7 +163,8 @@ fig.savefig(dossier + '_chrono.pdf')
 fig2, ax2 = plt.subplots(2, 1)
 
 os.chdir(path_data_4)
-sta = read('MYZ0071604151739.vel_0-100km_2.0-8.0Hz_hori_env.sac')
+#sta = read('MYZ0071604151739.vel_0-100km_2.0-8.0Hz_hori_env.sac')
+sta = read('MYZ00720160401000001_vel_0-100km_2.0-8.0Hz_hori_env.sac')
 
 data = smooth(sta[0].data, int(0.5/sta[0].stats.delta))
 
