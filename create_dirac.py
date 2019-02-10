@@ -77,6 +77,7 @@ for fichier in lst_fch:
     if (('EW1' in fichier) or ('NS1' in fichier) or ('UD1' in fichier)) == False:
         os.chdir(path_data)
         st = read(fichier)
+        stz = read(fichier[:7] + 'UD' + fichier[9:])
         #vecteur de base pour creer le signal dirac
         vect = np.linspace(0, st[0].stats.npts/st[0].stats.sampling_rate, st[0].stats.npts)
         #position station et distance a l'hypocentre
@@ -86,9 +87,14 @@ for fichier in lst_fch:
         dst = dist(pos_hyp, pos_sta)
         if dst <= 100:
             #bruit blanc distribution normale
-            nois = np.random.normal(0, 1, st[0].stats.npts)
+            nois = np.random.normal(0, 0.5, st[0].stats.npts)
             tr = [math.exp(-(pow(a - dst/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2) + 0.1*b for a, b in zip(vect, nois)]
+            tstart = stz[0].stats.starttime + stz[0].stats.sac.a - 5
+            tend = tstart + 50
             tr = Trace(np.asarray(tr, np.ndarray), st[0].stats)
+            tr = tr.trim(tstart, tend, pad = True, fill_value = 0)
+            tr.stats.sac.t0 = stz[0].stats.sac.a
+            tr.stats.sac.a = stz[0].stats.sac.a
             os.chdir(path_results)
             if dst <= 100:
                 if ('EW2' in fichier) or ('NS2' in fichier) or ('UD2' in fichier) == True:
