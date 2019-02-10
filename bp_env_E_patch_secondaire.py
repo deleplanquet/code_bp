@@ -225,67 +225,36 @@ path = (path_origin                                     #
         + dossier)                                      #
                                                         #
 path_data = (path + '/'                                 #
-             + dossier                                  #
-             + '_vel_'                                  #
-             + couronne + 'km_'                         #
-             + frq + 'Hz/'                              #
-             + dossier                                  #
-             + '_vel_'                                  #
-             + couronne + 'km_'                         #
-             + frq + 'Hz_'                              #
-             + dt_type                                  #
-             + '_env_smooth_'                           #
-             + hyp_bp + '_'                             #
-             + azim + 'deg')                            #
+             + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/'                              #
+             + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg')                            #
                                                         #
 
-path_data_1 = (path_data
-               + pastpast)
+path_data_1 = (path_data + pastpast)
 
-path_retrait = (path_data + '_'
-                + 'bpinv/'
+path_retrait = (path_data + '_bpinv/'
                 + 'smoothed_traces')
 
-path_data_2 = (path_data                          #
-               + past + '_'
-               + selected_patch)                        #
+path_data_2 = (path_data + past + '_' + selected_patch)                        #
                                                         #
-path_data_3 = (path_data                          #
-               + past + '_'
-               + selected_patch + '_complementaire')    #
+path_data_3 = (path_data + past + '_' + selected_patch + '_complementaire')    #
 
-path_bpinv = (path_data_3 + '_'
-              + 'bp_inv/'
+path_bpinv = (path_data_3 + '_bp_inv/'
               + 'releves')
 
-path_bpinvtr = (path_data_3 + '_'
-                + 'bp_inv/'
+path_bpinvtr = (path_data_3 + '_' + 'bp_inv/'
                 + 'traces')
 
-path_bpinvsm = (path_data_3 + '_'
-                + 'bp_inv/'
+path_bpinvsm = (path_data_3 + '_' + 'bp_inv/'
                 + 'smoothed_traces')
 
 pth_ptch = [path_data_2, path_data_3]
                                                         #
 path_results = (path + '/'                              #
-                + dossier                               #
-                + '_results/'                           #
-                + dossier                               #
-                + '_vel_'                               #
-                + couronne + 'km_'                      #
-                + frq + 'Hz')                           #
+                + dossier + '_results/'                           #
+                + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz')                           #
                                                         #
-path_results_2 = (path_results                          #
-                  + '/Traces_'                          #
-                  + dossier                             #
-                  + '_vel_'                             #
-                  + couronne + 'km_'                    #
-                  + frq + 'Hz_'                         #
-                  + dt_type                             #
-                  + '_env_smooth_'                      #
-                  + hyp_bp + '_'                        #
-                  + azim + 'deg')                       #   dossiers de travail
+path_results_2 = (path_results + '/'                         #
+                  + 'Traces_' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg')                       #   dossiers de travail
 
 if os.path.isdir(path_data_2) == False:         #
     os.makedirs(path_data_2)                    #
