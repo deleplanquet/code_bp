@@ -79,7 +79,7 @@ R_Earth = param['R_Earth']          #
 l_fault = param['l_fault']
 w_fault = param['w_fault']
 degree = '\u00b0'                   #   parametres stockes
-selected_patch = 'patch_85'
+selected_patch = 'patch_90'
 scission = ['', '_complementaire']
 strike = param['strike']
 
