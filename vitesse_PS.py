@@ -115,7 +115,7 @@ list_sta = os.listdir(path_data)
 
 fig, ax = plt.subplots(1, 1)
 ax.set_xlabel('Source time (s)')
-ax.set_ylabel('Distance from the hypocenter (km)')
+ax.set_ylabel('Hypocenter distance (km)')
 
 vP = {}
 vS = {}
@@ -133,10 +133,16 @@ for station in list_sta:
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
     t = [a + delai_rec for a in t]
 
-    ax.plot(t, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.5, color = 'black')
+    #ax.plot(t, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.5, color = 'black')
+    ax.fill_between(t, st[0].stats.sac.dist, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.3, color = 'black', alpha = 0.2)
     ax.text(50 + t[0], st[0].stats.sac.dist, st[0].stats.station, fontsize = 3)
-    ax.scatter(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist, s = 30, color = 'steelblue')
-    ax.scatter(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist, s = 30, color = 'darkorange')
+    #ax.scatter(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist, s = 30, color = 'steelblue')
+    #ax.scatter(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist, s = 30, color = 'darkorange')
+    ax.vlines(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist - 1, st[0].stats.sac.dist + 1, linewidth = 1, color = 'steelblue')
+    ax.vlines(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist - 1, st[0].stats.sac.dist + 1, linewidth = 1, color = 'darkorange')
+
+    if (st[0].stats.sac.t0 + delai_rec) > 30:
+        print(st[0].stats.station, st[0].stats.sac.dist, st[0].stats.sac.t0 + delai_rec)
 
 to_register = [vP, vS]#, tdeb]
 
@@ -150,8 +156,8 @@ ax.plot([0, 100./velP], [0, 100], linewidth = 2, color = 'steelblue')
 ax.plot([0, 100./velS], [0, 100], linewidth = 2, color = 'darkorange')
 ax.set_xlim([0, 40])
 ax.set_ylim([0, 110])
-ax.xaxis.set_visible(False)
-ax.yaxis.set_visible(False)
+#ax.xaxis.set_visible(False)
+#ax.yaxis.set_visible(False)
 fig.savefig('env_fct_dist_'
             + dossier
             + '_env_'
