@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as path_effects
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from pylab import *
 import os
@@ -281,12 +282,14 @@ for i in range(length_t):
     #                 color = lst_clr[nbr_trsh - 1 - j],
     #                 linewidth = 2)
 
-    ax.text(l_fault/2 - 2,
+    supertxt = ax.text(l_fault/2 - 2,
             -w_fault/2 + 4,
             str((i - 5*samp_rate)/samp_rate) + ' s',
             fontsize = 15,
             color = 'white', #'black',
             ha = 'right')
+
+    supertxt.set_path_effects([path_effects.Stroke(linewidth = 1, foreground = 'black'), path_effects.Normal()])
 
     ax.set_title('N' + str(strike) + str(degree) + 'E' + '$\longrightarrow$', loc = 'right')
     plt.gca().invert_yaxis()
