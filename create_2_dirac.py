@@ -43,6 +43,7 @@ with open('parametres_bin', 'rb') as mfch:
 R_Earth = param['R_Earth']
 vS = param['vS']
 dossier_dirac = '20160401000001'
+dossier_2_dirac = '20160401000002'
 
 os.chdir(path_origin + '/Kumamoto')
 with open('ref_seismes_bin', 'rb') as mfch:
@@ -54,6 +55,8 @@ lon_hyp = dict_seis[dossier_dirac]['lon']
 dep_hyp = dict_seis[dossier_dirac]['dep']
 
 pos_hyp = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
+pos_hyp1 = [R_Earth - dep_hyp, 32.7222, 130.7259]
+pos_hyp2 = [R_Earth - dep_hyp, 32.7868, 130.8001]
 
 path_data = (path_origin + '/'
              + 'Kumamoto/'
@@ -62,8 +65,8 @@ path_data = (path_origin + '/'
 
 path_results = (path_origin + '/'
                 + 'Kumamoto/'
-                + dossier_dirac + '/'
-                + dossier_dirac + '_sac_inf100km')
+                + dossier_2_dirac + '/'
+                + dossier_2_dirac + '_sac_inf100km')
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
@@ -85,10 +88,14 @@ for fichier in lst_fch:
                    st[0].stats.sac.stla,
                    st[0].stats.sac.stlo]
         dst = dist(pos_hyp, pos_sta)
+        dst1 = dist(pos_hyp1, pos_sta)
+        dst2 = dist(pos_hyp2, pos_sta)
         if dst <= 100:
             #bruit blanc distribution normale
             nois = np.random.normal(0, 0.5, st[0].stats.npts)
-            tr = [math.exp(-(pow(a - dst/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2) + 0.1*b for a, b in zip(vect, nois)]
+            tr = [math.exp(-(pow(a - dst1/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2)
+                  + math.exp(-(pow(a - dst2/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2)
+                  + 0.1*b for a, b in zip(vect, nois)]
             tstart = stz[0].stats.starttime + stz[0].stats.sac.a - 5
             tend = tstart + 50
             tr = Trace(np.asarray(tr, np.ndarray), st[0].stats)
@@ -98,8 +105,7 @@ for fichier in lst_fch:
             tr.stats.sac.t0 = 5
             tr.stats.sac.a = 5
             os.chdir(path_results)
-            if dst <= 100:
-                if ('EW2' in fichier) or ('NS2' in fichier) or ('UD2' in fichier) == True:
-                    tr.write(fichier[:6] + fichier[-8:], format = 'SAC')
-                else:
-                    tr.write(fichier[:6] + fichier[-7:], format = 'SAC')
+            if ('EW2' in fichier) or ('NS2' in fichier) or ('UD2' in fichier) == True:
+                tr.write(fichier[:6] + fichier[-8:], format = 'SAC')
+            else:
+                tr.write(fichier[:6] + fichier[-7:], format = 'SAC')
