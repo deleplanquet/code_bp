@@ -178,17 +178,20 @@ with open('parametres_bin', 'rb') as my_fch:    #
 dossier = param['dossier']                                                                          #   |
 path = path_origin + '/Kumamoto/' + dossier                                                         #   v
 
-os.chdir(path)                                          #
-with open(dossier + '_veldata', 'rb') as mon_fich:      #
-    mon_depick = pickle.Unpickler(mon_fich)             #
-    dict_vel = mon_depick.load()                        #   load station corrections
-
 dt_type = param['composante']                                                                       #   |
 hyp_bp = param['ondes_select']                                                                      #   |
 couronne = param['couronne']                                                                        #   |
 azim = param['angle']                                                                               #   v
 frq = param['band_freq']                                                                            #
 R_Earth = param['R_Earth']                                                                          #
+
+os.chdir(path + '/'
+         + dossier + '_results/'
+         + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz')                                          #
+with open(dossier + '_veldata', 'rb') as mon_fich:      #
+    mon_depick = pickle.Unpickler(mon_fich)             #
+    dict_vel = mon_depick.load()                        #   load station corrections
+
 if hyp_bp == 'P':                                                                                   #
     vel_used = param['vP']                                                                          #
     dict_vel_used = dict_vel[0]                                                                     #
