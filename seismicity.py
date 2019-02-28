@@ -343,7 +343,7 @@ figa.savefig('seismicite_article.pdf')
 m2 = Basemap(projection = 'merc',
              llcrnrlon = 130.501,
              llcrnrlat = 32.501,
-             urcrnrlon = 130.999,
+             urcrnrlon = 131.049,
              urcrnrlat = 32.999,
              resolution = 'f')
 
@@ -511,6 +511,25 @@ for i in range(len(nflt)):
              color = fltclr[i],
              ha = 'center',
              rotation = 90 - rotflt[i])
+
+# grille
+xg = [[131.03, 130.95],
+      [130.95, 130.51],
+      [130.51, 130.59],
+      [130.59, 131.03]]
+yg = [[32.91, 32.98],
+      [32.98, 32.60],
+      [32.60, 32.53],
+      [32.53, 32.91]]
+
+for i, j in zip(xg, yg):
+    xg1, yg1 = m2(i[0], j[0])
+    xg2, yg2 = m2(i[1], j[1])
+    ax2.plot((xg1, xg2),
+             (yg1, yg2),
+             color = 'green',
+             zorder = 4,
+             lw = 1.5)
 
 ax2.legend(fontsize = 6,
            loc = 1)
