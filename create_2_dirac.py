@@ -55,8 +55,10 @@ lon_hyp = dict_seis[dossier_dirac]['lon']
 dep_hyp = dict_seis[dossier_dirac]['dep']
 
 pos_hyp = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
-pos_hyp1 = [R_Earth - dep_hyp, 32.7222, 130.7259]
-pos_hyp2 = [R_Earth - dep_hyp, 32.7868, 130.8001]
+#pos_hyp1 = [R_Earth - dep_hyp, 32.7222, 130.7259]
+#pos_hyp2 = [R_Earth - dep_hyp, 32.7868, 130.8001] # 5 km de chaque cote
+pos_hyp1 = [R_Earth - dep_hyp, 32.6898, 130.6888]
+pos_hyp2 = [R_Earth - dep_hyp, 32.8192, 130.8373] # 10 km de chaque cote
 
 path_data = (path_origin + '/'
              + 'Kumamoto/'
