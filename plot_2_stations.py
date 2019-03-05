@@ -47,5 +47,8 @@ for i, fil in enumerate([fil_1, fil_2]):
                 head_length = Emax/20,
                 color = 'darkorchid')
 
+plt.subplots_adjust(hspace = 0.05)
+ax[0].xaxis.set_visible(False)
+
 os.chdir(pth_rst)
 fig.savefig('Comparaison_KMM018-MYZ007_20160415173900.pdf')
