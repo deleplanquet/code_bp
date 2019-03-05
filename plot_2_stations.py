@@ -34,7 +34,8 @@ for i, fil in enumerate([fil_1, fil_2]):
     Emax = max(st[0].data)
     nrm_dat = [i/Emax for i in st[0].data]
     ax[i].plot(t, nrm_dat,
-                 color = 'black', lw = '0.5')
+                 color = 'black', lw = '0.5',
+                 label = fil[:6])
     ax[i].set_xlim([0, 30])
     ax[i].set_ylim(bottom = 0)
     ax[i].arrow(5, 0.25,
@@ -47,9 +48,12 @@ for i, fil in enumerate([fil_1, fil_2]):
                 head_width = 30./100,
                 head_length = 1./20,
                 color = 'darkorchid')
+    ax[i].legend(fontsize = 8, loc = 1)
+    ax[i].set_ylabel('Normalised\nsmoothed velocity')
 
 plt.subplots_adjust(hspace = 0.05)
 ax[0].xaxis.set_visible(False)
+ax[1].set_xlabel('Time (s)')
 
 os.chdir(pth_rst)
 fig.savefig('Comparaison_KMM018-MYZ007_20160415173900.pdf')
