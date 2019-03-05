@@ -31,20 +31,21 @@ os.chdir(pth)
 for i, fil in enumerate([fil_1, fil_2]):
     st = read(fil)
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-    ax[i].plot(t, st[0],
+    Emax = max(st[0].data)
+    nrm_dat = [i/Emax for i in st[0].data]
+    ax[i].plot(t, nrm_dat,
                  color = 'black', lw = '0.5')
     ax[i].set_xlim([0, 30])
     ax[i].set_ylim(bottom = 0)
-    Emax = max(st[0].data)
-    ax[i].arrow(5, 0.25*Emax,
-                0, - Emax/6,
+    ax[i].arrow(5, 0.25,
+                0, - 1./6,
                 head_width = 30./100,
-                head_length = Emax/20,
+                head_length = 1./20,
                 color = 'forestgreen')
-    ax[i].arrow(st[0].stats.sac.t0, 0.25*Emax,
-                0, - Emax/6,
+    ax[i].arrow(st[0].stats.sac.t0, 0.25,
+                0, - 1./6,
                 head_width = 30./100,
-                head_length = Emax/20,
+                head_length = 1./20,
                 color = 'darkorchid')
 
 plt.subplots_adjust(hspace = 0.05)
