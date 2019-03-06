@@ -135,6 +135,9 @@ for fichier in lst_fch_W:
                  lw = 0.5,
                  label = fichier[:6] + ' NS vel. fft.')
 
+    ax[1].axvline(2, color = 'forestgreen', lw = 1)
+    ax[1].axvline(8, color = 'forestgreen', lw = 1)
+
     ax[1].set_xlim([0, 1./(2.*T)])
     ax[1].legend(fontsize = 5,
                  loc = 3)
