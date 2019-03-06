@@ -122,27 +122,33 @@ vS = {}
 
 os.chdir(path_data)
 
-for station in list_sta:
+vct_dst = np.zeros(50)
+
+for i, station in enumerate(list_sta):
     st = read(station)
+    dst = st[0].stats.sac.dist
+    if vct_dst[int(dst//2)] == 0:
 
-    delai_rec = st[0].stats.starttime - t_origin_rupt
+        delai_rec = st[0].stats.starttime - t_origin_rupt
 
-    vP[st[0].stats.station] = st[0].stats.sac.a + delai_rec - st[0].stats.sac.dist/velP
-    vS[st[0].stats.station] = st[0].stats.sac.t0 + delai_rec - st[0].stats.sac.dist/velS
+        vP[st[0].stats.station] = st[0].stats.sac.a + delai_rec - st[0].stats.sac.dist/velP
+        vS[st[0].stats.station] = st[0].stats.sac.t0 + delai_rec - st[0].stats.sac.dist/velS
 
-    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-    t = [a + delai_rec for a in t]
+        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+        t = [a + delai_rec for a in t]
 
-    #ax.plot(t, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.5, color = 'black')
-    ax.fill_between(t, st[0].stats.sac.dist, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.3, color = 'black', alpha = 0.2)
-    ax.text(50 + t[0], st[0].stats.sac.dist, st[0].stats.station, fontsize = 3)
-    #ax.scatter(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist, s = 30, color = 'steelblue')
-    #ax.scatter(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist, s = 30, color = 'darkorange')
-    ax.vlines(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist - 1, st[0].stats.sac.dist + 1, linewidth = 1, color = 'steelblue')
-    ax.vlines(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist - 1, st[0].stats.sac.dist + 1, linewidth = 1, color = 'darkorange')
+        #ax.plot(t, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.5, color = 'black')
+        ax.fill_between(t, st[0].stats.sac.dist, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.3, color = 'black', alpha = 0.2)
+        ax.text(50 + t[0], st[0].stats.sac.dist, st[0].stats.station, fontsize = 3)
+        #ax.scatter(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist, s = 30, color = 'steelblue')
+        #ax.scatter(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist, s = 30, color = 'darkorange')
+        ax.vlines(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist - 1, st[0].stats.sac.dist + 1, linewidth = 1, color = 'steelblue')
+        ax.vlines(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist - 1, st[0].stats.sac.dist + 1, linewidth = 1, color = 'darkorange')
 
-    if (st[0].stats.sac.t0 + delai_rec) > 30:
-        print(st[0].stats.station, st[0].stats.sac.dist, st[0].stats.sac.t0 + delai_rec)
+        if (st[0].stats.sac.t0 + delai_rec) > 30:
+            print(st[0].stats.station, st[0].stats.sac.dist, st[0].stats.sac.t0 + delai_rec)
+
+        vct_dst[int(dst//2)] = 1
 
 to_register = [vP, vS]#, tdeb]
 
