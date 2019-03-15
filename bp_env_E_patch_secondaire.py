@@ -521,7 +521,9 @@ for sta in lst_fch:
 for sta in lst_fch:
     os.chdir(path_bpinvtr)
     st = read(sta[:6])
-    tr = Trace(smooth(st[0].data, int(l_smooth/st[0].stats.delta)), st[0].stats)
+    tr = smooth(st[0].data, int(l_smooth/st[0].stats.delta))
+    tr = [max(st[0].data)*a/tr.max() for a in tr]
+    tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpinvsm)
     tr.write(sta[:6], format = 'SAC')
 
