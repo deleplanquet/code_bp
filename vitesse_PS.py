@@ -127,13 +127,13 @@ vct_dst = np.zeros(50)
 for i, station in enumerate(list_sta):
     st = read(station)
     dst = st[0].stats.sac.dist
+
+    delai_rec = st[0].stats.starttime - t_origin_rupt
+
+    vP[st[0].stats.station] = st[0].stats.sac.a + delai_rec - st[0].stats.sac.dist/velP
+    vS[st[0].stats.station] = st[0].stats.sac.t0 + delai_rec - st[0].stats.sac.dist/velS
+
     if vct_dst[int(dst//2)] == 0:
-
-        delai_rec = st[0].stats.starttime - t_origin_rupt
-
-        vP[st[0].stats.station] = st[0].stats.sac.a + delai_rec - st[0].stats.sac.dist/velP
-        vS[st[0].stats.station] = st[0].stats.sac.t0 + delai_rec - st[0].stats.sac.dist/velS
-
         t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
         t = [a + delai_rec for a in t]
 
