@@ -289,19 +289,19 @@ coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp],                   #
                     pas_l,                                                   #   l'ensemble centre sur l'hypocentre
                     pas_w)                                                   #   oriente selon les vecteurs S et D
 
-print(coord_fault)
-x1, y1, z1 = (-3526.0445, 4052.5618, 3477.1154)
-x2, y2, z2 = (-3506.0853, 4040.5830, 3471.2726)
-x3, y3, z3 = (-3509.9947, 4096.7141, 3441.4227)
-x4, y4, z4 = (-3490.0355, 4084.7354, 3435.5798)
-print(x1, y1, z1)
-print(x2, y2, z2)
-print(x3, y3, z3)
-print(x4, y4, z4)
-print(r2d(math.acos(x1/pow(x1*x1 + y1*y1, 0.5))), r2d(math.acos(pow((x1*x1 + y1*y1)/(x1*x1 + y1*y1 + z1*z1), 0.5))))
-print(r2d(math.acos(x2/pow(x2*x2 + y2*y2, 0.5))), r2d(math.acos(pow((x2*x2 + y2*y2)/(x2*x2 + y2*y2 + z2*z2), 0.5))))
-print(r2d(math.acos(x3/pow(x3*x3 + y3*y3, 0.5))), r2d(math.acos(pow((x3*x3 + y3*y3)/(x3*x3 + y3*y3 + z3*z3), 0.5))))
-print(r2d(math.acos(x4/pow(x4*x4 + y4*y4, 0.5))), r2d(math.acos(pow((x4*x4 + y4*y4)/(x4*x4 + y4*y4 + z4*z4), 0.5))))
+#print(coord_fault)
+#x1, y1, z1 = (-3526.0445, 4052.5618, 3477.1154)
+#x2, y2, z2 = (-3506.0853, 4040.5830, 3471.2726)
+#x3, y3, z3 = (-3509.9947, 4096.7141, 3441.4227)
+#x4, y4, z4 = (-3490.0355, 4084.7354, 3435.5798)
+#print(x1, y1, z1)
+#print(x2, y2, z2)
+#print(x3, y3, z3)
+#print(x4, y4, z4)
+#print(r2d(math.acos(x1/pow(x1*x1 + y1*y1, 0.5))), r2d(math.acos(pow((x1*x1 + y1*y1)/(x1*x1 + y1*y1 + z1*z1), 0.5))))
+#print(r2d(math.acos(x2/pow(x2*x2 + y2*y2, 0.5))), r2d(math.acos(pow((x2*x2 + y2*y2)/(x2*x2 + y2*y2 + z2*z2), 0.5))))
+#print(r2d(math.acos(x3/pow(x3*x3 + y3*y3, 0.5))), r2d(math.acos(pow((x3*x3 + y3*y3)/(x3*x3 + y3*y3 + z3*z3), 0.5))))
+#print(r2d(math.acos(x4/pow(x4*x4 + y4*y4, 0.5))), r2d(math.acos(pow((x4*x4 + y4*y4)/(x4*x4 + y4*y4 + z4*z4), 0.5))))
 
 tstart_ref = None                                                       #
                                                                         #
@@ -414,7 +414,9 @@ for sta in lst_fch:
 for sta in lst_fch:
     os.chdir(path_bpinvtr)
     st = read(sta[:6])
-    tr = Trace(smooth(st[0].data, int(l_smooth/st[0].stats.delta)), st[0].stats)
+    tr = smooth(st[0].data, int(l_smooth/st[0].stats.delta))
+    tr = [max(st[0].data)*a/tr.max() for a in tr]
+    tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpinvsm)
     tr.write(sta[:6], format = 'SAC')
 
