@@ -336,7 +336,10 @@ for scis in scission:
         #ax.axhline(skr - strkr, (dkr - dipkr + 0.5)/50, (dkr + 0.5)/50, color = 'white', linewidth = 1)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes('right', size = '3%', pad = 0.1)
-        fig.colorbar(im, cax = cax, ticks = v1)
+        cb = fig.colorbar(im, cax = cax, ticks = v1)
+        cb.ax.plot([0, 1], [0.85*(stckmx2/stckmx), 0.85*(stckmx2/stckmx)], 'white')
+        cb.ax.plot([0, 1], [0.90*(stckmx2/stckmx), 0.90*(stckmx2/stckmx)], 'white')
+        cb.ax.plot([0, 1], [0.95*(stckmx2/stckmx), 0.95*(stckmx2/stckmx)], 'white')
 
         os.chdir(path_rslt_pdf[scission.index(scis)])
         fig.savefig(dossier
