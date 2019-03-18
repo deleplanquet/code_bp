@@ -294,14 +294,23 @@ coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp],                   #
 #x2, y2, z2 = (-3506.0853, 4040.5830, 3471.2726)
 #x3, y3, z3 = (-3509.9947, 4096.7141, 3441.4227)
 #x4, y4, z4 = (-3490.0355, 4084.7354, 3435.5798)
+#x5, y5, z5 = (-3531.4623, 4041.4161, 3485.4628)
+#x6, y6, z6 = (-3531.0461, 4041.1676, 3485.3404)
+#x7, y7, z7 = (-3531.3274, 4041.7909, 3485.1606)
 #print(x1, y1, z1)
 #print(x2, y2, z2)
 #print(x3, y3, z3)
 #print(x4, y4, z4)
+#print(x5, y5, z5)
+#print(x6, y6, z6)
+#print(x7, y7, x7)
 #print(r2d(math.acos(x1/pow(x1*x1 + y1*y1, 0.5))), r2d(math.acos(pow((x1*x1 + y1*y1)/(x1*x1 + y1*y1 + z1*z1), 0.5))))
 #print(r2d(math.acos(x2/pow(x2*x2 + y2*y2, 0.5))), r2d(math.acos(pow((x2*x2 + y2*y2)/(x2*x2 + y2*y2 + z2*z2), 0.5))))
 #print(r2d(math.acos(x3/pow(x3*x3 + y3*y3, 0.5))), r2d(math.acos(pow((x3*x3 + y3*y3)/(x3*x3 + y3*y3 + z3*z3), 0.5))))
 #print(r2d(math.acos(x4/pow(x4*x4 + y4*y4, 0.5))), r2d(math.acos(pow((x4*x4 + y4*y4)/(x4*x4 + y4*y4 + z4*z4), 0.5))))
+#print(r2d(math.acos(x5/pow(x5*x5 + y5*y5, 0.5))), r2d(math.acos(pow((x5*x5 + y5*y5)/(x5*x5 + y5*y5 + z5*z5), 0.5))))
+#print(r2d(math.acos(x6/pow(x6*x6 + y6*y6, 0.5))), r2d(math.acos(pow((x6*x6 + y6*y6)/(x6*x6 + y6*y6 + z6*z6), 0.5))))
+#print(r2d(math.acos(x7/pow(x7*x7 + y7*y7, 0.5))), r2d(math.acos(pow((x7*x7 + y7*y7)/(x7*x7 + y7*y7 + z7*z7), 0.5))))
 
 tstart_ref = None                                                       #
                                                                         #
@@ -411,11 +420,18 @@ for sta in lst_fch:
     tr = Trace(bpinv, st[0].stats)
     tr.write(sta[:6], format = 'SAC')
 
+vect = np.linspace(0, st[0].stats.npts/st[0].stats.sampling_rate, st[0].stats.npts)
+sigma = 1./samp_rate
+
 for sta in lst_fch:
     os.chdir(path_bpinvtr)
     st = read(sta[:6])
-    tr = smooth(st[0].data, int(l_smooth/st[0].stats.delta))
-    tr = [max(st[0].data)*a/tr.max() for a in tr]
+    dst, azm = dist_azim([st[0].stats.sac.stla, st[0].stats.sac.stlo], [lat_hyp, lon_hyp])
+    trg = [math.exp(-(pow(a - st[0].stats.sac.t0, 2))/(2*pow(sigma, 2))) for a in vect]
+    tr = np.convolve(st[0].data, trg, mode = 'same')
+    print(tr)
+    #tr = smooth(st[0].data, int(l_smooth/st[0].stats.delta))
+    #tr = [max(st[0].data)*a/tr.max() for a in tr]
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpinvsm)
     tr.write(sta[:6], format = 'SAC')
