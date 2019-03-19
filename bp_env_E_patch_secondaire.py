@@ -518,11 +518,15 @@ for sta in lst_fch:
     tr = Trace(bpinv, st[0].stats)
     tr.write(sta[:6], format = 'SAC')
 
+vect = np.linspace(0, st[0].stats.npts/st[0].stats.sampling_rate, st[0].stats.npts)
+sigma = 1./samp_rate
+
 for sta in lst_fch:
     os.chdir(path_bpinvtr)
     st = read(sta[:6])
-    tr = smooth(st[0].data, int(l_smooth/st[0].stats.delta))
-    tr = [max(st[0].data)*a/tr.max() for a in tr]
+    dst, azm = dist_azim([st[0].stats.sac.stla, st[0].stats.sac.stlo], [lat_hyp, lon_hyp])
+    trg = [math.exp(-(pow(a - 25, 2))/(2*pow(sigma, 2))) for a in vect]
+    tr = np.convolve(st[0].data, trg, mode = 'same')
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpinvsm)
     tr.write(sta[:6], format = 'SAC')
