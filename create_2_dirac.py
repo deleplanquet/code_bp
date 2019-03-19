@@ -43,7 +43,7 @@ with open('parametres_bin', 'rb') as mfch:
 R_Earth = param['R_Earth']
 vS = param['vS']
 dossier_dirac = '20160401000001'
-dossier_2_dirac = '20160401000002'
+dossier_2_dirac = '20160401000003'
 
 os.chdir(path_origin + '/Kumamoto')
 with open('ref_seismes_bin', 'rb') as mfch:
@@ -96,7 +96,7 @@ for fichier in lst_fch:
             #bruit blanc distribution normale
             nois = np.random.normal(0, 0.5, st[0].stats.npts)
             tr = [math.exp(-(pow(a - dst1/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2)
-                  + math.exp(-(pow(a - dst2/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2)
+                  + 0.5*math.exp(-(pow(a - dst2/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2)
                   + 0.1*b for a, b in zip(vect, nois)]
             tstart = stz[0].stats.starttime + stz[0].stats.sac.a - 5
             tend = tstart + 50
