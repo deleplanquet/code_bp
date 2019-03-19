@@ -81,6 +81,9 @@ degree = '\u00b0'                   #   parametres stockes
 l_fault = param['l_fault']
 w_fault = param['w_fault']
 strike = param['strike']
+pas_l = param['pas_l']
+pas_w = param['pas_w']
+print(pas_l, pas_w)
 
 path = (path_origin                      #
         + '/Kumamoto/'                   #
@@ -247,10 +250,10 @@ for i in range(length_t):
                              -w_fault/2,
                              w_fault/2))
 
-    cs = ax.contour(np.arange(-len(stack[:, 0, 0])/2, len(stack[:, 0, 0])/2),
-                    np.arange(-len(stack[0, :, 0])/2, len(stack[0, :, 0])/2),
-                    (list(zip(*stack[:, :, i]))/stckmx).reshape((len(stack[0, :, 0]), len(stack[:, 0, 0]))),
-                    [0.85, 0.9, 0.95], #, 0.8, 0.9],
+    cs = ax.contour(np.arange(-len(stack[:, 0, 0])/2*pas_l, len(stack[:, 0, 0])/2*pas_l, pas_l),
+                    np.arange(-len(stack[0, :, 0])/2*pas_w, len(stack[0, :, 0])/2*pas_w, pas_w),
+                    (list(zip(*stack[:, :, i]))/stckmx).reshape(int(len(stack[0, :, 0])), int(len(stack[:, 0, 0]))),
+                    [0.8, 0.9],
                     origin = 'lower',
                     linestyle = '-',
                     extent = (-l_fault/2, l_fault/2, -w_fault/2, w_fault/2),
@@ -300,9 +303,8 @@ for i in range(length_t):
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size = '3%', pad = 0.1)
     cb = fig.colorbar(im, cax = cax, ticks = v1)
-    cb.ax.plot([0, 1], [0.85, 0.85], 'white')
+    cb.ax.plot([0, 1], [0.80, 0.80], 'white')
     cb.ax.plot([0, 1], [0.90, 0.90], 'white')
-    cb.ax.plot([0, 1], [0.95, 0.95], 'white')
 
     os.chdir(path_rslt_pdf)
     fig.savefig(dossier
