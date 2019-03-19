@@ -489,13 +489,12 @@ for sta in lst_fch:
     for i in range(len(stack[1][:, 0, 0])):
         for j in range(len(stack[1][0, :, 0])):
             for k in range(len(stack[1][0, 0, :])):
-                if stack[0][i, j, k] > thresh*stckmx:
-                    tshift = (travt[ista][i,j]
-                              - (st[0].stats.starttime - t_origin_rupt)
-                              + dict_vel_used[st[0].stats.station]
-                              - 5
-                              + k/samp_rate)
-                    station[tshift] = stack[0][i, j, k]
+                tshift = (travt[ista][i,j]
+                          - (st[0].stats.starttime - t_origin_rupt)
+                          + dict_vel_used[st[0].stats.station]
+                          - 5
+                          + k/samp_rate)
+                station[tshift] = stack[0][i, j, k]
     os.chdir(path_bpinv)
     with open(st[0].stats.station, 'wb') as mfch:
         mpck = pickle.Pickler(mfch)
