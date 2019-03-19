@@ -83,6 +83,8 @@ degree = '\u00b0'                   #   parametres stockes
 selected_patch = 'patch_85'
 scission = ['', '_complementaire']
 strike = param['strike']
+pas_l = param['pas_l']
+pas_w = param['pas_w']
 
 ################################
 ################################
@@ -286,10 +288,10 @@ for scis in scission:
                                  -w_fault/2,
                                  w_fault/2))
 
-        cs = ax.contour(np.arange(-len(stack[:, 0, 0])/2, len(stack[:, 0, 0])/2),
-                        np.arange(-len(stack[0, :, 0])/2, len(stack[0, :, 0])/2),
+        cs = ax.contour(np.arange(-len(stack[:, 0, 0])/2*pas_l, len(stack[:, 0, 0])/2*pas_l, pas_l),
+                        np.arange(-len(stack[0, :, 0])/2*pas_w, len(stack[0, :, 0])/2*pas_w, pas_w),
                         (list(zip(*stack[:, :, i]))/stckmx2).reshape((len(stack[0, :, 0]), len(stack[:, 0, 0]))),
-                        [0.85, 0.9, 0.95],
+                        [0.8, 0.9],
                         origin = 'lower',
                         linestyle = '-',
                         extent = (-l_fault/2, l_fault/2, -w_fault/2, w_fault/2),
@@ -337,9 +339,8 @@ for scis in scission:
         divider = make_axes_locatable(ax)
         cax = divider.append_axes('right', size = '3%', pad = 0.1)
         cb = fig.colorbar(im, cax = cax, ticks = v1)
-        cb.ax.plot([0, 1], [0.85*(stckmx2/stckmx), 0.85*(stckmx2/stckmx)], 'white')
+        cb.ax.plot([0, 1], [0.80*(stckmx2/stckmx), 0.80*(stckmx2/stckmx)], 'white')
         cb.ax.plot([0, 1], [0.90*(stckmx2/stckmx), 0.90*(stckmx2/stckmx)], 'white')
-        cb.ax.plot([0, 1], [0.95*(stckmx2/stckmx), 0.95*(stckmx2/stckmx)], 'white')
 
         os.chdir(path_rslt_pdf[scission.index(scis)])
         fig.savefig(dossier
