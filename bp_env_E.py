@@ -391,13 +391,12 @@ for sta in lst_fch:                                                     # pour c
     for i in range(len(stack[:, 0, 0])):                                #
         for j in range(len(stack[0, :, 0])):                            #
             for k in range(len(stack[0, 0, :])):                        # pour chaque element du cube de bp
-                if stack[i, j, k] > thresh*stckmx:                      # si la valeur du stack est superieure au threshold
-                    tshift = (travt[ista][i, j]                       #
-                              - (st[0].stats.starttime - t_origin_rupt) #
-                              + dict_vel_used[st[0].stats.station]      #
-                              - 5                                       #
-                              + k/samp_rate)                            #
-                    station[tshift] = stack[i, j, k]                    #
+                tshift = (travt[ista][i, j]                       #
+                          - (st[0].stats.starttime - t_origin_rupt) #
+                          + dict_vel_used[st[0].stats.station]      #
+                          - 5                                       #
+                          + k/samp_rate)                            #
+                station[tshift] = stack[i, j, k]                    #
     os.chdir(path_bpinv)
     with open(st[0].stats.station, 'wb') as mfch:
         mpck = pickle.Pickler(mfch)
