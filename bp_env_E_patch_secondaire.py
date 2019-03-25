@@ -213,7 +213,7 @@ l_smooth = param['smooth']
 ###########################
 past = ''
 #past = 'patch_85' # ce qui va avant slected_patch
-pastpast = ''
+pastpast = '' # a garder vide pour modifier a chaque fois la trace originelle
 #pastpast = 'patch_85' # le dossier des fichiers utilises
 ###########################
 ###########################
