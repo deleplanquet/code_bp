@@ -234,8 +234,12 @@ path_data = (path + '/'                                 #
 
 path_data_1 = (path_data + pastpast)
 
-path_retrait = (path_data + '_bpinv/'
+if past == '':
+    path_retrait = (path_data + '_bpinv/'
                 + 'smoothed_traces')
+else:
+    path_retrait = (path_data + past + '_complementaire_bp_inv/'
+                    + 'smoothed_traces')
 
 path_data_2 = (path_data + past + '_' + selected_patch)                        #
                                                         #
