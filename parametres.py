@@ -1,17 +1,32 @@
+# create binary file containing all the parameters potentialy needed for back
+# projection study
+# parameters are asked through the terminal
+# /Codes is the name of the directory containing all the scripts related to
+# bp study
+# it may have different name without consequences
+
 import pickle
 import os
 import sys
 import datetime
 
-path_origin = os.getcwd()[:-6]
-os.chdir(path_origin + '/Kumamoto')
+# root: root of the /Codes folder
+# load events dictionnary
+# be careful, folder containing data has relative position to /Codes folder
+root_folder = os.getcwd()[:-6]
+os.chdir(root_folder + '/Kumamoto') # has to be changed in case of another EQ
 with open('ref_seismes_bin', 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     dict_seis = mdpk.load()
 
 param = {}
 
-param['path_origin'] = path_origin
+print('###################')
+print('### root_folder ###')
+print('###################')
+# root of the /Codes folder
+param['root_folder'] = root_folder
+print(root_folder)
 
 print('')
 param['dossier'] = None
