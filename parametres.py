@@ -21,30 +21,57 @@ with open('ref_seismes_bin', 'rb') as mfch:
 
 param = {}
 
-print('###################')
-print('### root_folder ###')
-print('###################')
+print('')
+print('   ###################')
+print('   ### root_folder ###')
+print('   ###################')
 # root of the /Codes folder
 param['root_folder'] = root_folder
 print(root_folder)
 
 print('')
-param['dossier'] = None
-print('   Enter EQ name from ref_seismes.txt')
-while (param['dossier'] in dict_seis.keys()) == False:
-    param['dossier'] = input('dossier au format YYYYMMDDHHMMSS: ')
+print('   #############')
+print('   ### event ###')
+print('   #############')
+# print name of available events
+print('list of available events')
+for eq in dict_seis.keys():
+    print(eq)
+# initialisation of the name of the selected event
+param['event'] = None
+print('Enter EQ name from ref_seismes.txt')
+# the name of the event is asked while the input is not inside
+# the vents dictionnary
+while (param['event'] in dict_seis.keys()) == False:
+    param['event'] = input('dossier au format YYYYMMDDHHMMSS: ')
 
+# Earth radius 6400 km
 param['R_Earth'] = float(6400)
 
 print('')
-param['dist_min'] = None
-print('   Expected value: integer or float between 0 and 100 km')
-while ((type(param['dist_min']) is float) == False
-       or param['dist_min'] < 0
-       or param['dist_min'] >= 100):
-    param['dist_min'] = float(input('distance min [0 -> 100]: '))
+print('   ################')
+print('   ### hypo_min ###')
+print('   ################')
+# initialisation of the minimum value of the hypocenter distance
+param['hypo_min'] = None
+print('minimal distance between hypocenter and station')
+print('stations with lower hypocentral distance are not considered')
+print('Expected value: integer or float between 0 and 100 km')
+# check the type, should be float
+# should also be positive
+# above 100 km is not allowed
+while ((type(param['hypo_min']) is float) == False
+       or param['hypo_min'] < 0
+       or param['hypo_min'] >= 100):
+    try:
+        param['hypo_min'] = float(input('distance min [0 -> 100]: '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
+print('   ################')
+print('   ### hypo_max ###')
+print('   ################')
 param['dist_max'] = None
 print('   Expected value: integer or float between dist_min(previous value) and 100 km')
 while ((type(param['dist_max']) is float) == False
