@@ -72,14 +72,28 @@ print('')
 print('   ################')
 print('   ### hypo_max ###')
 print('   ################')
-param['dist_max'] = None
-print('   Expected value: integer or float between dist_min(previous value) and 100 km')
-while ((type(param['dist_max']) is float) == False
-       or param['dist_max'] <= param['dist_min']
-       or param['dist_max'] > 100):
-    param['dist_max'] = float(input('distance max [dist_min -> 100]: '))
+# initialisation of the maximum value of the hypocenter distance
+param['hypo_max'] = None
+print('maximal distance between hypocenter and station')
+print('stations with higher hypocentral distance are not considered')
+print('Expected value: integer or float between hypo_min (previous value) = '
+       + str(param['hypo_min']) + ' and 100 km')
+# check the type, should be float
+# should also be above hypo_min and below 100 km
+while ((type(param['hypo_max']) is float) == False
+       or param['hypo_max'] <= param['hypo_min']
+       or param['hypo_max'] > 100):
+    try:
+        param['hypo_max'] = float(input('distance max ['
+                                         + str(int(param['hypo_min']))
+                                         + ' -> 100]: '))
+    except ValueError:
+        print('No valid number, try again')
 
-param['couronne'] = str(int(param['dist_min'])) + '-' + str(int(param['dist_max']))
+# combination of hypo_min and hypo_max as hypo_interv
+# for easier creation of file/directory names
+param['hypo_interv'] = (str(int(param['hypo_min'])) + '-'
+                        + str(int(param['hypo_max'])))
 
 print('')
 param['freq_min'] = None
