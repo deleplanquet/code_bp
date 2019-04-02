@@ -96,13 +96,29 @@ param['hypo_interv'] = (str(int(param['hypo_min'])) + '-'
                         + str(int(param['hypo_max'])))
 
 print('')
-param['freq_min'] = None
-print('   Expected value: integer or float between 0.2 and 30 Hz')
-print('   Suggested values: 0.2 / 0.5 / 1 / 2 / 4 / 8 / 16 Hz')
-while ((type(param['freq_min']) is float) == False
-       or param['freq_min'] <= 0
-       or param['freq_min'] >= 30):
-    param['freq_min'] = float(input('frequence min [02/05/1/2/4/8/16]: '))
+print('   ###############')
+print('   ### frq_min ###')
+print('   ###############')
+# some filter will be applied on velocity traces during the bp process
+# considered frequencies are corner frequencies for those filters
+# initialisation of the minimum value of the frequency
+# different tests have shown that above 8 Hz, stability decreases
+# and below 2 Hz, resolution decreases
+# the networks used for the Kumamoto EQ
+# impose high frequency of the filter < 30 Hz
+param['frq_min'] = None
+print('velocity traces will be filtered')
+print('choice of the low frequency for the filter band')
+print('Expected value: integer or float between 0.2 and 30 Hz')
+print('Suggested values: 0.2 / 0.5 / 1 / 2 / 4 / 8 / 16 Hz')
+while ((type(param['frq_min']) is float) == False
+       or param['frq_min'] <= 0.2
+       or param['frq_min'] >= 30):
+    try:
+        param['frq_min'] = float(input('frequence min'
+                                        + '[0.2/0.5/1/2/4/8/16]: '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 param['freq_max'] = None
