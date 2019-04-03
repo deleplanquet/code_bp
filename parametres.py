@@ -151,39 +151,102 @@ while (not isinstance(param['frq_max'], float)
 param['frq_band'] = str(param['frq_min']) + '-' + str(param['frq_max'])
 
 print('')
-param['composante'] = None
-print('   Expected value: > 3comp <, > hori < or > vert <')
-print('   Other values are not accepted')
-while (param['composante'] != '3comp'
-       and param['composante'] != 'hori'
-       and param['composante'] != 'vert'):
-    param['composante'] = input('composante [3comp/hori/vert]: ')
+print('   #################')
+print('   ### component ###')
+print('   #################')
+# the three components are EW, NS and UD
+# here we ask which component should be used for the bp study
+# we refer as:
+# - 3comp: combination of the three components EW, NS and UD
+# - hori: combination of the two horizontal components EW and NS
+# - vert: only the vertical component UD is considered
+# initialisation of the component
+param['component'] = None
+print('Expected value: > 3comp <, > hori < or > vert <')
+print(' - 3comp: combination of the three components EW, NS and UD')
+print(' - hori: combination of the two horizontal components EW and NS')
+print(' (recommended for S-waves bp)')
+print(' - vert: only the vertical component UD is considered')
+print(' (recommended for P-waves bp)')
+print('Other values are not accepted')
+while (param['component'] != '3comp'
+       and param['component'] != 'hori'
+       and param['component'] != 'vert'):
+    param['component'] = input('component [3comp/hori/vert]: ')
 
 print('')
+print('   ###############')
+print('   ### ratioSP ###')
+print('   ###############')
+# criteria for selection of stations
+# a comparison between the maximum values of S and P-waves is done
+# the ratio should be above the value given by the user
+# for instance, if the value is 3
+# stations which maximum value of S-waves is
+# less than 3 times the maximum value of P-waves
+# are not used for the bp process
+# values > 1 give an advantage to S-waves
+# values < 1 give an advantage to P-waves
+# the choice of component and ratioSP should be consistent for the study
+# initialisation of ratioSP
 param['ratioSP'] = None
-print('   Comparison between maximum amplitude of S and P waves')
-print('   Expected value: strictly positive integer or float')
-print('   To have higher P waves, ratio must be < 1')
-while ((type(param['ratioSP']) is float) == False
+print('Comparison between maximum amplitude of S and P waves')
+print('Expected value: strictly positive integer or float')
+print('To have higher P waves, ratio must be < 1')
+while (not isinstance(param['ratioSP'], float)
        or param['ratioSP'] <= 0):
-    param['ratioSP'] = float(input('ratio S/P (> 1): '))
+    try:
+        param['ratioSP'] = float(input('ratio S/P (> 1): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
-param['smooth'] = None
-print('   Expected value: positive integer or float')
-print('   If the value is smaller than delay between two snapshots,')
-print('   the value will be adapted to this delay')
-while ((type(param['smooth']) is float) == False
-       or param['smooth'] < 0):
-    param['smooth'] = float(input('longueur fenetre smooth (s): '))
+print('   ################')
+print('   ### l_smooth ###')
+print('   ################')
+# length of the time-window for the smoothing of the traces
+# to take into account all the points between two pictures of bp
+# the length of the time-window should be at least
+# the delay between two snapshots
+# it can be higher
+# the check between the value given by the user
+# and the minimum value between two snapshots is done later in this script
+# initialisation of the length of the time-window for the smoothing
+param['l_smooth'] = None
+print('Expected value: positive integer or float')
+print('If the value is smaller than delay between two snapshots,')
+print('the value will be adapted to this delay')
+while (not isinstance(param['l_smooth'], float)
+       or param['l_smooth'] < 0):
+    try:
+        param['l_smooth'] = float(input('longueur fenetre smooth (s): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
-param['impulse'] = None
-print('   Expected value: strictly positive integer or float')
-print('   Too small values are non sense')
-while ((type(param['impulse']) is float) == False
-       or param['impulse'] <= 0):
-    param['impulse'] = float(input('longueur fenetre impulse (s): '))
+print('   #################')
+print('   ### l_impulse ###')
+print('   #################')
+# criteria for selection of stations
+# The purpose of this criteria is to remove stations with high energy content
+# late in time compared to the arrival time of the considered phase
+# typical stations with long coda, site effects...
+# ratioSP is a duration in second
+# the reference point in time is the arrival time of the considered phase 't0'
+# the energy between t0 and t0 + l_impulse
+# is compared to all the energy after t0
+# if it is above a certain quantity (defined in the associated script)
+# the station is kept, otherwise no
+# initialisation of the length of 'impulsive signal'
+param['l_impulse'] = None
+print('Expected value: strictly positive integer or float')
+print('Too small values are non sense')
+while (not isinstance(param['l_impulse'], float)
+       or param['l_impulse'] <= 0):
+    try:
+        param['l_impulse'] = float(input('longueur fenetre impulse (s): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 param['angle_min'] = None
