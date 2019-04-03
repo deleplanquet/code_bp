@@ -77,7 +77,7 @@ param['hypo_max'] = None
 print('maximal distance between hypocenter and station')
 print('stations with higher hypocentral distance are not considered')
 print('Expected value: integer or float between hypo_min (previous value) = '
-       + str(param['hypo_min']) + ' and 100 km')
+       + str(int(param['hypo_min'])) + ' and 100 km')
 # check the type, should be float
 # should also be above hypo_min and below 100 km
 while (not isinstance(param['hypo_max'], float)
@@ -101,11 +101,11 @@ print('   ### frq_min ###')
 print('   ###############')
 # some filter will be applied on velocity traces during the bp process
 # considered frequencies are corner frequencies for those filters
-# initialisation of the minimum value of the frequency
 # different tests have shown that above 8 Hz, stability decreases
 # and below 2 Hz, resolution decreases
 # the networks used for the Kumamoto EQ
 # impose high frequency of the filter < 30 Hz
+# initialisation of the minimum value of the frequency
 param['frq_min'] = None
 print('velocity traces will be filtered')
 print('choice of the low frequency for the filter band')
@@ -121,15 +121,34 @@ while (not isinstance(param['frq_min'], float)
         print('No valid number, try again')
 
 print('')
-param['freq_max'] = None
-print('   Expected value: integer or float between freq_min(previous value) and 30 Hz')
-print('   Suggested values: 0.5 / 1 / 2 / 4 / 8 / 16 / 30 Hz')
-while ((type(param['freq_max']) is float) == False
-       or param['freq_max'] <= param['freq_min']
-       or param['freq_max'] > 30):
-    param['freq_max'] = float(input('frequence max [05/1/2/4/8/16/30] (> freq_min): '))
+print('   ###############')
+print('   ### frq_max ###')
+print('   ###############')
+# some filter will be applied on velocity traces during the bp process
+# considered frequencies are corner frequencies for those filters
+# different tests have shown that above 8 Hz, stability decreases
+# and below 2 Hz, resolution decreases
+# the network used for the Kumamoto EQ
+# imposes high frequency of the filter < 30 Hz
+# initialisation of the maximum value of the frequency
+param['frq_max'] = None
+print('choice of the high frequency for the filter band')
+print('Expected value: integer or float between freq_min (previous value) = '
+        + str(param['frq_min']) + ' and 30 Hz')
+print('Suggested values: 0.5 / 1 / 2 / 4 / 8 / 16 / 30 Hz')
+while (not isinstance(param['frq_max'], float)
+       or param['frq_max'] <= param['frq_min']
+       or param['frq_max'] > 30):
+    try:
+        param['frq_max'] = float(input('frequence max '
+                                    + '[05/1/2/4/8/16/30] (> '
+                                    + str(param['frq_min']) + '): '))
+    except ValueError:
+        print('No valid number, try again')
 
-param['band_freq'] = str(param['freq_min']) + '-' + str(param['freq_max'])
+# combination of frq_min and fra_max as frq_band
+# for easier creation of file/directory names
+param['frq_band'] = str(param['frq_min']) + '-' + str(param['frq_max'])
 
 print('')
 param['composante'] = None
