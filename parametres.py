@@ -42,7 +42,7 @@ param['event'] = None
 print('Enter EQ name from ref_seismes.txt')
 # the name of the event is asked while the input is not inside
 # the vents dictionnary
-while (param['event'] in dict_seis.keys()) == False:
+while param['event'] is not in dict_seis.keys():
     param['event'] = input('dossier au format YYYYMMDDHHMMSS: ')
 
 # Earth radius 6400 km
@@ -80,7 +80,7 @@ print('Expected value: integer or float between hypo_min (previous value) = '
        + str(param['hypo_min']) + ' and 100 km')
 # check the type, should be float
 # should also be above hypo_min and below 100 km
-while ((type(param['hypo_max']) is float) == False
+while type(param['hypo_max'] is not float
        or param['hypo_max'] <= param['hypo_min']
        or param['hypo_max'] > 100):
     try:
@@ -111,7 +111,7 @@ print('velocity traces will be filtered')
 print('choice of the low frequency for the filter band')
 print('Expected value: integer or float between 0.2 and 30 Hz')
 print('Suggested values: 0.2 / 0.5 / 1 / 2 / 4 / 8 / 16 Hz')
-while ((type(param['frq_min']) is float) == False
+while type(param['frq_min'] is not float
        or param['frq_min'] <= 0.2
        or param['frq_min'] >= 30):
     try:
