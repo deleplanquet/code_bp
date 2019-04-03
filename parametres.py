@@ -249,25 +249,48 @@ while (not isinstance(param['l_impulse'], float)
         print('No valid number, try again')
 
 print('')
+print('   #################')
+print('   ### angle_min ###')
+print('   #################')
+# stations can be selected depending on their orientation (azimuth) from the
+# hypocenter
+# the angle is equal to 0 in the North direction and is counted clockwise
+# by symetry, only angles from 0 to 180 are considered
+# for instance, if the selected azimuth band is the following: 0 -> 30 deg;
+# then, stations with corresponding azimuth between 180 + 0 and 180 + 30 deg
+# will also be considered
+# initialisation of the minimum angle for the azimuth selection
 param['angle_min'] = None
-print('   Expected value: positive integer of float between up to 180 deg')
-print('   0 deg is North, counting clockwise')
-print('   The other angle, by point(hypocenter) reflection, will be also considered')
-while ((type(param['angle_min']) is float) == False
+print('Expected value: positive integer of float between up to 180 deg')
+print('0 deg is North, counting clockwise')
+print('The other angle, by point(hypocenter) reflection, will be also considered')
+while (not isinstance(param['angle_min'], float)
        or param['angle_min'] < 0
        or param['angle_min'] >= 180):
-    param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
+    try:
+        param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
+print('   #################')
+print('   ### angle_max ###')
+print('   #################')
+# initialisation of the maximum angle for the azimuth selection
 param['angle_max'] = None
-print('   Expected value: positive integer or float between angle_min(previous value) and 180 deg')
-print('   0 deg is North, counting clockwise')
-print('   The other angle, by point(hypocenter) reflection, will be also considered')
-while ((type(param['angle_max']) is float) == False
+print('Expected value: positive integer or float between angle_min(previous value) and 180 deg')
+print('0 deg is North, counting clockwise')
+print('The other angle, by point(hypocenter) reflection, will be also considered')
+while (not isinstance(param['angle_max'], float)
        or param['angle_max'] <= param['angle_min']
        or param['angle_max'] > 180):
-    param['angle_max'] = float(input('angle_max (sens horaire) [angle_min -> 180]: '))
+    try:
+        param['angle_max'] = float(input('angle_max (sens horaire) [angle_min -> 180]: '))
+    except ValueError:
+        print('No valid number, try again')
 
+# combination of angle_min and angle_max as angle
+# for an easier creation of file/directory names
 param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']))
 
 print('')
