@@ -294,6 +294,9 @@ while (not isinstance(param['angle_max'], float)
 param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']))
 
 print('')
+print('   ##########')
+print('   ### vP ###')
+print('   ##########')
 param['vP'] = None
 print('   Expected value: strictly positive integer or float in km.s-1')
 while ((type(param['vP']) is float) == False
@@ -301,6 +304,9 @@ while ((type(param['vP']) is float) == False
     param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
 
 print('')
+print('   ##########')
+print('   ### vS ###')
+print('   ##########')
 param['vS'] = None
 print('   Expected value: strictly positive integer of float in km.s-1')
 print('   Of course P-waves are faster so value should be smaller than vP(previous value)')
@@ -310,6 +316,9 @@ while ((type(param['vS']) is float) == False
     param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
 
 print('')
+print('   ######################')
+print('   ### selected_waves ###')
+print('   ######################')
 param['ondes_select'] = None
 print('   Expected value: > P < or > S <')
 print('   Other values are not accepted')
@@ -318,6 +327,9 @@ while (param['ondes_select'] != 'P'
     param['ondes_select'] = input('hypothese de bp [P/S]: ')
 
 print('')
+print('   ##############')
+print('   ### strike ###')
+print('   ##############')
 param['strike'] = None
 print('   Strike direction of the fault')
 print('   Expected value: positive integer or float up to 360 deg')
@@ -329,6 +341,9 @@ while ((type(param['strike']) is float) == False
     param['strike'] = float(input('strike (224?): '))
 
 print('')
+print('   ###########')
+print('   ### dip ###')
+print('   ###########')
 param['dip'] = None
 print('   Dip direction of the fault')
 print('   Expected value: positive integer or float up to 90 deg')
@@ -340,6 +355,9 @@ while ((type(param['dip']) is float) == False
     param['dip'] = float(input('dip (65?): '))
 
 print('')
+print('   ###############')
+print('   ### l_fault ###')
+print('   ###############')
 param['l_fault'] = None
 print('   Length of the fault, that means in the direction of the strike')
 print('   Width can be bigger than length, no restriction')
@@ -350,6 +368,9 @@ while ((type(param['l_fault']) is float) == False
     param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
 
 print('')
+print('   ###############')
+print('   ### w_fault ###')
+print('   ###############')
 param['w_fault'] = None
 print('   Width of the fault, that means in the direction of the dip')
 print('   Width can be bigger than length, no restriction')
@@ -361,6 +382,9 @@ while ((type(param['w_fault']) is float) == False
     param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
 
 print('')
+print('   ####################')
+print('   ### l_fault_step ###')
+print('   ####################')
 param['pas_l'] = None
 print('   Length of each subfault in the direction of the strike')
 print('   Expected value: strictly positive integer of float in km')
@@ -371,6 +395,9 @@ while ((type(param['pas_l']) is float) == False
     param['pas_l'] = float(input('pas longueur fault (km): '))
 
 print('')
+print('   ####################')
+print('   ### w_fault_step ###')
+print('   ####################')
 param['pas_w'] = None
 print('   Width of each subfault in the direction of the dip')
 print('   Expected value: strictly positive integer or float in km')
@@ -381,6 +408,9 @@ while ((type(param['pas_w']) is float) == False
     param['pas_w'] = float(input('pas largeur fault (km): '))
 
 print('')
+print('   ####################')
+print('   ### bp_samp_rate ###')
+print('   ####################')
 param['samp_rate'] = None
 print('   Number of snapshots per sec')
 print('   Expected value: strictly positive integer or float below 100 (station sampling rate))')
@@ -400,6 +430,9 @@ if 1./param['samp_rate'] > param['smooth']:
     print('####################################################################')
 
 print('')
+print('   ######################')
+print('   ### bp_length_time ###')
+print('   ######################')
 param['length_t'] = None
 print('   Period of back projection, from 5 seconds before the start of the rupture')
 print('   Expected value: integer or float between 5 and 50 sec')
