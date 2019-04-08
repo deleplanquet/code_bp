@@ -297,34 +297,49 @@ print('')
 print('   ##########')
 print('   ### vP ###')
 print('   ##########')
+# velocity of P-waves
 param['vP'] = None
 print('   Expected value: strictly positive integer or float in km.s-1')
-while ((type(param['vP']) is float) == False
+while (not isinstance(param['vP'], float) == False
        or param['vP'] <= 0):
-    param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
+    try:
+        param['vP'] = float(input('vitesse des ondes P (km/s) (5.8?): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 print('   ##########')
 print('   ### vS ###')
 print('   ##########')
+# velocity of S-waves
 param['vS'] = None
 print('   Expected value: strictly positive integer of float in km.s-1')
 print('   Of course P-waves are faster so value should be smaller than vP(previous value)')
-while ((type(param['vS']) is float) == False
+while (not isinstance(param['vS'], float) == False
        or param['vS'] <= 0
        or param['vS'] >= param['vP']):
-    param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
+    try:
+        param['vS'] = float(input('vitesse des ondes S (km/s) (3.4?): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 print('   ######################')
 print('   ### selected_waves ###')
 print('   ######################')
+# bp process needs assumption on the velocity waves
+# the velocity of P and S-waves are asked just before
+# here the choice between one of them has to be done
+# the two velocities are asked for secondary plots
 param['ondes_select'] = None
 print('   Expected value: > P < or > S <')
 print('   Other values are not accepted')
 while (param['ondes_select'] != 'P'
        and param['ondes_select'] != 'S'):
-    param['ondes_select'] = input('hypothese de bp [P/S]: ')
+    try:
+        param['ondes_select'] = input('hypothese de bp [P/S]: ')
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 print('   ##############')
@@ -335,10 +350,13 @@ print('   Strike direction of the fault')
 print('   Expected value: positive integer or float up to 360 deg')
 print('   0 deg is North, counting clockwise')
 print('   Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/04/16 Kumamoto EQ')
-while ((type(param['strike']) is float) == False
+while (not isinstance(param['strike'], float) == False
        or param['strike'] < 0
        or param['strike'] >= 360):
-    param['strike'] = float(input('strike (224?): '))
+    try:
+        param['strike'] = float(input('strike (224?): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 print('   ###########')
@@ -349,10 +367,13 @@ print('   Dip direction of the fault')
 print('   Expected value: positive integer or float up to 90 deg')
 print('   0 deg is horizontal fault plane, 90 deg is vertical one')
 print('   Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/;04/16 Kumamoto EQ')
-while ((type(param['dip']) is float) == False
+while (not isinstance(param['dip'], float) == False
        or param['dip'] <= 0
        or param['dip'] > 90):
-    param['dip'] = float(input('dip (65?): '))
+    try:
+        param['dip'] = float(input('dip (65?): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 print('   ###############')
@@ -363,9 +384,12 @@ print('   Length of the fault, that means in the direction of the strike')
 print('   Width can be bigger than length, no restriction')
 print('   Expected value: stricly positive integer or float in km')
 print('   No matter the length, hypocenter is always at the center')
-while ((type(param['l_fault']) is float) == False
+while (not isinstance(param['l_fault'], float) == False
        or param['l_fault'] <= 0):
-    param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
+    try:
+        param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 print('   ###############')
@@ -377,9 +401,12 @@ print('   Width can be bigger than length, no restriction')
 print('   Expected value: stricly positive integer or float in km')
 print('   No matter the width, hypocenter is always at the center')
 print('   due to that, some points of the grid may be above the surface')
-while ((type(param['w_fault']) is float) == False
+while (not isinstance(param['w_fault'], float) == False
        or param['w_fault'] <= 0):
-    param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
+    try:
+        param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 print('   ####################')
@@ -389,10 +416,13 @@ param['pas_l'] = None
 print('   Length of each subfault in the direction of the strike')
 print('   Expected value: strictly positive integer of float in km')
 print('   Should be smaller than l_fault to have at least few points')
-while ((type(param['pas_l']) is float) == False
+while (not isinstance(param['pas_l'], float) == False
        or param['pas_l'] <= 0
        or param['pas_l'] >= param['l_fault']):
-    param['pas_l'] = float(input('pas longueur fault (km): '))
+    try:
+        param['pas_l'] = float(input('pas longueur fault (km): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 print('   ####################')
@@ -402,10 +432,13 @@ param['pas_w'] = None
 print('   Width of each subfault in the direction of the dip')
 print('   Expected value: strictly positive integer or float in km')
 print('   Should be smaller than w_fault to have at least few points')
-while ((type(param['pas_w']) is float) == False
+while (not isinstance(param['pas_w'], float) == False
        or param['pas_w'] <= 0
        or param['pas_w'] >= param['w_fault']):
-    param['pas_w'] = float(input('pas largeur fault (km): '))
+    try:
+        param['pas_w'] = float(input('pas largeur fault (km): '))
+    except ValueError:
+        print('No valid number, try again')
 
 print('')
 print('   ####################')
@@ -415,10 +448,13 @@ param['samp_rate'] = None
 print('   Number of snapshots per sec')
 print('   Expected value: strictly positive integer or float below 100 (station sampling rate))')
 print('   Suggested values are between 0.5 and 10')
-while ((type(param['samp_rate']) is float) == False
+while (not isinstance(param['samp_rate'], float) == False
        or param['samp_rate'] > 100
        or param['samp_rate'] <= 0):
-    param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
+    try:
+        param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
+    except ValueError:
+        print('No valid number, try again')
 
 if 1./param['samp_rate'] > param['smooth']:
     print('')
@@ -439,10 +475,13 @@ print('   Expected value: integer or float between 5 and 50 sec')
 print('   Suggested values are between 10 and 30 sec')
 print('   For Mw ~6~ 20 sec')
 print('   For Mw ~7~ 30 sec')
-while ((type(param['length_t']) is float) == False
+while (not isinstance(param['length_t'], float) == False
        or param['length_t'] <= 5
        or param['length_t'] >= 50):
-    param['length_t'] = float(input('duree de la bp (> 5 sec): '))
+    try:
+        param['length_t'] = float(input('duree de la bp (> 5 sec): '))
+    except ValueError:
+        print('No valid number, try again')
 
 path = (param['path_origin']
         + '/Kumamoto/historique_parametres')
