@@ -299,7 +299,7 @@ print('   ### vP ###')
 print('   ##########')
 # velocity of P-waves
 param['vP'] = None
-print('   Expected value: strictly positive integer or float in km.s-1')
+print('Expected value: strictly positive integer or float in km.s-1')
 while (not isinstance(param['vP'], float) == False
        or param['vP'] <= 0):
     try:
@@ -313,8 +313,8 @@ print('   ### vS ###')
 print('   ##########')
 # velocity of S-waves
 param['vS'] = None
-print('   Expected value: strictly positive integer of float in km.s-1')
-print('   Of course P-waves are faster so value should be smaller than vP(previous value)')
+print('Expected value: strictly positive integer of float in km.s-1')
+print('Of course P-waves are faster so value should be smaller than vP(previous value)')
 while (not isinstance(param['vS'], float) == False
        or param['vS'] <= 0
        or param['vS'] >= param['vP']):
@@ -331,13 +331,13 @@ print('   ######################')
 # the velocity of P and S-waves are asked just before
 # here the choice between one of them has to be done
 # the two velocities are asked for secondary plots
-param['ondes_select'] = None
-print('   Expected value: > P < or > S <')
-print('   Other values are not accepted')
-while (param['ondes_select'] != 'P'
-       and param['ondes_select'] != 'S'):
+param['selected_waves'] = None
+print('Expected value: > P < or > S <')
+print('Other values are not accepted')
+while (param['selected_waves'] != 'P'
+       and param['selected_waves'] != 'S'):
     try:
-        param['ondes_select'] = input('hypothese de bp [P/S]: ')
+        param['selected_waves'] = input('hypothese de bp [P/S]: ')
     except ValueError:
         print('No valid number, try again')
 
@@ -346,10 +346,10 @@ print('   ##############')
 print('   ### strike ###')
 print('   ##############')
 param['strike'] = None
-print('   Strike direction of the fault')
-print('   Expected value: positive integer or float up to 360 deg')
-print('   0 deg is North, counting clockwise')
-print('   Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/04/16 Kumamoto EQ')
+print('Strike direction of the fault')
+print('Expected value: positive integer or float up to 360 deg')
+print('0 deg is North, counting clockwise')
+print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/04/16 Kumamoto EQ')
 while (not isinstance(param['strike'], float) == False
        or param['strike'] < 0
        or param['strike'] >= 360):
@@ -363,10 +363,10 @@ print('   ###########')
 print('   ### dip ###')
 print('   ###########')
 param['dip'] = None
-print('   Dip direction of the fault')
-print('   Expected value: positive integer or float up to 90 deg')
-print('   0 deg is horizontal fault plane, 90 deg is vertical one')
-print('   Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/;04/16 Kumamoto EQ')
+print('Dip direction of the fault')
+print('Expected value: positive integer or float up to 90 deg')
+print('0 deg is horizontal fault plane, 90 deg is vertical one')
+print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/;04/16 Kumamoto EQ')
 while (not isinstance(param['dip'], float) == False
        or param['dip'] <= 0
        or param['dip'] > 90):
@@ -380,10 +380,10 @@ print('   ###############')
 print('   ### l_fault ###')
 print('   ###############')
 param['l_fault'] = None
-print('   Length of the fault, that means in the direction of the strike')
-print('   Width can be bigger than length, no restriction')
-print('   Expected value: stricly positive integer or float in km')
-print('   No matter the length, hypocenter is always at the center')
+print('Length of the fault, that means in the direction of the strike')
+print('Width can be bigger than length, no restriction')
+print('Expected value: stricly positive integer or float in km')
+print('No matter the length, hypocenter is always at the center')
 while (not isinstance(param['l_fault'], float) == False
        or param['l_fault'] <= 0):
     try:
@@ -396,11 +396,11 @@ print('   ###############')
 print('   ### w_fault ###')
 print('   ###############')
 param['w_fault'] = None
-print('   Width of the fault, that means in the direction of the dip')
-print('   Width can be bigger than length, no restriction')
-print('   Expected value: stricly positive integer or float in km')
-print('   No matter the width, hypocenter is always at the center')
-print('   due to that, some points of the grid may be above the surface')
+print('Width of the fault, that means in the direction of the dip')
+print('Width can be bigger than length, no restriction')
+print('Expected value: stricly positive integer or float in km')
+print('No matter the width, hypocenter is always at the center')
+print('due to that, some points of the grid may be above the surface')
 while (not isinstance(param['w_fault'], float) == False
        or param['w_fault'] <= 0):
     try:
@@ -412,15 +412,15 @@ print('')
 print('   ####################')
 print('   ### l_fault_step ###')
 print('   ####################')
-param['pas_l'] = None
-print('   Length of each subfault in the direction of the strike')
-print('   Expected value: strictly positive integer of float in km')
-print('   Should be smaller than l_fault to have at least few points')
-while (not isinstance(param['pas_l'], float) == False
-       or param['pas_l'] <= 0
-       or param['pas_l'] >= param['l_fault']):
+param['l_fault_step'] = None
+print('Length of each subfault in the direction of the strike')
+print('Expected value: strictly positive integer of float in km')
+print('Should be smaller than l_fault to have at least few points')
+while (not isinstance(param['l_fault_step'], float) == False
+       or param['l_fault_step'] <= 0
+       or param['l_fault_step'] >= param['l_fault']):
     try:
-        param['pas_l'] = float(input('pas longueur fault (km): '))
+        param['l_fault_step'] = float(input('pas longueur fault (km): '))
     except ValueError:
         print('No valid number, try again')
 
@@ -428,15 +428,15 @@ print('')
 print('   ####################')
 print('   ### w_fault_step ###')
 print('   ####################')
-param['pas_w'] = None
-print('   Width of each subfault in the direction of the dip')
-print('   Expected value: strictly positive integer or float in km')
-print('   Should be smaller than w_fault to have at least few points')
-while (not isinstance(param['pas_w'], float) == False
-       or param['pas_w'] <= 0
-       or param['pas_w'] >= param['w_fault']):
+param['w_fault_step'] = None
+print('Width of each subfault in the direction of the dip')
+print('Expected value: strictly positive integer or float in km')
+print('Should be smaller than w_fault to have at least few points')
+while (not isinstance(param['w_fault_step'], float) == False
+       or param['w_fault_step'] <= 0
+       or param['w_fault_step'] >= param['w_fault']):
     try:
-        param['pas_w'] = float(input('pas largeur fault (km): '))
+        param['w_fault_step'] = float(input('pas largeur fault (km): '))
     except ValueError:
         print('No valid number, try again')
 
@@ -444,42 +444,42 @@ print('')
 print('   ####################')
 print('   ### bp_samp_rate ###')
 print('   ####################')
-param['samp_rate'] = None
-print('   Number of snapshots per sec')
-print('   Expected value: strictly positive integer or float below 100 (station sampling rate))')
-print('   Suggested values are between 0.5 and 10')
-while (not isinstance(param['samp_rate'], float) == False
-       or param['samp_rate'] > 100
-       or param['samp_rate'] <= 0):
+param['bp_samp_rate'] = None
+print('Number of snapshots per sec')
+print('Expected value: strictly positive integer or float below 100 (station sampling rate))')
+print('Suggested values are between 0.5 and 10')
+while (not isinstance(param['bp_samp_rate'], float) == False
+       or param['bp_samp_rate'] > 100
+       or param['bp_samp_rate'] <= 0):
     try:
-        param['samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
+        param['bp_samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
     except ValueError:
         print('No valid number, try again')
 
-if 1./param['samp_rate'] > param['smooth']:
+if 1./param['bp_samp_rate'] > param['l_smooth']:
     print('')
     print('####################################################################')
-    print('Input value for smooth window length was: ' + str(param['smooth']) + ' s')
-    print('However,  the delay between two bp snapshots is higher: ' + str(1./param['samp_rate']) + ' s')
-    param['smooth'] = 1./param['samp_rate']
-    print('Therefore, the smooth window length is defined again by the following value: ' + str(param['smooth']) + ' s')
+    print('Input value for smooth window length was: ' + str(param['l_smooth']) + ' s')
+    print('However,  the delay between two bp snapshots is higher: ' + str(1./param['bp_samp_rate']) + ' s')
+    param['l_smooth'] = 1./param['bp_samp_rate']
+    print('Therefore, the smooth window length is defined again by the following value: ' + str(param['l_smooth']) + ' s')
     print('####################################################################')
 
 print('')
 print('   ######################')
 print('   ### bp_length_time ###')
 print('   ######################')
-param['length_t'] = None
-print('   Period of back projection, from 5 seconds before the start of the rupture')
-print('   Expected value: integer or float between 5 and 50 sec')
-print('   Suggested values are between 10 and 30 sec')
-print('   For Mw ~6~ 20 sec')
-print('   For Mw ~7~ 30 sec')
-while (not isinstance(param['length_t'], float) == False
-       or param['length_t'] <= 5
-       or param['length_t'] >= 50):
+param['bp_length_time'] = None
+print('Period of back projection, from 5 seconds before the start of the rupture')
+print('Expected value: integer or float between 5 and 50 sec')
+print('Suggested values are between 10 and 30 sec')
+print('For Mw ~6~ 20 sec')
+print('For Mw ~7~ 30 sec')
+while (not isinstance(param['bp_length_time'], float) == False
+       or param['bp_length_time'] <= 5
+       or param['bp_length_time'] >= 50):
     try:
-        param['length_t'] = float(input('duree de la bp (> 5 sec): '))
+        param['bp_length_time'] = float(input('duree de la bp (> 5 sec): '))
     except ValueError:
         print('No valid number, try again')
 
