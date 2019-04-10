@@ -263,12 +263,14 @@ print('   #################')
 param['angle_min'] = None
 print('Expected value: positive integer of float between up to 180 deg')
 print('0 deg is North, counting clockwise')
-print('The other angle, by point(hypocenter) reflection, will be also considered')
+print('The other angle, by point(hypocenter) reflection, will be also '
+        + 'considered')
 while (not isinstance(param['angle_min'], float)
        or param['angle_min'] < 0
        or param['angle_min'] >= 180):
     try:
-        param['angle_min'] = float(input('angle_min (sens horaire) [0 -> 180]: '))
+        param['angle_min'] = float(input('angle_min (sens horaire) '
+                                            + '[0 -> 180]: '))
     except ValueError:
         print('No valid number, try again')
 
@@ -278,20 +280,24 @@ print('   ### angle_max ###')
 print('   #################')
 # initialisation of the maximum angle for the azimuth selection
 param['angle_max'] = None
-print('Expected value: positive integer or float between angle_min(previous value) and 180 deg')
+print('Expected value: positive integer or float between angle_min '
+        + '(previous value) and 180 deg')
 print('0 deg is North, counting clockwise')
-print('The other angle, by point(hypocenter) reflection, will be also considered')
+print('The other angle, by point(hypocenter) reflection, will be also '
+        + 'considered')
 while (not isinstance(param['angle_max'], float)
        or param['angle_max'] <= param['angle_min']
        or param['angle_max'] > 180):
     try:
-        param['angle_max'] = float(input('angle_max (sens horaire) [angle_min -> 180]: '))
+        param['angle_max'] = float(input('angle_max (sens horaire) '
+                                            + '[angle_min -> 180]: '))
     except ValueError:
         print('No valid number, try again')
 
 # combination of angle_min and angle_max as angle
 # for an easier creation of file/directory names
-param['angle'] = str(int(param['angle_min'])) + '-' + str(int(param['angle_max']))
+param['angle'] = (str(int(param['angle_min'])) + '-'
+                    + str(int(param['angle_max'])))
 
 print('')
 print('   ##########')
@@ -314,7 +320,8 @@ print('   ##########')
 # velocity of S-waves
 param['vS'] = None
 print('Expected value: strictly positive integer of float in km.s-1')
-print('Of course P-waves are faster so value should be smaller than vP(previous value)')
+print('Of course P-waves are faster so value should be smaller than vP '
+        + '(previous value)')
 while (not isinstance(param['vS'], float) == False
        or param['vS'] <= 0
        or param['vS'] >= param['vP']):
@@ -345,11 +352,24 @@ print('')
 print('   ##############')
 print('   ### strike ###')
 print('   ##############')
+# the bp process needs a grid assumption
+# the grid is defined by the following parameters
+# - strike: like a real fault, the grid has a strike angle counted clockwise
+# from the North
+# - dip: like a real fault, the grid has a dip angle counted from 0 to 90
+# degres with 0 for an horizontal grid and 90 for a vertical one
+# - length: the length of the grid in the direction of the strike
+# - width: the length of the grid in the direction of the dip
+# - discretization values in both direction: more details below
+# the position of the grid is not asked, the grid will always be centered at
+# the hypocenter position. The purpose of this study is to image the complexity
+# during a rupture, not to locate an eqrthquake
 param['strike'] = None
 print('Strike direction of the fault')
 print('Expected value: positive integer or float up to 360 deg')
 print('0 deg is North, counting clockwise')
-print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/04/16 Kumamoto EQ')
+print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/04/16 '
+        + 'Kumamoto EQ')
 while (not isinstance(param['strike'], float) == False
        or param['strike'] < 0
        or param['strike'] >= 360):
@@ -362,11 +382,16 @@ print('')
 print('   ###########')
 print('   ### dip ###')
 print('   ###########')
+# as explained above, the bp process needs a grid assumption
+# the dip is one of the parameter to define the grid
+# its value should be between 0 and 90 degres with 0 for an horizontal grid and
+# 90 for a vertical one
 param['dip'] = None
 print('Dip direction of the fault')
 print('Expected value: positive integer or float up to 90 deg')
 print('0 deg is horizontal fault plane, 90 deg is vertical one')
-print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/;04/16 Kumamoto EQ')
+print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/;04/16 '
+        + 'Kumamoto EQ')
 while (not isinstance(param['dip'], float) == False
        or param['dip'] <= 0
        or param['dip'] > 90):
@@ -379,6 +404,11 @@ print('')
 print('   ###############')
 print('   ### l_fault ###')
 print('   ###############')
+# the bp process needs a grid assumption
+# the length in the strike direction (cf strike above) is one of the parameter
+# because the grid will be centered at the hypocenter location, the extension
+# of the grid will be half of the length in the strike direction on the two
+# sides of the hypocenter
 param['l_fault'] = None
 print('Length of the fault, that means in the direction of the strike')
 print('Width can be bigger than length, no restriction')
@@ -387,7 +417,8 @@ print('No matter the length, hypocenter is always at the center')
 while (not isinstance(param['l_fault'], float) == False
        or param['l_fault'] <= 0):
     try:
-        param['l_fault'] = float(input('longueur fault (km) (dans la direction du strike): '))
+        param['l_fault'] = float(input('longueur fault (km) '
+                                        + '(dans la direction du strike): '))
     except ValueError:
         print('No valid number, try again')
 
@@ -395,6 +426,16 @@ print('')
 print('   ###############')
 print('   ### w_fault ###')
 print('   ###############')
+# the bp process needs a grid assumption
+# the width, ie the length in the dip direction (cf dip above) is one of the
+# parameter
+# because the grid will be centered at the hypocenter location, the extension
+# of the grid will be half of the width in the dip direction on the two sides
+# of the hypocenter. It is possible to have a part of the grid which is above
+# the surface if the value of the width is too high. The value is not checked
+# for those kind of situations and the bp process is still feasible. However,
+# energy retrieved above the surface, if there is, does not have any physical
+# meaning
 param['w_fault'] = None
 print('Width of the fault, that means in the direction of the dip')
 print('Width can be bigger than length, no restriction')
@@ -404,7 +445,8 @@ print('due to that, some points of the grid may be above the surface')
 while (not isinstance(param['w_fault'], float) == False
        or param['w_fault'] <= 0):
     try:
-        param['w_fault'] = float(input('largeur fault (km) (dans la direction du dip): '))
+        param['w_fault'] = float(input('largeur fault (km) '
+                                        + '(dans la direction du dip): '))
     except ValueError:
         print('No valid number, try again')
 
@@ -412,6 +454,12 @@ print('')
 print('   ####################')
 print('   ### l_fault_step ###')
 print('   ####################')
+# the bp process needs a grid assumption
+# the length of the grid has been defined above but size of each subgrid has to
+# be defined. The shape of a subgrid is generally rectangular (may be square
+# shape in the case the two values are equal in the both direction). The length
+# of the subgrid in both direction (strike and dip) is asked independently
+# not sure what happens if the number of subfaults is not integer
 param['l_fault_step'] = None
 print('Length of each subfault in the direction of the strike')
 print('Expected value: strictly positive integer of float in km')
@@ -428,6 +476,9 @@ print('')
 print('   ####################')
 print('   ### w_fault_step ###')
 print('   ####################')
+# the bp process needs a grid assumption
+# the length in the dip direction of each subgrid is one of the parameter
+# not sure what happens if the number of subfaults is not integer
 param['w_fault_step'] = None
 print('Width of each subfault in the direction of the dip')
 print('Expected value: strictly positive integer or float in km')
@@ -444,33 +495,58 @@ print('')
 print('   ####################')
 print('   ### bp_samp_rate ###')
 print('   ####################')
+# the bp process is providing an image in space (on the grid) and in time of
+# an earthquake. The frequency of those images does not need to be high, only
+# few images per second (typically 5 to 10) is quite enough. Also, as mentioned
+# earlier (cf l_smooth), the length of the time-window for the smoothing of the
+# traces has to be at least the delay between two snapshots of bp. In the case
+# this condition is not verified, the value of l_smooth is modified to fit
+# exactly the delay between two snapshots of bp
 param['bp_samp_rate'] = None
 print('Number of snapshots per sec')
-print('Expected value: strictly positive integer or float below 100 (station sampling rate))')
+print('Expected value: strictly positive integer or float below 100 '
+        + '(station sampling rate))')
 print('Suggested values are between 0.5 and 10')
 while (not isinstance(param['bp_samp_rate'], float) == False
        or param['bp_samp_rate'] > 100
        or param['bp_samp_rate'] <= 0):
     try:
-        param['bp_samp_rate'] = float(input('nombre d images de bp par seconde (inferieur a 100): '))
+        param['bp_samp_rate'] = float(input('nombre d images de bp par '
+                                            + 'seconde (inferieur a 100): '))
     except ValueError:
         print('No valid number, try again')
 
+# check about the condition explained just above where l_smooth has to be
+# greater or equal to the dealy between two snapshots
 if 1./param['bp_samp_rate'] > param['l_smooth']:
     print('')
-    print('####################################################################')
-    print('Input value for smooth window length was: ' + str(param['l_smooth']) + ' s')
-    print('However,  the delay between two bp snapshots is higher: ' + str(1./param['bp_samp_rate']) + ' s')
+    print('##################################################################')
+    print('Input value for smooth window length was: '
+            + str(param['l_smooth']) + ' s')
+    print('However,  the delay between two bp snapshots is higher: '
+            + str(1./param['bp_samp_rate']) + ' s')
     param['l_smooth'] = 1./param['bp_samp_rate']
-    print('Therefore, the smooth window length is defined again by the following value: ' + str(param['l_smooth']) + ' s')
-    print('####################################################################')
+    print('Therefore, the smooth window length is defined again by the '
+            + 'following value: ' + str(param['l_smooth']) + ' s')
+    print('##################################################################')
 
 print('')
 print('   ######################')
 print('   ### bp_length_time ###')
 print('   ######################')
+# the bp process does not have any limitation in space nor in time. However,
+# it is limited by user on the grid for the space because the zone of interest
+# is closed to the hypocenter (the grid is centered on the hypocenter). As for
+# the time, the user is limiting with the parameter bp_length_time the duration
+# of the bp process. The beginning is defined and can't be modified (here) at 5
+# seconds before the beginning of the rupture, the end is deduced from this
+# value of the beginning and the length in time of the bp process given by the
+# user. Obviously, the user has to give a value greater than 5 and this value
+# depends on the magnitude of the considered eqrthquake, the bigger the Eq is,
+# the longer should be the duration of the bp process
 param['bp_length_time'] = None
-print('Period of back projection, from 5 seconds before the start of the rupture')
+print('Period of back projection, from 5 seconds before the start of the '
+        + 'rupture')
 print('Expected value: integer or float between 5 and 50 sec')
 print('Suggested values are between 10 and 30 sec')
 print('For Mw ~6~ 20 sec')
