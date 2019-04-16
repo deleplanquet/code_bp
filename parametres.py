@@ -365,7 +365,7 @@ print('   ##############')
 # the hypocenter position. The purpose of this study is to image the complexity
 # during a rupture, not to locate an eqrthquake
 param['strike'] = None
-print('Strike direction of the fault')
+print('Strike direction of the grid')
 print('Expected value: positive integer or float up to 360 deg')
 print('0 deg is North, counting clockwise')
 print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/04/16 '
@@ -387,7 +387,7 @@ print('   ###########')
 # its value should be between 0 and 90 degres with 0 for an horizontal grid and
 # 90 for a vertical one
 param['dip'] = None
-print('Dip direction of the fault')
+print('Dip direction of the grid')
 print('Expected value: positive integer or float up to 90 deg')
 print('0 deg is horizontal fault plane, 90 deg is vertical one')
 print('Kubo 2016: strike 224 deg, dip 65 deg for Mw 7.1 2016/;04/16 '
@@ -402,29 +402,29 @@ while (not isinstance(param['dip'], float)
 
 print('')
 print('   ###############')
-print('   ### l_fault ###')
+print('   ### l_grid ###')
 print('   ###############')
 # the bp process needs a grid assumption
 # the length in the strike direction (cf strike above) is one of the parameter
 # because the grid will be centered at the hypocenter location, the extension
 # of the grid will be half of the length in the strike direction on the two
 # sides of the hypocenter
-param['l_fault'] = None
-print('Length of the fault, that means in the direction of the strike')
+param['l_grid'] = None
+print('Length of the grid, that means in the direction of the strike')
 print('Width can be bigger than length, no restriction')
 print('Expected value: stricly positive integer or float in km')
 print('No matter the length, hypocenter is always at the center')
-while (not isinstance(param['l_fault'], float)
-       or param['l_fault'] <= 0):
+while (not isinstance(param['l_grid'], float)
+       or param['l_grid'] <= 0):
     try:
-        param['l_fault'] = float(input('longueur fault (km) '
+        param['l_grid'] = float(input('longueur grid (km) '
                                         + '(dans la direction du strike): '))
     except ValueError:
         print('No valid number, try again')
 
 print('')
 print('   ###############')
-print('   ### w_fault ###')
+print('   ### w_grid ###')
 print('   ###############')
 # the bp process needs a grid assumption
 # the width, ie the length in the dip direction (cf dip above) is one of the
@@ -436,58 +436,58 @@ print('   ###############')
 # for those kind of situations and the bp process is still feasible. However,
 # energy retrieved above the surface, if there is, does not have any physical
 # meaning
-param['w_fault'] = None
-print('Width of the fault, that means in the direction of the dip')
+param['w_grid'] = None
+print('Width of the grid, that means in the direction of the dip')
 print('Width can be bigger than length, no restriction')
 print('Expected value: stricly positive integer or float in km')
 print('No matter the width, hypocenter is always at the center')
 print('due to that, some points of the grid may be above the surface')
-while (not isinstance(param['w_fault'], float)
-       or param['w_fault'] <= 0):
+while (not isinstance(param['w_grid'], float)
+       or param['w_grid'] <= 0):
     try:
-        param['w_fault'] = float(input('largeur fault (km) '
+        param['w_grid'] = float(input('largeur grid (km) '
                                         + '(dans la direction du dip): '))
     except ValueError:
         print('No valid number, try again')
 
 print('')
 print('   ####################')
-print('   ### l_fault_step ###')
+print('   ### l_grid_step ###')
 print('   ####################')
 # the bp process needs a grid assumption
 # the length of the grid has been defined above but size of each subgrid has to
 # be defined. The shape of a subgrid is generally rectangular (may be square
 # shape in the case the two values are equal in the both direction). The length
 # of the subgrid in both direction (strike and dip) is asked independently
-# not sure what happens if the number of subfaults is not integer
-param['l_fault_step'] = None
-print('Length of each subfault in the direction of the strike')
+# not sure what happens if the number of subgrids is not integer
+param['l_grid_step'] = None
+print('Length of each subgrid in the direction of the strike')
 print('Expected value: strictly positive integer of float in km')
-print('Should be smaller than l_fault to have at least few points')
-while (not isinstance(param['l_fault_step'], float)
-       or param['l_fault_step'] <= 0
-       or param['l_fault_step'] >= param['l_fault']):
+print('Should be smaller than l_grid to have at least few points')
+while (not isinstance(param['l_grid_step'], float)
+       or param['l_grid_step'] <= 0
+       or param['l_grid_step'] >= param['l_grid']):
     try:
-        param['l_fault_step'] = float(input('pas longueur fault (km): '))
+        param['l_grid_step'] = float(input('pas longueur grid (km): '))
     except ValueError:
         print('No valid number, try again')
 
 print('')
 print('   ####################')
-print('   ### w_fault_step ###')
+print('   ### w_grid_step ###')
 print('   ####################')
 # the bp process needs a grid assumption
 # the length in the dip direction of each subgrid is one of the parameter
-# not sure what happens if the number of subfaults is not integer
-param['w_fault_step'] = None
-print('Width of each subfault in the direction of the dip')
+# not sure what happens if the number of subgrids is not integer
+param['w_grid_step'] = None
+print('Width of each subgrid in the direction of the dip')
 print('Expected value: strictly positive integer or float in km')
-print('Should be smaller than w_fault to have at least few points')
-while (not isinstance(param['w_fault_step'], float)
-       or param['w_fault_step'] <= 0
-       or param['w_fault_step'] >= param['w_fault']):
+print('Should be smaller than w_grid to have at least few points')
+while (not isinstance(param['w_grid_step'], float)
+       or param['w_grid_step'] <= 0
+       or param['w_grid_step'] >= param['w_grid']):
     try:
-        param['w_fault_step'] = float(input('pas largeur fault (km): '))
+        param['w_grid_step'] = float(input('pas largeur grid (km): '))
     except ValueError:
         print('No valid number, try again')
 
@@ -559,6 +559,12 @@ while (not isinstance(param['bp_length_time'], float)
     except ValueError:
         print('No valid number, try again')
 
+# from there, just save in different formats and in different folders the
+# parameters given by the user
+# binary format file is to be used later by other scripts
+# txt format file is for user in case he wants to check the choosen parameters
+# later
+
 path = (param['root_folder'] + '/'
         + 'Kumamoto')
 
@@ -583,29 +589,25 @@ with open('parametres_bin', 'wb') as my_exit:
     my_pck = pickle.Pickler(my_exit)
     my_pck.dump(param)
 
-yy, mm, dd, hh, mi, ss = None, None, None, None, None, None
-l_time = [yy, mm, dd, hh, mi, ss]
-n_time = ['year', 'month', 'day', 'hour', 'minute', 'second']
+yy = str(datetime.datetime.now().year)
+mm = str(datetime.datetime.now().month)
+dd = str(datetime.datetime.now().day)
+hh = str(datetime.datetime.now().hour)
+mi = str(datetime.datetime.now().minute)
+ss = str(datetime.datetime.now().second)
 
-for i, j in zip(l_time, n_time):
-    i = str(getattr(datetime.datetime.now(), j))
-    print(i)
-    while len(i) < 4:
-        i = '0' + i
-
-print(l_time)
-#yy = str(datetime.datetime.now().year)
-#mm = str(datetime.datetime.now().month)
-#dd = str(datetime.datetime.now().day)
-#hh = str(datetime.datetime.now().hour)
-#mi = str(datetime.datetime.now().minute)
-#ss = str(datetime.datetime.now().second)
-
-#for i in [yy, mm, dd, hh, mi, ss]:
-#    while len(i) != 4:
-#        if len(i) > 4:
-#            print('Error length year')
-#        i = '0' + i
+while len(yy) < 4:
+    yy = '0' + yy
+while len(mm) < 2:
+    mm = '0' + mm
+while len(dd) < 2:
+    dd = '0' + dd
+while len(hh) < 2:
+    hh = '0' + hh
+while len(mi) < 2:
+    mi = '0' + mi
+while len(ss) < 2:
+    ss = '0' + ss
 
 for ppth in lst_pth:
     if ppth == lst_pth[0]:
@@ -614,58 +616,58 @@ for ppth in lst_pth:
         paparam = 'parametres_' + yy + mm + dd + '-' + hh + mi + ss + '.txt'
     os.chdir(ppth)
     with open(paparam, 'w') as my_ext:
-        my_ext.write('         path_origin: ' + param['path_origin'] + '\n')
-        my_ext.write('             dossier: ' + param['dossier'] + '\n')
-        my_ext.write('             R_Earth: ' + str(param['R_Earth'])
-                                                + ' km\n')
-        my_ext.write('            couronne: ' + param['couronne'] + ' km\n')
-        my_ext.write('           band_freq: ' + param['band_freq'] + ' Hz\n')
-        my_ext.write('          composante: ' + param['composante'] + '\n')
-        my_ext.write('           ratio S/P: ' + str(param['ratioSP']) + '\n')
-        my_ext.write('      fenetre smooth: ' + str(param['smooth']) + ' s\n')
-        my_ext.write('     fenetre impulse: ' + str(param['impulse']) + ' s\n')
-        my_ext.write('     fenetre azimuth: ' + param['angle'] + ' deg\n')
-        my_ext.write('           vitesse P: ' + str(param['vP'])
+        my_ext.write('     root folder: ' + param['root_folder'] + '\n')
+        my_ext.write('           event: ' + param['event'] + '\n')
+        my_ext.write('    Earth radius: ' + str(param['R_Earth']) + ' km\n')
+        my_ext.write('     hypo interv: ' + param['hypo_interv'] + ' km\n')
+        my_ext.write('  frequency band: ' + param['frq_band'] + ' Hz\n')
+        my_ext.write('       component: ' + param['component'] + '\n')
+        my_ext.write('       ratio S/P: ' + str(param['ratioSP']) + '\n')
+        my_ext.write('   smooth window: ' + str(param['l_smooth']) + ' s\n')
+        my_ext.write('  impulse window: ' + str(param['l_impulse']) + ' s\n')
+        my_ext.write('  azimuth window: ' + param['angle'] + ' deg\n')
+        my_ext.write('      P velocity: ' + str(param['vP'])
                                                 + ' km/s # 5.8\n')
-        my_ext.write('           vitesse S: ' + str(param['vS'])
+        my_ext.write('      S velocity: ' + str(param['vS'])
                                                 + ' km/s # 3.4\n')
-        my_ext.write('     hypothese de bp: ' + param['ondes_select'] + '\n')
-        my_ext.write('        fault strike: ' + str(param['strike'])
+        my_ext.write('   bp hypothesis: ' + param['selected_waves'] + '\n')
+        my_ext.write('     grid strike: ' + str(param['strike'])
                                                 + ' deg # 224 for mainshock '
                                                 + 'from Kubo et al. (2016)\n')
-        my_ext.write('           fault dip: ' + str(param['dip']) + ' deg '
+        my_ext.write('        grid dip: ' + str(param['dip']) + ' deg '
                                                 + '# 65 for mainshock from '
                                                 + 'Kubo et al. (2016)\n')
-        my_ext.write('        length fault: ' + str(param['l_fault']) 
+        my_ext.write('     length grid: ' + str(param['l_grid']) + ' km\n')
+        my_ext.write('      width grid: ' + str(param['w_grid']) + ' km\n')
+        my_ext.write('length grid step: ' + str(param['l_grid_step'])
                                                 + ' km\n')
-        my_ext.write('         width fault: ' + str(param['w_fault'])
+        my_ext.write(' width grid step: ' + str(param['w_grid_step'])
                                                 + ' km\n')
-        my_ext.write('pas direction strike: ' + str(param['pas_l']) + ' km\n')
-        my_ext.write('   pas direction dip: ' + str(param['pas_w']) + ' km\n')
-        my_ext.write('   echantillonage bp: ' + str(param['samp_rate'])
+        my_ext.write('bp sampling rate: ' + str(param['bp_samp_rate'])
                                                 + ' im/s\n')
-        my_ext.write('         duree de bp: ' + str(param['length_t'])
+        my_ext.write('     bp duration: ' + str(param['bp_length_time'])
                                                 + ' s\n')
         
+# finally, a resume of the selected parameters is printed in the terminal
 print('')
 print('')
 print('      You have defined the following parameters:')
-print('                  EQ: ' + param['dossier'])
-print('          Hyp. Dist.: ' + param['couronne'] + '          km')
-print('          Freq. Band: ' + param['band_freq'] + '        Hz')
-print('          Composante: ' + param['composante'])
-print('           S/P ratio: ' + str(param['ratioSP']))
-print('       Smooth window: ' + str(param['smooth']) + '            s')
-print('      Impulse window: ' + str(param['impulse']) + '            s')
-print('             Azimuth: ' + str(param['angle']) + '          deg')
-print('              P vel.: ' + str(param['vP']) + '            km.s-1')
-print('              S vel.: ' + str(param['vS']) + '            km.s-1')
-print('          Used waves: ' + param['ondes_select'])
-print('         Grid strike: ' + str(param['strike']) + '          deg')
-print('            Grid dip: ' + str(param['dip']) + '           deg')
-print('         Grid length: ' + str(param['l_fault']) + '           km')
-print('          Grid width: ' + str(param['w_fault']) + '           km')
-print('        Reso. length: ' + str(param['pas_l']) + '            km')
-print('         Reso. width: ' + str(param['pas_w']) + '            km')
-print('   Nbre bp snapshots: ' + str(param['samp_rate']) + '            s-1')
-print('         Bp duration: ' + str(param['length_t']) + '           s')
+print('                 EQ: ' + param['event'])
+print('         Hyp. Dist.: ' + param['hypo_interv'] + '          km')
+print('         Freq. Band: ' + param['frq_band'] + '        Hz')
+print('         Composante: ' + param['component'])
+print('          S/P ratio: ' + str(param['ratioSP']))
+print('      Smooth window: ' + str(param['l_smooth']) + '            s')
+print('     Impulse window: ' + str(param['l_impulse']) + '            s')
+print('            Azimuth: ' + str(param['angle']) + '          deg')
+print('             P vel.: ' + str(param['vP']) + '            km.s-1')
+print('             S vel.: ' + str(param['vS']) + '            km.s-1')
+print('         Used waves: ' + param['selected_waves'])
+print('        Grid strike: ' + str(param['strike']) + '          deg')
+print('           Grid dip: ' + str(param['dip']) + '           deg')
+print('        Grid length: ' + str(param['l_grid']) + '           km')
+print('         Grid width: ' + str(param['w_grid']) + '           km')
+print('       Reso. length: ' + str(param['l_grid_step']) + '            km')
+print('        Reso. width: ' + str(param['w_grid_step']) + '            km')
+print('  Nbre bp snapshots: ' + str(param['bp_samp_rate']) + '            s-1')
+print('        Bp duration: ' + str(param['bp_length_time']) + '           s')
