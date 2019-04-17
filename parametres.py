@@ -568,8 +568,9 @@ while (not isinstance(param['bp_length_time'], float)
 path = (param['root_folder'] + '/'
         + 'Kumamoto')
 
-path1 = (param['root_folder']
-        + '/Kumamoto/historique_parametres')
+path1 = (param['root_folder'] + '/'
+        + 'Kumamoto/'
+        + 'historique_parametres')
 
 path2 = (param['root_folder'] + '/'
          + 'Kumamoto/'
