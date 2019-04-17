@@ -1,3 +1,8 @@
+# convert traces into SAC format
+# possible warning you may encounter are because some part of the original
+# header can not be converted to SAC header. In the case some of them are still
+# needed, it has to be coded explicitly here
+
 #!/usr/bin/env python
 import sys
 from obspy import read
@@ -36,6 +41,8 @@ if os.path.isdir(path_sac) == False:
     os.makedirs(path_sac)
 
 # make a list of files from KiK-net network
+# pictures (ps.gz files) are also provided inside the same folder but we do not
+# want to take them into account
 list_files = os.listdir(path_kik)
 list_files = [a for a in list_files if 'ps.gz' not in a]
 
@@ -48,6 +55,8 @@ for f in list_files:
     tr.write(f + '.sac', format='SAC')
 
 # make a list of files from K-NET network
+# pictures (ps.gz files) are also provided inside the same folder but we do not
+# want to take them into account
 list_files = os.listdir(path_knt)
 list_files = [a for a in list_files if 'ps.gz' not in a]
 
@@ -58,4 +67,3 @@ for f in list_files:
     tr.stats.sac = tr.stats.knet
     os.chdir(path_sac)
     tr.write(f + '.sac', format='SAC')
-
