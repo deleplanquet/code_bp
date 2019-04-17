@@ -22,19 +22,22 @@ event = param['event']
 
 # path_kik and path_knt are the locations of original files (traces) for both
 # networks
-path_data = (path_origin + '/'
-             + 'Kumamoto/'
-             + event + '/'
-             + event + '_brut')
-path_kik = (path_data + '/'
+path_kik = (path_origin + '/'
+            + 'Kumamoto/'
+            + event + '/'
+            + 'brut/'
             + event + '.kik')
-path_knt = (path_data + '/'
+path_knt = (path_origin + '/'
+            + 'Kumamoto/'
+            + event + '/'
+            + 'brut/'
             + event + '.knt')
 # path_sac is the target directory after conversion of the traces to SAC
 path_sac = (path_origin + '/'
             + 'Kumamoto/'
             + event + '/'
-            + event + '_sac')
+            + 'acc/'
+            + 'brut')
 
 # check the existence of the directory
 if os.path.isdir(path_sac) == False:
