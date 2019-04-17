@@ -55,7 +55,7 @@ for f in list_files:
     tr = read(f)[0]
     tr.stats.sac = tr.stats.knet
     os.chdir(path_sac)
-    tr.write(f + '.sac', format='SAC')
+    tr.write(f[:6] + f[16:] + '.sac', format='SAC')
 
 # make a list of files from K-NET network
 # pictures (ps.gz files) are also provided inside the same folder but we do not
@@ -69,4 +69,4 @@ for f in list_files:
     tr = read(f)[0]
     tr.stats.sac = tr.stats.knet
     os.chdir(path_sac)
-    tr.write(f + '.sac', format='SAC')
+    tr.write(f[:6] + f[16:] + '.sac', format='SAC')
