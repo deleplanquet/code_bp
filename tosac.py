@@ -10,8 +10,8 @@ import os
 import obspy.io.sac
 import pickle
 
-path_origin = os.getcwd()[:-6]
-os.chdir(path_origin + '/Kumamoto')
+root_folder = os.getcwd()[:-6]
+os.chdir(root_folder + '/Kumamoto')
 # load parameters given earlier by the user
 with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
@@ -22,18 +22,18 @@ event = param['event']
 
 # path_kik and path_knt are the locations of original files (traces) for both
 # networks
-path_kik = (path_origin + '/'
+path_kik = (root_folder + '/'
             + 'Kumamoto/'
             + event + '/'
             + 'brut/'
             + event + '.kik')
-path_knt = (path_origin + '/'
+path_knt = (root_folder + '/'
             + 'Kumamoto/'
             + event + '/'
             + 'brut/'
             + event + '.knt')
 # path_sac is the target directory after conversion of the traces to SAC
-path_sac = (path_origin + '/'
+path_sac = (root_folder + '/'
             + 'Kumamoto/'
             + event + '/'
             + 'acc/'
