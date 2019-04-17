@@ -565,6 +565,12 @@ while (not isinstance(param['bp_length_time'], float)
 # txt format file is for user in case he wants to check the choosen parameters
 # later
 
+hyp_int = param['hypo_interv']
+frq_bnd = param['frq_band']
+cpnt = param['component']
+waves = param['selected_waves']
+azim = param['angle']
+
 path = (param['root_folder'] + '/'
         + 'Kumamoto')
 
@@ -575,9 +581,10 @@ path1 = (param['root_folder'] + '/'
 path2 = (param['root_folder'] + '/'
          + 'Kumamoto/'
          + param['event'] + '/'
-         + param['event'] + '_results/'
-         + param['event'] + '_vel_' + param['hypo_interv'] + 'km_'
-                    + param['frq_band'] + 'Hz')
+         + 'results/'
+         + 'vel_' + hyp_int + 'km_' + frq_bnd + 'Hz_' + cpnt + '_env_smooth_'
+                + waves + '/'
+         + azim + 'deg')
 
 lst_pth = [path, path1, path2]
 
@@ -617,58 +624,86 @@ for ppth in lst_pth:
         paparam = 'parametres_' + yy + mm + dd + '-' + hh + mi + ss + '.txt'
     os.chdir(ppth)
     with open(paparam, 'w') as my_ext:
-        my_ext.write('     root folder: ' + param['root_folder'] + '\n')
-        my_ext.write('           event: ' + param['event'] + '\n')
-        my_ext.write('    Earth radius: ' + str(param['R_Earth']) + ' km\n')
-        my_ext.write('     hypo interv: ' + param['hypo_interv'] + ' km\n')
-        my_ext.write('  frequency band: ' + param['frq_band'] + ' Hz\n')
-        my_ext.write('       component: ' + param['component'] + '\n')
-        my_ext.write('       ratio S/P: ' + str(param['ratioSP']) + '\n')
-        my_ext.write('   smooth window: ' + str(param['l_smooth']) + ' s\n')
-        my_ext.write('  impulse window: ' + str(param['l_impulse']) + ' s\n')
-        my_ext.write('  azimuth window: ' + param['angle'] + ' deg\n')
+        my_ext.write('     root folder: ' + param['root_folder']
+                                            + '\n')
+        my_ext.write('           event: ' + param['event']
+                                            + '\n')
+        my_ext.write('    Earth radius: ' + str(param['R_Earth'])
+                                            + ' km\n')
+        my_ext.write('     hypo interv: ' + param['hypo_interv']
+                                            + ' km\n')
+        my_ext.write('  frequency band: ' + param['frq_band']
+                                            + ' Hz\n')
+        my_ext.write('       component: ' + param['component']
+                                            + '\n')
+        my_ext.write('       ratio S/P: ' + str(param['ratioSP'])
+                                            + '\n')
+        my_ext.write('   smooth window: ' + str(param['l_smooth'])
+                                            + ' s\n')
+        my_ext.write('  impulse window: ' + str(param['l_impulse'])
+                                            + ' s\n')
+        my_ext.write('  azimuth window: ' + param['angle']
+                                            + ' deg\n')
         my_ext.write('      P velocity: ' + str(param['vP'])
-                                                + ' km/s # 5.8\n')
+                                            + ' km/s # 5.8\n')
         my_ext.write('      S velocity: ' + str(param['vS'])
-                                                + ' km/s # 3.4\n')
-        my_ext.write('   bp hypothesis: ' + param['selected_waves'] + '\n')
+                                            + ' km/s # 3.4\n')
+        my_ext.write('   bp hypothesis: ' + param['selected_waves']
+                                            + '\n')
         my_ext.write('     grid strike: ' + str(param['strike'])
-                                                + ' deg # 224 for mainshock '
-                                                + 'from Kubo et al. (2016)\n')
+                                            + ' deg # 224 for mainshock '
+                                            + 'from Kubo et al. (2016)\n')
         my_ext.write('        grid dip: ' + str(param['dip']) + ' deg '
-                                                + '# 65 for mainshock from '
-                                                + 'Kubo et al. (2016)\n')
-        my_ext.write('     length grid: ' + str(param['l_grid']) + ' km\n')
-        my_ext.write('      width grid: ' + str(param['w_grid']) + ' km\n')
+                                            + '# 65 for mainshock from '
+                                            + 'Kubo et al. (2016)\n')
+        my_ext.write('     length grid: ' + str(param['l_grid'])
+                                            + ' km\n')
+        my_ext.write('      width grid: ' + str(param['w_grid'])
+                                            + ' km\n')
         my_ext.write('length grid step: ' + str(param['l_grid_step'])
-                                                + ' km\n')
+                                            + ' km\n')
         my_ext.write(' width grid step: ' + str(param['w_grid_step'])
-                                                + ' km\n')
+                                            + ' km\n')
         my_ext.write('bp sampling rate: ' + str(param['bp_samp_rate'])
-                                                + ' im/s\n')
+                                            + ' im/s\n')
         my_ext.write('     bp duration: ' + str(param['bp_length_time'])
-                                                + ' s\n')
+                                            + ' s\n')
         
 # finally, a resume of the selected parameters is printed in the terminal
 print('')
 print('')
 print('      You have defined the following parameters:')
 print('                 EQ: ' + param['event'])
-print('         Hyp. Dist.: ' + param['hypo_interv'] + '          km')
-print('         Freq. Band: ' + param['frq_band'] + '        Hz')
+print('         Hyp. Dist.: ' + param['hypo_interv']
+                                + '          km')
+print('         Freq. Band: ' + param['frq_band']
+                                + '        Hz')
 print('         Composante: ' + param['component'])
 print('          S/P ratio: ' + str(param['ratioSP']))
-print('      Smooth window: ' + str(param['l_smooth']) + '            s')
-print('     Impulse window: ' + str(param['l_impulse']) + '            s')
-print('            Azimuth: ' + str(param['angle']) + '          deg')
-print('             P vel.: ' + str(param['vP']) + '            km.s-1')
-print('             S vel.: ' + str(param['vS']) + '            km.s-1')
+print('      Smooth window: ' + str(param['l_smooth'])
+                                + '            s')
+print('     Impulse window: ' + str(param['l_impulse'])
+                                + '            s')
+print('            Azimuth: ' + str(param['angle'])
+                                + '          deg')
+print('             P vel.: ' + str(param['vP'])
+                                + '            km.s-1')
+print('             S vel.: ' + str(param['vS'])
+                                + '            km.s-1')
 print('         Used waves: ' + param['selected_waves'])
-print('        Grid strike: ' + str(param['strike']) + '          deg')
-print('           Grid dip: ' + str(param['dip']) + '           deg')
-print('        Grid length: ' + str(param['l_grid']) + '           km')
-print('         Grid width: ' + str(param['w_grid']) + '           km')
-print('       Reso. length: ' + str(param['l_grid_step']) + '            km')
-print('        Reso. width: ' + str(param['w_grid_step']) + '            km')
-print('  Nbre bp snapshots: ' + str(param['bp_samp_rate']) + '            s-1')
-print('        Bp duration: ' + str(param['bp_length_time']) + '           s')
+print('        Grid strike: ' + str(param['strike'])
+                                + '          deg')
+print('           Grid dip: ' + str(param['dip'])
+                                + '           deg')
+print('        Grid length: ' + str(param['l_grid'])
+                                + '           km')
+print('         Grid width: ' + str(param['w_grid'])
+                                + '           km')
+print('       Reso. length: ' + str(param['l_grid_step'])
+                                + '            km')
+print('        Reso. width: ' + str(param['w_grid_step'])
+                                + '            km')
+print('  Nbre bp snapshots: ' + str(param['bp_samp_rate'])
+                                + '            s-1')
+print('        Bp duration: ' + str(param['bp_length_time'])
+                                + '           s')
