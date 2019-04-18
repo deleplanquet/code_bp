@@ -39,9 +39,16 @@ path_sac = (root_folder + '/'
             + 'acc/'
             + 'brut')
 
-# check the existence of the directory
-if os.path.isdir(path_sac) == False:
-    os.makedirs(path_sac)
+# create the directory path_sac in case it does not exist
+if not os.path.isdir(path_sac):
+    try:
+        os.makedirs(path_sac)
+    except OSError:
+        print('Creation of the directory %s failed' %path_sac)
+    else:
+        print('Successfully created the directory %s' %path_sac)
+else:
+    print('%s is alrealy existing' %path_sac)
 
 # make a list of files from KiK-net network
 # pictures (ps.gz files) are also provided inside the same folder but we do not
