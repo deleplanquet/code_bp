@@ -589,8 +589,15 @@ path2 = (param['root_folder'] + '/'
 lst_pth = [path, path1, path2]
 
 for i in [path1, path2]:
-    if os.path.isdir(i) == False:
-        os.makedirs(i)
+    if not os.path.isdir(i):
+        try:
+            os.makedirs(i)
+        except OSError:
+            print('Creation of the directory %s failed' %i)
+        else:
+            print('Successfully created the directory %s' %i)
+    else:
+        print('%s is already existing' %i)
 
 os.chdir(path)
 with open('parametres_bin', 'wb') as my_exit:
