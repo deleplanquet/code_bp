@@ -588,6 +588,7 @@ path2 = (param['root_folder'] + '/'
 
 lst_pth = [path, path1, path2]
 
+# create the directories path1 and path2 in case they do not exist
 for i in [path1, path2]:
     if not os.path.isdir(i):
         try:
@@ -599,11 +600,13 @@ for i in [path1, path2]:
     else:
         print('%s is already existing' %i)
 
+# save parameters in binary file for later use
 os.chdir(path)
 with open('parametres_bin', 'wb') as my_exit:
     my_pck = pickle.Pickler(my_exit)
     my_pck.dump(param)
 
+# check the current time
 yy = str(datetime.datetime.now().year)
 mm = str(datetime.datetime.now().month)
 dd = str(datetime.datetime.now().day)
@@ -611,6 +614,7 @@ hh = str(datetime.datetime.now().hour)
 mi = str(datetime.datetime.now().minute)
 ss = str(datetime.datetime.now().second)
 
+# change time format
 while len(yy) < 4:
     yy = '0' + yy
 while len(mm) < 2:
@@ -624,6 +628,16 @@ while len(mi) < 2:
 while len(ss) < 2:
     ss = '0' + ss
 
+# save parameters in txt file at three different locations:
+# - at the root folder of all the different events folder for a quick acces for
+# the user with the name of current_parameters.txt. This file is replaced each
+# time this script (parametres.py) is run
+# - inside the folder historique_parametres located at the root folder of all
+# the different events folder with a name related to the time when this script
+# (parametres.py) has been launched. In this way, previous parameters are not
+# erased and can be accessible to look back on previous studies
+# - inside the results folder of the considered event. The name is the same as
+# for file saved in historiques_parametres folder
 for ppth in lst_pth:
     if ppth == lst_pth[0]:
         paparam = 'current_parametres.txt'
