@@ -1,3 +1,5 @@
+#
+
 import pickle
 from obspy import read
 import sys
@@ -59,9 +61,18 @@ path_results = (root_folder + '/'
                 + acc + '/'
                 + couronne + 'km')
 
-if os.path.isdir(path_results) == False:
-    os.makedirs(path_results)
+# create the directory path_results in case it does not exist
+if not os.path.isdir(path_results):
+    try:
+        os.makedirs(path_results)
+    except OSError:
+        print('Creation of the directory %s failed' %path_results)
+    else:
+        print('Successfully created the directory %s' %path_results)
+else:
+    print('%s is already existing' %path_results)
 
+# load location of the studied earthquake
 os.chdir(root_folder + '/Kumamoto')
 with open('ref_seismes_bin', 'rb') as my_fich:
     my_depick = pickle.Unpickler(my_fich)
@@ -70,16 +81,15 @@ with open('ref_seismes_bin', 'rb') as my_fich:
 lat_hyp = dict_seis[event]['lat']
 lon_hyp = dict_seis[event]['lon']
 dep_hyp = dict_seis[event]['dep']
+hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
+# 
 os.chdir(path_data)
-
 list_stat = os.listdir(path_data)
 list_stat_UD = [a for a in list_stat if ('UD' in a) and ('UD1' not in a)]
 list_stat_NS = [a for a in list_stat if ('NS' in a) and ('NS1' not in a)]
 list_stat_EW = [a for a in list_stat if ('EW' in a) and ('EW1' not in a)]
 list_stat = list_stat_UD + list_stat_NS + list_stat_EW
-
-hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
 for station in list_stat:
     os.chdir(path_data)
