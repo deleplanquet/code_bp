@@ -28,40 +28,55 @@ def dist(vect1, vect2):
 print('')
 print('      python3 select_couronne.py')
 
-path_origin = os.getcwd()[:-6]
-os.chdir(path_origin + '/Kumamoto')
+# open the file of the parameters given by the user
+root_folder = os.getcwd()[:-6]
+os.chdir(root_folder + '/Kumamoto')
 with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
 
+# all the parameters are not used in this script, only the following ones
 R_Earth = param['R_Earth']
-dossier = param['dossier']
-couronne = param['couronne']
-dist_min = param['dist_min']
-dist_max = param['dist_max']
+event = param['event']
+couronne = param['hypo_interv']
+dist_min = param['hypo_min']
+dist_max = param['hypo_max']
 
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_sac_inf100km'
-path_results = path + '/' + dossier + '_sac_' + couronne + 'km'
+# directories used in this script:
+# - path_data is the directory where all the records with hypocenter distance
+# less than 100km are stored
+# - path_results is the directory where a copy of the records with hypocenter
+# distance between hypo_min and hypo_max will be done (the values hypo_min and
+# hypo_max are given by the user through parametres.py)
+path_data = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + acc + '/'
+             + 'inf100km_copie')
+path_results = (root_folder + '/'
+                + 'Kumamoto/'
+                + event + '/'
+                + acc + '/'
+                + couronne + 'km')
 
 if os.path.isdir(path_results) == False:
     os.makedirs(path_results)
 
-os.chdir(path_origin + '/Kumamoto')
+os.chdir(root_folder + '/Kumamoto')
 with open('ref_seismes_bin', 'rb') as my_fich:
     my_depick = pickle.Unpickler(my_fich)
     dict_seis = my_depick.load()
 
-lat_hyp = dict_seis[dossier]['lat']
-lon_hyp = dict_seis[dossier]['lon']
-dep_hyp = dict_seis[dossier]['dep']
+lat_hyp = dict_seis[event]['lat']
+lon_hyp = dict_seis[event]['lon']
+dep_hyp = dict_seis[event]['dep']
 
 os.chdir(path_data)
 
 list_stat = os.listdir(path_data)
-list_stat_UD = [a for a in list_stat if ('UD' in a) == True and ('UD1' in a) == False]
-list_stat_NS = [a for a in list_stat if ('NS' in a) == True and ('NS1' in a) == False]
-list_stat_EW = [a for a in list_stat if ('EW' in a) == True and ('EW1' in a) == False]
+list_stat_UD = [a for a in list_stat if ('UD' in a) and ('UD1' not in a)]
+list_stat_NS = [a for a in list_stat if ('NS' in a) and ('NS1' not in a)]
+list_stat_EW = [a for a in list_stat if ('EW' in a) and ('EW1' not in a)]
 list_stat = list_stat_UD + list_stat_NS + list_stat_EW
 
 hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
@@ -69,7 +84,9 @@ hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 for station in list_stat:
     os.chdir(path_data)
     st = read(station)
-    pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo]
+    pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel,
+               st[0].stats.sac.stla,
+               st[0].stats.sac.stlo]
     #print(station, dist(hypo, pos_sta))
     if dist(hypo, pos_sta) < dist_max and dist(hypo, pos_sta) > dist_min:
         os.chdir(path_results)
@@ -77,18 +94,3 @@ for station in list_stat:
         #print('selection', st[0].stats.sac.dist)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(station, format='SAC')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
