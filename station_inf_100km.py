@@ -80,6 +80,13 @@ lon_hyp = dict_seis[event]['lon']
 dep_hyp = dict_seis[event]['dep']
 hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
+# here, we are dealing with two different networks:
+# - K-NET: every geographical location has one station at the surface
+# - KiK-net: every geographical location has two stations, one borehole and one
+# at the surface and we consider only the ones at the surface to be consistent
+# with the first network (for instance, the station S is related to EW1, NS1,
+# UD1, EW2, NS2 and UD2 and we only consider EW2, NS2 and UD2 the three
+# components recorded at the surface)
 os.chdir(path_data)
 list_stat = os.listdir(path_data)
 list_stat_UD = [a for a in list_stat if ('UD' in a) and ('UD1' not in a)]
