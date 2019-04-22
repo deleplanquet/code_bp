@@ -50,12 +50,12 @@ event = param['event']
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + acc + '/'
+             + 'acc/'
              + 'brut')
 path_results = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
-                + acc + '/'
+                + 'acc/'
                 + 'inf100km')
 
 # create the directory path_results in case it does not exist
@@ -94,19 +94,20 @@ list_stat_NS = [a for a in list_stat if ('NS' in a) and ('NS1' not in a)]
 list_stat_EW = [a for a in list_stat if ('EW' in a) and ('EW1' not in a)]
 list_stat = list_stat_UD + list_stat_NS + list_stat_EW
 
-print('Check the two values of the hypocenter distance and select those with
-        hypocenter distance less than 100 km')
+print('Check the two values of the hypocenter distance and select those with',
+        'hypocenter distance less than 100 km')
 for s in list_stat:
     os.chdir(path_data)
     st = read(s)
     pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel,
                st[0].stats.sac.stla,
                st[0].stats.sac.stlo]
-    print('The station %s has a calculated hypocenter distance equal to %f
-            and a stored hypocenter distance equal to %f'
-            %(s, dist(hypo, pos_sta), st[0].stats.sac.dist))
-    if dist(hypo, pos_sta) < 100:
+    dst = dist(hypo, pos_sta)
+    print('The station %s' %s[:6],
+            'has a calculated hypo distance equal to %f' %dst,
+            'and a stored hypo distance equal to %f' %st[0].stats.sac.dist)
+    if dst < 100:
         os.chdir(path_results)
-        print('selection')
+        print('  --->  selected')
         tr = Trace(st[0].data, st[0].stats)
         tr.write(s, format='SAC')
