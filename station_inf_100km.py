@@ -103,11 +103,14 @@ for s in list_stat:
                st[0].stats.sac.stla,
                st[0].stats.sac.stlo]
     dst = dist(hypo, pos_sta)
-    print('The station %s' %s[:6],
-            'has a calculated hypo distance equal to %f' %dst,
-            'and a stored hypo distance equal to %f' %st[0].stats.sac.dist)
+    print('The station {}'.format(s[:6]),
+    'has a calculated hypo distance equal to {:.1f}'.format(dst),
+    'and a stored hypo distance equal to {:.1f}'.format(st[0].stats.sac.dist),
+    end = ' ')
     if dst < 100:
         os.chdir(path_results)
         print('  --->  selected')
         tr = Trace(st[0].data, st[0].stats)
         tr.write(s, format='SAC')
+    else:
+        print('')
