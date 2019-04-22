@@ -1,4 +1,6 @@
-#
+# make a copie of the records in SAC format of the stations which hypocenter
+# distance is between hypo_min and hypo_max
+# hypo_min and hypo_max are user choosed through running parameters.py
 
 import pickle
 from obspy import read
@@ -7,11 +9,15 @@ import os
 import math
 from obspy import Trace
 
-#conversion angle degre -> radian
+# few functions used in this script
+# a library may be done
+
+# conversion angle degree -> radian
 def d2r(angle):
     return angle*math.pi/180
 
-#conversion coordonnees geographiques -> cartesien
+# conversion geographic coordinates -> cartesian coordinates
+# outputs xx, yy and zz have same units than r and should be kilometer
 def geo2cart(vect):
     r = vect[0]
     rlat = d2r(vect[1])
@@ -21,18 +27,20 @@ def geo2cart(vect):
     zz = r*math.sin(rlat)
     return [xx, yy, zz]
 
-#distance entre deux points, coordonnees cartesiennes
+# distance between two points whose coordinates are cartesians
 def dist(vect1, vect2):
     x1, y1, z1 = geo2cart(vect1)
     x2, y2, z2 = geo2cart(vect2)
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
-print('')
-print('      python3 select_couronne.py')
+print('######################################\n',
+      '###   python3 select_couronne.py   ###\n',
+      '######################################')
 
 # open the file of the parameters given by the user
 root_folder = os.getcwd()[:-6]
 os.chdir(root_folder + '/Kumamoto')
+# load parameters given by the user through parametres.py
 with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
@@ -86,10 +94,10 @@ hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 # 
 os.chdir(path_data)
 list_stat = os.listdir(path_data)
-list_stat_UD = [a for a in list_stat if ('UD' in a) and ('UD1' not in a)]
-list_stat_NS = [a for a in list_stat if ('NS' in a) and ('NS1' not in a)]
-list_stat_EW = [a for a in list_stat if ('EW' in a) and ('EW1' not in a)]
-list_stat = list_stat_UD + list_stat_NS + list_stat_EW
+#list_stat_UD = [a for a in list_stat if ('UD' in a) and ('UD1' not in a)]
+#list_stat_NS = [a for a in list_stat if ('NS' in a) and ('NS1' not in a)]
+#list_stat_EW = [a for a in list_stat if ('EW' in a) and ('EW1' not in a)]
+#list_stat = list_stat_UD + list_stat_NS + list_stat_EW
 
 for station in list_stat:
     os.chdir(path_data)
