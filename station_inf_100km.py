@@ -32,6 +32,11 @@ def dist(vect1, vect2):
     x2, y2, z2 = geo2cart(vect2)
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
+print('#####################################\n',
+      '###   python3 station_inf_100km   ###\n',
+      '#####################################')
+
+# open the file of the parameters given by the user
 root_folder = os.getcwd()[:-6]
 os.chdir(root_folder + '/Kumamoto')
 # load parameters given by the user through parametres.py
