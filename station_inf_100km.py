@@ -11,7 +11,7 @@ from obspy import Trace
 # few functions used in this script
 # a library may be done
 
-# conversion angle degre -> radian
+# conversion angle degree -> radian
 def d2r(angle):
     return angle*math.pi/180
 
