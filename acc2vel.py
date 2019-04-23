@@ -1,4 +1,4 @@
-#
+# transform accelerograms into velocity waveforms through fft/ifft process
 
 from obspy import read
 from obspy import Trace
@@ -46,7 +46,7 @@ with open('parametres_bin', 'rb') as my_fch:
 # all the parameters are not used in this script, only the following ones
 R_Earth = param['R_Earth']
 event = param['event']
-couronne = param['couronne']
+couronne = param['hypo_interv']
 
 # directories used in this script
 # - path_data is the directory with all the records that passed previous
@@ -73,113 +73,67 @@ if not os.path.isdir(path_results):
     else:
         print('Successfully created the directory {}'.format(path_results))
 else:
-    print('{ is already existing}'.format(path_results))
+    print('{} is already existing'.format(path_results))
 
+# pick separately the stations depending on their component (EW, NS or UD)
 lst_fch_x = [a for a in os.listdir(path_data) if 'EW' in a]
 lst_fch_y = [a for a in os.listdir(path_data) if 'NS' in a]
 lst_fch_z = [a for a in os.listdir(path_data) if 'UD' in a]
 
+# sort the three lists so the n-element of each list is corresponding to the
+# same station but for the three components
 lst_fch_x.sort()
 lst_fch_y.sort()
 lst_fch_z.sort()
 
-for s in lst_fch_x:
-    #fig, ax = plt.subplots(1, 1)
-    #ax.set_xlabel('Time (s)')
-    #ax.set_ylabel('')
-
+print('Transformation of the accelerograms into velocity waveforms')
+for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
     os.chdir(path_data)
-
-    stx = read(s)
-    sty = read(lst_fch_y[lst_fch_x.index(s)])
-    stz = read(lst_fch_z[lst_fch_x.index(s)])
-
-    stx.detrend(type = 'constant')
-    sty.detrend(type = 'constant')
-    stz.detrend(type = 'constant')
-
-    stx[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
-    sty[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
-    stz[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
-
-    stx[0].filter('highpass', freq = 1./20)
-    sty[0].filter('highpass', freq = 1./20)
-    stz[0].filter('highpass', freq = 1./20)
-
-    tstart = stz[0].stats.starttime + stz[0].stats.sac.a - 5
-    tend = tstart + 50
-
-    tr_x = stx[0].trim(tstart, tend, pad=True, fill_value=0)
-    tr_y = sty[0].trim(tstart, tend, pad=True, fill_value=0)
-    tr_z = stz[0].trim(tstart, tend, pad=True, fill_value=0)
-
-    tr_x.taper(0.05, type = 'hann', max_length = None, side = 'both')
-    tr_y.taper(0.05, type = 'hann', max_length = None, side = 'both')
-    tr_z.taper(0.05, type = 'hann', max_length = None, side = 'both')
-
-    stx[0].stats.sac.nzyear = stz[0].stats.starttime.year
-    stx[0].stats.sac.nzjday = stz[0].stats.starttime.julday
-    stx[0].stats.sac.nzhour = stz[0].stats.starttime.hour
-    stx[0].stats.sac.nzmin = stz[0].stats.starttime.minute
-    stx[0].stats.sac.nzsec = stz[0].stats.starttime.second
-    stx[0].stats.sac.nzmsec = stz[0].stats.starttime.microsecond
-    sty[0].stats.sac.nzyear = stz[0].stats.starttime.year
-    sty[0].stats.sac.nzjday = stz[0].stats.starttime.julday
-    sty[0].stats.sac.nzhour = stz[0].stats.starttime.hour
-    sty[0].stats.sac.nzmin = stz[0].stats.starttime.minute
-    sty[0].stats.sac.nzsec = stz[0].stats.starttime.second
-    sty[0].stats.sac.nzmsec = stz[0].stats.starttime.microsecond
-    stz[0].stats.sac.nzyear = stz[0].stats.starttime.year
-    stz[0].stats.sac.nzjday = stz[0].stats.starttime.julday
-    stz[0].stats.sac.nzhour = stz[0].stats.starttime.hour
-    stz[0].stats.sac.nzmin = stz[0].stats.starttime.minute
-    stz[0].stats.sac.nzsec = stz[0].stats.starttime.second
-    stz[0].stats.sac.nzmsec = stz[0].stats.starttime.microsecond
-
-    #st[0].stats.starttime = tstart
-    stx[0].stats.sac.t0 = stz[0].stats.sac.t0 - stz[0].stats.sac.a + 5
-    stx[0].stats.sac.a = 5
-    sty[0].stats.sac.t0 = stz[0].stats.sac.t0 - stz[0].stats.sac.a + 5
-    sty[0].stats.sac.a = 5
-    stz[0].stats.sac.t0 = stz[0].stats.sac.t0 - stz[0].stats.sac.a + 5
-    stz[0].stats.sac.a = 5
-
-    t = np.arange(tr_z.stats.npts)/tr_z.stats.sampling_rate
-
-    #ax.plot(t, norm1(tr.data), linewidth = 0.2, color = 'black')
-    #ax.plot(norm1(np.fft.fft(tr)[range(int(tr.stats.npts/2))]), linewidth = 0.2, color = 'black')
-
-    freq = np.arange(1, tr_x.stats.npts + 1)/tr_x.stats.sampling_rate/tr_x.stats.npts
-    #freq = freq[range(tr.stats.npts/2)]
-    tfx = np.fft.fft(tr_x)#/tr.stats.npts
-    tfy = np.fft.fft(tr_y)#/tr.stats.npts
-    tfz = np.fft.fft(tr_z)#/tr.stats.npts
-
-    #tf = abs(np.fft.fft(tr))/tr.stats.npts
-    #tf = tf[range(tr.stats.npts/2)]
-    tfx_vel = tfx * (-1j) / 2 / math.pi / freq
-    tfy_vel = tfy * (-1j) / 2 / math.pi / freq
-    tfz_vel = tfz * (-1j) / 2 / math.pi / freq
-
-    trx_vel = np.fft.ifft(tfx_vel)
-    try_vel = np.fft.ifft(tfy_vel)
-    trz_vel = np.fft.ifft(tfz_vel)
-    
-    #ax.plot(t, norm1(tr_vel.real) + np.arange(1, 2, 2)*5, linewidth = 0.2, color = 'red')
-    #ax.plot(norm1(np.fft.fft(tr_vel)[range(int(tr.stats.npts/2))]) + np.arange(1, 2, 2)*5, linewidth = 0.2, color = 'red')
-
-    trx_vel = Trace(trx_vel, tr_x.stats)
-    try_vel = Trace(try_vel, tr_y.stats)
-    trz_vel = Trace(trz_vel, tr_z.stats)
-
-    os.chdir(path_results)
-    #fig.savefig(tr.stats.station + '.pdf')
-    trx_vel.write(s[:6] + '_EW_'
-                  + event + '_vel_' + couronne + 'km.sac', format = 'SAC')
-    try_vel.write(s[:6] + '_NS_'
-                  + event + '_vel_' + couronne + 'km.sac', format = 'SAC')
-    trz_vel.write(s[:6] + '_UD_'
-                  + event + '_vel_' + couronne + 'km.sac', format = 'SAC')
-    #trx_vel.write(station[:-4] + '_vel_' + couronne + 'km.sac', format = 'SAC')
-    #try_vel.write(station[:17] + 'NS' + station[19:-4] + '_vel_' + couronne + 'km.sac', format = 'SAC')
-    #trz_vel.write(station[:17] + 'UD' + station[19:-4] + '_vel_' + couronne + 'km.sac', format = 'SAC')
+    # load the three components at the same time
+    stx = read(sx)
+    sty = read(sy)
+    stz = read(sz)
+    for st in [stx, sty, stz]:
+        # remove the average mean value
+        st.detrend(type = 'constant')
+        # to be sure the beginning and the end of the trace have 0 value, this
+        # is necessary to prevent high frequency to appear with fft
+        st[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
+        # remove very low frequencies
+        st[0].filter('highpass', freq = 1./20)
+        # pick only 50 s of the original trace from 5 s before the picked
+        # P-arrival time
+        tstart = stz[0].stats.starttime + stz[0].stats.sac.a - 5
+        tend = tstart + 50
+        tr = st[0].trim(tstart, tend, pad = True, fill_value = 0)
+        # taper again to be sure nothing wrong will happen through ifft
+        tr.taper(0.05, type = 'hann', max_length = None, side = 'both')
+        # allocate the time to another place for future user
+        st[0].stats.sac.nzyear = st[0].stats.starttime.year
+        st[0].stats.sac.nzjday = st[0].stats.starttime.julday
+        st[0].stats.sac.nzhour = st[0].stats.starttime.hour
+        st[0].stats.sac.nzmin = st[0].stats.starttime.minute
+        st[0].stats.sac.nzsec = st[0].stats.starttime.second
+        st[0].stats.sac.nzmsec = st[0].stats.starttime.microsecond
+        # change the value for the picked P and S-arrival time before the
+        # original value is defined from the beginning of the trace, and
+        # because we redefined the beginning of the trace, we adjust here the
+        # values
+        st[0].stats.sac.t0 = stz[0].stats.sac.t0 - stz[0].stats.sac.a + 5
+        st[0].stats.sac.a = 5
+        # fft
+        t = np.arange(tr.stats.npts)/tr.stats.sampling_rate
+        freq = (np.arange(1, tr.stats.npts + 1)
+                /tr.stats.sampling_rate/tr.stats.npts)
+        tf = np.fft.fft(tr)
+        # from acc to vel in Fourier space
+        tf_vel = tf*(-1j)/2/math.pi/freq
+        # ifft
+        tr_vel = np.fft.ifft(tf_vel)
+        # save to SAC format
+        tr_vel = Trace(tr_vel, tr.stats)
+        tr_vel.write(st[0].stats.station + '_EW_'
+                     + event + '_vel_' + couronne + 'km.sac', format = 'SAC')
+    print('Accelerograms of the three components',
+            'of the station {}'.format(stx[0].stats.station),
+            'are now transformed into velocity waveforms')
