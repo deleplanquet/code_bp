@@ -33,9 +33,9 @@ def dist(vect1, vect2):
     x2, y2, z2 = geo2cart(vect2)
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
 
-print('######################################\n',
-      '###   python3 select_couronne.py   ###\n',
-      '######################################')
+print('######################################',
+    '\n###   python3 select_couronne.py   ###',
+    '\n######################################')
 
 # open the file of the parameters given by the user
 root_folder = os.getcwd()[:-6]
@@ -91,24 +91,29 @@ lon_hyp = dict_seis[event]['lon']
 dep_hyp = dict_seis[event]['dep']
 hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
-# 
+# pick all the records from the directory path_data
 os.chdir(path_data)
 list_stat = os.listdir(path_data)
-#list_stat_UD = [a for a in list_stat if ('UD' in a) and ('UD1' not in a)]
-#list_stat_NS = [a for a in list_stat if ('NS' in a) and ('NS1' not in a)]
-#list_stat_EW = [a for a in list_stat if ('EW' in a) and ('EW1' not in a)]
-#list_stat = list_stat_UD + list_stat_NS + list_stat_EW
 
-for station in list_stat:
+print('Check if the hypocenter distance is between {}'.format(dist_min),
+        'and {}'.format(dist_max), 'for each station')
+for s in list_stat:
     os.chdir(path_data)
-    st = read(station)
+    st = read(s)
     pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel,
                st[0].stats.sac.stla,
                st[0].stats.sac.stlo]
-    #print(station, dist(hypo, pos_sta))
-    if dist(hypo, pos_sta) < dist_max and dist(hypo, pos_sta) > dist_min:
+    dst = dist(hypo, pos_sta)
+    print('The station {}'.format(s[:6]),
+          'with hypocenter distance equal to {:.1f} km'.format(dst),
+          end = ' ')
+    if dst > dist_min and dst < dist_max:
         os.chdir(path_results)
-        st[0].stats.sac.dist = dist(hypo, pos_sta)
-        #print('selection', st[0].stats.sac.dist)
+        st[0].stats.sac.dist = dst
         tr = Trace(st[0].data, st[0].stats)
-        tr.write(station, format='SAC')
+        tr.write(s, format='SAC')
+        print('is selected ({} < {:.1f} < {})'.format(dist_min, dst, dist_max))
+    elif dst < dist_min:
+        print('is not selected ({:.1f} < {})'.format(dst, dist_min))
+    else:
+        print('is not seelcted ({} < {:.1f})'.format(dist_max, dst))
