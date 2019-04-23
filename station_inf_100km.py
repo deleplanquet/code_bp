@@ -68,11 +68,11 @@ if not os.path.isdir(path_results):
     try:
         os.makedirs(path_results)
     except OSError:
-        print('Creation of the directory %s failed' %path_results)
+        print('Creation of the directory {} failed'.format(path_results))
     else:
-        print('Successfully created the directory %s' %path_results)
+        print('Successfully created the directory {}'.format(path_results))
 else:
-    print('%s is already created' %path_results)
+    print('{} is already created'.format(path_results))
 
 # load location of the studied earthquake
 os.chdir(root_folder + '/Kumamoto')
