@@ -1,3 +1,5 @@
+#
+
 from obspy import read
 import numpy as np
 from obspy import Trace
@@ -5,43 +7,50 @@ import os
 import sys
 import pickle
 
-print('')
-print('      python3 filt_vel.py')
+print('###############################',
+    '\n###   python3 filt_vel,py   ###',
+    '\n###############################')
 
-path_origin = os.getcwd()[:-6]
+# open the file of the parameters given by the user through parameters.py and
+# load them
+root_folder = os.getcwd()[:-6]
 os.chdir(path_origin + '/Kumamoto')
 with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
 
-dossier = param['dossier']
-couronne = param['couronne']
-fqmi = param['freq_min']
-fqma = param['freq_max']
-bdfrq = param['band_freq']
+# all the parameters are not used in this script, only the following ones
+event = param['event']
+couronne = param['hypo_interv']
+frq_min = param['frq_min']
+frq_max = param['frq_max']
+frq_bnd = param['frq_band']
 
-path = (path_origin
-        + '/Kumamoto/'
-        + dossier)
-
-path_data = (path + '/'
-             + dossier
-             + '_vel_'
+path_data = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + 'vel/'
              + couronne + 'km')
+path_rslt = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + 'vel/'
+             + couronne + 'km_' + frq_bnd + 'Hz')
 
-pth_rslt = (path_data + '_'
-            + bdfrq + 'Hz/'
-            + dossier
-            + '_vel_'
-            + couronne + 'km_'
-            + bdfrq + 'Hz')
+# create the directory path_rslt in case it does not exist
+if not os.path.isdir(path_rslt):
+    try:
+        os.makedirs(path_rslt)
+    except OSError:
+        print('Creation of the directory {} failed'.format(path_rslt))
+    else:
+        print('Successfully created the directory {}'.format(path_rslt))
+else:
+    print('{} is already existing'.format(path_rslt))
 
-if os.path.isdir(pth_rslt) == False:
-    os.makedirs(pth_rslt)
-
-lst_fch_x = [a for a in os.listdir(path_data) if ('EW' in a) == True]
-lst_fch_y = [a for a in os.listdir(path_data) if ('NS' in a) == True]
-lst_fch_z = [a for a in os.listdir(path_data) if ('UD' in a) == True]
+lst_fch_x = [a for a in os.listdir(path_data) if 'EW' in a]
+lst_fch_y = [a for a in os.listdir(path_data) if 'NS' in a]
+lst_fch_z = [a for a in os.listdir(path_data) if 'UD' in a]
 
 lst_fch_x.sort()
 lst_fch_y.sort()
