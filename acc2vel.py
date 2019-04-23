@@ -93,6 +93,7 @@ for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
     stx = read(sx)
     sty = read(sy)
     stz = read(sz)
+    os.chdir(path_results)
     for st in [stx, sty, stz]:
         # remove the average mean value
         st.detrend(type = 'constant')
