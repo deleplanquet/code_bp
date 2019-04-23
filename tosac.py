@@ -10,6 +10,10 @@ import os
 import obspy.io.sac
 import pickle
 
+print('############################',
+    '\n###   python3 tosac.py   ###',
+    '\n############################')
+
 root_folder = os.getcwd()[:-6]
 os.chdir(root_folder + '/Kumamoto')
 # load parameters given earlier by the user
