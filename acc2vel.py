@@ -1,3 +1,5 @@
+#
+
 from obspy import read
 from obspy import Trace
 import pickle
@@ -7,71 +9,90 @@ import os
 import math
 import matplotlib.pyplot as plt
 
-#constantes
-R_Earth = 6400
+# few functions used in this script
+# a library may be done
 
-#conversion angle degre -> radian
+# conversion angle degree -> radian
 def d2r(angle):
     return angle*math.pi/180
 
-#conversion coordonnees geographiques -> cartesien
-def geo2cart(r, lat, lon):
-    rlat = d2r(lat)
-    rlon = d2r(lon)
+# conversion geographic coordinates -> cartesian coordinates
+# outputs xx, yy and zz have same units than r and should be kilometer
+def geo2cart(vect):
+    r = vect[0]
+    rlat = d2r(vect[1])
+    rlon = d2r(vect[2])
     xx = r*math.cos(rlat)*math.cos(rlon)
     yy = r*math.cos(rlat)*math.sin(rlon)
     zz = r*math.sin(rlat)
     return [xx, yy, zz]
 
-#normalisation
+# normalisation
 def norm1(vect):
     return [5*a/vect.max() for a in vect]
 
-print('')
-print('      python3 acc2vel.py')
+print('##############################',
+    '\n###   python3 acc2vel.py   ###',
+    '\n##############################')
 
-path_origin = os.getcwd()[:-6]
-os.chdir(path_origin + '/Kumamoto')
+# open the file of the parameters given by the user
+root_folder = os.getcwd()[:-6]
+os.chdir(root_folder + '/Kumamoto')
+# load parameters given by the user through parameters.py
 with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
 
+# all the parameters are not used in this script, only the following ones
 R_Earth = param['R_Earth']
-dossier = param['dossier']
+event = param['event']
 couronne = param['couronne']
 
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_sac_' + couronne + 'km'
-path_results = path + '/' + dossier + '_vel_' + couronne + 'km'
+# directories used in this script
+# - path_data is the directory with all the records that passed previous
+# conditions
+# - path_results is the directory where the velocity associated to each record
+# will be stored in SAC format
+path_data = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + 'acc/'
+             + couronne + 'km')
+path_results = (root_folder + '/'
+                + 'Kumamoto/'
+                + event + '/'
+                + 'vel/'
+                + couronne + 'km')
 
-if os.path.isdir(path_results) == False:
-    os.makedirs(path_results)
+# create the directory path_results in case it does not exist
+if not os.path.isdir(path_results):
+    try:
+        os.makedirs(path_results)
+    except OSError:
+        print('Creation of the directory {} failed'.format(path_results))
+    else:
+        print('Successfully created the directory {}'.format(path_results))
+else:
+    print('{ is already existing}'.format(path_results))
 
-os.chdir(path_origin + '/Kumamoto')
-with open('ref_seismes_bin', 'rb') as my_fich:
-    my_depick = pickle.Unpickler(my_fich)
-    dict_seis = my_depick.load()
-
-dict_doss = dict_seis[dossier]
-
-lst_fch_x = [a for a in os.listdir(path_data) if ('EW' in a) == True]
-lst_fch_y = [a for a in os.listdir(path_data) if ('NS' in a) == True]
-lst_fch_z = [a for a in os.listdir(path_data) if ('UD' in a) == True]
+lst_fch_x = [a for a in os.listdir(path_data) if 'EW' in a]
+lst_fch_y = [a for a in os.listdir(path_data) if 'NS' in a]
+lst_fch_z = [a for a in os.listdir(path_data) if 'UD' in a]
 
 lst_fch_x.sort()
 lst_fch_y.sort()
 lst_fch_z.sort()
 
-for station in lst_fch_x:
+for s in lst_fch_x:
     #fig, ax = plt.subplots(1, 1)
     #ax.set_xlabel('Time (s)')
     #ax.set_ylabel('')
 
     os.chdir(path_data)
 
-    stx = read(station)
-    sty = read(lst_fch_y[lst_fch_x.index(station)])
-    stz = read(lst_fch_z[lst_fch_x.index(station)])
+    stx = read(s)
+    sty = read(lst_fch_y[lst_fch_x.index(s)])
+    stz = read(lst_fch_z[lst_fch_x.index(s)])
 
     stx.detrend(type = 'constant')
     sty.detrend(type = 'constant')
@@ -153,21 +174,12 @@ for station in lst_fch_x:
 
     os.chdir(path_results)
     #fig.savefig(tr.stats.station + '.pdf')
-    trx_vel.write(station[:6] + '_EW_'
-                  + dossier + '_vel_' + couronne + 'km.sac', format = 'SAC')
-    try_vel.write(station[:6] + '_NS_'
-                  + dossier + '_vel_' + couronne + 'km.sac', format = 'SAC')
-    trz_vel.write(station[:6] + '_UD_'
-                  + dossier + '_vel_' + couronne + 'km.sac', format = 'SAC')
+    trx_vel.write(s[:6] + '_EW_'
+                  + event + '_vel_' + couronne + 'km.sac', format = 'SAC')
+    try_vel.write(s[:6] + '_NS_'
+                  + event + '_vel_' + couronne + 'km.sac', format = 'SAC')
+    trz_vel.write(s[:6] + '_UD_'
+                  + event + '_vel_' + couronne + 'km.sac', format = 'SAC')
     #trx_vel.write(station[:-4] + '_vel_' + couronne + 'km.sac', format = 'SAC')
     #try_vel.write(station[:17] + 'NS' + station[19:-4] + '_vel_' + couronne + 'km.sac', format = 'SAC')
     #trz_vel.write(station[:17] + 'UD' + station[19:-4] + '_vel_' + couronne + 'km.sac', format = 'SAC')
-
-
-
-
-
-
-
-
-
