@@ -61,12 +61,12 @@ dist_max = param['hypo_max']
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + acc + '/'
+             + 'acc/'
              + 'inf100km_copie')
 path_results = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
-                + acc + '/'
+                + 'acc/'
                 + couronne + 'km')
 
 # create the directory path_results in case it does not exist
