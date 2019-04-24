@@ -116,10 +116,11 @@ for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
         st[0].stats.sac.nzmin = st[0].stats.starttime.minute
         st[0].stats.sac.nzsec = st[0].stats.starttime.second
         st[0].stats.sac.nzmsec = st[0].stats.starttime.microsecond
-        # change the value for the picked P and S-arrival time before the
+        # change the value for the picked P and S-arrival time. Before the
         # original value is defined from the beginning of the trace, and
         # because we redefined the beginning of the trace, we adjust here the
-        # values
+        # values. The phases are picked on UD component, this is the reason of
+        # using especially "stz"
         st[0].stats.sac.t0 = stz[0].stats.sac.t0 - stz[0].stats.sac.a + 5
         st[0].stats.sac.a = 5
         # fft
