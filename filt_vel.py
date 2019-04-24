@@ -14,7 +14,7 @@ print('###############################',
 # open the file of the parameters given by the user through parameters.py and
 # load them
 root_folder = os.getcwd()[:-6]
-os.chdir(path_origin + '/Kumamoto')
+os.chdir(root_folder + '/Kumamoto')
 with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
@@ -26,6 +26,11 @@ frq_min = param['frq_min']
 frq_max = param['frq_max']
 frq_bnd = param['frq_band']
 
+# directories used in this script:
+# - path_data is the directory with all the velocity waveforms that passed
+# previous conditions
+# - path_rslt is the directory where the filtered velocity waveforms will be
+# stored
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
@@ -48,93 +53,50 @@ if not os.path.isdir(path_rslt):
 else:
     print('{} is already existing'.format(path_rslt))
 
+# pick separately the stations depending on their component (EW, NS or UD)
 lst_fch_x = [a for a in os.listdir(path_data) if 'EW' in a]
 lst_fch_y = [a for a in os.listdir(path_data) if 'NS' in a]
 lst_fch_z = [a for a in os.listdir(path_data) if 'UD' in a]
 
+# sort the three lists so the n-element of each list is corresponding to the
+# same station but for the three components
 lst_fch_x.sort()
 lst_fch_y.sort()
 lst_fch_z.sort()
 
-for station in lst_fch_x:
+print('Filtering of the velocity waveforms between {}'.format(frq_min),
+        'and {} Hz'.format(frq_max))
+for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
     os.chdir(path_data)
-
-    stx = read(station)
-    sty = read(lst_fch_y[lst_fch_x.index(station)])
-    stz = read(lst_fch_z[lst_fch_x.index(station)])
-
-    stx.detrend(type = 'constant')
-    sty.detrend(type = 'constant')
-    stz.detrend(type = 'constant')
-
-    stx[0].taper(0.05,
-                 type = 'hann',
-                 max_length = None,
-                 side = 'both')
-    sty[0].taper(0.05,
-                 type = 'hann',
-                 max_length = None,
-                 side = 'both')
-    stz[0].taper(0.05,
-                 type = 'hann',
-                 max_length = None,
-                 side = 'both')
-
-    tr_x = stx[0].filter('bandpass',
-                         freqmin = fqmi,
-                         freqmax = fqma,
-                         corners = 4,
-                         zerophase = False)
-    tr_y = sty[0].filter('bandpass',
-                         freqmin = fqmi,
-                         freqmax = fqma,
-                         corners = 4,
-                         zerophase = False)
-    tr_z = stz[0].filter('bandpass',
-                         freqmin = fqmi,
-                         freqmax = fqma,
-                         corners = 4,
-                         zerophase = False)
-
-    stx[0].stats.sac.a = stz[0].stats.sac.a
-    stx[0].stats.sac.t0 = stz[0].stats.sac.t0
-    sty[0].stats.sac.a = stz[0].stats.sac.a
-    sty[0].stats.sac.t0 = stz[0].stats.sac.t0
-
-    tr_x = Trace(np.asarray(tr_x),
-                 stx[0].stats)
-    tr_y = Trace(np.asarray(tr_y),
-                 sty[0].stats)
-    tr_z = Trace(np.asarray(tr_z),
-                 stz[0].stats)
-
-    os.chdir(pth_rslt)
-    tr_x.write(station[:-4] + '_' + bdfrq + 'Hz.sac', format = 'SAC')
-    tr_y.write(lst_fch_y[lst_fch_x.index(station)][:-4] + '_' + bdfrq + 'Hz.sac', format = 'SAC')
-    tr_z.write(lst_fch_z[lst_fch_x.index(station)][:-4] + '_' + bdfrq + 'Hz.sac', format = 'SAC')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # load the three components at same time
+    stx = read(sx)
+    sty = read(sy)
+    stz = read(sz)
+    os.chdir(path_rslt)
+    for s, st in zip([sx, sy, sz], [stx, sty, stz]):
+        # remove the average mean value
+        st.detrend(type = 'constant')
+        # to be sure the beginning and the ned of the trace have 0 value, not
+        # sure it is really necessary because we don't use fft here but it does
+        # not have significant effect since the beginning and the end of the
+        # velocity waveforms are not relevants (the beginning is before the
+        # beginning of the rupture, -5 s before P-arrival time, and the end
+        # is 50 s later, too late for our study)
+        st[0].taper(0.05,
+                    type = 'hann',
+                    max_length = None,
+                    side = 'both')
+        # filter the velocity waveform in the frequency band given by user
+        # through parametres.py
+        tr = st[0].filter('bandpass',
+                          freqmin = frq_min,
+                          freqmax = frq_max,
+                          corners = 4,
+                          zerophase = False)
+        # save to SAC format
+        tr = Trace(np.asarray(tr), st[0].stats)
+        tr.write(s[:-4] + '_' + frq_bnd + 'Hz.sac', 
+                 format = 'SAC')
+    print('Velocity waveforms of the station {}'.format(stx[0].stats.station),
+            'have been filtered between {}'.format(frq_min),
+            'and {} Hz'.format(frq_max))
