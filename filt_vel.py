@@ -1,4 +1,4 @@
-#
+# filtering of the velocity waveforms
 
 from obspy import read
 import numpy as np
