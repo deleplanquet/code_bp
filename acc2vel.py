@@ -35,10 +35,10 @@ print('##############################',
     '\n###   python3 acc2vel.py   ###',
     '\n##############################')
 
-# open the file of the parameters given by the user
+# open the file of the parameters given by the user through parameters.py and
+# load them
 root_folder = os.getcwd()[:-6]
 os.chdir(root_folder + '/Kumamoto')
-# load parameters given by the user through parameters.py
 with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
@@ -133,8 +133,10 @@ for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
         tr_vel = np.fft.ifft(tf_vel)
         # save to SAC format
         tr_vel = Trace(tr_vel, tr.stats)
-        tr_vel.write(st[0].stats.station + '_EW_'
-                     + event + '_vel_' + couronne + 'km.sac', format = 'SAC')
+        tr_vel.write(st[0].stats.station + '_'
+                     + st[0].stats.channel[:2]
+                     + '_vel.sac',
+                     format = 'SAC')
     print('Accelerograms of the three components',
             'of the station {}'.format(stx[0].stats.station),
             'are now transformed into velocity waveforms')
