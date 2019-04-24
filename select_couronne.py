@@ -37,7 +37,8 @@ print('######################################',
     '\n###   python3 select_couronne.py   ###',
     '\n######################################')
 
-# open the file of the parameters given by the user
+# open the file of the parameters given by the user through parametres.py and
+# load them
 root_folder = os.getcwd()[:-6]
 os.chdir(root_folder + '/Kumamoto')
 # load parameters given by the user through parametres.py
