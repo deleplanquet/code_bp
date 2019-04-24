@@ -61,12 +61,12 @@ list_files = os.listdir(path_kik)
 list_files = [a for a in list_files if 'ps.gz' not in a]
 
 # change format of those files into SAC format and save them in path_sac
-for f in list_files:
+for s in list_files:
     os.chdir(path_kik)
-    tr = read(f)[0]
+    tr = read(s)[0]
     tr.stats.sac = tr.stats.knet
     os.chdir(path_sac)
-    tr.write(f[:6] + f[16:] + '.sac', format='SAC')
+    tr.write(s[:6] + s[16:] + '.sac', format='SAC')
 
 # make a list of files from K-NET network
 # pictures (ps.gz files) are also provided inside the same folder but we do not
@@ -75,9 +75,9 @@ list_files = os.listdir(path_knt)
 list_files = [a for a in list_files if 'ps.gz' not in a]
 
 # change format of those files into SAC format and save them in path_sac
-for f in list_files:
+for s in list_files:
     os.chdir(path_knt)
-    tr = read(f)[0]
+    tr = read(s)[0]
     tr.stats.sac = tr.stats.knet
     os.chdir(path_sac)
-    tr.write(f[:6] + f[16:] + '.sac', format='SAC')
+    tr.write(s[:6] + s[16:] + '.sac', format='SAC')
