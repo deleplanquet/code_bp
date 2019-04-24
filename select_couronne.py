@@ -41,7 +41,6 @@ print('######################################',
 # load them
 root_folder = os.getcwd()[:-6]
 os.chdir(root_folder + '/Kumamoto')
-# load parameters given by the user through parametres.py
 with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
