@@ -157,22 +157,22 @@ print('   #################')
 # the three components are EW, NS and UD
 # here we ask which component should be used for the bp study
 # we refer as:
-# - 3comp: combination of the three components EW, NS and UD
+# - 3cpn: combination of the three components EW, NS and UD
 # - hori: combination of the two horizontal components EW and NS
 # - vert: only the vertical component UD is considered
 # initialisation of the component
 param['component'] = None
-print('Expected value: > 3comp <, > hori < or > vert <')
-print(' - 3comp: combination of the three components EW, NS and UD')
+print('Expected value: > 3cpn <, > hori < or > vert <')
+print(' - 3cpn: combination of the three components EW, NS and UD')
 print(' - hori: combination of the two horizontal components EW and NS')
 print(' (recommended for S-waves bp)')
 print(' - vert: only the vertical component UD is considered')
 print(' (recommended for P-waves bp)')
 print('Other values are not accepted')
-while (param['component'] != '3comp'
+while (param['component'] != '3cpn'
        and param['component'] != 'hori'
        and param['component'] != 'vert'):
-    param['component'] = input('component [3comp/hori/vert]: ')
+    param['component'] = input('component [3cpn/hori/vert]: ')
 
 print('')
 print('   ###############')
