@@ -47,10 +47,12 @@ cpnt = ['3cpn', 'hori', 'vert']
 path_r = (root_folder + '/'
           + 'Kumamoto/'
           + event + '/'
-          + 'vel/')
+          + 'vel')
 path_rslt = []
 for cpn in cpnt:
-    path_rslt.append(path_r + couronne + 'km_' + frq_bnd + 'Hz_' + cpn)
+    path_rslt.append(path_r + '/'
+                     + couronne + 'km_' + frq_bnd + 'Hz_' + cpn + '/'
+                     + 'brut')
 
 # create the directories from the list path_rslt in case they do not exist
 for pth in path_rslt:
