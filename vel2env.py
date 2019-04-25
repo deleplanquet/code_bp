@@ -62,9 +62,13 @@ lst_fch = os.listdir(path_data)
 print('Creation of envelopes')
 for s in lst_fch:
     os.chdir(path_data)
+    # load the velocity waveform
     st = read(s)
+    # create the envelope
     tr = [a**2 for a in st[0].data]
+    # preparation for SAC format
     tr = Trace(np.asarray(tr), st[0].stats)
+    # save the file
     os.chdir(path_rslt)
     tr.write(s[:-4] + '_env.sac', format = 'SAC')
     print('The envelope of the station {}'.format(s[:6]),
