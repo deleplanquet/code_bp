@@ -1,4 +1,9 @@
-#
+# combine in different ways the three components (EW, NS and UD) to create
+# the following velocity waveforms:
+# - 3cpn with EW, NS and UD to have the full velocity waveform
+# - hori with EW and NS to have the horizontal velocity waveform
+# - vert with UD to have the vertical velocity waveform
+# the combination is the root sum squared: sqrt(sum(xi*xi))
 
 from obspy import read
 from obspy import Trace
@@ -70,64 +75,43 @@ lst_fch_x.sort()
 lst_fch_y.sort()
 lst_fch_z.sort()
 
+print('Combination of the velocity waveforms')
 for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
     os.chdir(path_data)
+    # load the three components at same time
     stx = read(sx)
     sty = read(sy)
     stz = read(sz)
     if (stx[0].stats.station == sty[0].stats.station
         and stx[0].stats.station == stz[0].stats.station):
-        #
+        # remove the average mean value
         stx.detrend(type = 'constant')
         sty.detrend(type = 'constant')
         stz.detrend(type = 'constant')
-        #
+        # tapering
         tr_x = stx[0]
         tr_y = sty[0]
         tr_z = stz[0]
-        #
+        # creation of the different velocity waveforms (3cpn, hori and vert)
         tr3 = [math.sqrt(a**2 + b**2 + c**2)
                for a, b, c in zip(tr_x, tr_y, tr_z)]
         trh = [math.sqrt(a**2 + b**2) for a, b in zip(tr_x, tr_y)]
         trv = [math.sqrt(a**2) for a in tr_z]
-        #
+        # preparation for SAC format
         tr3 = Trace(np.asarray(tr3), stz[0].stats)
         trh = Trace(np.asarray(trh), stz[0].stats)
         trv = Trace(np.asarray(trv), stz[0].stats)
-        #
+        # save the files
         os.chdir(path_rslt[0])
         tr3.write(sx[:7] + cpnt[0] + sx[9:], format = 'SAC')
         os.chdir(path_rslt[1])
         trh.write(sx[:7] + cpnt[1] + sx[9:], format = 'SAC')
         os.chdir(path_rslt[2])
         trv.write(sx[:7] + cpnt[2] + sx[9:], format = 'SAC')
+        print('The different component combinations',
+                'of the station {}'.format(sx[:6]),
+                'have been successfully done')
     else:
-        print('Problem')
-#for station in lst_fch_x:
-#    os.chdir(pth_dt)
-#    stx = read(station)
-#    sty = read(lst_fch_y[lst_fch_x.index(station)])
-#    stz = read(lst_fch_z[lst_fch_x.index(station)])
-#    if stx[0].stats.station == sty[0].stats.station and stx[0].stats.station == stz[0].stats.station:
-#        stx.detrend(type = 'constant')
-#        sty.detrend(type = 'constant')
-#        stz.detrend(type = 'constant')
-#        tr_x = stx[0]
-#        tr_y = sty[0]
-#        tr_z = stz[0]
-#        trh = [math.sqrt(a**2 + b**2) for a,b in zip(tr_x, tr_y)]
-#        tr3 = [math.sqrt(a**2 + b**2 + c**2) for a,b,c in zip(tr_x, tr_y, tr_z)]
-#        os.chdir(pth_rslt_v)
-#        trv = Trace(np.asarray(tr_z), stz[0].stats)
-#        trv.write(station[:6]
-#                  + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_vert.sac', format = 'SAC')
-#        os.chdir(pth_rslt_h)
-#        trh = Trace(np.asarray(trh), stz[0].stats)
-#        trh.write(station[:6]
-#                  + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_hori.sac', format = 'SAC')
-#        os.chdir(pth_rslt)
-#        tr3 = Trace(np.asarray(tr3), stz[0].stats)
-#        tr3.write(station[:6]
-#                  + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz.sac', format = 'SAC')
-#    else:
-#        print('     ', stx[0].stats.station, sty[0].stats.station, stz[0].stats.station)
+        print('The three velocity waveforms',
+                '{}, {} and {}'.format(sx[:6], sy[:6], sz[:6]),
+                'are not corresponding and combination can not be done')
