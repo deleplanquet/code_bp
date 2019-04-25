@@ -1,4 +1,4 @@
-#
+# produce envelopes of the velocity waveforms
 
 from obspy import read
 from obspy import Trace
@@ -27,7 +27,11 @@ couronne = param['hypo_interv']
 frq_bnd = param['frq_band']
 cpnt = param['component']
 
-#
+# directories used in this script:
+# - path_data is the directory of the velocity waveforms that passed previous
+# conditions
+# - path_rslt is the directory of the envelopes produced by this script from
+# the above velocity waveforms
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
