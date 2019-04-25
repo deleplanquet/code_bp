@@ -4,6 +4,9 @@
 # - hori with EW and NS to have the horizontal velocity waveform
 # - vert with UD to have the vertical velocity waveform
 # the combination is the root sum squared: sqrt(sum(xi*xi))
+# because of that the produced velocity waveforms are always positive but it is
+# not problematic for the bp study since we are using envelopes (square of the
+# velocity waveforms) so the sign of the velocity waveforms is not relevant
 
 from obspy import read
 from obspy import Trace
@@ -30,7 +33,7 @@ event = param['event']
 couronne = param['hypo_interv']
 frq_bnd = param['frq_band']
 
-# directories used in this script
+# directories used in this script:
 # - path_data is the directory with all the velocity waveforms that passed
 # previous conditions
 path_data = (root_folder + '/'
