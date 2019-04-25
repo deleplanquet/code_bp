@@ -1,3 +1,5 @@
+#
+
 from obspy import read
 from obspy import Trace
 from obspy.signal.util import smooth
@@ -7,36 +9,59 @@ import sys
 import matplotlib.pyplot as plt
 import pickle
 
-print('')
-print('      python3 vel2env.py')
+print('##############################',
+    '\n###   python3 vel2env.py   ###',
+    '\n##############################')
 
-path_origin = os.getcwd()[:-6]
-os.chdir(path_origin + '/Kumamoto')
+# open the file of the parameters given by the user through parametres.py and
+# load them
+root_folder = os.getcwd()[:-6]
+os.chdir(root_folder + '/Kumamoto')
 with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
 
-dossier = param['dossier']
-couronne = param['couronne']
-frq = param['band_freq']
-dt_type = param['composante']
+# all the parameters are not used in this script, only the following ones
+event = param['event']
+couronne = param['hypo_interv']
+frq_bnd = param['frq_band']
+cpnt = param['component']
 
-path = path_origin + '/Kumamoto/' + dossier
-path_data = path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type
-path_results = path_data + '_env'
+#
+path_data = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + 'vel/'
+             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/'
+             + 'brut')
+path_rslt = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + 'vel/'
+             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/'
+             + 'env')
 
-if os.path.isdir(path_results) == False:
-    os.makedirs(path_results)
+# create the directory path_rslt in case it does not exist
+if not os.path.isdir(path_rslt):
+    try:
+        os.makedirs(path_rslt)
+    except OSError:
+        print('Creation of the directory {} failed'.format(path_rslt))
+    else:
+        print('Successfully created the directory {}'.format(path_rslt))
+else:
+    print('{} is already existing'.format(path_rslt))
 
-lst_fch = []
-
+# pick the velocity waveforms from the directory path_data
 lst_fch = os.listdir(path_data)
 
-for station in lst_fch:
+print('Creation of envelopes')
+for s in lst_fch:
     os.chdir(path_data)
-    st = read(station)
+    st = read(s)
     tr = [a**2 for a in st[0].data]
     tr = Trace(np.asarray(tr), st[0].stats)
-    os.chdir(path_results)
-    tr.write(station[:-4] + '_env.sac', format = 'SAC')
-
+    os.chdir(path_rslt)
+    tr.write(s[:-4] + '_env.sac', format = 'SAC')
+    print('The envelope of the station {}'.format(s[:6]),
+            'has been successfully done')
