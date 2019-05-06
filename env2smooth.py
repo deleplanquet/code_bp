@@ -67,7 +67,7 @@ for s in lst_fch:
     # preparation for SAC format
     tr = Trace(tr, st[0].stats)
     # save the file
-    os.chdir(path_results)
-    tr.write(station[:-4] + '_smooth.sac', format = 'SAC')
+    os.chdir(path_rslt)
+    tr.write(s[:-4] + '_smooth.sac', format = 'SAC')
     print('The envelope of the station {}'.format(s[:6]),
             'has been successfully smoothed')
