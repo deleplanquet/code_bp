@@ -56,25 +56,25 @@ Tree view
 
 | Codes
 | Kumamoto
-| ├── event
-| │   ├── brut
-| │   ├── acc 
-| │   │   ├── brut
-| │   │   ├── inf_100km
-| │   │   ├── inf_100km_copy
-| │   │   ├── hypo_interv
-| │   ├── vel
-| │   │   ├── hypo_interv
-| │   │   ├── hypo_interv_frq_band
-| │   │   ├── hypo_interv_frq_band_component
-| │   │   │   ├── brut
-| │   │   │   ├── env
-| │   │   │   ├── env_smooth
-| │   │   │   ├── env_smooth_selected_waves
-| │   │   │   ├── env_smooth_selected_waves_angle
-| │   ├── results
-| │   │   ├── vel_hypo_interv_frq_band_component_env_smooth_selected_waves
-| │   │   │   ├── angle
+| └── event
+|     ├── brut
+|     ├── acc 
+|     │   ├── brut
+|     │   ├── inf_100km
+|     │   ├── inf_100km_copy
+|     │   └── hypo_interv
+|     ├── vel
+|     │   ├── hypo_interv
+|     │   ├── hypo_interv_frq_band
+|     │   └── hypo_interv_frq_band_component
+|     │       ├── brut
+|     │       ├── env
+|     │       ├── env_smooth
+|     │       ├── env_smooth_selected_waves
+|     │       └── env_smooth_selected_waves_angle
+|     └── results
+|         └── vel_hypo_interv_frq_band_component_env_smooth_selected_waves
+|             └── angle
 
 Data (ASCII format)
 ===================
