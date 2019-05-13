@@ -36,17 +36,20 @@ but for the other ones, the user will give a value of his choice.
     is the energy considered for the study, it may be P or S energy.
 | **angle_min**: minimum of azimuth angle.
 | **angle_max**: maximum of azimuth angle.
-**vP**: vitesse des ondes P utilisee pour calculer les temps de trajet des ondes P entre chaque subfault et chaque station
-**vS**: vitesse des ondes S utilisee pour calculer les temps de trajet des ondes S entre chaque subfault et chaque station
-**ondes_select**: demande un string parmi [P/S] pour savoir si l'hypothese de back projection est les ondes P ou les ondes S
-**strike**: direction du strike de la faille rectangulaire
-**dip**: direction du dip de la faille rectangulaire
-**l_fault**: longueur de la faille (en km) (direction du strike)
-**w_fault**: largeur de la faille (en km) (direction du dip)
-**pas_l**: longueur de chaque subfault dans la direction du strike (en km)
-**pas_w**: longueur de chaque subfault dans la direction du dip (en km)
-**samp_rate**: frequeuce de production des figures de back projection (Hz)
-**length_t**: duree de la back projection (en s) en sachant que le depart est toujours 5 sec avant le debut de la rupture
+| **vP**: P-waves velocity used to calculate the travel time of P-waves between
+    each subgrid and each station.
+| **vS**: S-waves velocity used to calculate the travel time of S-waves between
+    each subgrid and each station.
+| **selected_waves**: ask for one of the two following strings: [*P*, *S*]. It
+    is the choice of the waves used for the study.
+| **strike**: strike direction of the rectangular grid.
+| **dip**: dip direction of the rectangular grid.
+| **l_grid**: length of the grid (in km) (strike direction).
+| **w_grid**: width of the grid (in km) (dip direction).
+| **l_grid_step**: length of each subgrid (in km) (strike direction).
+| **w_grid_step**: width of each subgrid (in km) (dip direction).
+| **bp_samp_rate**: frequency of the back projection images (in Hz).
+| **bp_length_time**: duration of the back projection (in s).
 
 Here is the list of all the other parameters that are stored through the run
 of parametres.py but not asked to the user:
@@ -54,11 +57,11 @@ of parametres.py but not asked to the user:
 | **root_folder**: pick the absolute position of the */Codes* directory,
     should be at the same location with the */Kumamoto* directory.
 | **R_Earth**: Earth radius equal to 6400 km
-| **hypo_interv**: combine **hypo_min** and **hypo_max** to create a string to
+| **hypo_interv**: combine **hypo_min** and **hypo_max** inside a string to
     make the creation of directories and files easier.
-| **frq_band**: combine **frq_min** and **frq_max** to create a string to make
+| **frq_band**: combine **frq_min** and **frq_max** inside a string to make
     the creation of directories and files easier.
-| **angle**: combine **angle_min** and **angle_max** to create a string to make
+| **angle**: combine **angle_min** and **angle_max** inside a string to make
     the creation of directories and files easier.
 
 telecharger les donnees (format ASCII)
