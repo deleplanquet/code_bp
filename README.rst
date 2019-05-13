@@ -16,13 +16,10 @@ Here is a list of all the parameters that has to be defined.
 Some parameters are stored without asking anything to the user,
 but for the other ones, the user will give a value of his choice.
 
-**event**: ask for the name of the event (earthquake)
-the format of the event is as follow: *YYYYMMDDHHMMSS*
-**dist_min**: hypocenter distance minimale pour que la station soit traite (en km)
-**dist_max**: hypocenter distance maximale pour que la station soit traite (en km)
-**couronne**: associe **dist_min** et **dist_max** pour creer un string et faciliter la creation des fichiers et dossiers::
-
-    n'est pas demande a l'utilisateur
+| **event**: ask for the name of the event (earthquake).
+The format of the event is as follow: *YYYYMMDDHHMMSS*.
+| **hypo_min**: minimum of hypocenter distance
+| **hypo_max**: maximum of hypocenter distance
 **freq_min**: frequence basse pour le filtre passe bande utilise sur les velocity waveforms
 **freq_max**: frequence haute pour le filtre passe bande utilise sur les velocity waveforms
 **band_freq**: associe **freq_min** et **freq_max** pour creer un string et faciliter la creation des fichiers et dossiers::
@@ -54,9 +51,11 @@ the format of the event is as follow: *YYYYMMDDHHMMSS*
 Here is the list of all the other parameters that are stored through the run
 of parametres.py but not asked to the user:
 
-**root_folder**: pick the absolute position of the */Codes* directory,
+| **root_folder**: pick the absolute position of the */Codes* directory,
 should be at the same location with the */Kumamoto* directory.
-**R_Earth**: Earth radius equal to 6400 km
+| **R_Earth**: Earth radius equal to 6400 km
+| **hypo_interv**: combine **hypo_min** and **hypo_max** to create a string to
+make the creation of directories and files easier.
 
 telecharger les donnees (format ASCII)
 ======================================
