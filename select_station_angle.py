@@ -1,4 +1,7 @@
-#
+# check the azimuth between each station and the hypocenter of the considered
+# event (selected by the user through parametres.py). The station will be
+# considered for back projection study only if the corresponding azimuth
+# belongs to a specific range of azimuth given by user through parametres.py
 
 import sys
 import os
@@ -7,14 +10,21 @@ from obspy import Trace
 import math
 import pickle
 
+# few functions used in this script
+# a library may be done
+
+# conversion angle degree -> radian
 def d2r(angle):
     return angle*math.pi/180
 
+# conversion angle radian -> degree
 def r2d(angle):
     return angle*180/math.pi
 
+# distance and azimuth between two points
+# the reference point is the first given and the azimuth of the second point is
+# calculated with respect to the first one
 def dist_azim(ptA, ptB, R):
-    '''distance et azimuth de B par rapport a A -> dist_azim(A, B)'''
     latA = d2r(ptA[0])
     lonA = d2r(ptA[1])
     latB = d2r(ptB[0])
@@ -41,42 +51,33 @@ with open('parametres_bin', 'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     param = my_dpck.load()
 
-#
-with open('ref_seismes_bin', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    dict_seis = my_dpck.load()
-
 # all the parameters are not used in this script, only the following ones
 event = param['event']
 couronne = param['hypo_interv']
 frq_bnd = param['frq_band']
 cpnt = param['component']
-hyp_bp = param['ondes_select']
+hyp_bp = param['selected_waves']
 azim = param['angle']
 R_Earth = param['R_Earth']
 azim_min = param['angle_min']
 azim_max = param['angle_max']
 
 # directories used in this script
-#
-#
+# - path_data is the directory of the envelopes that passed previous selections
+# - path_rslt is the directory of the envelopes that will pass the azimuth
+# selection of the current script
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'vel/'
              + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/'
-             + 'env_smooth_' + hyp_b)
+             + 'env_smooth_' + hyp_bp)
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'vel/'
              + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/'
-             + 'env_smooth_' + hyp_b + '_' + ang + 'deg')
-#path = path_origin + '/Kumamoto/' + dossier
-#path_data = (path + '/' + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/'
-#                + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_' + dt_type
-#                + '_env_smooth_' + hyp_bp)
-#path_results = path_data + '_' + azim + 'deg'
+             + 'env_smooth_' + hyp_bp + '_' + azim + 'deg')
 
 # create the directory path_rslt in case it does not exist
 if not os.path.isdir(path_rslt):
@@ -89,30 +90,48 @@ if not os.path.isdir(path_rslt):
 else:
     print('{} is already existing'.format(path_rslt))
 
-lst_fch = []
+# load location of the studied earthquake
+with open('ref_seismes_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    dict_seis = my_dpck.load()
 
+lat_hyp = dict_seis[event]['lat']
+lon_hyp = dict_seis[event]['lon']
+dep_hyp = dict_seis[event]['dep']
+
+# pick the envelopes from the directory path_data
 lst_fch = os.listdir(path_data)
 
-lat_hyp = dict_seis[dossier]['lat']
-lon_hyp = dict_seis[dossier]['lon']
-dep_hyp = dict_seis[dossier]['dep']
-
-for station in lst_fch:
-    #print('     ', station)
+print('Checking azimuth between stations and hypocenter')
+for s in lst_fch:
     os.chdir(path_data)
-    st = read(station)
-    d_btw_st, az_btw_st = dist_azim([lat_hyp, lon_hyp],
-                                    [st[0].stats.sac.stla,
-                                     st[0].stats.sac.stlo],
-                                     R_Earth)
-    #print('        ', d_btw_st, az_btw_st)
-    if az_btw_st > azim_min and az_btw_st < azim_max:
+    # load the envelope
+    st = read(s)
+    # calculate the distance and the azimuth between the station and the
+    # hypocenter
+    d_hp_st, az_hp_st = dist_azim([lat_hyp, lon_hyp],
+                                  [st[0].stats.sac.stla, st[0].stats.sac.stlo],
+                                  R_Earth)
+    print('The azimuth between the station {}'.format(s[:6]),
+            'and the hypocenter {}, {}'.format(lat_hyp, lon_hyp),
+            'is equal to {:.2f} deg'.format(az_hp_st),
+            end = ' ')
+    # if the calculated azimuth belongs to the range of azimuth specified by
+    # the user, the station is selected and saved in path_rslt directory
+    if ((az_hp_st > azim_min and az_hp_st < azim_max)
+        or (az_hp_st > (azim_min + 180) and az_hp_st < (azim_max + 180))):
         #print('           ', 'ok')
-        os.chdir(path_results)
+        os.chdir(path_rslt)
         tr = Trace(st[0].data, st[0].stats)
-        tr.write(station, format = 'SAC')
-    elif az_btw_st > (azim_min + 180) and az_btw_st < (azim_max + 180):
-        #print('           ', 'ok')
-        os.chdir(path_results)
-        tr = Trace(st[0].data, st[0].stats)
-        tr.write(station, format = 'SAC')
+        tr.write(s[:6], format = 'SAC')
+        print('which belongs to',
+            '[{}, {}]\u222a[{}, {}]'.format(azim_min, azim_max,
+                                            azim_min + 180, azim_max + 180),
+            '\n   --> station selected for back projection')
+    # if the station does not fulfill the selection criteria, it will not be
+    # considered for back projection study
+    else:
+        print('which does NOT belong to',
+            '[{}, {}]\u222a[{}, {}]'.format(azim_min, azim_max,
+                                            azim_min + 180, azim_max + 180),
+            '\n   --> station NOT selected for back projection')
