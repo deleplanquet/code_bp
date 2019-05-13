@@ -93,7 +93,7 @@ Data are stored in the following directory: */Kumamoto/event/brut*.
 SAC format
 ----------
 
-The following code convert the original data into SAC files.
+The following code converts the original data into SAC files.
 
 .. code-block:: python3
 
@@ -110,7 +110,7 @@ Distance selection and picking
 "Local" stations (hypocenter distance < 100 km)
 -----------------------------------------------
 
-The following code select the stations with hypocenter distance less than
+The following code selects the stations with hypocenter distance less than
 100 km. This is to prevent too high variability among the records.
 
 .. code-block:: python3
@@ -118,6 +118,7 @@ The following code select the stations with hypocenter distance less than
     python3 station_inf_100km.py
 
 Source directory: */Kumamoto/event/acc/brut*
+
 Target directory: */Kumamoto/event/acc/inf_100km*
 
 Hand picking of P and S-waves arrival time
@@ -127,9 +128,9 @@ The files should be copied/pasted from */Kumamoto/event/acc/inf_100km* to
 */Kumamoto/event/acc/inf_100km_copy* before any picking. This is to prevent the
 loss of the picking by running the previous codes again.
 
-Then each file is opened to pick the waves arrival time. The picking is
-intentionally done on UD component and then applied on every component though
-further code.
+Then each file is opened to pick the waves arrival time (the three components
+at same time). The picking is intentionally done on UD component and then
+applied on every component through further code.
 
 By following these steps, files localised at */Kumamoto/event/acc/inf_100km*
 do not have any picking information, but files localised at
@@ -152,6 +153,7 @@ The stations selected are inside a ring defined by the **hypo_min** and
 previous pre-selection.
 
 Source directory: */Kumamoto/event/acc/inf_100km_copy*
+
 Target directory: */Kumamoto/event/acc/hypo_interv*
 
 It can be note that the source directory is
