@@ -24,17 +24,18 @@ but for the other ones, the user will give a value of his choice.
     waveforms.
 | **frq_max**: high frequency for the pass-band filter used on the velocity
     waveforms
-**composante**: demande un string parmi [3comp/hori/vert] pour definir celles qu'ils faut traiter
-**ratioSP**: critere de selection des stations sur le rapport de maximum d'amplitude de l'energie S sur P
-**smooth**: longueur (en s) de la fenetre glissante sur laquelle on fait la RMS
-**impulse**: longueur (en s) de la fenetre dans laquelle au mois 80% de l'energie doit etre pour que la station soit traitee dans la back projection (l'energie est celle de l'onde defini [P/S])
-**angle_min**: angle minimal pour la selection azimuthale des stations
-**angle_max**: angle maximal pour la selection azimuthale des stations::
-
-    pour les angles, deux zones sont definies, la premiere entre **angle_min** et **angle_max**, la seconde entre **angle_min** + 180 et **angle_max** + 180. C'est pour cela que les angles sont compris entre 0 et 180
-**angle**: associe **angle_min** et **angle_max** pour creer un string et faciliter la creation des fichiers et dossiers::
-
-   n'est pas demande a l'utilisateur
+| **component**: ask for a string among the three following ones:
+    [*3cpb*, *hori*, *vert*] to define which component will be used in the
+    study.
+| **ratioSP**: selection criteria for the stations depending on the ratio
+    between the maximum amplitude of energy of S and P-waves.
+| **l_smooth**: length (in s) of the time-window for the smoothing (RMS) of the
+    energy waveforms.
+| **l_impulse**: length (in s) of the time-window inside which the majority of
+    the energy should be to consider the station for the study. The energy here
+    is the energy considered for the study, it may be P or S energy.
+| **angle_min**: minimum of azimuth angle.
+| **angle_max**: maximum of azimuth angle.
 **vP**: vitesse des ondes P utilisee pour calculer les temps de trajet des ondes P entre chaque subfault et chaque station
 **vS**: vitesse des ondes S utilisee pour calculer les temps de trajet des ondes S entre chaque subfault et chaque station
 **ondes_select**: demande un string parmi [P/S] pour savoir si l'hypothese de back projection est les ondes P ou les ondes S
@@ -56,6 +57,8 @@ of parametres.py but not asked to the user:
 | **hypo_interv**: combine **hypo_min** and **hypo_max** to create a string to
     make the creation of directories and files easier.
 | **frq_band**: combine **frq_min** and **frq_max** to create a string to make
+    the creation of directories and files easier.
+| **angle**: combine **angle_min** and **angle_max** to create a string to make
     the creation of directories and files easier.
 
 telecharger les donnees (format ASCII)
