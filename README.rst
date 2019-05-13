@@ -93,36 +93,70 @@ Data are stored in the following directory: */Kumamoto/event/brut*.
 SAC format
 ----------
 
-The following code convert the original date into SAC files.
+The following code convert the original data into SAC files.
 
 .. code-block:: python3
 
     python3 tosac.py
 
 The original files have been copied at */Kumamoto/event/brut*
-and the SAC files are saved at */Kumamoto/event/acc*
+and the SAC files are saved at */Kumamoto/event/acc/brut*
 
-Do not forget to unzip the original files
+Do not forget to unzip the original files.
 
-python3 station_inf_100km.py
-============================
+Distance selection and picking
+==============================
+
+"Local" stations (hypocenter distance < 100 km)
+-----------------------------------------------
+
+The following code select the stations with hypocenter distance less than
+100 km. This is to prevent too high variability among the records.
 
 .. code-block:: python3
 
     python3 station_inf_100km.py
 
-| selectionne les stations a moins de 100 km de l'hypocentre
-| les distances considerees sont les distances hypocentrales
+Source directory: */Kumamoto/event/acc/brut*
+Target directory: */Kumamoto/event/acc/inf_100km*
 
-| from */Kumamoto/dossier/dossier_sac*
-| to */Kumamoto/dossier/dossier_sac_inf100km*
+Hand picking of P and S-waves arrival time
+------------------------------------------
 
-faire les pointes des arrivees P et S dans _SAC_ (a la main)
-============================================================
+The files should be copied/pasted from */Kumamoto/event/acc/inf_100km* to
+*/Kumamoto/event/acc/inf_100km_copy* before any picking. This is to prevent the
+loss of the picking by running the previous codes again.
 
-| les pointes sont realises dans SAC sur les traces brutes
-| les fichiers localises dans */Kumamoto/dossier/dossier_sac_inf100km* sont modifies
-| Faire attention si on reprend la procedure du debut
+Then each file is opened to pick the waves arrival time. The picking is
+intentionally done on UD component and then applied on every component though
+further code.
+
+By following these steps, files localised at */Kumamoto/event/acc/inf_100km*
+do not have any picking information, but files localised at
+*/Kumamoto/event/acc/inf_100km_copy* are modified and contain the picking
+information (again, at this step, only UD component file contain the picking
+information).
+
+Distance selection from the user
+--------------------------------
+
+Through the run of the following code, stations will be selected according to
+their hypocenter distance.
+
+.. code-block:: python3
+
+    python3 select_couronne.py
+
+The stations selected are inside a ring defined by the **hypo_min** and
+**hypo_max** values. No station can be selected beyond 100 km because of the
+previous pre-selection.
+
+Source directory: */Kumamoto/event/acc/inf_100km_copy*
+Target directory: */Kumamoto/event/acc/hypo_interv*
+
+It can be note that the source directory is
+*/Kumamoto/event/acc/inf_100km_copy*. The code can not be runned if the picking
+has not been done in the expected directory.
 
 python3 seismicity.py
 =====================
@@ -137,19 +171,6 @@ python3 seismicity.py
 
 | from */Kumamoto*
 | to */Kumamoto*
-
-python3 select_couronne.py
-==========================
-
-.. code-block:: python3
-
-    python3 select_couronne.py
-
-| selectionne les stations dans une couronne centree autour de l'hypocentre
-| les distances considerees sont les distances hypocentrales
-
-| from */Kumamoto/dossier/dossier_sac_inf100km*
-| to */Kumamoto/dossier/dossier_sac_couronne*
 
 python3 acc2vel.py
 ==================
