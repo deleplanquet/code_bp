@@ -17,7 +17,7 @@ Some parameters are stored without asking anything to the user,
 but for the other ones, the user will give a value of his choice.
 
 | **event**: ask for the name of the event (earthquake).
-The format of the event is as follow: *YYYYMMDDHHMMSS*.
+    The format of the event is as follow: *YYYYMMDDHHMMSS*.
 
 | **hypo_min**: minimum of hypocenter distance.
 
