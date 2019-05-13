@@ -78,29 +78,31 @@ Tree view
             └── vel_hypo_interv_frq_band_component_env_smooth_selected_waves
                 └── angle
 
-Data (ASCII format)
-===================
+Data
+====
+
+ASCII format
+------------
 
 Data are downloaded from *http://www.kyoshin.bosai.go.jp* provided by National
 Reasearch Institute for Earth Science and Disaster Resilience (NIED) for
 research use only here.
 
-Data are stored in the following directory: */Kumamoto/dossier/dossier_brut*.
+Data are stored in the following directory: */Kumamoto/event/brut*.
 
-python3 tosac.py
-================
+SAC format
+----------
+
+The following code convert the original date into SAC files.
 
 .. code-block:: python3
 
     python3 tosac.py
 
-convertir les traces telechargees au fromat SAC
+The original files have been copied at */Kumamoto/event/brut*
+and the SAC files are saved at */Kumamoto/event/acc*
 
-| from */Kumamoto/dossier/dossier_brut/dossier.****
-
-  with *\**** = *kik* or *knt*
-
-| to */Kumamoto/dossier/dossier_sac*
+Do not forget to unzip the original files
 
 python3 station_inf_100km.py
 ============================
