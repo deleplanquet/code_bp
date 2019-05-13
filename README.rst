@@ -22,8 +22,7 @@ Here is a list of all the parameters that has to be defined.
 | **frq_max**: high frequency (in Hz) for the pass-band filter used on the
     velocity waveforms
 | **component**: component [*3cpn*, *hori*, *vert*] used in the study.
-| **ratioSP**: selection criteria for the stations depending on the ratio
-    between the maximum amplitude of energy of S and P-waves.
+| **ratioSP**: ratio between the maximum amplitude of energy of S and P-waves.
 | **l_smooth**: length (in s) of the time-window for the smoothing (RMS) of the
     energy waveforms.
 | **l_impulse**: length (in s) of the time-window for the selection of
