@@ -16,13 +16,8 @@ Here is a list of all the parameters that has to be defined.
 Some parameters are stored without asking anything to the user,
 but for the other ones, the user will give a value of his choice.
 
-| **root_folder**: pick the absolute position of the */Codes* directory,
-should be at the same location with the */Kumamoto* directory::
-    not asked to the user
-| **dossier**: demande le nom du dossier (seisme) qui doit etre traite au format *YYYYMMDDHHMMSS*
-| **R_Earth**: fixe a 6400::
-
-    n'est pas demande a l'utilisateur
+| **event**: ask for the name of the event (earthquake)
+the format of the event is as follow: *YYYYMMDDHHMMSS*
 | **dist_min**: hypocenter distance minimale pour que la station soit traite (en km)
 | **dist_max**: hypocenter distance maximale pour que la station soit traite (en km)
 | **couronne**: associe **dist_min** et **dist_max** pour creer un string et faciliter la creation des fichiers et dossiers::
@@ -55,6 +50,13 @@ should be at the same location with the */Kumamoto* directory::
 | **pas_w**: longueur de chaque subfault dans la direction du dip (en km)
 | **samp_rate**: frequeuce de production des figures de back projection (Hz)
 | **length_t**: duree de la back projection (en s) en sachant que le depart est toujours 5 sec avant le debut de la rupture
+
+Here is the list of all the other parameters that are stored through the run
+of parametres.py but not asked to the user:
+
+| **root_folder**: pick the absolute position of the */Codes* directory,
+should be at the same location with the */Kumamoto* directory.
+| **R_Earth**: Earth radius equal to 6400 km
 
 telecharger les donnees (format ASCII)
 ======================================
