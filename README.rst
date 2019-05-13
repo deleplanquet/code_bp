@@ -18,13 +18,12 @@ but for the other ones, the user will give a value of his choice.
 
 | **event**: ask for the name of the event (earthquake).
     The format of the event is as follow: *YYYYMMDDHHMMSS*.
-
 | **hypo_min**: minimum of hypocenter distance.
-
 | **hypo_max**: maximum of hypocenter distance.
-
-**freq_min**: frequence basse pour le filtre passe bande utilise sur les velocity waveforms
-**freq_max**: frequence haute pour le filtre passe bande utilise sur les velocity waveforms
+| **frq_min**: low frequency for the pass-band filter used on the velocity
+    waveforms.
+| **frq_max**: high frequency for the pass-band filter used on the velocity
+    waveforms
 **band_freq**: associe **freq_min** et **freq_max** pour creer un string et faciliter la creation des fichiers et dossiers::
 
     n'est pas demande a l'utilisateur
