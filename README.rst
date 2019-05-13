@@ -14,32 +14,25 @@ the user.
 
 Here is a list of all the parameters that has to be defined.
 
-| **event**: ask for the name of the event (earthquake).
-    The format of the event is as follow: *YYYYMMDDHHMMSS*.
-| **hypo_min**: minimum of hypocenter distance.
-| **hypo_max**: maximum of hypocenter distance.
-| **frq_min**: low frequency for the pass-band filter used on the velocity
-    waveforms.
-| **frq_max**: high frequency for the pass-band filter used on the velocity
-    waveforms
-| **component**: ask for a string among the three following ones:
-    [*3cpb*, *hori*, *vert*] to define which component will be used in the
-    study.
+| **event**: name of the event (earthquake).
+| **hypo_min**: minimum of hypocenter distance (in km).
+| **hypo_max**: maximum of hypocenter distance (in km).
+| **frq_min**: low frequency (in Hz) for the pass-band filter used on the
+    velocity waveforms.
+| **frq_max**: high frequency (in Hz) for the pass-band filter used on the
+    velocity waveforms
+| **component**: component [*3cpn*, *hori*, *vert*] used in the study.
 | **ratioSP**: selection criteria for the stations depending on the ratio
     between the maximum amplitude of energy of S and P-waves.
 | **l_smooth**: length (in s) of the time-window for the smoothing (RMS) of the
     energy waveforms.
-| **l_impulse**: length (in s) of the time-window inside which the majority of
-    the energy should be to consider the station for the study. The energy here
-    is the energy considered for the study, it may be P or S energy.
-| **angle_min**: minimum of azimuth angle.
-| **angle_max**: maximum of azimuth angle.
-| **vP**: P-waves velocity used to calculate the travel time of P-waves between
-    each subgrid and each station.
-| **vS**: S-waves velocity used to calculate the travel time of S-waves between
-    each subgrid and each station.
-| **selected_waves**: ask for one of the two following strings: [*P*, *S*]. It
-    is the choice of the waves used for the study.
+| **l_impulse**: length (in s) of the time-window for the selection of
+    impulsive stations.
+| **angle_min**: minimum of azimuth angle (in deg).
+| **angle_max**: maximum of azimuth angle (in deg).
+| **vP**: P-waves velocity.
+| **vS**: S-waves velocity.
+| **selected_waves**: choice of the waves [*P*, *S*] used for the study.
 | **strike**: strike direction of the rectangular grid.
 | **dip**: dip direction of the rectangular grid.
 | **l_grid**: length of the grid (in km) (strike direction).
@@ -49,19 +42,15 @@ Here is a list of all the parameters that has to be defined.
 | **bp_samp_rate**: frequency of the back projection images (in Hz).
 | **bp_length_time**: duration of the back projection (in s).
 
-
 Here is the list of all the other parameters that are stored through the run
 of parametres.py but not asked to the user:
 
 | **root_folder**: pick the absolute position of the */Codes* directory,
     should be at the same location with the */Kumamoto* directory.
 | **R_Earth**: Earth radius equal to 6400 km
-| **hypo_interv**: combine **hypo_min** and **hypo_max** inside a string to
-    make the creation of directories and files easier.
-| **frq_band**: combine **frq_min** and **frq_max** inside a string to make
-    the creation of directories and files easier.
-| **angle**: combine **angle_min** and **angle_max** inside a string to make
-    the creation of directories and files easier.
+| **hypo_interv**: combine **hypo_min** and **hypo_max** inside a string.
+| **frq_band**: combine **frq_min** and **frq_max** inside a string.
+| **angle**: combine **angle_min** and **angle_max** inside a string.
 
 telecharger les donnees (format ASCII)
 ======================================
