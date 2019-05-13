@@ -1,3 +1,5 @@
+#
+
 import numpy as np
 import pickle
 from pylab import *
@@ -13,40 +15,43 @@ from obspy.signal.util import smooth
 from scipy import ndimage
 from obspy import Trace
 from obspy.core import UTCDateTime
-#from mpl_toolkits.basemap import Basemap
 
-#fonctions
+# few functions used in this script
+# a library may be done
 
-#conversion angle degre -> radian
+# conversion angle degree -> radian
 def d2r(angle):
     return angle*math.pi/180
 
-#conversion angle radian -> degre
+# conversion angle radian -> degree
 def r2d(angle):
     return angle*180/math.pi
 
-#conversion coordonnees geographiques -> cartesien
-def geo2cart(r, lat, lon):
-    rlat = d2r(lat)
-    rlon = d2r(lon)
+# conversion geographical coordinated -> cartesian coordinates
+# vect := (R, lat, lon)
+def geo2cart(vect):
+    rlat = d2r(vect[1])
+    rlon = d2r(vect[2])
     xx = r*math.cos(rlat)*math.cos(rlon)
     yy = r*math.cos(rlat)*math.sin(rlon)
     zz = r*math.sin(rlat)
     return [xx, yy, zz]
 
-#normalisation
+# normalisation with norm = 1
 def norm(vect):
     Norm = math.sqrt(vect[0]*vect[0] + vect[1]*vect[1] + vect[2]*vect[2])
     return [vect[0]/Norm, vect[1]/Norm, vect[2]/Norm]
 
-#rotation 3d d'angle theta et d'axe passant par l'origine porte par le vecteur (a, b, c) de norme 1, repere orthonormal direct
+# 3d axial rotation of angle theta
+# axis defined by (a, b, c) with norm(a, b, c) = 1 and going through the origin
+# direct orthogonal coordinate system
 def rotation(u, theta, OM):
     """ attention OM unitaire """
     a = norm(OM)[0]
     b = norm(OM)[1]
     c = norm(OM)[2]
     radian = d2r(theta)
-    #coefficients de la matrice de rotation
+    # coefficients of the rotation matrix
     mat = array([[a*a + (1 - a*a)*math.cos(radian),
                   a*b*(1 - math.cos(radian)) - c*math.sin(radian),
                   a*c*(1 - math.cos(radian)) + b*math.sin(radian)],
@@ -56,25 +61,15 @@ def rotation(u, theta, OM):
                  [a*c*(1 - math.cos(radian)) - b*math.sin(radian),
                   b*c*(1 - math.cos(radian)) + a*math.sin(radian),
                   c*c + (1 - c*c)*math.cos(radian)]])
-    #rearrangement du vecteur auquel on applique la rotation
+    # reshape the vector to apply the rotation matrix
     vect = array([[u[0]],
                   [u[1]],
                   [u[2]]])
-    #rotation du vecteur u de theta autour de OM
+    # the vector u is rotated with the angle theta and the rotation axis OM
     vect_rot = dot(mat, vect)
     return (vect_rot[0][0], vect_rot[1][0], vect_rot[2][0])
 
-#bissectrice en 3d
-def milieu(lat1, long1, lat2, long2):
-    x1, y1, z1 = geo2cart(1, lat1, long1)
-    x2, y2, z2 = geo2cart(1, lat2, long2)
-    x_m = x1 + x2
-    y_m = y1 + y2
-    z_m = z1 + z2
-    return [r2d(math.asin(z_m/math.sqrt(x_m*x_m + y_m*y_m + z_m*z_m))),
-            r2d(math.acos(x_m/math.sqrt(x_m*x_m + y_m*y_m)))]
-
-#calcul de la matrice des tps de trajet pour une station
+# travel time matrix between one station and each subfault
 def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
     x_cf, y_cf, z_cf = geo2cart(cen_fault[0], cen_fault[1], cen_fault[2])
     x_fault = np.arange(-length/2/pasx, length/2/pasx)
@@ -143,54 +138,58 @@ print('Ne pas oublier de changer la valeur de thresh si on souhaite autre chose 
 #recuperation position stations
 print('     recuperation position stations')
 
-path_origin = os.getcwd()[:-6]                  #
-os.chdir(path_origin + '/Kumamoto')             #
-with open('parametres_bin', 'rb') as my_fch:    #
-    my_dpck = pickle.Unpickler(my_fch)          #
-    param = my_dpck.load()                      #   load parametres
+# open the file of the parameters given by the user through parametres.py and
+# load them
+root_folder = os.getcwd()[:-6]
+os.chdir(root_folder + '/Kumamoto')
+with open('parametres_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    param = my_dpck.load()
 
-dossier = param['dossier']                                                                      #   |
-path = path_origin + '/Kumamoto/' + dossier                                                     #   v
+# all the parameters are not used in this script, only the following ones
+event = param['event']
+path = root_folder + '/Kumamoto/' + event
 
 #os.chdir(path)                                      #
 #with open(dossier + '_veldata', 'rb') as mon_fich:  #
 #    mon_depick = pickle.Unpickler(mon_fich)         #
 #    dict_vel = mon_depick.load()                    #   load station corrections
 
-dt_type = param['composante']                                                                   #   |
-hyp_bp = param['ondes_select']                                                                  #   |
-couronne = param['couronne']                                                                    #   |
-azim = param['angle']                                                                           #   v
-frq = param['band_freq']                                                                        #
-R_Earth = param['R_Earth']                                                                      #
-strike = param['strike']                                                                        #
-dip = param['dip']                                                                              #
-l_fault = param['l_fault']                                                                      #
-w_fault = param['w_fault']                                                                      #
-pas_l = param['pas_l']                                                                          #
-pas_w = param['pas_w']                                                                          #
-samp_rate = param['samp_rate']                                                                  #
-length_time = param['length_t']                                                                 #   parametres stockes
-l_smooth = param['smooth']
+cpnt = param['component']
+hyp_bp = param['selected_waves']
+couronne = param['hypo_interv']
+azim = param['angle']
+frq_bnd = param['frq_band']
+R_Earth = param['R_Earth']
+strike = param['strike']
+dip = param['dip']
+l_grid = param['l_grid']
+w_grid = param['w_grid']
+l_grid_step = param['l_grid_step']
+w_grid_step = param['w_grid_step']
+bp_samp_rate = param['bp_samp_rate']
+bp_len_t = param['bp_length_time']
+l_smooth = param['l_smooth']
 
-path = (path_origin                  #
-        + '/Kumamoto/'               #
-        + dossier)                   #
-                                     #
-path_data = (path + '/'              #
-             + dossier               #
-             + '_vel_'               #
-             + couronne + 'km_'      #
-             + frq + 'Hz/'           #
-             + dossier               #
-             + '_vel_'               #
-             + couronne + 'km_'      #
-             + frq + 'Hz_'           #
-             + dt_type               #
-             + '_env_smooth_'        #
-             + hyp_bp + '_'          #
-             + azim + 'deg')         #
-                                     #
+# directories used in this script
+#
+#
+#
+path_data = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + 'vel/'
+             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/'
+             + 'env_smooth_' + hyp_bp + '_' + azim + 'deg')
+path_rslt = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + 'results/'
+             + 'vel_' + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
+                + '_env_smooth_' + hyp_bp + '/'
+             + azim + 'deg')
+
+
 path_bpinv = (path_data + '_'        #
               + 'bpinv/'             #
               + 'releves')           #
@@ -211,8 +210,18 @@ path_results = (path + '/'           #
                 + couronne + 'km_'   #
                 + frq + 'Hz')        #   dossiers de travail
 
-if os.path.isdir(path_results) == False:    #
-    os.makedirs(path_results)               #   si le dossier n'existe pas, le cree
+# create the directory path_rslt in case it does not exist
+#
+if not os.path.isdir(path_rslt):
+    try:
+        os.makedirs(path_rslt)
+    except OSError:
+        print('Creation of the directory {} failed'.format(path_rslt))
+    else:
+        print('Successfully created the directory {}'.format(path_rslt))
+else:
+    print('{} is already existing'.format(path_rslt))
+
 if os.path.isdir(path_bpinv) == False:      #
     os.makedirs(path_bpinv)                 #
 if os.path.isdir(path_bpinvtr) == False:    #
@@ -236,18 +245,18 @@ lst_fch = []                        #
 lst_fch = os.listdir(path_data)     #   recupere la liste des noms des fichiers contenant les donnees
 lst_fch.sort()                      #   les trie
 
-os.chdir(path_origin + '/Kumamoto')             #
+os.chdir(root_folder + '/Kumamoto')             #
 with open('ref_seismes_bin', 'rb') as my_fch:   #
     my_dpck = pickle.Unpickler(my_fch)          #
     dict_seis = my_dpck.load()                  #   load caracteristiques seismes
 
-yea_seis = int(dict_seis[dossier]['nFnet'][0:4])         #
-mon_seis = int(dict_seis[dossier]['nFnet'][4:6])         #
-day_seis = int(dict_seis[dossier]['nFnet'][6:8])         #
-hou_seis = int(dict_seis[dossier]['nFnet'][8:10])        #
-min_seis = int(dict_seis[dossier]['nFnet'][10:12])       #
-sec_seis = int(dict_seis[dossier]['nFnet'][12:14])       #
-mse_seis = int(dict_seis[dossier]['nFnet'][14:16])       #
+yea_seis = int(dict_seis[event]['nFnet'][0:4])         #
+mon_seis = int(dict_seis[event]['nFnet'][4:6])         #
+day_seis = int(dict_seis[event]['nFnet'][6:8])         #
+hou_seis = int(dict_seis[event]['nFnet'][8:10])        #
+min_seis = int(dict_seis[event]['nFnet'][10:12])       #
+sec_seis = int(dict_seis[event]['nFnet'][12:14])       #
+mse_seis = int(dict_seis[event]['nFnet'][14:16])       #
                                                          #
 t_origin_rupt = UTCDateTime(yea_seis,                    #
                             mon_seis,                    #
@@ -257,9 +266,9 @@ t_origin_rupt = UTCDateTime(yea_seis,                    #
                             sec_seis,                    #
                             mse_seis)                    #   temps du debut de la rupture
 
-lat_hyp = dict_seis[dossier]['lat']     #
-lon_hyp = dict_seis[dossier]['lon']     #
-dep_hyp = dict_seis[dossier]['dep']     #   position de l'hypocentre du seisme etudie
+lat_hyp = dict_seis[event]['lat']     #
+lon_hyp = dict_seis[event]['lon']     #
+dep_hyp = dict_seis[event]['dep']     #   position de l'hypocentre du seisme etudie
 
 dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)),              #
                  math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)),              #
@@ -431,13 +440,3 @@ for sta in lst_fch:
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpinvsm)
     tr.write(sta[:6], format = 'SAC')
-
-
-
-
-
-
-
-
-
-
