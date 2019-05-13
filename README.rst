@@ -9,9 +9,12 @@ python3 parametres.py
 
     python3 parametres.py
 
-Definir les parametres ci-dessous:
+The following parameters have to be defined.
+They will be asked (except if smothing else is specified) through the run of
+the parametres.py script.
 
-| **path_origin**: va chercher la position absolue du dossier */Codes* (qui est au meme niveau que le dossier */Kumamoto* contenant les data)::
+| **root_folder**: pick the absolute position of the */Codes* directory,
+should be at the same location with the */Kumamoto* directory::
 
     n'est pas demande a l'utilisateur
 | **dossier**: demande le nom du dossier (seisme) qui doit etre traite au format *YYYYMMDDHHMMSS*
