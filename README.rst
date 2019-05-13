@@ -24,9 +24,6 @@ but for the other ones, the user will give a value of his choice.
     waveforms.
 | **frq_max**: high frequency for the pass-band filter used on the velocity
     waveforms
-**band_freq**: associe **freq_min** et **freq_max** pour creer un string et faciliter la creation des fichiers et dossiers::
-
-    n'est pas demande a l'utilisateur
 **composante**: demande un string parmi [3comp/hori/vert] pour definir celles qu'ils faut traiter
 **ratioSP**: critere de selection des stations sur le rapport de maximum d'amplitude de l'energie S sur P
 **smooth**: longueur (en s) de la fenetre glissante sur laquelle on fait la RMS
@@ -54,10 +51,12 @@ Here is the list of all the other parameters that are stored through the run
 of parametres.py but not asked to the user:
 
 | **root_folder**: pick the absolute position of the */Codes* directory,
-should be at the same location with the */Kumamoto* directory.
+    should be at the same location with the */Kumamoto* directory.
 | **R_Earth**: Earth radius equal to 6400 km
 | **hypo_interv**: combine **hypo_min** and **hypo_max** to create a string to
-make the creation of directories and files easier.
+    make the creation of directories and files easier.
+| **frq_band**: combine **frq_min** and **frq_max** to create a string to make
+    the creation of directories and files easier.
 
 telecharger les donnees (format ASCII)
 ======================================
