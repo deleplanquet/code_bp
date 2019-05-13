@@ -55,8 +55,9 @@ Data (ASCII format)
 ===================
 
 Data are downloaded from *http://www.kyoshin.bosai.go.jp* provided by National
-    Reasearch Institute for Earth Science and Disaster Resilience (NIED) for
-    research use only here.
+Reasearch Institute for Earth Science and Disaster Resilience (NIED) for
+research use only here.
+
 Data are stored in the following directory: */Kumamoto/dossier/dossier_brut*.
 
 python3 tosac.py
