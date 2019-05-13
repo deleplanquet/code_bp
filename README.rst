@@ -2,21 +2,23 @@
 
 .. section-numbering::
 
-python3 parametres.py
-=====================
+Parameters
+==========
+
+By running the following code, all the necessary parameters will be asked to
+the user.
 
 .. code-block:: python3
 
     python3 parametres.py
 
-The following parameters have to be defined.
-They will be asked (except if smothing else is specified) through the run of
-the parametres.py script.
+Here is a list of all the parameters that has to be defined.
+Some parameters are stored without asking anything to the user,
+but for the other ones, the user will give a value of his choice.
 
 | **root_folder**: pick the absolute position of the */Codes* directory,
 should be at the same location with the */Kumamoto* directory::
-
-    n'est pas demande a l'utilisateur
+    not asked to the user
 | **dossier**: demande le nom du dossier (seisme) qui doit etre traite au format *YYYYMMDDHHMMSS*
 | **R_Earth**: fixe a 6400::
 
