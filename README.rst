@@ -51,11 +51,13 @@ of parametres.py but not asked to the user:
 | **frq_band**: combine **frq_min** and **frq_max** inside a string.
 | **angle**: combine **angle_min** and **angle_max** inside a string.
 
-telecharger les donnees (format ASCII)
-======================================
+Data (ASCII format)
+===================
 
-| from *http://www.kyoshin.bosai.go.jp*
-| to */Kumamoto/dossier/dossier_brut*
+Data are downloaded from *http://www.kyoshin.bosai.go.jp* provided by National
+    Reasearch Institute for Earth Science and Disaster Resilience (NIED) for
+    research use only here.
+Data are stored in the following directory: */Kumamoto/dossier/dossier_brut*.
 
 python3 tosac.py
 ================
