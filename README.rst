@@ -13,8 +13,6 @@ the user.
     python3 parametres.py
 
 Here is a list of all the parameters that has to be defined.
-Some parameters are stored without asking anything to the user,
-but for the other ones, the user will give a value of his choice.
 
 | **event**: ask for the name of the event (earthquake).
     The format of the event is as follow: *YYYYMMDDHHMMSS*.
@@ -50,6 +48,7 @@ but for the other ones, the user will give a value of his choice.
 | **w_grid_step**: width of each subgrid (in km) (dip direction).
 | **bp_samp_rate**: frequency of the back projection images (in Hz).
 | **bp_length_time**: duration of the back projection (in s).
+
 
 Here is the list of all the other parameters that are stored through the run
 of parametres.py but not asked to the user:
