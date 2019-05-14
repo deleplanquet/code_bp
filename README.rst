@@ -71,12 +71,24 @@ Here is a list of all the parameters that has to be defined.
 Here is the list of all the other parameters that are stored through the run
 of parametres.py but not asked to the user:
 
-| **root_folder**: pick the absolute position of the */Codes* directory,
-    should be at the same location with the */Kumamoto* directory.
-| **R_Earth**: Earth radius equal to 6400 km
-| **hypo_interv**: combine **hypo_min** and **hypo_max** inside a string.
-| **frq_band**: combine **frq_min** and **frq_max** inside a string.
-| **angle**: combine **angle_min** and **angle_max** inside a string.
++-----------------------+---------------------------------------------------+
+| **Parameters**        |                                                   |
++=======================+===================================================+
+| **root_folder**       | pick the absolute position of the */Codes*        |
+|                       | directory, should be at the same location with the|
+|                       | */Kumamoto* directory                             |
++-----------------------+---------------------------------------------------+
+| **R_Earth**           | Earth radius equal to 6400 km                     |
++-----------------------+---------------------------------------------------+
+| **hypo_interv**       | combine **hypo_min** and **hypo_max** inside a    |
+|                       | string                                            |
++-----------------------+---------------------------------------------------+
+| **frq_band**          | combine **frq_min** and **frq_max** inside a      |
+|                       | string                                            |
++-----------------------+---------------------------------------------------+
+| **angle**             | combine **angle_min** and **angle_max** inside a  |
+|                       | string                                            |
++-----------------------+---------------------------------------------------+
 
 Tree view
 =========
