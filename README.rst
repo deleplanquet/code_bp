@@ -375,23 +375,34 @@ Target directory: */Kumamoto/event/env_vel/hypo_interv/frq_band_component_smooth
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
 
+Back projection
+===============
 
-
-
-
-
-python3 vitesse_PS.py
-=====================
+Building back projection cube
+-----------------------------
 
 .. code-block:: python3
 
-    python3 vitesse_PS.py
+    python3 bp_env_E.py
 
-| calcul les delais entre temps theoriques d'arrivee et les pointes pour les ondes P et S
-| les corrections aux stations (delais calcules) sont stockes dans un dictionnaire
+| back projection des stations selectionnees
+| enregistre le stack dans un fichier
 
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
-| to */Kumamoto/dossier*
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
+| to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
+
+Plotting back projection images
+-------------------------------
+
+.. code-block:: python3
+
+    python3 plot_bp_2d.py
+
+| from */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
+| to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq/pdf*
+
+Secondary codes
+===============
 
 python3 plot_traces.py
 ----------------------
@@ -417,31 +428,8 @@ python3 tr_fct_az.py
 | from
 | to
 
-python3 bp_env_E.py
-===================
-
-.. code-block:: python3
-
-    python3 bp_env_E.py
-
-| back projection des stations selectionnees
-| enregistre le stack dans un fichier
-
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
-| to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
-
-python3 plot_bp_2d.py
-=====================
-
-.. code-block:: python3
-
-    python3 plot_bp_2d.py
-
-| from */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
-| to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq/pdf*
-
 python3 seismicity.py
-=====================
+---------------------
 
 .. code-block:: python3
 
@@ -465,3 +453,20 @@ python3 carte_SoverP.py
 
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
 | to */Kumamoto/dossier/dossier_results*
+
+
+
+
+
+python3 vitesse_PS.py
+=====================
+
+.. code-block:: python3
+
+    python3 vitesse_PS.py
+
+| calcul les delais entre temps theoriques d'arrivee et les pointes pour les ondes P et S
+| les corrections aux stations (delais calcules) sont stockes dans un dictionnaire
+
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
+| to */Kumamoto/dossier*
