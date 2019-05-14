@@ -119,7 +119,7 @@ Data
 ASCII format
 ------------
 
-Data are downloaded from *http://www.kyoshin.bosai.go.jp* provided by National
+Data are downloaded from `http://www.kyoshin.bosai.go.jp` provided by National
 Reasearch Institute for Earth Science and Disaster Resilience (NIED) for
 research use only here.
 
