@@ -108,13 +108,13 @@ Tree view
         │   ├── hypo_interv
         │   ├── hypo_interv_frq_band
         │   └── hypo_interv_frq_band_component
-        │       ├── brut
-        │       ├── env
-        │       ├── env_smooth
-        │       ├── env_smooth_selected_waves
-        │       └── env_smooth_selected_waves_angle
+        ├── env_vel
+        │   ├── hypo_interv_frq_band_component
+        │   ├── hypo_interv_frq_band_component_smooth
+        │   ├── hypo_interv_frq_band_component_smooth_selected_waves
+        │   └── hypo_interv_frq_band_component_smooth_selected_waves_angle
         └── results
-            └── vel_hypo_interv_frq_band_component_env_smooth_selected_waves
+            └── env_vel_hypo_interv_frq_band_component_smooth_selected_waves
                 └── angle
 
 Data
@@ -216,13 +216,7 @@ Source directory: */Kumamoto/event/acc/hypo_interv*
 
 Target directory: */Kumamoto/event/vel/hypo_interv*
 
-```html
-  <details>
-    <summary>les differentes etapes sont decrites ci-dessous:</summary>
-    bou
-    
-  </details>
-```
+les differentes etapes sont decrites ci-dessous:</summary>
 
 | detrend
 | taper hann 0.05
@@ -276,13 +270,11 @@ component of the velocity.
 
 Here, we are aware of the positivity of the '3D' and 'horizontal' velocity
 waveforms. On purpose we don't deal with the sign because the study is not
-using velocity wveforms directly as we can see below.
+using velocity wveforms directly as we can see few lines below.
 
 Source directory: */Kumamoto/event/vel/hypo_interv_frq_band*
 
-Target directory: */Kumamoto/event/vel/hypo_interv_frq_band_3cpn/brut*,
-*/Kumamoto/event/vel/hypo_interv_frq_band_hori/brut* and
-*/Kumamoto/event/vel/hypo_interv_frq_band_vert/brut*
+Target directory: */Kumamoto/event/vel/hypo_interv_frq_band_component*
 
 | creation d'une trace a partir des 3 composantes
 | cette trace est toujours positive
@@ -293,16 +285,22 @@ Target directory: */Kumamoto/event/vel/hypo_interv_frq_band_3cpn/brut*,
 
   with *\**** = *3comp*, *hori* or *vert*
 
+Envelopes
+=========
 
+From velocity waveforms to envelopes
+------------------------------------
 
-
-
-python3 vel2env.py
-==================
+The following code will convert the velocity waveforms into envelopes by simply
+squarring the velocity waveforms.
 
 .. code-block:: python3
 
     python3 vel2env.py
+
+Source directory: */Kumamoto/event/vel/hypo_interv_frq_band_component*
+
+Target directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component*
 
 | Produit des traces en energie a partir des velocity waveforms
 | E(ti) = A(ti)*A(ti)
@@ -310,17 +308,28 @@ python3 vel2env.py
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
 
-python3 env2smooth.py
-=====================
+Smoothing
+---------
+
+The following code smooth the envelopes (RMS) with a time-window of length
+**l_smooth** defined by the user through the run of parametres.py
 
 .. code-block:: python3
 
     python3 env2smooth.py
 
+Source directory: */Kumamoto/event/env_vel/*
+
+Target directory:
+
 | fait la RMS des envelopes sur une fenetre de duree **smooth** secondes
 
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
+
+
+
+
 
 python3 carte_SoverP.py
 -----------------------
