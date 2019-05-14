@@ -14,32 +14,59 @@ the user.
 
 Here is a list of all the parameters that has to be defined.
 
-| **event**: name of the event (earthquake).
-| **hypo_min**: minimum of hypocenter distance (in km).
-| **hypo_max**: maximum of hypocenter distance (in km).
-| **frq_min**: low frequency (in Hz) for the pass-band filter used on the
-    velocity waveforms.
-| **frq_max**: high frequency (in Hz) for the pass-band filter used on the
-    velocity waveforms
-| **component**: component [*3cpn*, *hori*, *vert*] used in the study.
-| **ratioSP**: ratio between the maximum amplitude of energy of S and P-waves.
-| **l_smooth**: length (in s) of the time-window for the smoothing (RMS) of the
-    energy waveforms.
-| **l_impulse**: length (in s) of the time-window for the selection of
-    impulsive stations.
-| **angle_min**: minimum of azimuth angle (in deg).
-| **angle_max**: maximum of azimuth angle (in deg).
-| **vP**: P-waves velocity.
-| **vS**: S-waves velocity.
-| **selected_waves**: choice of the waves [*P*, *S*] used for the study.
-| **strike**: strike direction of the rectangular grid.
-| **dip**: dip direction of the rectangular grid.
-| **l_grid**: length of the grid (in km) (strike direction).
-| **w_grid**: width of the grid (in km) (dip direction).
-| **l_grid_step**: length of each subgrid (in km) (strike direction).
-| **w_grid_step**: width of each subgrid (in km) (dip direction).
-| **bp_samp_rate**: frequency of the back projection images (in Hz).
-| **bp_length_time**: duration of the back projection (in s).
++-----------------------+---------------------------------------------------+
+| **Parameters**        | Description                                       |
++=======================+===================================================+
+| **event**             | name of the event (earthquake)                    |
++-----------------------+---------------------------------------------------+
+| **hypo_min**          | minimum of hypocenter distance (in km)            |
++-----------------------+---------------------------------------------------+
+| **hypo_max**          | maximum of hypocenter distance (in km)            |
++-----------------------+---------------------------------------------------+
+| **frq_min**           | low frequency (in Hz) for the pass-band filter
+    used on the velocity waveforms                                          |
++-----------------------+---------------------------------------------------+
+| **frq_max**           | high frequency (in Hz) for the pass-band filter
+    used on the velocity waveforms                                          |
++-----------------------+---------------------------------------------------+
+| **component**         | component [*3cpn*, *hori*, *vert*] used in the
+    study                                                                   |
++-----------------------+---------------------------------------------------+
+| **ratioSP**           | ratio between the maximum amplitude of energy of S
+    and P-waves                                                             |
++-----------------------+---------------------------------------------------+
+| **l_smooth**          | length (in s) of the time-window for the smoothing
+    (RMS) of the energy waveforms                                           |
++-----------------------+---------------------------------------------------+
+| **l_impulse**         | length (in s) of the time-window for the selection
+    of impulsive stations                                                   |
++-----------------------+---------------------------------------------------+
+| **angle_min**         | minimum of azimuth angle (in deg)                 |
++-----------------------+---------------------------------------------------+
+| **angle_max**         | maximum of azimuth angle (in deg)                 |
++-----------------------+---------------------------------------------------+
+| **vP**                | P-waves velocity                                  |
++-----------------------+---------------------------------------------------+
+| **vS**                | S-waves velocity                                  |
++-----------------------+---------------------------------------------------+
+| **selected_waves**    | choice of the waves [*P*, *S*] used for the study |
++-----------------------+---------------------------------------------------+
+| **strike**            | strike direction of the rectangular grid          |
++-----------------------+---------------------------------------------------+
+| **dip**               | dip direction of the rectangular grid             |
++-----------------------+---------------------------------------------------+
+| **l_grid**            | length of the grid (in km) (strike direction)     |
++-----------------------+---------------------------------------------------+
+| **w_grid**            | width of the grid (in km) (dip direction)         |
++-----------------------+---------------------------------------------------+
+| **l_grid_step**       | length of each subgrid (in km) (strike direction) |
++-----------------------+---------------------------------------------------+
+| **w_grid_step**       | width of each subgrid (in km) (dip direction)     |
++-----------------------+---------------------------------------------------+
+| **bp_samp_rate**      | frequency of the back projection images (in Hz)   |
++-----------------------+---------------------------------------------------+
+| **bp_length_time**    | duration of the back projection (in s)            |
++-----------------------+---------------------------------------------------+
 
 Here is the list of all the other parameters that are stored through the run
 of parametres.py but not asked to the user:
@@ -160,22 +187,11 @@ It can be note that the source directory is
 */Kumamoto/event/acc/inf_100km_copy*. The code can not be runned if the picking
 has not been done in the expected directory.
 
-python3 seismicity.py
-=====================
+From acceleration to velocity waveforms
+=======================================
 
-.. code-block:: python3
-
-    python3 seismicity.py
-
-| plot la sismicite dans la region du main shock
-| affiche le main shock et les deux foreshocks
-| le tout sur differentes periodes (avant, apres, entre deux evenements...)
-
-| from */Kumamoto*
-| to */Kumamoto*
-
-python3 acc2vel.py
-==================
+By running the following code, the records (acceleregrams) are converted to
+velocity waveforms.
 
 .. code-block:: python3
 
@@ -194,6 +210,10 @@ les differentes etapes sont decrites ci-dessous:
 
 | from */Kumamoto/dossier/dossier_sac_couronne*
 | to */Kumamoto/dossier/dossier_vel_couronne*
+
+
+
+
 
 python3 filt_vel.py
 ===================
@@ -353,4 +373,18 @@ python3 plot_bp_2d.py
 
 | from */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
 | to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq/pdf*
+
+python3 seismicity.py
+=====================
+
+.. code-block:: python3
+
+    python3 seismicity.py
+
+| plot la sismicite dans la region du main shock
+| affiche le main shock et les deux foreshocks
+| le tout sur differentes periodes (avant, apres, entre deux evenements...)
+
+| from */Kumamoto*
+| to */Kumamoto*
 
