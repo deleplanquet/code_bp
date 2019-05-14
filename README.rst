@@ -5,7 +5,7 @@
 Parameters
 ==========
 
-By running the following code, all the necessary parameters will be asked to
+By running ``parametres.py`` the following code, all the necessary parameters will be asked to
 the user.
 
 .. code-block:: python3
