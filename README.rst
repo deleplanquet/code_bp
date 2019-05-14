@@ -318,30 +318,67 @@ The following code smooth the envelopes (RMS) with a time-window of length
 
     python3 env2smooth.py
 
-Source directory: */Kumamoto/event/env_vel/*
+Source directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component*
 
-Target directory:
+Target directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component_smooth*
 
 | fait la RMS des envelopes sur une fenetre de duree **smooth** secondes
 
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
 
+Energy distribution-based selection
+-----------------------------------
 
-
-
-
-python3 carte_SoverP.py
------------------------
+By running the following code, stations will be sorted depending on their
+P and S-waves energy ratio.
 
 .. code-block:: python3
 
-    python3 carte_SoverP.py
+    python3 select_stat_env.py
 
-| fait une carte affichant les stations retenues jusque la avec l'information energie S/P
+More precisely, the maxima of energy for both P and S-waves are checked. Their
+ratio (S/P) is compared to the parameter **ratioSP** given by the user through
+the run of parametres.py.
+
+Source directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component_smooth*
+
+Target directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component_smooth_selected_waves*
+
+| compare le pic d'energie de l'onde P avec le pic d'energie de l'onde S
+| si le rapport S/P est superieur au threshold **ratioSP**, l'onde est selectionnee pour la back projection hypothese S
+| si le rapport S/P est inferieur au threshold 1/**ratioSP**, l'onde est selectionee pour la back projection hypothese P
 
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
-| to */Kumamoto/dossier/dossier_results*
+| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_****
+
+  with *\**** = *P* or *S*
+
+Azimuth-based selection
+-----------------------
+
+The following code is sorting stations depending on their relative azimuth to
+the studied event hypocenter.
+
+.. code-block:: python3
+
+    python3 select_station_angle.py
+
+Source directory: */Kumamoto/event/env_vel/hypo_interv/frq_band_component_smooth_selected_waves*
+
+Target directory: */Kumamoto/event/env_vel/hypo_interv/frq_band_component_smooth_selected_waves_angle*
+
+| calcul l'azimuth de chaque station par rapport a l'hypocentre
+| si l'azimuth de la station est compris entre **angle_min** et **angle_max**, la station est selectionnee pour la back projection
+| si l'azimuth de la station est compris entre **angle_min** + 180 et **angle_max** + 180, la station est selectionnee pour la back projection
+
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect*
+| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
+
+
+
+
+
 
 python3 vitesse_PS.py
 =====================
@@ -355,36 +392,6 @@ python3 vitesse_PS.py
 
 | from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
 | to */Kumamoto/dossier*
-
-python3 select_stat_env.py
-==========================
-
-.. code-block:: python3
-
-    python3 select_stat_env.py
-
-| compare le pic d'energie de l'onde P avec le pic d'energie de l'onde S
-| si le rapport S/P est superieur au threshold **ratioSP**, l'onde est selectionnee pour la back projection hypothese S
-| si le rapport S/P est inferieur au threshold 1/**ratioSP**, l'onde est selectionee pour la back projection hypothese P
-
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
-| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_****
-
-  with *\**** = *P* or *S*
-
-python3 select_station_angle.py
-===============================
-
-.. code-block:: python3
-
-    python3 select_station_angle.py
-
-| calcul l'azimuth de chaque station par rapport a l'hypocentre
-| si l'azimuth de la station est compris entre **angle_min** et **angle_max**, la station est selectionnee pour la back projection
-| si l'azimuth de la station est compris entre **angle_min** + 180 et **angle_max** + 180, la station est selectionnee pour la back projection
-
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect*
-| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
 
 python3 plot_traces.py
 ----------------------
@@ -447,3 +454,14 @@ python3 seismicity.py
 | from */Kumamoto*
 | to */Kumamoto*
 
+python3 carte_SoverP.py
+-----------------------
+
+.. code-block:: python3
+
+    python3 carte_SoverP.py
+
+| fait une carte affichant les stations retenues jusque la avec l'information energie S/P
+
+| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
+| to */Kumamoto/dossier/dossier_results*
