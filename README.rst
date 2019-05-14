@@ -216,6 +216,7 @@ Source directory: */Kumamoto/event/acc/hypo_interv*
 
 Target directory: */Kumamoto/event/vel/hypo_interv*
 
+.. class:: spoiler
 les differentes etapes sont decrites ci-dessous:
 
 | detrend
