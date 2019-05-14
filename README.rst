@@ -72,7 +72,7 @@ Here is the list of all the other parameters that are stored through the run
 of parametres.py but not asked to the user:
 
 +-----------------------+---------------------------------------------------+
-| **Parameters**        |                                                   |
+| **Parameters**        | Description                                       |
 +=======================+===================================================+
 | **root_folder**       | pick the absolute position of the */Codes*        |
 |                       | directory, should be at the same location with the|
