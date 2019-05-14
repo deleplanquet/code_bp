@@ -23,23 +23,23 @@ Here is a list of all the parameters that has to be defined.
 +-----------------------+---------------------------------------------------+
 | **hypo_max**          | maximum of hypocenter distance (in km)            |
 +-----------------------+---------------------------------------------------+
-| **frq_min**           | low frequency (in Hz) for the pass-band filter
-    used on the velocity waveforms                                          |
+| **frq_min**           | low frequency (in Hz) for the pass-band filter    |
+|                       | used on the velocity waveforms                    |
 +-----------------------+---------------------------------------------------+
-| **frq_max**           | high frequency (in Hz) for the pass-band filter
-    used on the velocity waveforms                                          |
+| **frq_max**           | high frequency (in Hz) for the pass-band filter   |
+|                       | used on the velocity waveforms                    |
 +-----------------------+---------------------------------------------------+
-| **component**         | component [*3cpn*, *hori*, *vert*] used in the
-    study                                                                   |
+| **component**         | component [*3cpn*, *hori*, *vert*] used in the    |
+|                       | study                                             |
 +-----------------------+---------------------------------------------------+
-| **ratioSP**           | ratio between the maximum amplitude of energy of S
-    and P-waves                                                             |
+| **ratioSP**           | ratio between the maximum amplitude of energy of S|
+|                       | and P-waves                                       |
 +-----------------------+---------------------------------------------------+
-| **l_smooth**          | length (in s) of the time-window for the smoothing
-    (RMS) of the energy waveforms                                           |
+| **l_smooth**          | length (in s) of the time-window for the smoothing|
+|                       | (RMS) of the energy waveforms                     |
 +-----------------------+---------------------------------------------------+
-| **l_impulse**         | length (in s) of the time-window for the selection
-    of impulsive stations                                                   |
+| **l_impulse**         | length (in s) of the time-window for the selection|
+|                       | of impulsive stations                             |
 +-----------------------+---------------------------------------------------+
 | **angle_min**         | minimum of azimuth angle (in deg)                 |
 +-----------------------+---------------------------------------------------+
