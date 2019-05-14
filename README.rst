@@ -216,8 +216,12 @@ Source directory: */Kumamoto/event/acc/hypo_interv*
 
 Target directory: */Kumamoto/event/vel/hypo_interv*
 
-.. spoiler::
+<details>
+    <summary>
     les differentes etapes sont decrites ci-dessous:
+    </summary>
+    bou
+</details>
 
 | detrend
 | taper hann 0.05
