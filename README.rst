@@ -199,8 +199,11 @@ It can be note that the source directory is
 */Kumamoto/event/acc/inf_100km_copy*. The code can not be runned if the picking
 has not been done in the expected directory.
 
+Velocity waveforms
+==================
+
 From acceleration to velocity waveforms
-=======================================
+---------------------------------------
 
 By running the following code, the records (acceleregrams) are converted to
 velocity waveforms.
@@ -208,6 +211,10 @@ velocity waveforms.
 .. code-block:: python3
 
     python3 acc2vel.py
+
+Source directory: */Kumamoto/event/acc/hypo_interv*
+
+Target directory: */Kumamoto/event/vel/hypo_interv*
 
 les differentes etapes sont decrites ci-dessous:
 
@@ -223,16 +230,20 @@ les differentes etapes sont decrites ci-dessous:
 | from */Kumamoto/dossier/dossier_sac_couronne*
 | to */Kumamoto/dossier/dossier_vel_couronne*
 
+Filtering
+---------
 
-
-
-
-python3 filt_vel.py
-===================
+The following code is filtering each component of the velocity waveforms with
+a pass-band filter between **frq_min** and **frq_max** defined by user through
+the run of parametres.py.
 
 .. code-block:: python3
 
     python3 filt_vel.py
+
+Source directory: */Kumamoto/event/vel/hypo_interv*
+
+Target directory: */Kumamoto/event/vel/hypo_interv_frq_band*
 
 les differentes etapes sont decrites ci-dessous:
 
@@ -243,12 +254,29 @@ les differentes etapes sont decrites ci-dessous:
 | from */Kumamoto/dossier/dossier_vel_couronne*
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq*
 
-python3 3components.py
-======================
+Combination of the components
+-----------------------------
+
+By running the following code, three different combination among the components
+for each station will be done. Firt one is combining the three components all
+together to have the '3D' velocity waveform. Second one is combining both EW
+and UD components to have the 'horizontal' component of the velocity. And the
+last one is just to keep the UD component to consider it as the 'vertical'
+component of the velocity.
 
 .. code-block:: python3
 
     python3 3components.py
+
+Here, we are aware of the positivity of the '3D' and 'horizontal' velocity
+waveforms. On purpose we don't deal with the sign because the study is not
+using velocity wveforms directly as we can see below.
+
+Source directory: */Kumamoto/event/vel/hypo_interv_frq_band*
+
+Target directory: */Kumamoto/event/vel/hypo_interv_frq_band_3cpn/brut*,
+*/Kumamoto/event/vel/hypo_interv_frq_band_hori/brut* and
+*/Kumamoto/event/vel/hypo_interv_frq_band_vert/brut*
 
 | creation d'une trace a partir des 3 composantes
 | cette trace est toujours positive
@@ -258,6 +286,10 @@ python3 3components.py
 | to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_****
 
   with *\**** = *3comp*, *hori* or *vert*
+
+
+
+
 
 python3 vel2env.py
 ==================
