@@ -125,15 +125,16 @@ research use only here.
 
 Data are stored in the following directory: */Kumamoto/event/brut*.
 
+Do not forget to unzip the original files.
+
 SAC format
 ----------
 
 ``tosac.py`` converts the original data into SAC files.
 
-The original files have been copied at */Kumamoto/event/brut*
-and the SAC files are saved at */Kumamoto/event/acc/brut*
+Source directory: */Kumamoto/event/brut*
 
-Do not forget to unzip the original files.
+Target directory: */Kumamoto/event/acc/brut*
 
 Distance selection and picking
 ==============================
