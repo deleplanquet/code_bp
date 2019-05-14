@@ -5,12 +5,8 @@
 Parameters
 ==========
 
-By running ``parametres.py`` the following code, all the necessary parameters will be asked to
-the user.
-
-.. code-block:: python3
-
-    python3 parametres.py
+By running ``parametres.py``, all the necessary parameters will be asked to the
+user.
 
 Here is a list of all the parameters that has to be defined.
 
@@ -69,7 +65,7 @@ Here is a list of all the parameters that has to be defined.
 +-----------------------+---------------------------------------------------+
 
 Here is the list of all the other parameters that are stored through the run
-of parametres.py but not asked to the user:
+of ``parametres.py`` but not asked to the user:
 
 +-----------------------+---------------------------------------------------+
 | **Parameters**        | Description                                       |
@@ -132,11 +128,7 @@ Data are stored in the following directory: */Kumamoto/event/brut*.
 SAC format
 ----------
 
-The following code converts the original data into SAC files.
-
-.. code-block:: python3
-
-    python3 tosac.py
+``tosac.py`` converts the original data into SAC files.
 
 The original files have been copied at */Kumamoto/event/brut*
 and the SAC files are saved at */Kumamoto/event/acc/brut*
@@ -149,12 +141,8 @@ Distance selection and picking
 "Local" stations (hypocenter distance < 100 km)
 -----------------------------------------------
 
-The following code selects the stations with hypocenter distance less than
-100 km. This is to prevent too high variability among the records.
-
-.. code-block:: python3
-
-    python3 station_inf_100km.py
+``station_inf_100km.py`` selects the stations with hypocenter distance less
+than 100 km. This is to prevent too high variability among the records.
 
 Source directory: */Kumamoto/event/acc/brut*
 
@@ -180,12 +168,8 @@ information).
 Distance selection from the user
 --------------------------------
 
-Through the run of the following code, stations will be selected according to
-their hypocenter distance.
-
-.. code-block:: python3
-
-    python3 select_couronne.py
+Through the run of ``select_couronne.py``, stations will be selected according
+to their hypocenter distance.
 
 The stations selected are inside a ring defined by the **hypo_min** and
 **hypo_max** values. No station can be selected beyond 100 km because of the
@@ -205,12 +189,8 @@ Velocity waveforms
 From acceleration to velocity waveforms
 ---------------------------------------
 
-By running the following code, the records (acceleregrams) are converted to
+By running ``acc2vel.py``, the records (acceleregrams) are converted to
 velocity waveforms.
-
-.. code-block:: python3
-
-    python3 acc2vel.py
 
 Source directory: */Kumamoto/event/acc/hypo_interv*
 
@@ -227,19 +207,12 @@ les differentes etapes sont decrites ci-dessous:</summary>
 | division by 2iPif
 | ifft
 
-| from */Kumamoto/dossier/dossier_sac_couronne*
-| to */Kumamoto/dossier/dossier_vel_couronne*
-
 Filtering
 ---------
 
-The following code is filtering each component of the velocity waveforms with
+``filt_vel.py`` is filtering each component of the velocity waveforms with
 a pass-band filter between **frq_min** and **frq_max** defined by user through
-the run of parametres.py.
-
-.. code-block:: python3
-
-    python3 filt_vel.py
+the run of ``parametres.py``.
 
 Source directory: */Kumamoto/event/vel/hypo_interv*
 
@@ -251,26 +224,19 @@ les differentes etapes sont decrites ci-dessous:
 | taper hann 0.05
 | bandpass dans la bande de frequences definie lors de l'execution de parametres.py, corners = 4, zerophase = false
 
-| from */Kumamoto/dossier/dossier_vel_couronne*
-| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq*
-
 Combination of the components
 -----------------------------
 
-By running the following code, three different combination among the components
-for each station will be done. Firt one is combining the three components all
-together to have the '3D' velocity waveform. Second one is combining both EW
-and UD components to have the 'horizontal' component of the velocity. And the
-last one is just to keep the UD component to consider it as the 'vertical'
-component of the velocity.
-
-.. code-block:: python3
-
-    python3 3components.py
+By running ``3components.py``, three different combinations among the
+components for each station will be done. Firt one is combining the three
+components all together to have the '3D' velocity waveform. Second one is
+combining both EW and UD components to have the 'horizontal' component of the
+velocity. And the last one is just keeping the UD component to consider it as
+the 'vertical' component of the velocity.
 
 Here, we are aware of the positivity of the '3D' and 'horizontal' velocity
 waveforms. On purpose we don't deal with the sign because the study is not
-using velocity wveforms directly as we can see few lines below.
+using velocity wveforms directly as we can see after.
 
 Source directory: */Kumamoto/event/vel/hypo_interv_frq_band*
 
@@ -280,23 +246,14 @@ Target directory: */Kumamoto/event/vel/hypo_interv_frq_band_component*
 | cette trace est toujours positive
 | A(ti) = sqrt(sum(a(ti)*a(ti)))
 
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq*
-| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_****
-
-  with *\**** = *3comp*, *hori* or *vert*
-
 Envelopes
 =========
 
 From velocity waveforms to envelopes
 ------------------------------------
 
-The following code will convert the velocity waveforms into envelopes by simply
+``vel2env.py`` will convert the velocity waveforms into envelopes by simply
 squarring the velocity waveforms.
-
-.. code-block:: python3
-
-    python3 vel2env.py
 
 Source directory: */Kumamoto/event/vel/hypo_interv_frq_band_component*
 
@@ -305,18 +262,11 @@ Target directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component*
 | Produit des traces en energie a partir des velocity waveforms
 | E(ti) = A(ti)*A(ti)
 
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante*
-| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
-
 Smoothing
 ---------
 
-The following code smooth the envelopes (RMS) with a time-window of length
-**l_smooth** defined by the user through the run of parametres.py
-
-.. code-block:: python3
-
-    python3 env2smooth.py
+``env2smooth.py`` smooths the envelopes (RMS) with a time-window of length
+**l_smooth** defined by the user through the run of ``parametres.py``
 
 Source directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component*
 
@@ -324,22 +274,15 @@ Target directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component_smooth
 
 | fait la RMS des envelopes sur une fenetre de duree **smooth** secondes
 
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env*
-| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
-
 Energy distribution-based selection
 -----------------------------------
 
-By running the following code, stations will be sorted depending on their
+By running ``select_stat_env.py``, stations will be sorted depending on their
 P and S-waves energy ratio.
-
-.. code-block:: python3
-
-    python3 select_stat_env.py
 
 More precisely, the maxima of energy for both P and S-waves are checked. Their
 ratio (S/P) is compared to the parameter **ratioSP** given by the user through
-the run of parametres.py.
+the run of ``parametres.py``.
 
 Source directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component_smooth*
 
@@ -349,20 +292,11 @@ Target directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component_smooth
 | si le rapport S/P est superieur au threshold **ratioSP**, l'onde est selectionnee pour la back projection hypothese S
 | si le rapport S/P est inferieur au threshold 1/**ratioSP**, l'onde est selectionee pour la back projection hypothese P
 
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
-| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_****
-
-  with *\**** = *P* or *S*
-
 Azimuth-based selection
 -----------------------
 
-The following code is sorting stations depending on their relative azimuth to
-the studied event hypocenter.
-
-.. code-block:: python3
-
-    python3 select_station_angle.py
+``select_station_angle.py`` is sorting stations depending on their relative
+azimuth to the hypocenter of the studied event.
 
 Source directory: */Kumamoto/event/env_vel/hypo_interv/frq_band_component_smooth_selected_waves*
 
@@ -371,9 +305,6 @@ Target directory: */Kumamoto/event/env_vel/hypo_interv/frq_band_component_smooth
 | calcul l'azimuth de chaque station par rapport a l'hypocentre
 | si l'azimuth de la station est compris entre **angle_min** et **angle_max**, la station est selectionnee pour la back projection
 | si l'azimuth de la station est compris entre **angle_min** + 180 et **angle_max** + 180, la station est selectionnee pour la back projection
-
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect*
-| to */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
 
 Back projection
 ===============
