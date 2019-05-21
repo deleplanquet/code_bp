@@ -268,7 +268,7 @@ components for each station will be done.
 
 Here, we are aware of the positivity of the '3D' and 'horizontal' velocity
 waveforms. On purpose we don't deal with the sign because the study is not
-using velocity wveforms directly as we can see after.
+using velocity waveforms directly as we can see after.
 
 ::
 
@@ -277,6 +277,10 @@ using velocity wveforms directly as we can see after.
         └── vel
             ├── hypo_interv_frq_band            *INPUT*
             └── hypo_interv_frq_band_component  *OUTPUT*
+
+.. math::
+
+    n_{\mathrm{offset}} = \sum_{k=0}^{N-1} s_k n_k
 
 | creation d'une trace a partir des 3 composantes
 | cette trace est toujours positive
