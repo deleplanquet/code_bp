@@ -104,7 +104,7 @@ Tree view
         │   ├── hypo_interv
         │   ├── hypo_interv_frq_band
         │   └── hypo_interv_frq_band_component
-        ├── env_vel
+        ├── vel_env
         │   ├── hypo_interv_frq_band_component
         │   ├── hypo_interv_frq_band_component_smooth
         │   ├── hypo_interv_frq_band_component_smooth_selected_waves
