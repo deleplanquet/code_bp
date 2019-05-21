@@ -258,6 +258,7 @@ Combination of the components
 
 By running ``3components.py``, three different combinations among the
 components for each station will be done.
+
 * Firt one is combining the three components all together to have the '3D'
   velocity waveform.
 * Second one is combining both EW and UD components to have the 'horizontal'
