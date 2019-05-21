@@ -136,9 +136,13 @@ SAC format
 
 ``tosac.py`` converts the original data into SAC files.
 
-Source directory: */Kumamoto/event/brut*
+::
 
-Target directory: */Kumamoto/event/acc/brut*
+    Kumamoto
+    └── event
+        ├── brut        *INPUT*
+        └── acc
+            └── brut    *OUTPUT*
 
 Distance selection and picking
 ==============================
@@ -149,9 +153,13 @@ Distance selection and picking
 ``station_inf_100km.py`` selects the stations with hypocenter distance less
 than 100 km. This is to prevent too high variability among the records.
 
-Source directory: */Kumamoto/event/acc/brut*
+::
 
-Target directory: */Kumamoto/event/acc/inf_100km*
+    Kumamoto
+    └── event
+        └── acc
+            ├── brut        *INPUT*
+            └── inf_100km   *OUTPUT*
 
 Hand picking of P and S-waves arrival time
 ------------------------------------------
