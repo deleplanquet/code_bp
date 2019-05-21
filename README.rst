@@ -127,7 +127,7 @@ research use only here.
 
     Kumamoto
     └── event
-        └── brut    *OUTPUT*
+        └── brut    *DOWLOAD + UNZIP*
 
 Do not forget to unzip the original files.
 
