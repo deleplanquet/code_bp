@@ -190,11 +190,8 @@ Distance selection from the user
 --------------------------------
 
 Through the run of ``select_couronne.py``, stations will be selected according
-to their hypocenter distance.
-
-The stations selected are inside a ring defined by the **hypo_min** and
-**hypo_max** values. No station can be selected beyond 100 km because of the
-previous pre-selection.
+to their hypocenter distance. The stations selected are inside a ring defined
+by the **hypo_min** and **hypo_max** values.
 
 ::
 
