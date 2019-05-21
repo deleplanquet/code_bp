@@ -232,8 +232,9 @@ frequency content issue, the following steps are performed:
 * Consider only 50 sec of the trace, from 5 sec before picked P-arrival time to
   45 sec after
 * Smoothly bring to 0 the beginning and the end of the trace to prevent
-  apparent discontinuity and high nergy content in high frequency domain
-* Change the value for picked P and S-arrival time (necessary because of trim)
+  apparent discontinuity and high energy content in high frequency domain
+* Change the value for picked P and S-arrival time (necessary because of the
+  cut of the trace)
 
 Then the conversion itself can be done properly.
 
