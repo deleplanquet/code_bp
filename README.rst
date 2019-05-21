@@ -278,14 +278,6 @@ using velocity waveforms directly as we can see after.
             ├── hypo_interv_frq_band            *INPUT*
             └── hypo_interv_frq_band_component  *OUTPUT*
 
-.. math::
-
-    n_{\mathrm{offset}} = \sum_{k=0}^{N-1} s_k n_k
-
-| creation d'une trace a partir des 3 composantes
-| cette trace est toujours positive
-| A(ti) = sqrt(sum(a(ti)*a(ti)))
-
 Envelopes
 =========
 
