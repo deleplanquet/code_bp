@@ -97,9 +97,6 @@ for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
     for st in [stx, sty, stz]:
         # remove the average mean value
         st.detrend(type = 'constant')
-        # to be sure the beginning and the end of the trace have 0 value, this
-        # is necessary to prevent high frequency to appear with fft
-        st[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
         # remove very low frequencies
         st[0].filter('highpass', freq = 1./20)
         # pick only 50 s of the original trace from 5 s before the picked
@@ -107,8 +104,9 @@ for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
         tstart = stz[0].stats.starttime + stz[0].stats.sac.a - 5
         tend = tstart + 50
         tr = st[0].trim(tstart, tend, pad = True, fill_value = 0)
-        # taper again to be sure nothing wrong will happen through ifft
-        tr.taper(0.05, type = 'hann', max_length = None, side = 'both')
+        # to be sure the beginning and the end of the trace have 0 value, this
+        # is necessary to prevent high frequency to appear with fft
+        st[0].taper(0.05, type = 'hann', max_length = None, side = 'both')
         # allocate the time to another place for future user
         st[0].stats.sac.nzyear = st[0].stats.starttime.year
         st[0].stats.sac.nzjday = st[0].stats.starttime.julday
