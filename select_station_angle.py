@@ -69,15 +69,14 @@ azim_max = param['angle_max']
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'vel/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/'
-             + 'env_smooth_' + hyp_bp)
+             + 'vel_env/'
+             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '_smooth_' + hyp_bp)
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'vel/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/'
-             + 'env_smooth_' + hyp_bp + '_' + azim + 'deg')
+             + 'vel_env/'
+             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '_smooth_' + hyp_bp
+                + '_' + azim + 'deg')
 
 # create the directory path_rslt in case it does not exist
 if not os.path.isdir(path_rslt):

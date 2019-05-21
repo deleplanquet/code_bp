@@ -54,8 +54,7 @@ path_r = (root_folder + '/'
 path_rslt = []
 for cpn in cpnt:
     path_rslt.append(path_r + '/'
-                     + couronne + 'km_' + frq_bnd + 'Hz_' + cpn + '/'
-                     + 'brut')
+                     + couronne + 'km_' + frq_bnd + 'Hz_' + cpn)
 
 # create the directories from the list path_rslt in case they do not exist
 for pth in path_rslt:

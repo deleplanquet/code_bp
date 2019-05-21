@@ -44,20 +44,19 @@ rSP = param['ratioSP']
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'vel/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/'
-             + 'env_smooth')
+             + 'vel_env/'
+             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '_smooth')
 # path_rslt is created to prevent repetition, the two real directories to be
 # considered are path_rslt_P and path_rslt_S
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'vel/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/')
+             + 'vel_env/'
+             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '_smooth')
 path_rslt_P = (path_rslt
-               + 'env_smooth_P')
+               + '_P')
 path_rslt_S = (path_rslt
-               + 'env_smooth_S')
+               + '_S')
 
 # create the directories path_rslt_P and path_rslt_S in case they do not exist
 if not os.path.isdir(path_rslt_P):
