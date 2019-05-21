@@ -223,16 +223,19 @@ velocity waveforms.
         └── vel
             └── hypo_interv *OUTPUT*
 
-les differentes etapes sont decrites ci-dessous:</summary>
+The process of conversion is done in spectral domain (FFT/IFFT). To prevent any
+frequency content issue, the following steps are performed:
 
-| detrend
-| taper hann 0.05
-| highpass 20 s
-| trim 5 s avant pointe P - 45 s apres pointe P (fenetre de 50 s)
-| taper hann 0.05
-| fft
-| division by 2iPif
-| ifft
+* Remove of the average mean value to prevent high energy content in very low
+  frequency domain
+* Remove very low frequencies (< 1/20 Hz)
+* Consider only 50 sec of the trace, from 5 sec before picked P-arrival time to
+  45 sec after
+* Smoothly bring to 0 the beginning and the end of the trace to prevent
+  apparent discontinuity and high nergy content in high frequency domain
+* Change the value for picked P and S-arrival time (necessary because of trim)
+
+Then the conversion itself can be done properly.
 
 Filtering
 ---------
