@@ -296,9 +296,6 @@ squarring the velocity waveforms.
         └── vel_env
             └── hypo_interv_frq_band_component  *OUTPUT*
 
-| Produit des traces en energie a partir des velocity waveforms
-| E(ti) = A(ti)*A(ti)
-
 Smoothing
 ---------
 
@@ -313,17 +310,13 @@ Smoothing
             ├── hypo_interv_frq_band_component          *INPUT*
             └── hypo_interv_frq_band_component_smooth   *OUTPUT*
 
-| fait la RMS des envelopes sur une fenetre de duree **smooth** secondes
-
 Energy distribution-based selection
 -----------------------------------
 
 By running ``select_stat_env.py``, stations will be sorted depending on their
-P and S-waves energy ratio.
-
-More precisely, the maxima of energy for both P and S-waves are checked. Their
-ratio (S/P) is compared to the parameter **ratioSP** given by the user through
-the run of ``parametres.py``.
+P and S-waves energy ratio. More precisely, the maxima of energy for both P and
+S-waves are checked. Their ratio (S/P) is compared to the parameter **ratioSP**
+given by the user through the run of ``parametres.py``.
 
 ::
 
@@ -332,10 +325,6 @@ the run of ``parametres.py``.
         └── vel_env
             ├── hypo_interv_frq_band_component_smooth                   *INPUT*
             └── hypo_interv_frq_band_component_smooth_selected_waves    *OUTPUT*
-
-| compare le pic d'energie de l'onde P avec le pic d'energie de l'onde S
-| si le rapport S/P est superieur au threshold **ratioSP**, l'onde est selectionnee pour la back projection hypothese S
-| si le rapport S/P est inferieur au threshold 1/**ratioSP**, l'onde est selectionee pour la back projection hypothese P
 
 Azimuth-based selection
 -----------------------
