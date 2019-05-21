@@ -253,21 +253,17 @@ the run of ``parametres.py``.
             ├── hypo_interv             *INPUT*
             └── hypo_interv_frq_band    *OUTPUT*
 
-les differentes etapes sont decrites ci-dessous:
-
-| detrend
-| taper hann 0.05
-| bandpass dans la bande de frequences definie lors de l'execution de parametres.py, corners = 4, zerophase = false
-
 Combination of the components
 -----------------------------
 
 By running ``3components.py``, three different combinations among the
-components for each station will be done. Firt one is combining the three
-components all together to have the '3D' velocity waveform. Second one is
-combining both EW and UD components to have the 'horizontal' component of the
-velocity. And the last one is just keeping the UD component to consider it as
-the 'vertical' component of the velocity.
+components for each station will be done.
+* Firt one is combining the three components all together to have the '3D'
+  velocity waveform.
+* Second one is combining both EW and UD components to have the 'horizontal'
+  component of the velocity.
+* And the last one is just keeping the UD component to consider it as the
+  'vertical' component of the velocity.
 
 Here, we are aware of the positivity of the '3D' and 'horizontal' velocity
 waveforms. On purpose we don't deal with the sign because the study is not
