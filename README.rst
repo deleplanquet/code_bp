@@ -330,7 +330,9 @@ Azimuth-based selection
 -----------------------
 
 ``select_station_angle.py`` is sorting stations depending on their relative
-azimuth to the hypocenter of the studied event.
+azimuth to the hypocenter of the studied event. Stations with azimuth between
+**angle_min** and **angle_max** OR between **angle_min** + 180 and
+**angle_max** + 180 are selected.
 
 ::
 
@@ -339,10 +341,6 @@ azimuth to the hypocenter of the studied event.
         └── vel_env
             ├── hypo_interv_frq_band_component_smooth_selected_waves        *INPUT*
             └── hypo_interv_frq_band_component_smooth_selected_waves_angle  *OUTPUT*
-
-| calcul l'azimuth de chaque station par rapport a l'hypocentre
-| si l'azimuth de la station est compris entre **angle_min** et **angle_max**, la station est selectionnee pour la back projection
-| si l'azimuth de la station est compris entre **angle_min** + 180 et **angle_max** + 180, la station est selectionnee pour la back projection
 
 Back projection
 ===============
