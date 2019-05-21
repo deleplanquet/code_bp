@@ -178,6 +178,14 @@ do not have any picking information, but files localised at
 information (again, at this step, only UD component file contain the picking
 information).
 
+::
+
+    Kumamoto
+    └── event
+        └── acc
+            ├── inf_100km       *COPY*
+            └── inf_100km_copy  *PASTE + MODIFY*
+
 Distance selection from the user
 --------------------------------
 
@@ -188,9 +196,13 @@ The stations selected are inside a ring defined by the **hypo_min** and
 **hypo_max** values. No station can be selected beyond 100 km because of the
 previous pre-selection.
 
-Source directory: */Kumamoto/event/acc/inf_100km_copy*
+::
 
-Target directory: */Kumamoto/event/acc/hypo_interv*
+    Kumamoto
+    └── event
+        └── acc
+            ├── inf_100km_copy  *INPUT*
+            └── hypo_interv     *OUTPUT*
 
 It can be note that the source directory is
 */Kumamoto/event/acc/inf_100km_copy*. The code can not be runned if the picking
@@ -205,9 +217,14 @@ From acceleration to velocity waveforms
 By running ``acc2vel.py``, the records (acceleregrams) are converted to
 velocity waveforms.
 
-Source directory: */Kumamoto/event/acc/hypo_interv*
+::
 
-Target directory: */Kumamoto/event/vel/hypo_interv*
+    Kumamoto
+    └── event
+        ├── acc
+        │   └── hypo_interv *INPUT*
+        └── vel
+            └── hypo_interv *OUTPUT*
 
 les differentes etapes sont decrites ci-dessous:</summary>
 
@@ -227,9 +244,13 @@ Filtering
 a pass-band filter between **frq_min** and **frq_max** defined by user through
 the run of ``parametres.py``.
 
-Source directory: */Kumamoto/event/vel/hypo_interv*
+::
 
-Target directory: */Kumamoto/event/vel/hypo_interv_frq_band*
+    Kumamoto
+    └── event
+        └── vel
+            ├── hypo_interv             *INPUT*
+            └── hypo_interv_frq_band    *OUTPUT*
 
 les differentes etapes sont decrites ci-dessous:
 
@@ -251,9 +272,13 @@ Here, we are aware of the positivity of the '3D' and 'horizontal' velocity
 waveforms. On purpose we don't deal with the sign because the study is not
 using velocity wveforms directly as we can see after.
 
-Source directory: */Kumamoto/event/vel/hypo_interv_frq_band*
+::
 
-Target directory: */Kumamoto/event/vel/hypo_interv_frq_band_component*
+    Kumamoto
+    └── event
+        └── vel
+            ├── hypo_interv_frq_band            *INPUT*
+            └── hypo_interv_frq_band_component  *OUTPUT*
 
 | creation d'une trace a partir des 3 composantes
 | cette trace est toujours positive
@@ -268,9 +293,14 @@ From velocity waveforms to envelopes
 ``vel2env.py`` will convert the velocity waveforms into envelopes by simply
 squarring the velocity waveforms.
 
-Source directory: */Kumamoto/event/vel/hypo_interv_frq_band_component*
+::
 
-Target directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component*
+    Kumamoto
+    └── event
+        ├── vel
+        │   └── hypo_interv_frq_band_component  *INPUT*
+        └── vel_env
+            └── hypo_interv_frq_band_component  *OUTPUT*
 
 | Produit des traces en energie a partir des velocity waveforms
 | E(ti) = A(ti)*A(ti)
@@ -281,9 +311,13 @@ Smoothing
 ``env2smooth.py`` smooths the envelopes (RMS) with a time-window of length
 **l_smooth** defined by the user through the run of ``parametres.py``
 
-Source directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component*
+::
 
-Target directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component_smooth*
+    Kumamoto
+    └── event
+        └── vel_env
+            ├── hypo_interv_frq_band_component          *INPUT*
+            └── hypo_interv_frq_band_component_smooth   *OUTPUT*
 
 | fait la RMS des envelopes sur une fenetre de duree **smooth** secondes
 
@@ -297,9 +331,13 @@ More precisely, the maxima of energy for both P and S-waves are checked. Their
 ratio (S/P) is compared to the parameter **ratioSP** given by the user through
 the run of ``parametres.py``.
 
-Source directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component_smooth*
+::
 
-Target directory: */Kumamoto/event/env_vel/hypo_interv_frq_band_component_smooth_selected_waves*
+    Kumamoto
+    └── event
+        └── vel_env
+            ├── hypo_interv_frq_band_component_smooth                   *INPUT*
+            └── hypo_interv_frq_band_component_smooth_selected_waves    *OUTPUT*
 
 | compare le pic d'energie de l'onde P avec le pic d'energie de l'onde S
 | si le rapport S/P est superieur au threshold **ratioSP**, l'onde est selectionnee pour la back projection hypothese S
@@ -311,9 +349,13 @@ Azimuth-based selection
 ``select_station_angle.py`` is sorting stations depending on their relative
 azimuth to the hypocenter of the studied event.
 
-Source directory: */Kumamoto/event/env_vel/hypo_interv/frq_band_component_smooth_selected_waves*
+::
 
-Target directory: */Kumamoto/event/env_vel/hypo_interv/frq_band_component_smooth_selected_waves_angle*
+    Kumamoto
+    └── event
+        └── vel_env
+            ├── hypo_interv_frq_band_component_smooth_selected_waves        *INPUT*
+            └── hypo_interv_frq_band_component_smooth_selected_waves_angle  *OUTPUT*
 
 | calcul l'azimuth de chaque station par rapport a l'hypocentre
 | si l'azimuth de la station est compris entre **angle_min** et **angle_max**, la station est selectionnee pour la back projection
