@@ -109,6 +109,11 @@ Tree view
         │   ├── hypo_interv_frq_band_component_smooth
         │   ├── hypo_interv_frq_band_component_smooth_selected_waves
         │   └── hypo_interv_frq_band_component_smooth_selected_waves_angle
+        ├── vel_env_bpinv
+        │   └── hypo_interv_frq_band_component_smooth_selected_waves_angle
+        │       ├── brut
+        │       ├── trace
+        │       └── trace_smooth
         └── results
             └── env_vel_hypo_interv_frq_band_component_smooth_selected_waves
                 └── angle
