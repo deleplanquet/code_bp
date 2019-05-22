@@ -404,18 +404,18 @@ stack = [stack_0, stack_1]
 scission = ['', '_complementaire']
 
 print(path_data_1)
-for station in lst_fch:                                                                                         #
+for station in lst_fch:
     for scis in scission:
-        os.chdir(path_data_1)                                                                                         #
-        st = read(station)                                                                                          #
+        os.chdir(path_data_1)
+        st = read(station)
         os.chdir(path_retrait)
         st_r = read(st[0].stats.station)
         st_r_max = (st_r[0].data).max()
-        tr = np.zeros(st[0].stats.npts)                                                                                             #
-        cpt = 0                                                                                                     #
-        for i in range(len(tr)):                                                                                              #
-            cpt = cpt + 1                                                                                           #
-            time = cpt/st[0].stats.sampling_rate                                                                    #
+        tr = np.zeros(st[0].stats.npts)
+        cpt = 0
+        for i in range(len(tr)):
+            cpt = cpt + 1
+            time = cpt/st[0].stats.sampling_rate
             if scis == scission[0]:
                 tr[i] = st[0].data[i]*st_r[0].data[i]
             else:
