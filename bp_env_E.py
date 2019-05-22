@@ -194,8 +194,10 @@ path_rslt = (root_folder + '/'
              + 'vel_env_' + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
                     + '_smooth_' + hyp_bp + '/'
              + azim + 'deg')
-# to prevent repetition path_bpinv is created and used for the directories
-# path_bpinv_brut, path_bpinv_trace and path_bpinv_smooth
+# to prevent repetition path_bpinv is created and used for the directories:
+# - path_bpinv_brut
+# - path_bpinv_trace
+# - path_bpinv_smooth
 path_bpinv = (root_folder + '/'
               + 'Kumamoto/'
               + event + '/'
@@ -209,8 +211,11 @@ path_bpinv_trace = (path_bpinv + '/'
 path_bpinv_smooth = (path_bpinv + '/'
                      + 'trace_smooth')
 
-# create the directories path_bpinv_brut, path_bpinv_trace, path_bpinv_smooth
-# and path_rslt in case they do not exist
+# in case they do not exist, the following directories are created:
+# - path_rslt
+# - path_bpinv_brut
+# - path_bpinv_trace
+# - path_bpinv_smooth
 for d in [path_rslt, path_bpinv_brut, path_bpinv_trace, path_bpinv_smooth]:
     if not os.path.isdir(d):
         try:
@@ -222,77 +227,99 @@ for d in [path_rslt, path_bpinv_brut, path_bpinv_trace, path_bpinv_smooth]:
     else:
         print('{} is already existing'.format(d))
 
-os.chdir(path_results)
-with open(dossier + '_veldata', 'rb') as mon_fich:
-    mon_depick = pickle.Unpickler(mon_fich)
-    dict_vel = mon_depick.load()
+#os.chdir(path_results)
+#with open(dossier + '_veldata', 'rb') as mon_fich:
+#    mon_depick = pickle.Unpickler(mon_fich)
+#    dict_vel = mon_depick.load()
 
-if hyp_bp == 'P':                                               
-    vel_used = param['vP']                                      
-    dict_vel_used = dict_vel[0]                                 
-elif hyp_bp == 'S':                                             
-    vel_used = param['vS']                                      
-    dict_vel_used = dict_vel[1]                                 
+#if hyp_bp == 'P':
+#    vel_used = param['vP']
+#    dict_vel_used = dict_vel[0]
+#elif hyp_bp == 'S':
+#    vel_used = param['vS']
+#    dict_vel_used = dict_vel[1]
 
-lst_fch = []                        #
-lst_fch = os.listdir(path_data)     #   recupere la liste des noms des fichiers
-                                    # contenant les donnees
-lst_fch.sort()                      #   les trie
+# pick all the envelopes from the directory path_data and sort them
+lst_sta = os.listdir(path_data)
+lst_fch.sort()
 
-os.chdir(root_folder + '/Kumamoto')             #
-with open('ref_seismes_bin', 'rb') as my_fch:   #
-    my_dpck = pickle.Unpickler(my_fch)          #
-    dict_seis = my_dpck.load()                  #load caracteristiques seismes
+# load location of the studied earthquake
+os.chdir(root_folder + '/Kumamoto')
+with open('ref_seismes_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    dict_seis = my_dpck.load()
 
-yea_seis = int(dict_seis[event]['nFnet'][0:4])         #
-mon_seis = int(dict_seis[event]['nFnet'][4:6])         #
-day_seis = int(dict_seis[event]['nFnet'][6:8])         #
-hou_seis = int(dict_seis[event]['nFnet'][8:10])        #
-min_seis = int(dict_seis[event]['nFnet'][10:12])       #
-sec_seis = int(dict_seis[event]['nFnet'][12:14])       #
-mse_seis = int(dict_seis[event]['nFnet'][14:16])       #
-                                                         #
-t_origin_rupt = UTCDateTime(yea_seis,                    #
-                            mon_seis,                    #
-                            day_seis,                    #
-                            hou_seis,                    #
-                            min_seis,                    #
-                            sec_seis,                    #temps du debut
-                            mse_seis)                    #de la rupture
+lat_hyp = dict_seis[event]['lat']
+lon_hyp = dict_seis[event]['lon']
+dep_hyp = dict_seis[event]['dep']
+hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
-lat_hyp = dict_seis[event]['lat']     #
-lon_hyp = dict_seis[event]['lon']     #position
-dep_hyp = dict_seis[event]['dep']     #de l'hypocentre du seisme etudie
+# define the origin time of the rupture
+yea_seis = int(dict_seis[event]['nFnet'][0:4])
+mon_seis = int(dict_seis[event]['nFnet'][4:6])
+day_seis = int(dict_seis[event]['nFnet'][6:8])
+hou_seis = int(dict_seis[event]['nFnet'][8:10])
+min_seis = int(dict_seis[event]['nFnet'][10:12])
+sec_seis = int(dict_seis[event]['nFnet'][12:14])
+mse_seis = int(dict_seis[event]['nFnet'][14:16])
 
-dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)),
-                 math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)),
-                 math.sin(d2r(lat_hyp))]
-#   defini le vecteur CH: "centre Terre" -> "hypocentre"
+t_origin_rupt = UTCDateTime(yea_seis,
+                            mon_seis,
+                            day_seis,
+                            hou_seis,
+                            min_seis,
+                            sec_seis,
+                            mse_seis)
 
-vect_nord = rotation(dir_cen_fault,#   defini le vecteur N: nord local
-                     90,        #   par la rotation du vectuer CH de 90 degres
+print('Creation of the grid where the envelopes will be back projected')
+# direction of the center of the grid, that is CH vector:
+# CH := Earth center -> event hypocenter
+# defined easily from couple (lat, lon))
+dir_cen_grid = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)),
+                math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)),
+                math.sin(d2r(lat_hyp))]
+# direction of the North at hypocenter location, that is N vector:
+# N := event hypocenter -> North pole
+# the vertor is still tangential to the surface of the EARTH, it is not
+# pointing towards the North pole strictly speeking
+# defined by rotation of CH vector around the EW local axis with an angle
+# equal to 90 degrees
+vect_nord = rotation(dir_cen_grid,
+                     90,
                      [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
-#   autour du vecteur Ouest-Est local
+# direction of the strike of the grid, that is S vector:
+# S := event hypocenter -> strike
+# defined by rotation of N vector around CH vector with an angle equal to
+# "strike" degrees (because strike is counted clockwise, angle should be
+# negative in the formula)
+vect_strike = rotation(vect_nord,
+                       - strike,
+                       dir_cen_grid)
+# direction of the vector PS perpendicular to vector S, that is:
+# PS := event hypocenter -> strike + 90
+# defined by rotation of N vector around CH vector with an angle equal to
+# "strike" + 90 degrees (here again negative value for angle)
+vect_perp_strike = rotation(vect_nord,
+                            - strike - 90,
+                            dir_cen_grid)
+# direction of the dip of the grid, that is D vector:
+# D := event hypocenter -> dip
+# defined by rotation of PS vector around S vector with an angle equal to
+# "dip" degrees
+vect_dip = rotation(vect_perp_strike,
+                    dip,
+                    vect_strike)
 
-vect_strike = rotation(vect_nord,#   defini le vecteur S: direction du strike
-                       - strike,#par la rotation du vecteur N de "strike" degres
-                       dir_cen_fault)   #   autour du vecteur CH
-
-vect_perp_strike = rotation(vect_nord,#   defini le vecteur PS: perpendiculaire a S
-                            - strike - 90,#par la rotation du vecteur N de "strike" + 90 degres
-                            dir_cen_fault)  #   autour du vecteur CH
-
-vect_dip = rotation(vect_perp_strike,#   defini le vecteur D: direction du dip
-                    dip,#   par la rotation du vecteur PS de "dip" degres
-                    vect_strike)#   autour du vecteur S
-
-coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp],
-                    l_fault,
-                    w_fault,
-                    norm(vect_strike),
-                    norm(vect_dip),#defini les coordonnees de chaque subfault
-                    pas_l,      #   l'ensemble centre sur l'hypocentre
-                    pas_w)      #   oriente selon les vecteurs S et D
+# coordinates of each sub grid
+# the whole grid is centered in both strike and dip directions on the
+# hypocenter of the event
+coord_grid = fault(hypo,
+                   l_grid,
+                   w_grid,
+                   norm(vect_strike),
+                   norm(vect_dip),
+                   l_grid_step,
+                   w_grid_step)
 
 #print(coord_fault)
 #x1, y1, z1 = (-3526.0445, 4052.5618, 3477.1154)
