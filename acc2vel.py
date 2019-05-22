@@ -56,7 +56,7 @@ path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'acc/'
-             + 'inf_100km_copy')
+             + 'inf100km_copy')
 path_results = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
