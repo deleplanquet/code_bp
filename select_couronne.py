@@ -92,7 +92,6 @@ dep_hyp = dict_seis[event]['dep']
 hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
 # pick all the records from the directory path_data
-os.chdir(path_data)
 list_stat = os.listdir(path_data)
 list_stat = [a for a in list_stat if 'sac' in a]
 
