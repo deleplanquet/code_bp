@@ -44,15 +44,15 @@ rSP = param['ratioSP']
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'vel_env/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '_smooth')
+             + 'vel_env_selection/'
+             + frq_bnd + 'Hz_' + cpnt + '_smooth_' + couronne + 'km')
 # path_rslt is created to prevent repetition, the two real directories to be
 # considered are path_rslt_P and path_rslt_S
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'vel_env/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '_smooth')
+             + 'vel_env_selection/'
+             + frq_bnd + 'Hz_' + cpnt + '_smooth_' + couronne + 'km')
 path_rslt_P = (path_rslt
                + '_P')
 path_rslt_S = (path_rslt
