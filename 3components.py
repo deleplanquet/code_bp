@@ -30,7 +30,6 @@ with open('parametres_bin', 'rb') as my_fch:
 
 # all the parameters are not used in this script, only the following ones
 event = param['event']
-couronne = param['hypo_interv']
 frq_bnd = param['frq_band']
 
 # directories used in this script:
@@ -40,7 +39,7 @@ path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'vel/'
-             + couronne + 'km_' + frq_bnd + 'Hz')
+             + frq_bnd + 'Hz')
 # - path_rslt is the list of directories where different combinations of the
 # three original components (EW, NS and UD) will be stored
 # -- 3 cpn is a combination of the 3 components (EW, NS and UD)
@@ -54,7 +53,7 @@ path_r = (root_folder + '/'
 path_rslt = []
 for cpn in cpnt:
     path_rslt.append(path_r + '/'
-                     + couronne + 'km_' + frq_bnd + 'Hz_' + cpn)
+                     + frq_bnd + 'Hz_' + cpn)
 
 # create the directories from the list path_rslt in case they do not exist
 for pth in path_rslt:
