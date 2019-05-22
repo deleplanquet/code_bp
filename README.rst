@@ -149,8 +149,8 @@ SAC format
         └── acc
             └── brut    *OUTPUT*
 
-Distance selection and picking
-==============================
+Picking
+=======
 
 "Local" stations (hypocenter distance < 100 km)
 -----------------------------------------------
