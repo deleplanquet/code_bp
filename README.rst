@@ -98,25 +98,25 @@ Tree view
         ├── acc 
         │   ├── brut
         │   ├── inf_100km
-        │   ├── inf_100km_copy
-        │   └── hypo_interv
+        │   └── inf_100km_copy
         ├── vel
-        │   ├── hypo_interv
-        │   ├── hypo_interv_frq_band
-        │   └── hypo_interv_frq_band_component
+        │   ├── brut
+        │   ├── frq_band
+        │   └── frq_band_component
         ├── vel_env
-        │   ├── hypo_interv_frq_band_component
-        │   ├── hypo_interv_frq_band_component_smooth
-        │   ├── hypo_interv_frq_band_component_smooth_selected_waves
-        │   └── hypo_interv_frq_band_component_smooth_selected_waves_angle
+        │   ├── frq_band_component
+        │   └── frq_band_component_smooth
+        ├── vel_env_selection
+        │   ├── frq_band_component_smooth_hypo_interv
+        │   ├── frq_band_component_smooth_hypo_interv_selected_waves
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
         ├── vel_env_bpinv
-        │   └── hypo_interv_frq_band_component_smooth_selected_waves_angle
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
         │       ├── brut
         │       ├── trace
         │       └── trace_smooth
         └── results
-            └── env_vel_hypo_interv_frq_band_component_smooth_selected_waves
-                └── angle
+            └── env_vel_frq_band_component_smooth_hypo_interv_selected_waves_angle
 
 Data
 ====
