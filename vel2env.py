@@ -23,7 +23,6 @@ with open('parametres_bin', 'rb') as my_fch:
 
 # all the parameters are not used in this script, only the following ones
 event = param['event']
-couronne = param['hypo_interv']
 frq_bnd = param['frq_band']
 cpnt = param['component']
 
@@ -36,12 +35,12 @@ path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'vel/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt)
+             + frq_bnd + 'Hz_' + cpnt)
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'vel_env/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt)
+             + frq_bnd + 'Hz_' + cpnt)
 
 # create the directory path_rslt in case it does not exist
 if not os.path.isdir(path_rslt):
