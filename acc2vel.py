@@ -46,7 +46,6 @@ with open('parametres_bin', 'rb') as my_fch:
 # all the parameters are not used in this script, only the following ones
 R_Earth = param['R_Earth']
 event = param['event']
-couronne = param['hypo_interv']
 
 # directories used in this script
 # - path_data is the directory with all the records that passed previous
@@ -57,12 +56,12 @@ path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'acc/'
-             + couronne + 'km')
+             + 'inf_100km_copy')
 path_results = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
                 + 'vel/'
-                + couronne + 'km')
+                + 'brut')
 
 # create the directory path_results in case it does not exist
 if not os.path.isdir(path_results):
