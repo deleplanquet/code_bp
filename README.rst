@@ -97,8 +97,8 @@ Tree view
         ├── brut
         ├── acc 
         │   ├── brut
-        │   ├── inf_100km
-        │   └── inf_100km_copy
+        │   ├── inf100km
+        │   └── inf100km_copy
         ├── vel
         │   ├── brut
         │   ├── frq_band
@@ -164,7 +164,7 @@ than 100 km. This is to prevent too high variability among the records.
     └── event
         └── acc
             ├── brut        *INPUT*
-            └── inf_100km   *OUTPUT*
+            └── inf100km    *OUTPUT*
 
 Hand picking of P and S-waves arrival time
 ------------------------------------------
@@ -188,27 +188,8 @@ information).
     Kumamoto
     └── event
         └── acc
-            ├── inf_100km       *COPY*
-            └── inf_100km_copy  *PASTE + MODIFY*
-
-Distance selection from the user
---------------------------------
-
-Through the run of ``select_couronne.py``, stations will be selected according
-to their hypocenter distance. The stations selected are inside a ring defined
-by the **hypo_min** and **hypo_max** values.
-
-::
-
-    Kumamoto
-    └── event
-        └── acc
-            ├── inf_100km_copy  *INPUT*
-            └── hypo_interv     *OUTPUT*
-
-It can be note that the source directory is
-*/Kumamoto/event/acc/inf_100km_copy*. The code can not be runned if the picking
-has not been done in the expected directory.
+            ├── inf100km        *COPY*
+            └── inf100km_copy   *PASTE + MODIFY*
 
 Velocity waveforms
 ==================
@@ -224,9 +205,9 @@ velocity waveforms.
     Kumamoto
     └── event
         ├── acc
-        │   └── hypo_interv *INPUT*
+        │   └── inf100km_copy   *INPUT*
         └── vel
-            └── hypo_interv *OUTPUT*
+            └── brut            *OUTPUT*
 
 The process of conversion is done in spectral domain (FFT/IFFT). To prevent any
 frequency content issue, the following steps are performed:
@@ -243,6 +224,10 @@ frequency content issue, the following steps are performed:
 
 Then the conversion itself can be done properly.
 
+It can be note that the source directory is
+*/Kumamoto/event/acc/inf100km_copy*. The code can not be runned if the picking
+has not been done in the expected directory.
+
 Filtering
 ---------
 
@@ -255,8 +240,8 @@ the run of ``parametres.py``.
     Kumamoto
     └── event
         └── vel
-            ├── hypo_interv             *INPUT*
-            └── hypo_interv_frq_band    *OUTPUT*
+            ├── brut        *INPUT*
+            └── frq_band    *OUTPUT*
 
 Combination of the components
 -----------------------------
@@ -280,8 +265,8 @@ using velocity waveforms directly as we can see after.
     Kumamoto
     └── event
         └── vel
-            ├── hypo_interv_frq_band            *INPUT*
-            └── hypo_interv_frq_band_component  *OUTPUT*
+            ├── frq_band            *INPUT*
+            └── frq_band_component  *OUTPUT*
 
 Envelopes
 =========
@@ -297,9 +282,9 @@ squarring the velocity waveforms.
     Kumamoto
     └── event
         ├── vel
-        │   └── hypo_interv_frq_band_component  *INPUT*
+        │   └── frq_band_component  *INPUT*
         └── vel_env
-            └── hypo_interv_frq_band_component  *OUTPUT*
+            └── frq_band_component  *OUTPUT*
 
 Smoothing
 ---------
@@ -312,8 +297,27 @@ Smoothing
     Kumamoto
     └── event
         └── vel_env
-            ├── hypo_interv_frq_band_component          *INPUT*
-            └── hypo_interv_frq_band_component_smooth   *OUTPUT*
+            ├── frq_band_component          *INPUT*
+            └── frq_band_component_smooth   *OUTPUT*
+
+Stations selection
+==================
+
+Distance selection from the user
+--------------------------------
+
+Through the run of ``select_couronne.py``, stations will be selected according
+to their hypocenter distance. The stations selected are inside a ring defined
+by the **hypo_min** and **hypo_max** values.
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env
+        │   └── frq_band_component_smooth               *INPUT*
+        └── vel_env_selection
+            └── frq_band_component_smooth_hypo_interv   *OUTPUT*
 
 Energy distribution-based selection
 -----------------------------------
@@ -327,9 +331,9 @@ given by the user through the run of ``parametres.py``.
 
     Kumamoto
     └── event
-        └── vel_env
-            ├── hypo_interv_frq_band_component_smooth                   *INPUT*
-            └── hypo_interv_frq_band_component_smooth_selected_waves    *OUTPUT*
+        └── vel_env_selection
+            ├── frq_band_component_smooth_hypo_interv                   *INPUT*
+            └── frq_band_component_smooth_hypo_interv_selected_waves    *OUTPUT*
 
 Azimuth-based selection
 -----------------------
@@ -343,9 +347,9 @@ azimuth to the hypocenter of the studied event. Stations with azimuth between
 
     Kumamoto
     └── event
-        └── vel_env
-            ├── hypo_interv_frq_band_component_smooth_selected_waves        *INPUT*
-            └── hypo_interv_frq_band_component_smooth_selected_waves_angle  *OUTPUT*
+        └── vel_env_selection
+            ├── frq_band_component_smooth_hypo_interv_selected_waves        *INPUT*
+            └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *OUTPUT*
 
 Back projection
 ===============
