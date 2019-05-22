@@ -241,7 +241,7 @@ for d in [path_rslt, path_bpinv_brut, path_bpinv_trace, path_bpinv_smooth]:
 
 # pick all the envelopes from the directory path_data and sort them
 lst_sta = os.listdir(path_data)
-lst_fch.sort()
+lst_sta.sort()
 
 # load location of the studied earthquake
 os.chdir(root_folder + '/Kumamoto')
@@ -351,24 +351,25 @@ coord_grid = fault(hypo,
 #print(r2d(math.acos(x7/pow(x7*x7 + y7*y7, 0.5))),
 #      r2d(math.acos(pow((x7*x7 + y7*y7)/(x7*x7 + y7*y7 + z7*z7), 0.5))))
 
+# identification of the station which started to record the first, it will
+# be used as reference station (technically, any station can be reference
+# station but this one is picked to deal with positive value only)
 tstart_ref = None
-
 os.chdir(path_data)
-for fichier in lst_fch:
-    st = read(fichier)
+for s in lst_sta:
+    st = read(s)
     if tstart_ref == None or tstart_ref - st[0].stats.starttime > 0:
-        #   sonde toutes les stations
         tstart_ref = st[0].stats.starttime
-        #   pour trouver celle qui detecte le plus tot
-        
-os.chdir(path_data)
+
 travt = []
 tmin = None
 dmin = None
-
+os.chdir(path_data)
 for fichier in lst_fch:
     st = read(fichier)
-    travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo],
+    travt.append(trav_time([st[0].stats.sac.stel,
+                            st[0].stats.sac.stla,
+                            st[0].stats.sac.stlo],
                            coord_fault,
                            vel_used))
     if dmin == None or dmin > st[0].stats.sac.dist:
@@ -409,19 +410,22 @@ for station in lst_fch: #   boucle sur les stations
                                          + 1./len(lst_fch)*f(tshift))
                     #   par le nombre de stations
 
-os.chdir(path_results)
-with open(dossier
-          + '_vel_'
+# save the back projection 4D cube in the path_rslt directory (4D because 2
+# spatial dimensions (the grid), 1 temporal dimension (the time) and 1 network
+# dimension (the stations))
+# on purpose, the energy from every station is not directly summed up to allow
+# different selection of stations without running the current code (the most
+# time consuming) many times
+os.chdir(path_rslt)
+with open(event + '_vel_'
           + couronne + 'km_'
-          + frq + 'Hz_' #   enregistre le stack sous forme de cube 4D:
-          + dt_type #   - position selon strike
-          + '_env_smooth_'  #   - position selon dip
-          + hyp_bp + '_'    #   - position selon tps
-          + azim + 'deg_stack3D', 'wb') as my_fch:
-    #   - "position selon station", on ne somme pas encore
-    my_pck = pickle.Pickler(my_fch) 
-    #     pour pouvoir filtrer certaines stations a posteriori
-    my_pck.dump(stack)  #     sans avoir a refaire le stack
+          + frq_bnd + 'Hz_'
+          + cpnt
+          + '_smooth_'
+          + hyp_bp + '_'
+          + azim + 'deg_stack2D', 'wb') as my_fch:
+    my_pck = pickle.Pickler(my_fch)
+    my_pck.dump(stack)
 
 ################################
 # bp inverse
