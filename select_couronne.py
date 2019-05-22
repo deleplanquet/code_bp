@@ -48,6 +48,8 @@ with open('parametres_bin', 'rb') as my_fch:
 # all the parameters are not used in this script, only the following ones
 R_Earth = param['R_Earth']
 event = param['event']
+frq_bnd = param['frq_band']
+cpnt = param['component']
 couronne = param['hypo_interv']
 dist_min = param['hypo_min']
 dist_max = param['hypo_max']
@@ -61,13 +63,13 @@ dist_max = param['hypo_max']
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'acc/'
-             + 'inf100km_copie')
+             + 'vel_env/'
+             + frq_bnd + 'Hz_' + cpnt + '_smooth')
 path_results = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
-                + 'acc/'
-                + couronne + 'km')
+                + 'vel_env_selection/'
+                + frq_bnd + 'Hz_' + cpnt + '_smooth_' + couronne + 'km')
 
 # create the directory path_results in case it does not exist
 if not os.path.isdir(path_results):
