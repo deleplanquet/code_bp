@@ -161,13 +161,6 @@ with open('parametres_bin', 'rb') as my_fch:
 
 # all the parameters are not used in this script, only the following ones
 event = param['event']
-path = root_folder + '/Kumamoto/' + event
-
-#os.chdir(path)                                      #
-#with open(dossier + '_veldata', 'rb') as mon_fich:  #
-#    mon_depick = pickle.Unpickler(mon_fich)         #
-#    dict_vel = mon_depick.load()                    #   load station corrections
-
 cpnt = param['component']
 hyp_bp = param['selected_waves']
 couronne = param['hypo_interv']
@@ -191,56 +184,43 @@ l_smooth = param['l_smooth']
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'vel/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/'
-             + 'env_smooth_' + hyp_bp + '_' + azim + 'deg')
+             + 'vel_env/'
+             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
+                    + '_smooth_' + hyp_bp + '_' + azim + 'deg')
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'results/'
-             + 'vel_' + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
-                + '_env_smooth_' + hyp_bp + '/'
+             + 'vel_env_' + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
+                    + '_smooth_' + hyp_bp + '/'
              + azim + 'deg')
+# to prevent repetition path_bpinv is created and used for the directories
+# path_bpinv_brut, path_bpinv_trace and path_bpinv_smooth
+path_bpinv = (root_folder + '/'
+              + 'Kumamoto/'
+              + event + '/'
+              + 'vel_env_bpinv/'
+              + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
+                    + '_smooth_' + hyp_bp + '_' + azim + 'deg')
+path_bpinv_brut = (path_bpinv + '/'
+                   + 'brut')
+path_bpinv_trace = (path_bpinv + '/'
+                    + 'trace')
+path_bpinv_smooth = (path_bpinv + '/'
+                     + 'trace_smooth')
 
-
-path_bpinv = (path_data + '_'        #
-              + 'bpinv/'             #
-              + 'releves')           #
-                                     #
-path_bpinvtr = (path_data + '_'      #
-                + 'bpinv/'           #
-                + 'traces')          #
-                                     #
-path_bpinvsm = (path_data + '_'      #
-                + 'bpinv/'           #
-                + 'smoothed_traces') #
-                                     #
-path_results = (path + '/'           #
-                + dossier            #
-                + '_results/'        #
-                + dossier            #
-                + '_vel_'            #
-                + couronne + 'km_'   #
-                + frq + 'Hz')        #   dossiers de travail
-
-# create the directory path_rslt in case it does not exist
-#
-if not os.path.isdir(path_rslt):
-    try:
-        os.makedirs(path_rslt)
-    except OSError:
-        print('Creation of the directory {} failed'.format(path_rslt))
+# create the directories path_bpinv_brut, path_bpinv_trace, path_bpinv_smooth
+# and path_rslt in case they do not exist
+for d in [path_rslt, path_bpinv_brut, path_bpinv_trace, path_bpinv_smooth]:
+    if not os.path.isdir(d):
+        try:
+            os.makedirs(d)
+        except OSError:
+            print('Creation of the directory {} failed'.format(d))
+        else:
+            print('Successfully created the directory {}'.format(d))
     else:
-        print('Successfully created the directory {}'.format(path_rslt))
-else:
-    print('{} is already existing'.format(path_rslt))
-
-if os.path.isdir(path_bpinv) == False:      #
-    os.makedirs(path_bpinv)                 #
-if os.path.isdir(path_bpinvtr) == False:    #
-    os.makedirs(path_bpinvtr)               #
-if os.path.isdir(path_bpinvsm) == False:    #
-    os.makedirs(path_bpinvsm)               #
+        print('{} is already existing'.format(d))
 
 os.chdir(path_results)
 with open(dossier + '_veldata', 'rb') as mon_fich:
