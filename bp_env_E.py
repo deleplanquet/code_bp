@@ -379,21 +379,25 @@ for fichier in lst_fch:
 print(tmin)                                 #   et chaque subfault
 
 length_t = int(length_time*samp_rate)
-stack = np.zeros((len(coord_fault[:, 0, 0]),
-                  len(coord_fault[0, :, 0]),
-                  length_t))            #   initialisation
+#stack = np.zeros((len(coord_fault[:, 0, 0]),
+#                  len(coord_fault[0, :, 0]),
+#                  length_t))            #   initialisation
 
-for station in lst_fch: #   boucle sur les stations
+stack = np.zeros((len(coord_grid[:, 0, 0]),
+                  len(coord_grid[0, :, 0]),
+                  length_t),
+                  len(lst_sta))
+
+for ista, s in enumerate(lst_sta): #   boucle sur les stations
     os.chdir(path_data)
-    st = read(station)  #   va chercher une station
+    st = read(s)  #   va chercher une station
     tstart = st[0].stats.starttime#   norm avec max = 1
     env_norm = norm1(st[0].data)
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
     #   interpole: serie de points -> fonction
     f = interpolate.interp1d(t, env_norm)
 
-    ista = lst_fch.index(station)
-    print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_fch))
+    print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_sta))
 
     for ix in range(len(coord_fault[:, 0, 0])): #   boucle sur le strike
         for iy in range(len(coord_fault[0, :, 0])): #   boucle sur le dip
@@ -407,7 +411,7 @@ for station in lst_fch: #   boucle sur les stations
                           + it/samp_rate)#   pas de tps #   pour la back p
                 if tshift > 0 and tshift < t[-1]:#   si le shift ne sort pas de la trace
                     stack[ix, iy, it] = (stack[ix, iy, it]#   on stocke en normalisant
-                                         + 1./len(lst_fch)*f(tshift))
+                                         + 1./len(lst_sta)*f(tshift))
                     #   par le nombre de stations
 
 # save the back projection 4D cube in the path_rslt directory (4D because 2
