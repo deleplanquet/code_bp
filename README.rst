@@ -117,6 +117,9 @@ Tree view
         │       └── trace_smooth
         └── results
             └── env_vel_frq_band_component_smooth_hypo_interv_selected_waves_angle
+                ├── pdf
+                ├── png
+                └── others
 
 Data
 ====
