@@ -162,9 +162,6 @@ with open('parametres_bin', 'rb') as my_fch:
 # all the parameters are not used in this script, only the following ones
 event = param['event']
 cpnt = param['component']
-hyp_bp = param['selected_waves']
-couronne = param['hypo_interv']
-azim = param['angle']
 frq_bnd = param['frq_band']
 R_Earth = param['R_Earth']
 strike = param['strike']
@@ -185,8 +182,7 @@ path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'vel_env/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
-                    + '_smooth_' + hyp_bp + '_' + azim + 'deg')
+             + frq_bnd + 'Hz_' + cpnt + '_smooth')
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
@@ -234,12 +230,12 @@ with open(dossier + '_veldata', 'rb') as mon_fich:
     mon_depick = pickle.Unpickler(mon_fich)
     dict_vel = mon_depick.load()
 
-if hyp_bp == 'P':
-    vel_used = param['vP']
-    dict_vel_used = dict_vel[0]
-elif hyp_bp == 'S':
-    vel_used = param['vS']
-    dict_vel_used = dict_vel[1]
+#if hyp_bp == 'P':
+#    vel_used = param['vP']
+#    dict_vel_used = dict_vel[0]
+#elif hyp_bp == 'S':
+vel_used = param['vS']
+dict_vel_used = dict_vel[1]
 
 # pick all the envelopes from the directory path_data and sort them
 lst_sta = os.listdir(path_data)
