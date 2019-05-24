@@ -192,8 +192,8 @@ path_rslt = (root_folder + '/'
              + event + '/'
              + 'results/'
              + 'vel_env_' + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
-                    + '_smooth_' + hyp_bp + '/'
-             + azim + 'deg')
+                    + '_smooth_' + hyp_bp + azim + 'deg/'
+             + 'others')
 # to prevent repetition path_bpinv is created and used for the directories:
 # - path_bpinv_brut
 # - path_bpinv_trace
@@ -216,7 +216,10 @@ path_bpinv_smooth = (path_bpinv + '/'
 # - path_bpinv_brut
 # - path_bpinv_trace
 # - path_bpinv_smooth
-for d in [path_rslt, path_bpinv_brut, path_bpinv_trace, path_bpinv_smooth]:
+for d in [path_rslt,
+          path_bpinv_brut,
+          path_bpinv_trace,
+          path_bpinv_smooth]:
     if not os.path.isdir(d):
         try:
             os.makedirs(d)
@@ -227,17 +230,17 @@ for d in [path_rslt, path_bpinv_brut, path_bpinv_trace, path_bpinv_smooth]:
     else:
         print('{} is already existing'.format(d))
 
-#os.chdir(path_results)
-#with open(dossier + '_veldata', 'rb') as mon_fich:
-#    mon_depick = pickle.Unpickler(mon_fich)
-#    dict_vel = mon_depick.load()
+os.chdir(path_rslt)
+with open(dossier + '_veldata', 'rb') as mon_fich:
+    mon_depick = pickle.Unpickler(mon_fich)
+    dict_vel = mon_depick.load()
 
-#if hyp_bp == 'P':
-#    vel_used = param['vP']
-#    dict_vel_used = dict_vel[0]
-#elif hyp_bp == 'S':
-#    vel_used = param['vS']
-#    dict_vel_used = dict_vel[1]
+if hyp_bp == 'P':
+    vel_used = param['vP']
+    dict_vel_used = dict_vel[0]
+elif hyp_bp == 'S':
+    vel_used = param['vS']
+    dict_vel_used = dict_vel[1]
 
 # pick all the envelopes from the directory path_data and sort them
 lst_sta = os.listdir(path_data)
@@ -321,36 +324,6 @@ coord_grid = fault(hypo,
                    l_grid_step,
                    w_grid_step)
 
-#print(coord_fault)
-#x1, y1, z1 = (-3526.0445, 4052.5618, 3477.1154)
-#x2, y2, z2 = (-3506.0853, 4040.5830, 3471.2726)
-#x3, y3, z3 = (-3509.9947, 4096.7141, 3441.4227)
-#x4, y4, z4 = (-3490.0355, 4084.7354, 3435.5798)
-#x5, y5, z5 = (-3531.4623, 4041.4161, 3485.4628)
-#x6, y6, z6 = (-3531.0461, 4041.1676, 3485.3404)
-#x7, y7, z7 = (-3531.3274, 4041.7909, 3485.1606)
-#print(x1, y1, z1)
-#print(x2, y2, z2)
-#print(x3, y3, z3)
-#print(x4, y4, z4)
-#print(x5, y5, z5)
-#print(x6, y6, z6)
-#print(x7, y7, x7)
-#print(r2d(math.acos(x1/pow(x1*x1 + y1*y1, 0.5))),
-#      r2d(math.acos(pow((x1*x1 + y1*y1)/(x1*x1 + y1*y1 + z1*z1), 0.5))))
-#print(r2d(math.acos(x2/pow(x2*x2 + y2*y2, 0.5))),
-#      r2d(math.acos(pow((x2*x2 + y2*y2)/(x2*x2 + y2*y2 + z2*z2), 0.5))))
-#print(r2d(math.acos(x3/pow(x3*x3 + y3*y3, 0.5))),
-#      r2d(math.acos(pow((x3*x3 + y3*y3)/(x3*x3 + y3*y3 + z3*z3), 0.5))))
-#print(r2d(math.acos(x4/pow(x4*x4 + y4*y4, 0.5))),
-#      r2d(math.acos(pow((x4*x4 + y4*y4)/(x4*x4 + y4*y4 + z4*z4), 0.5))))
-#print(r2d(math.acos(x5/pow(x5*x5 + y5*y5, 0.5))),
-#      r2d(math.acos(pow((x5*x5 + y5*y5)/(x5*x5 + y5*y5 + z5*z5), 0.5))))
-#print(r2d(math.acos(x6/pow(x6*x6 + y6*y6, 0.5))),
-#      r2d(math.acos(pow((x6*x6 + y6*y6)/(x6*x6 + y6*y6 + z6*z6), 0.5))))
-#print(r2d(math.acos(x7/pow(x7*x7 + y7*y7, 0.5))),
-#      r2d(math.acos(pow((x7*x7 + y7*y7)/(x7*x7 + y7*y7 + z7*z7), 0.5))))
-
 # identification of the station which started to record the first, it will
 # be used as reference station (technically, any station can be reference
 # station but this one is picked to deal with positive value only)
@@ -361,58 +334,74 @@ for s in lst_sta:
     if tstart_ref == None or tstart_ref - st[0].stats.starttime > 0:
         tstart_ref = st[0].stats.starttime
 
-travt = []
-tmin = None
-dmin = None
+travt = {}
 os.chdir(path_data)
-for fichier in lst_fch:
-    st = read(fichier)
-    travt.append(trav_time([st[0].stats.sac.stel,
-                            st[0].stats.sac.stla,
-                            st[0].stats.sac.stlo],
-                           coord_fault,
-                           vel_used))
-    if dmin == None or dmin > st[0].stats.sac.dist:
-        dmin = st[0].stats.sac.dist
-    if tmin == None or tmin > st[0].stats.sac.t0:#   calcule les temps de trajet
-        tmin = st[0].stats.sac.t0               #   entre chaque station
-print(tmin)                                 #   et chaque subfault
+for s in lst_sta:
+    st = read(s)
+    travt[st[0].stats.station] = (trav_time([st[0].stats.sac.stel,
+                                             st[0].stats.sac.stla,
+                                             st[0].stats.sac.stlo],
+                                            coord_grid,
+                                            vel_used))
 
 length_t = int(length_time*samp_rate)
-#stack = np.zeros((len(coord_fault[:, 0, 0]),
-#                  len(coord_fault[0, :, 0]),
-#                  length_t))            #   initialisation
+stack = {}
 
-stack = np.zeros((len(coord_grid[:, 0, 0]),
-                  len(coord_grid[0, :, 0]),
-                  length_t),
-                  len(lst_sta))
-
-for ista, s in enumerate(lst_sta): #   boucle sur les stations
+print('Back projection method applied to the envelopes',
+        'from {}'.format(path_data))
+for ista, s in enumerate(lst_sta):
     os.chdir(path_data)
-    st = read(s)  #   va chercher une station
-    tstart = st[0].stats.starttime#   norm avec max = 1
+    # load the envelope
+    st = read(s)
+    # few parameters are stored because they will be used more than once
+    tstart = st[0].stats.starttime
+    sta_name = st[0].stats.station
+    # the maximum of the nevelope is set to 1
     env_norm = norm1(st[0].data)
+    # x-axis corresponding to the trace
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-    #   interpole: serie de points -> fonction
+    # interpolate the trace so we can assess a value enve between two bins
     f = interpolate.interp1d(t, env_norm)
-
-    print('     ', station, st[0].stats.sampling_rate, str(ista + 1), '/', len(lst_sta))
-
-    for ix in range(len(coord_fault[:, 0, 0])): #   boucle sur le strike
-        for iy in range(len(coord_fault[0, :, 0])): #   boucle sur le dip
-            for it in range(length_t):      #   boucle sur le tps
-                tshift = (travt[ista][ix, iy]#   tps de traj station/subfault
-                          - (st[0].stats.starttime - t_origin_rupt)
-                          #   correction debut enregistrement
-                          + dict_vel_used[st[0].stats.station]
-                          #   correction station
-                          - 5#   5 sec avant la rupture #   calcul du shift
-                          + it/samp_rate)#   pas de tps #   pour la back p
-                if tshift > 0 and tshift < t[-1]:#   si le shift ne sort pas de la trace
-                    stack[ix, iy, it] = (stack[ix, iy, it]#   on stocke en normalisant
-                                         + 1./len(lst_sta)*f(tshift))
-                    #   par le nombre de stations
+    # vectorize the interpolated function to be able to aplly it over a
+    # np.array
+    npf = np.vectorize(f)
+    # initialise 3D np.array which will contain back projection value for one
+    # station
+    bp1sta = np.zeros((len(coord_grid[:, 0, 0]),
+                       len(coord_grid[0, :, 0]),
+                       length_t))
+    print('Processing of the station {}'.format(sta_name),
+            '({}/{})'.format(ista, len(lst_sta)),
+            end = ' ')
+    # loop over the time
+    for it in range(length_t):
+        # calculation of the real delay for a specific time
+        # (specific time := t_origin_rupt - 5 + it/samp_rate
+        #  which is different from previous travt that had calculated a
+        #  relative delay between subgrids without knowing the absolute delay)
+        # for one station, the following parameters are constant all over the
+        # grid:
+        # - tstart := st[0].stats.starttime, the starting time of the trace 
+        # - t_origin_rupt which is the same among all stations because it is
+        #   one of the event properties
+        # - 5 is obviously a constant, it is introduced to start the back
+        #   projection 5 sec before the start of the rupture
+        # - samp_rate which is the frequency of back projection pictures and is
+        #   also the same among all stations
+        # however the variable "it" is changing on every time step but it still
+        # the same among every single subgrid
+        tshift = (travt[sta_name]
+                  - (tstart - t_origin_rupt)
+                  + dict_vel_used[sta_name]
+                  - 5
+                  + it/samp_rate)
+        # make a bigger np.array containing every time step of the back
+        # projection of one station
+        bp1sta = np.append(bp1sta, npf(tshift), axis = 0)
+    # store inside a dictionnary the back projection values of every station
+    # at every time step on every subgrid
+    stack[sta_name] = bp1sta
+    print('done')
 
 # save the back projection 4D cube in the path_rslt directory (4D because 2
 # spatial dimensions (the grid), 1 temporal dimension (the time) and 1 network
