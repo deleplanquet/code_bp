@@ -191,8 +191,7 @@ path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'results/'
-             + 'vel_env_' + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
-                    + '_smooth_' + hyp_bp + azim + 'deg/'
+             + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
              + 'others')
 # to prevent repetition path_bpinv is created and used for the directories:
 # - path_bpinv_brut
