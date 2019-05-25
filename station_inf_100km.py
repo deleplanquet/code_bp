@@ -115,6 +115,7 @@ for s in list_stat:
     if dst < 100:
         os.chdir(path_results)
         print('  --->  selected')
+        st[0].stats.sac.dist = dst
         tr = Trace(st[0].data, st[0].stats)
         tr.write(s, format='SAC')
     else:
