@@ -43,12 +43,6 @@ def geo2cart(vect):
     zz = r*math.sin(rlat)
     return [xx, yy, zz]
 
-# distance between two points whose coordinates are cartesians
-def dist(vect1, vect2):
-    x1, y1, z1 = geo2cart(vect1)
-    x2, y2, z2 = geo2cart(vect2)
-    return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
-
 # normalisation with max = 1
 def norm1(vect):
     norm_v = 0
@@ -75,19 +69,19 @@ with open('ref_seismes_bin', 'rb') as my_fch:
 
 # all the parameters are not used in this script, only the following ones
 event = param['event']
-couronne = param['hypo_interv']
 frq_bnd = param['frq_band']
 cpnt = param['component']
 vP = param['vP']
 vS = param['vS']
 
-yea_seis = int(dict_seis[dossier]['nFnet'][0:4])
-mon_seis = int(dict_seis[dossier]['nFnet'][4:6])
-day_seis = int(dict_seis[dossier]['nFnet'][6:8])
-hou_seis = int(dict_seis[dossier]['nFnet'][8:10])
-min_seis = int(dict_seis[dossier]['nFnet'][10:12])
-sec_seis = int(dict_seis[dossier]['nFnet'][12:14])
-mse_seis = int(dict_seis[dossier]['nFnet'][14:16])
+# define the origin of the rupture
+yea_seis = int(dict_seis[event]['nFnet'][0:4])
+mon_seis = int(dict_seis[event]['nFnet'][4:6])
+day_seis = int(dict_seis[event]['nFnet'][6:8])
+hou_seis = int(dict_seis[event]['nFnet'][8:10])
+min_seis = int(dict_seis[event]['nFnet'][10:12])
+sec_seis = int(dict_seis[event]['nFnet'][12:14])
+mse_seis = int(dict_seis[event]['nFnet'][14:16])
 
 t_origin_rupt = UTCDateTime(yea_seis,
                             mon_seis,
@@ -103,108 +97,88 @@ t_origin_rupt = UTCDateTime(yea_seis,
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'vel/'
-             + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt + '/'
-             + 'env_smooth')
+             + 'vel_env/'
+             + frq_bnd + 'Hz_' + cpnt + '_smooth')
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'results/'
-             + 'vel_' + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
-                + '_env_smooth_/')
-path = (path_origin
-        + '/Kumamoto/'
-        + dossier)
-
-path_results = (path + '/'
-                + dossier
-                + '_results/'
-                + dossier
-                + '_vel_'
-                + couronne + 'km_'
-                + frq + 'Hz')
+             + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
+             + 'others')
 
 # pick the envelopes from the directory path_data
 list_sta = os.listdir(path_data)
 
-fig, ax = plt.subplots(1, 1)
-ax.set_xlabel('Source time (s)')
-ax.set_ylabel('Hypocenter distance (km)')
+#fig, ax = plt.subplots(1, 1)
+#ax.set_xlabel('Source time (s)')
+#ax.set_ylabel('Hypocenter distance (km)')
 
-vect_vP = {}
-vect_vS = {}
+delay_P = {}
+delay_S = {}
 
 os.chdir(path_data)
-
-vect_dst = np.zeros(50)
-
-for i, station in enumerate(list_sta):
-    st = read(station)
+for i, s in enumerate(list_sta):
+    # load the envelope
+    st = read(s)
+    # few parameters are stored because they will be used more than once
     dst = st[0].stats.sac.dist
+    sta_name = st[0].stats.station
+    starttime = st[0].stats.starttime
+    #
+    delay_P[sta_name] = (starttime + st[0].stats.sac.a
+                         - t_origin_rupt - dst/velP)
+    delay_S[sta_name] = (starttime + st[0].stats.sac.t0
+                         - t_origin_rupt - dst/velS)
 
-    delai_rec = st[0].stats.starttime - t_origin_rupt
+#    if vct_dst[int(dst//2)] == 0:
+#        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+#        t = [a + delai_rec for a in t]
+#        #ax.plot(t, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.5, color = 'black')
+#        ax.fill_between(t,
+#                        st[0].stats.sac.dist,
+#                        norm1(st[0].data) + st[0].stats.sac.dist,
+#                        linewidth = 0.3,
+#                        color = 'black',
+#                        alpha = 0.2)
+#        ax.text(50 + t[0],
+#                st[0].stats.sac.dist,
+#                st[0].stats.station,
+#                fontsize = 3)
+#        ax.vlines(st[0].stats.sac.a + delai_rec,
+#                  st[0].stats.sac.dist - 1,
+#                  st[0].stats.sac.dist + 1,
+#                  linewidth = 1,
+#                  color = 'steelblue')
+#        ax.vlines(st[0].stats.sac.t0 + delai_rec,
+#                  st[0].stats.sac.dist - 1,
+#                  st[0].stats.sac.dist + 1,
+#                  linewidth = 1,
+#                  color = 'darkorange')
+#        if (st[0].stats.sac.t0 + delai_rec) > 30:
+#            print(st[0].stats.station,
+#                  st[0].stats.sac.dist,
+#                  st[0].stats.sac.t0 + delai_rec)
+#        vct_dst[int(dst//2)] = 1
 
-    vP[st[0].stats.station] = (st[0].stats.sac.a
-                               + delai_rec
-                               - st[0].stats.sac.dist/velP)
-    vS[st[0].stats.station] = (st[0].stats.sac.t0 
-                               + delai_rec
-                               - st[0].stats.sac.dist/velS)
+to_register = {'delay_P':delay_P, 'delay_S':delay_S}
 
-    if vct_dst[int(dst//2)] == 0:
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        t = [a + delai_rec for a in t]
-
-        #ax.plot(t, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.5, color = 'black')
-        ax.fill_between(t,
-                        st[0].stats.sac.dist,
-                        norm1(st[0].data) + st[0].stats.sac.dist,
-                        linewidth = 0.3,
-                        color = 'black',
-                        alpha = 0.2)
-        ax.text(50 + t[0],
-                st[0].stats.sac.dist,
-                st[0].stats.station,
-                fontsize = 3)
-        #ax.scatter(st[0].stats.sac.a + delai_rec, st[0].stats.sac.dist, s = 30, color = 'steelblue')
-        #ax.scatter(st[0].stats.sac.t0 + delai_rec, st[0].stats.sac.dist, s = 30, color = 'darkorange')
-        ax.vlines(st[0].stats.sac.a + delai_rec,
-                  st[0].stats.sac.dist - 1,
-                  st[0].stats.sac.dist + 1,
-                  linewidth = 1,
-                  color = 'steelblue')
-        ax.vlines(st[0].stats.sac.t0 + delai_rec,
-                  st[0].stats.sac.dist - 1,
-                  st[0].stats.sac.dist + 1,
-                  linewidth = 1,
-                  color = 'darkorange')
-
-        if (st[0].stats.sac.t0 + delai_rec) > 30:
-            print(st[0].stats.station,
-                  st[0].stats.sac.dist,
-                  st[0].stats.sac.t0 + delai_rec)
-
-        vct_dst[int(dst//2)] = 1
-
-to_register = [vP, vS]#, tdeb]
-
-os.chdir(path_results)
-with open(dossier + '_veldata', 'wb') as mon_fich:
+os.chdir(path_rslt)
+with open(dossier + '_picking_delays', 'wb') as mon_fich:
     mon_pick = pickle.Pickler(mon_fich)
     mon_pick.dump(to_register)
 
-#ax.text(10, 115, str(t_origin_rupt), color = 'black')
-ax.plot([0, 100./velP], [0, 100], linewidth = 2, color = 'steelblue')
-ax.plot([0, 100./velS], [0, 100], linewidth = 2, color = 'darkorange')
-ax.set_xlim([0, 40])
-ax.set_ylim([0, 110])
-#ax.xaxis.set_visible(False)
-#ax.yaxis.set_visible(False)
-fig.savefig('env_fct_dist_'
-            + dossier
-            + '_env_'
-            + couronne + 'km_'
-            + frq + 'Hz_'
-            + dt_type
-            + '_env_smooth'
-            + '.pdf')
+##ax.text(10, 115, str(t_origin_rupt), color = 'black')
+#ax.plot([0, 100./velP], [0, 100], linewidth = 2, color = 'steelblue')
+#ax.plot([0, 100./velS], [0, 100], linewidth = 2, color = 'darkorange')
+#ax.set_xlim([0, 40])
+#ax.set_ylim([0, 110])
+##ax.xaxis.set_visible(False)
+##ax.yaxis.set_visible(False)
+#fig.savefig('env_fct_dist_'
+#            + dossier
+#            + '_env_'
+#            + couronne + 'km_'
+#            + frq + 'Hz_'
+#            + dt_type
+#            + '_env_smooth'
+#            + '.pdf')
