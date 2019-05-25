@@ -116,7 +116,7 @@ Tree view
         │       ├── trace
         │       └── trace_smooth
         └── results
-            └── vel_env_frq_band_component_smooth _hypo_interv_selected_waves_angle
+            └── vel_env_frq_band_component_smooth
                 ├── hypo_interv_selected_waves_angle
                 │   ├── pdf
                 │   └── png
