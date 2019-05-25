@@ -111,7 +111,6 @@ for s in list_stat:
           end = ' ')
     if dst > dist_min and dst < dist_max:
         os.chdir(path_results)
-        st[0].stats.sac.dist = dst
         tr = Trace(st[0].data, st[0].stats)
         tr.write(s, format='SAC')
         print('is selected ({} < {:.1f} < {})'.format(dist_min, dst, dist_max))
