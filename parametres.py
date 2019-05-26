@@ -584,7 +584,7 @@ path2 = (root_folder + '/'
          + param['event'] + '/'
          + 'results/'
          + 'vel_env' + frq_bnd + 'Hz_' + cpnt + 'smooth/'
-         + couronne + 'km_' + selected_waves + '_' angle + 'deg/'
+         + couronne + 'km_' + selected_waves + '_' + angle + 'deg/'
          + 'parameters')
 
 lst_pth = [path, path1, path2]
