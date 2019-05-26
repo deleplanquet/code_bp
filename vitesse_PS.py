@@ -1,4 +1,5 @@
-#
+# calculation of the delays between the hand picking arrival times and the
+# expected calculated arrival times for both P and S waves
 
 from obspy import read
 import pickle
@@ -29,8 +30,6 @@ with open('ref_seismes_bin', 'rb') as my_fch:
 
 # all the parameters are not used in this script, only the following ones
 event = param['event']
-frq_bnd = param['frq_band']
-cpnt = param['component']
 vP = param['vP']
 vS = param['vS']
 
@@ -52,27 +51,32 @@ t_origin_rupt = UTCDateTime(yea_seis,
                             mse_seis)
 
 # directories used in this script:
-# - path_data
-# - path_rslt
+# - path_data is the directory where all the records with picking values and
+#   hypocenter distance less than 100km are stored
+# - path_rslt is the directory where the dictionnary of the delays will be
+#   saved
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'vel_env/'
-             + frq_bnd + 'Hz_' + cpnt + '_smooth')
+             + 'acc/'
+             + 'inf100km_copy')
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'results/'
-             + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
-             + 'others')
+             + 'general')
 
 # pick the envelopes from the directory path_data
 list_sta = os.listdir(path_data)
 
+# initialisation of the delays dictionnaries
 delay_P = {}
 delay_S = {}
 
 os.chdir(path_data)
+print('Calculation of the delays between the picked values of P and S',
+        'arrival times and the expected calculated values between the',
+        'stations and the hypocenter of the following event: {}'.format(event))
 for i, s in enumerate(list_sta):
     # load the envelope
     st = read(s)
@@ -80,14 +84,18 @@ for i, s in enumerate(list_sta):
     dst = st[0].stats.sac.dist
     sta_name = st[0].stats.station
     starttime = st[0].stats.starttime
-    #
+    # delay for P and S arrival time defined by the difference between the time
+    # of the picking and the expected calculated arrival time depending only on
+    # the distance and the velocity of the considered wave
     delay_P[sta_name] = (starttime + st[0].stats.sac.a
                          - t_origin_rupt - dst/velP)
     delay_S[sta_name] = (starttime + st[0].stats.sac.t0
                          - t_origin_rupt - dst/velS)
 
+# creation of a dictionnary containing the two delay dictionnaries
 to_register = {'delay_P':delay_P, 'delay_S':delay_S}
 
+# save to bin file
 os.chdir(path_rslt)
 with open(dossier + '_picking_delays', 'wb') as mon_fich:
     mon_pick = pickle.Pickler(mon_fich)
