@@ -9,28 +9,6 @@ import os
 import math
 import matplotlib.pyplot as plt
 
-# few functions used in this script
-# a library may be done
-
-# conversion angle degree -> radian
-def d2r(angle):
-    return angle*math.pi/180
-
-# conversion geographic coordinates -> cartesian coordinates
-# outputs xx, yy and zz have same units than r and should be kilometer
-def geo2cart(vect):
-    r = vect[0]
-    rlat = d2r(vect[1])
-    rlon = d2r(vect[2])
-    xx = r*math.cos(rlat)*math.cos(rlon)
-    yy = r*math.cos(rlat)*math.sin(rlon)
-    zz = r*math.sin(rlat)
-    return [xx, yy, zz]
-
-# normalisation
-def norm1(vect):
-    return [5*a/vect.max() for a in vect]
-
 print('##############################',
     '\n###   python3 acc2vel.py   ###',
     '\n##############################')
