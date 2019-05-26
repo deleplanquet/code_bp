@@ -79,11 +79,10 @@ for s in lst_fch:
     st = read(s)
     # load the azimuth previously calculated through the run of
     # station_inf_100km.py
-    azm = st[0].stats.az
-    print('The azimuth between the station {}'.format(s[:6]),
-            'and the hypocenter {}, {}'.format(lat_hyp, lon_hyp),
-            'is equal to {:.2f} deg'.format(azm),
-            end = ' ')
+    azm = st[0].stats.sac.az
+    print('The azimuth of {}'.format(s[:6]),
+            'in relation to the hypocenter {}, {}'.format(lat_hyp, lon_hyp),
+            'is equal to {:.2f} deg'.format(azm))
     # if the azimuth belongs to the range of azimuth specified by the user, the
     # station is selected and saved in path_rslt directory
     if ((azm > azim_min and azm < azim_max)
@@ -92,14 +91,14 @@ for s in lst_fch:
         os.chdir(path_rslt)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(s[:6], format = 'SAC')
-        print('which belongs to',
+        print('   {:.2f} \u2208'.format(azm),
             '[{}, {}]\u222a[{}, {}]'.format(azim_min, azim_max,
                                             azim_min + 180, azim_max + 180),
-            '\n   --> station selected for back projection')
+            '--> station selected for back projection')
     # if the station does not fulfill the selection criteria, it will not be
     # considered for back projection study
     else:
-        print('which does NOT belong to',
+        print('   {:.2f} \u2209'.format(azm),
             '[{}, {}]\u222a[{}, {}]'.format(azim_min, azim_max,
                                             azim_min + 180, azim_max + 180),
-            '\n   --> station NOT selected for back projection')
+            '--> station NOT selected for back projection')
