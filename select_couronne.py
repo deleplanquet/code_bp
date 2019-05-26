@@ -32,10 +32,10 @@ dist_max = param['hypo_max']
 
 # directories used in this script:
 # - path_data is the directory where all the records with hypocenter distance
-# less than 100km are stored
+#   less than 100km are stored
 # - path_results is the directory where a copy of the records with hypocenter
-# distance between hypo_min and hypo_max will be done (the values hypo_min and
-# hypo_max are given by the user through parametres.py)
+#   distance between hypo_min and hypo_max will be done (the values hypo_min
+#   and hypo_max are given by the user through parametres.py)
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
