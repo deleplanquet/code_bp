@@ -128,8 +128,8 @@ for s in list_stat:
                st[0].stats.sac.stlo]
     dst = dist(hypo, pos_sta)
     print('The station {}'.format(s[:6]),
-    'has a calculated hypo distance equal to {:.1f}'.format(dst),
-    'and a stored hypo distance equal to {:.1f}'.format(st[0].stats.sac.dist),
+    'with hypocenter distance equal to {:.1f}'.format(dst),
+    '({:.1f})'.format(st[0].stats.sac.dist),
     end = ' ')
     if dst < 100:
         os.chdir(path_results)
