@@ -86,6 +86,16 @@ of ``parametres.py`` but not asked to the user:
 |                       | string                                            |
 +-----------------------+---------------------------------------------------+
 
+::
+
+    Kumamoto                            *OUTPUT* named as current_parameters.txt
+    ├── parameters_history              *OUTPUT* named as parametres_creationtime.txt
+    └── event
+        └── results
+            └── general
+                └── hypo_interv_selected_waves_angle
+                    └── parameters      *OUTPUT* named as parametres_creationtime.txt
+
 Tree view
 =========
 
