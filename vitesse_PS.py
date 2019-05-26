@@ -10,46 +10,6 @@ import numpy as np
 from scipy.optimize import curve_fit
 from obspy.core import UTCDateTime
 
-#fit par une droite lineaire
-def fit_lineaire(x_data, a, b):
-    y_data = np.zeros(len(x_data))
-    for i in range(len(x_data)):
-        y_data[i] = a * x_data[i] + b
-    return y_data
-
-def fit_lineaire_S(x_data, b):
-    y_data = np.zeros(len(x_data))
-    for i in range(len(x_data)):
-        y_data[i] = 3.4 * x_data[i] + b
-    return y_data
-
-def fit_lineaire_P(x_data, b):
-    y_data = np.zeros(len(x_data))
-    for i in range(len(x_data)):
-        y_data[i] = 5.8 * x_data[i] + b
-    return y_data
-
-# conversion angle degree -> radian
-def d2r(angle):
-    return angle*math.pi/180
-
-# conversion geographic coordinates - > cartesian coordinates
-def geo2cart(vect):
-    r = vect[0]
-    rlat = d2r(vect[1])
-    rlon = d2r(vect[2])
-    xx = r*math.cos(rlat)*math.cos(rlon)
-    yy = r*math.cos(rlat)*math.sin(rlon)
-    zz = r*math.sin(rlat)
-    return [xx, yy, zz]
-
-# normalisation with max = 1
-def norm1(vect):
-    norm_v = 0
-    for a in vect:
-        norm_v = norm_v + a*a
-    return [50*a/pow(norm_v, 0.5) for a in vect]
-
 print('#################################',
     '\n###   python3 vitesse_PS.py   ###',
     '\n#################################')
@@ -109,10 +69,6 @@ path_rslt = (root_folder + '/'
 # pick the envelopes from the directory path_data
 list_sta = os.listdir(path_data)
 
-#fig, ax = plt.subplots(1, 1)
-#ax.set_xlabel('Source time (s)')
-#ax.set_ylabel('Hypocenter distance (km)')
-
 delay_P = {}
 delay_S = {}
 
@@ -130,55 +86,9 @@ for i, s in enumerate(list_sta):
     delay_S[sta_name] = (starttime + st[0].stats.sac.t0
                          - t_origin_rupt - dst/velS)
 
-#    if vct_dst[int(dst//2)] == 0:
-#        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-#        t = [a + delai_rec for a in t]
-#        #ax.plot(t, norm1(st[0].data) + st[0].stats.sac.dist, linewidth = 0.5, color = 'black')
-#        ax.fill_between(t,
-#                        st[0].stats.sac.dist,
-#                        norm1(st[0].data) + st[0].stats.sac.dist,
-#                        linewidth = 0.3,
-#                        color = 'black',
-#                        alpha = 0.2)
-#        ax.text(50 + t[0],
-#                st[0].stats.sac.dist,
-#                st[0].stats.station,
-#                fontsize = 3)
-#        ax.vlines(st[0].stats.sac.a + delai_rec,
-#                  st[0].stats.sac.dist - 1,
-#                  st[0].stats.sac.dist + 1,
-#                  linewidth = 1,
-#                  color = 'steelblue')
-#        ax.vlines(st[0].stats.sac.t0 + delai_rec,
-#                  st[0].stats.sac.dist - 1,
-#                  st[0].stats.sac.dist + 1,
-#                  linewidth = 1,
-#                  color = 'darkorange')
-#        if (st[0].stats.sac.t0 + delai_rec) > 30:
-#            print(st[0].stats.station,
-#                  st[0].stats.sac.dist,
-#                  st[0].stats.sac.t0 + delai_rec)
-#        vct_dst[int(dst//2)] = 1
-
 to_register = {'delay_P':delay_P, 'delay_S':delay_S}
 
 os.chdir(path_rslt)
 with open(dossier + '_picking_delays', 'wb') as mon_fich:
     mon_pick = pickle.Pickler(mon_fich)
     mon_pick.dump(to_register)
-
-##ax.text(10, 115, str(t_origin_rupt), color = 'black')
-#ax.plot([0, 100./velP], [0, 100], linewidth = 2, color = 'steelblue')
-#ax.plot([0, 100./velS], [0, 100], linewidth = 2, color = 'darkorange')
-#ax.set_xlim([0, 40])
-#ax.set_ylim([0, 110])
-##ax.xaxis.set_visible(False)
-##ax.yaxis.set_visible(False)
-#fig.savefig('env_fct_dist_'
-#            + dossier
-#            + '_env_'
-#            + couronne + 'km_'
-#            + frq + 'Hz_'
-#            + dt_type
-#            + '_env_smooth'
-#            + '.pdf')
