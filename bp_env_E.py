@@ -23,10 +23,6 @@ from obspy.core import UTCDateTime
 def d2r(angle):
     return angle*math.pi/180
 
-# conversion angle radian -> degree
-def r2d(angle):
-    return angle*180/math.pi
-
 # conversion geographical coordinated -> cartesian coordinates
 # vect := (R, lat, lon)
 def geo2cart(vect):
@@ -99,47 +95,9 @@ def trav_time(station, fault, velocity):
                                     + pow(z_sta - fault[a, b, 2], 2))/velocity
     return mat_time
 
-#distance entre deux points, coordonnees cartesiennes
-def dist(la1, lo1, el1, la2, lo2, el2):
-    x1, y1, z1 = geo2cart(R_Earth + el1, la1, lo1)
-    x2, y2, z2 = geo2cart(R_Earth + el2, la2, lo2)
-    return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
-
 #normalisation avec max = 1
 def norm1(vect):
     return [a/vect.max() for a in vect]
-
-#fonction gaussienne
-def gauss(x_data, H, mu):
-    sigma = H/2.3548
-    y_data = np.zeros(len(x_data))
-    for i in range(len(x_data)):
-        y_data[i] = (1./(sigma*math.sqrt(2))
-                *math.exp(-(x_data[i] - mu)*(x_data[i] - mu)/(2*sigma*sigma)))
-    return y_data
-
-#calcul distance et azimuth d'un point par rapport a un autre
-''' distance et azimuth de B par rapport a A -> dist_azim(A, B) '''
-def dist_azim(ptA, ptB):
-    latA = d2r(ptA[0])
-    lonA = d2r(ptA[1])
-    latB = d2r(ptB[0])
-    lonB = d2r(ptB[1])
-    dist_rad = math.acos(math.sin(latA)*math.sin(latB)
-                        + math.cos(latA)*math.cos(latB)*math.cos(lonB - lonA))
-    angle_brut = math.acos((math.sin(latB) - math.sin(latA)*math.cos(dist_rad))
-                            /(math.cos(latA)*math.sin(dist_rad)))
-    if math.sin(lonB - lonA) > 0:
-        return R_Earth*dist_rad, r2d(angle_brut)
-    else:
-        return R_Earth*dist_rad, 360 - r2d(angle_brut)
-
-#nombre de lignes d'un fichier
-def file_length(fname):
-    with open(fname) as f:
-        for i, l in enumerate(f):
-            pass
-    return i + 1
 
 print('###############################',
     '\n###   python3 bp_env_E.py   ###',
@@ -466,9 +424,7 @@ sigma = 1./samp_rate
 for sta in lst_fch:
     os.chdir(path_bpinvtr)
     st = read(sta[:6])
-    dst, azm = dist_azim([st[0].stats.sac.stla,
-                          st[0].stats.sac.stlo],
-                          [lat_hyp, lon_hyp])
+    azm = st[0].stats.sac.az
     trg = [math.exp(-(pow(a - 25, 2))/(2*pow(sigma, 2))) for a in vect]
     tr = np.convolve(st[0].data, trg, mode = "same")
     tr = Trace(np.asarray(tr), st[0].stats)
