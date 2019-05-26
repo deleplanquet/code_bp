@@ -135,9 +135,7 @@ for s in list_stat:
         os.chdir(path_results)
         print('  --->  selected')
         st[0].stats.sac.dist = dst
-        print('previous azimuth = {}'.format(st[0].stats.sac.az), end = ' ')
         st[0].stats.sac.az = azim(hypo, pos_sta)
-        print('current azimuth = {}'.format(st[0].stats.sac.az))
         tr = Trace(st[0].data, st[0].stats)
         tr.write(s, format='SAC')
     else:
