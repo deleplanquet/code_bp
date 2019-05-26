@@ -583,7 +583,7 @@ path2 = (root_folder + '/'
          + 'Kumamoto/'
          + param['event'] + '/'
          + 'results/'
-         + 'vel_env' + frq_bnd + 'Hz_' + cpnt + 'smooth/'
+         + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
          + couronne + 'km_' + selected_waves + '_' + angle + 'deg/'
          + 'parameters')
 
