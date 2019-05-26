@@ -374,7 +374,7 @@ for ista, s in enumerate(lst_sta):
 # time consuming) many times
 os.chdir(path_rslt)
 with open(event + '_vel_env_' + frq_bnd + 'Hz_'
-          + cpnt + '_smooth_' + hyp_bp,
+          + cpnt + '_smooth_' + hyp_bp + '_prestack',
           'wb') as my_fch:
     my_pck = pickle.Pickler(my_fch)
     my_pck.dump(stack)
