@@ -113,6 +113,5 @@ for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
                      + st[0].stats.channel[:2]
                      + '_vel.sac',
                      format = 'SAC')
-    print('Accelerograms of the three components',
-            'of the station {}'.format(stx[0].stats.station),
+    print('Accelerograms of the station {}'.format(stx[0].stats.station),
             'are now transformed into velocity waveforms')
