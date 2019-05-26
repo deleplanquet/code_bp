@@ -358,6 +358,22 @@ azimuth to the hypocenter of the studied event. Stations with azimuth between
             ├── frq_band_component_smooth_hypo_interv_selected_waves        *INPUT*
             └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *OUTPUT*
 
+Station corrections
+===================
+
+``vitesse_PS.py`` is calculating station corrections, that is the delay between
+the picked arrival time (for both P and S-waves) and the expected arrival time
+of geometrical calculation.
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel
+        │   └── brut    *INPUT*
+        └── results
+            └── general *OUTPUT*
+
 Back projection
 ===============
 
@@ -440,16 +456,3 @@ python3 carte_SoverP.py
 
 
 
-
-python3 vitesse_PS.py
-=====================
-
-.. code-block:: python3
-
-    python3 vitesse_PS.py
-
-| calcul les delais entre temps theoriques d'arrivee et les pointes pour les ondes P et S
-| les corrections aux stations (delais calcules) sont stockes dans un dictionnaire
-
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth*
-| to */Kumamoto/dossier*
