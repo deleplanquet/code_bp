@@ -119,6 +119,7 @@ Tree view
             ├── general
             └── vel_env_frq_band_component_smooth
                 ├── hypo_interv_selected_waves_angle
+                │   ├── parameters
                 │   ├── pdf
                 │   └── png
                 └── others
