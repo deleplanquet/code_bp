@@ -27,12 +27,6 @@ def geo2cart(vect):
     zz = r*math.sin(rlat)
     return [xx, yy, zz]
 
-# distance between two points whose coordinates are cartesians
-def dist(vect1, vect2):
-    x1, y1, z1 = geo2cart(vect1)
-    x2, y2, z2 = geo2cart(vect2)
-    return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
-
 print('######################################',
     '\n###   python3 select_couronne.py   ###',
     '\n######################################')
@@ -82,17 +76,6 @@ if not os.path.isdir(path_results):
 else:
     print('{} is already existing'.format(path_results))
 
-# load location of the studied earthquake
-os.chdir(root_folder + '/Kumamoto')
-with open('ref_seismes_bin', 'rb') as my_fich:
-    my_depick = pickle.Unpickler(my_fich)
-    dict_seis = my_depick.load()
-
-lat_hyp = dict_seis[event]['lat']
-lon_hyp = dict_seis[event]['lon']
-dep_hyp = dict_seis[event]['dep']
-hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
-
 # pick all the records from the directory path_data
 list_stat = os.listdir(path_data)
 list_stat = [a for a in list_stat if 'sac' in a]
@@ -102,10 +85,7 @@ print('Check if the hypocenter distance is between {}'.format(dist_min),
 for s in list_stat:
     os.chdir(path_data)
     st = read(s)
-    pos_sta = [R_Earth + 0.001*st[0].stats.sac.stel,
-               st[0].stats.sac.stla,
-               st[0].stats.sac.stlo]
-    dst = dist(hypo, pos_sta)
+    dst = st[0].stats.sac.dist
     print('The station {}'.format(s[:6]),
           'with hypocenter distance equal to {:.1f} km'.format(dst),
           end = ' ')
