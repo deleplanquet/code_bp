@@ -27,9 +27,9 @@ event = param['event']
 
 # directories used in this script
 # - path_data is the directory with all the records that passed previous
-# conditions
+#   conditions
 # - path_results is the directory where the velocity associated to each record
-# will be stored in SAC format
+#   will be stored in SAC format
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
