@@ -193,11 +193,14 @@ for d in [path_rslt]:#,
     else:
         print('{} is already existing'.format(d))
 
+# load picking delay dictionnary
 os.chdir(path_pick)
 with open(event + '_picking_delays', 'rb') as mon_fich:
     mon_depick = pickle.Unpickler(mon_fich)
     dict_vel = mon_depick.load()
 
+# pick the correct sub dictionnary depending on the choice of the user through
+# the run of parametres.py
 if hyp_bp == 'P':
     vel_used = param['vP']
     dict_vel_used = dict_vel['delay_P']
