@@ -10,35 +10,6 @@ from obspy import Trace
 import math
 import pickle
 
-# few functions used in this script
-# a library may be done
-
-# conversion angle degree -> radian
-def d2r(angle):
-    return angle*math.pi/180
-
-# conversion angle radian -> degree
-def r2d(angle):
-    return angle*180/math.pi
-
-# distance and azimuth between two points
-# the reference point is the first given and the azimuth of the second point is
-# calculated with respect to the first one
-def dist_azim(ptA, ptB, R):
-    latA = d2r(ptA[0])
-    lonA = d2r(ptA[1])
-    latB = d2r(ptB[0])
-    lonB = d2r(ptB[1])
-    dist_rad = math.acos(math.sin(latA)*math.sin(latB)
-                         + math.cos(latA)*math.cos(latB)*math.cos(lonB - lonA))
-    angle_brut = math.acos((math.sin(latB)
-                            - math.sin(latA)*math.cos(dist_rad))
-                           /(math.cos(latA)*math.sin(dist_rad)))
-    if math.sin(lonB - lonA) > 0:
-        return R*dist_rad, r2d(angle_brut)
-    else:
-        return R*dist_rad, 360 - r2d(angle_brut)
-
 print('########################################',
     '\n###   python3 select_stat_angle.py   ###',
     '\n########################################')
@@ -106,19 +77,17 @@ for s in lst_fch:
     os.chdir(path_data)
     # load the envelope
     st = read(s)
-    # calculate the distance and the azimuth between the station and the
-    # hypocenter
-    d_hp_st, az_hp_st = dist_azim([lat_hyp, lon_hyp],
-                                  [st[0].stats.sac.stla, st[0].stats.sac.stlo],
-                                  R_Earth)
+    # load the azimuth previously calculated through the run of
+    # station_inf_100km.py
+    azm = st[0].stats.az
     print('The azimuth between the station {}'.format(s[:6]),
             'and the hypocenter {}, {}'.format(lat_hyp, lon_hyp),
-            'is equal to {:.2f} deg'.format(az_hp_st),
+            'is equal to {:.2f} deg'.format(azm),
             end = ' ')
-    # if the calculated azimuth belongs to the range of azimuth specified by
-    # the user, the station is selected and saved in path_rslt directory
-    if ((az_hp_st > azim_min and az_hp_st < azim_max)
-        or (az_hp_st > (azim_min + 180) and az_hp_st < (azim_max + 180))):
+    # if the azimuth belongs to the range of azimuth specified by the user, the
+    # station is selected and saved in path_rslt directory
+    if ((azm > azim_min and azm < azim_max)
+        or (azm > (azim_min + 180) and azm < (azim_max + 180))):
         #print('           ', 'ok')
         os.chdir(path_rslt)
         tr = Trace(st[0].data, st[0].stats)
