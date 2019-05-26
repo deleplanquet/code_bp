@@ -81,7 +81,8 @@ else:
 # pick the envelopes from the directory path_data
 lst_fch = os.listdir(path_data)
 
-print('Checking ratio of energy S/P')
+print('Checking the ratio between the energy of S-waves and the energy of',
+        'P-waves')
 for s in lst_fch:
     os.chdir(path_data)
     # load the envelope twice to prevent confusion
@@ -98,8 +99,7 @@ for s in lst_fch:
     trS = stS[0]
     # ratio between max value of S energy and max value of P energy
     rapport_SP = trS.max()/trP.max()
-    print('The ratio between the energy of S-waves and the energy of P-waves',
-            'of the station {}'.format(s[:6]),
+    print('The ratio S/P of the station {}'.format(s[:6]),
             'is equal to {:.1f}'.format(rapport_SP),
             end = ' ')
     # for stations with 'high' S energy
