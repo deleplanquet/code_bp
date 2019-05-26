@@ -390,15 +390,27 @@ Back projection
 Building back projection cube
 -----------------------------
 
-.. code-block:: python3
+By running ``bp_env_E.py``, a 4D cube will be created and stored in a
+dictionnary. The 4 dimensions are the followings:
 
-    python3 bp_env_E.py
+* 2 dimensions in space to explore the grid
+* 1 dimension in time representing the duration of application of the back
+  projection process (longer than duration of the event to not miss anything)
+* 1 dimension for the stations, that is content of stations is back projected
+  but not stacked yet. The stack can be quickly done later among all the
+  stations or just part of them without running the ``bp_env_E.py`` code again
+  (which is the most time consuming code).
 
-| back projection des stations selectionnees
-| enregistre le stack dans un fichier
+::
 
-| from */Kumamoto/dossier/dossier_vel_couronne_bandfreq/dossier_vel_couronne_bandfreq_composante_env_smooth_ondeselect_angle*
-| to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
+    Kumamoto
+    └── event
+        ├── vel_env
+        │   └── frq_band_component_smooth       *INPUT*
+        └── results
+            ├── general                         *INPUT*
+            └── vel_env_frq_band_component_smooth
+                └── others                      *OUTPUT*
 
 Plotting back projection images
 -------------------------------
