@@ -58,13 +58,24 @@ t_origin_rupt = UTCDateTime(yea_seis,
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
-             + 'acc/'
-             + 'inf100km_copy')
+             + 'vel/'
+             + 'brut')
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'results/'
              + 'general')
+
+# create the directory path_rslt in case it does not exist
+if not os.path.isdir(path_rslt):
+    try:
+        os.makedirs(path_rslt)
+    except OSError:
+        print('Creation of the directory {} failed'.format(path_rslt))
+    else:
+        print('Successfully created the directory {}'.format(path_rslt))
+else:
+    print('{} is already existing'.format(path_rslt))
 
 # pick the envelopes from the directory path_data
 list_sta = os.listdir(path_data)
@@ -88,15 +99,15 @@ for i, s in enumerate(list_sta):
     # of the picking and the expected calculated arrival time depending only on
     # the distance and the velocity of the considered wave
     delay_P[sta_name] = (starttime + st[0].stats.sac.a
-                         - t_origin_rupt - dst/velP)
+                         - t_origin_rupt - dst/vP)
     delay_S[sta_name] = (starttime + st[0].stats.sac.t0
-                         - t_origin_rupt - dst/velS)
+                         - t_origin_rupt - dst/vS)
 
 # creation of a dictionnary containing the two delay dictionnaries
 to_register = {'delay_P':delay_P, 'delay_S':delay_S}
 
 # save to bin file
 os.chdir(path_rslt)
-with open(dossier + '_picking_delays', 'wb') as mon_fich:
+with open(event + '_picking_delays', 'wb') as mon_fich:
     mon_pick = pickle.Pickler(mon_fich)
     mon_pick.dump(to_register)
