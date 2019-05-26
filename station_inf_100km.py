@@ -15,6 +15,10 @@ from obspy import Trace
 def d2r(angle):
     return angle*math.pi/180
 
+# conversion angle radian -> degree
+def r2d(angle):
+    return angle*180/math.pi
+
 # conversion geographic coordinates -> cartesian coordinates
 # outputs xx, yy and zz have same units than r and should be kilometer
 def geo2cart(vect):
@@ -31,6 +35,21 @@ def dist(vect1, vect2):
     x1, y1, z1 = geo2cart(vect1)
     x2, y2, z2 = geo2cart(vect2)
     return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2), 0.5)
+
+# azimuth between two points
+# the reference point is the first given and the azimuth of the second point is
+# calculated with respect to the first one
+def azim(ptA, ptB):
+    latA, lonA = (d2r(ptA[1]), d2r(ptA[2]))
+    latB, lonB = (d2r(ptB[1]), d2r(ptB[2]))
+    dst_rad = math.acos(math.sin(latA)*math.sin(latB)
+                        + math.cos(latA)*math.cos(latB)*math.cos(lonB - lonA))
+    azm_rad = math.acos((math.sin(latB) - math.sin(latA)*math.cos(dst_rad))
+                        /(math.cos(latA)*math.sin(dst_rad)))
+    if math.sin(lonB - lonA) > 0:
+        return r2d(azm_rad)
+    else:
+        return 360 - r2d(azm_rad)
 
 print('#####################################',
     '\n###   python3 station_inf_100km   ###',
@@ -116,6 +135,9 @@ for s in list_stat:
         os.chdir(path_results)
         print('  --->  selected')
         st[0].stats.sac.dist = dst
+        print('previous azimuth = {}'.format(st[0].stats.sac.az), end = ' ')
+        st[0].stats.sac.az = azim(hypo, pos_sta)
+        print('current azimuth = {}'.format(st[0].stats.sac.az))
         tr = Trace(st[0].data, st[0].stats)
         tr.write(s, format='SAC')
     else:
