@@ -132,7 +132,8 @@ Tree view
                 ├── hypo_interv_selected_waves_angle
                 │   ├── parameters
                 │   ├── pdf
-                │   └── png
+                │   ├── png
+                │   └── others
                 └── others
 
 Data
