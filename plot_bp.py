@@ -1,3 +1,5 @@
+#
+
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -11,11 +13,11 @@ from matplotlib.colors import LinearSegmentedColormap
 
 np.set_printoptions(threshold=np.nan)
 
-#conversion angle degre -> radian
+# conversion angle degre -> radian
 def d2r(angle):
     return angle*math.pi/180
 
-#conversion coordonnees geographisques -> cartesien
+# conversion coordonnees geographisques -> cartesien
 def geo2cart(r, lat, lon):
     rlat = d2r(lat)
     rlon = d2r(lon)
@@ -61,129 +63,124 @@ def rotation(u, theta, OM):
     vect_rot = dot(mat, vect)
     return (vect_rot[0][0], vect_rot[1][0], vect_rot[2][0])
 
+print('##############################',
+    '\n###   python3 plot_bp.py   ###',
+    '\n##############################')
 
-path_origin = os.getcwd()[:-6]                  #
-os.chdir(path_origin + '/Kumamoto')             #
-with open('parametres_bin', 'rb') as my_fch:    #
-    my_dpck = pickle.Unpickler(my_fch)          #
-    param = my_dpck.load()                      #   load parametres
+# open the file of the parameters given by the user through parametres.py and
+# load them
+root_folder = os.getcwd()[:-6]
+os.chdir(root_folder + '/Kumamoto')
+with open('parametres_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    param = my_dpck.load()
 
-dossier = param['dossier']          #
-dt_type = param['composante']       #
-frq = param['band_freq']            #
-couronne = param['couronne']        #
-length_time = param['length_t']     #
-samp_rate = param['samp_rate']      #
-hyp_bp = param['ondes_select']      #
-azim = param['angle']               #
-R_Earth = param['R_Earth']          #
-degree = '\u00b0'                   #   parametres stockes
-l_fault = param['l_fault']
-w_fault = param['w_fault']
+# all the parameters are not used in this script, only the following ones
+event = param['event']
+cpnt = param['component']
+frq_bnd = param['frq_band']
+couronne = param['hypo_interv']
+bp_len_t = param['bp_length_time']
+bp_samp_rate = param['bp_samp_rate']
+hyp_bp = param['selected_waves']
+azim = param['angle']
+R_Earth = param['R_Earth']
+degree = '\u00b0'
+l_grid = param['l_grid']
+w_grid = param['w_grid']
 strike = param['strike']
-pas_l = param['pas_l']
-pas_w = param['pas_w']
-print(pas_l, pas_w)
+l_grid_step = param['l_grid_step']
+w_grid_step = param['w_grid_step']
 
-path = (path_origin                      #
-        + '/Kumamoto/'                   #
-        + dossier)                       #
-                                         #
-path_data = (path + '/'                  #
-             + dossier                   #
-             + '_results/'               #
-             + dossier                   #
-             + '_vel_'                   #
-             + couronne + 'km_'          #
-             + frq + 'Hz')               #
-                                         #
-path_rslt_pdf = (path_data               #
-                 + '/pdf_'               #
-                 + dossier               #
-                 + '_vel_'               #
-                 + couronne + 'km_'      #
-                 + frq + 'Hz_'           #
-                 + dt_type               #
-                 + '_env_smooth_'        #
-                 + hyp_bp + '_'          #
-                 + azim + 'deg')         #
-                                         #
-path_rslt_png = (path_data               #
-                 + '/png_'               #
-                 + dossier               #
-                 + '_vel_'               #
-                 + couronne + 'km_'      #
-                 + frq + 'Hz_'           #
-                 + dt_type               #
-                 + '_env_smooth_'        #
-                 + hyp_bp + '_'          #
-                 + azim + 'deg')         #   dossiers de travail
+# directories used in this script
+#
+#
+pa
+path_common = (root_folder + '/'
+               + 'Kumamoto/'
+               + event + '/'
+               + 'results/'
+               + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
+               + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
+path_data = (path_common + '/'
+             + 'others')
+path_pdf = (path_common + '/'
+            + 'pdf')
+path_png = (path_common + '/'
+            + 'png')
 
-if os.path.isdir(path_rslt_pdf) == False:   #
-    os.makedirs(path_rslt_pdf)              #
-if os.path.isdir(path_rslt_png) == False:   #
-    os.makedirs(path_rslt_png)              #   si un des dossiers n'existe pas, le cree
+# in case they do not exist, the following directories are created:
+# - path_pdf
+# - path_png
+for d in [path_pdf, path_png]:
+    if not os.path.isdir(d):
+        try:
+            os.makedirs(d)
+        except OSError:
+            print('Creation of the directory {} failed'.format(d))
+        else:
+            print('Successfully created the directory {}'.format(d))
+    else:
+        print('{} is already existing'.format(d))
 
-os.chdir(path_origin + '/Kumamoto')                 #
-with open('ref_seismes_bin', 'rb') as my_fch:       #
-    my_dpck = pickle.Unpickler(my_fch)              #
-    dict_seis = my_dpck.load()                      #   load caracteristiques seismes
+# load location of the studied earthquake
+os.chdir(root_folder + '/Kumamoto')
+with open('ref_seismes_bin', 'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    dict_seis = my_dpck.load()
 
-length_t = int(length_time*samp_rate)
+length_t = int(bp_len_t*bp_samp_rate)
 
-os.chdir(path_data)                                     #
-stack = None                                            #
-with open(dossier                                       #
-          + '_vel_'                                     #
-          + couronne + 'km_'                            #
-          + frq + 'Hz_'                                 #
-          + dt_type                                     #
-          + '_env_smooth_'                              #
-          + hyp_bp + '_'                                #
-          + azim + 'deg_stack3D', 'rb') as my_fch:      #
-    my_dpck = pickle.Unpickler(my_fch)                  #
-    stack = my_dpck.load()                              #   load stack
+# load the back projection stack to plot
+os.chdir(path_data)
+stack = None
+with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+          + hyp_bp + '_' + couronne + 'km_' + azim + 'deg_stack',
+          'rb') as my_fch:
+    my_dpck = pickle.Unpickler(my_fch)
+    stack = my_dpck.load()
 
-thresh_1 = 95
-thresh_2 = 90
-thresh_3 = 85
-thresh_4 = 80
-nbr_trsh = 4
+#thresh_1 = 95
+#thresh_2 = 90
+#thresh_3 = 85
+#thresh_4 = 80
+#nbr_trsh = 4
 
-dict_ok_1 = {}
-dict_ok_2 = {}
-dict_ok_3 = {}
-dict_ok_4 = {}
+#dict_ok_1 = {}
+#dict_ok_2 = {}
+#dict_ok_3 = {}
+#dict_ok_4 = {}
 
-lst_trsh = [thresh_1, thresh_2, thresh_3, thresh_4]
-lst_cpt = [0, 0, 0, 0]
-lst_dct_ok = [dict_ok_1, dict_ok_2, dict_ok_3, dict_ok_4]
-lst_lst_ok = [[], [], [], []]
+#lst_trsh = [thresh_1, thresh_2, thresh_3, thresh_4]
+#lst_cpt = [0, 0, 0, 0]
+#lst_dct_ok = [dict_ok_1, dict_ok_2, dict_ok_3, dict_ok_4]
+#lst_lst_ok = [[], [], [], []]
 
-dict_contour_1 = {}
-dict_contour_2 = {}
-dict_contour_3 = {}
-dict_contour_4 = {}
+#dict_contour_1 = {}
+#dict_contour_2 = {}
+#dict_contour_3 = {}
+#dict_contour_4 = {}
 
 lst_cntr = [dict_contour_1, dict_contour_2, dict_contour_3, dict_contour_4]
 lst_clr = ['red', 'orange', 'yellow', 'blue']
 
 stckmx = stack[:, :, :].max()
 
-for i in range(len(stack[:, 0, 0])):                                                #
-    for j in range(len(stack[0, :, 0])):                                            #
-        for k in range(nbr_trsh):                                                   #
-            if lst_cpt[k] != 0:                                                     #
-                lst_dct_ok[k][str(i*len(stack[0, :, 0]) + j)] = lst_lst_ok[k]       #
-            lst_cpt[k] = 0                                                          #
-            lst_lst_ok[k] = []                                                      #
-        for k in range(length_t):                                                   #
-            for l in range(nbr_trsh):                                               #
-                if stack[i, j, k] > 0.01*lst_trsh[l]*stckmx:          #
-                    for m in range(nbr_trsh):                                       #   stocke dans un dictionnaire
-                        if m >= l:                                                  #   avec pour cle la position a une dimension
-                            lst_cpt[m] = lst_cpt[m] + 1                             #   (i*len(j) + j)
-                            lst_lst_ok[m].append(k)                                 #   une liste contenant les temps verifiant le critere
+for i in range(len(stack[:, 0, 0])):
+    for j in range(len(stack[0, :, 0])):
+        for k in range(nbr_trsh):
+            if lst_cpt[k] != 0:
+                lst_dct_ok[k][str(i*len(stack[0, :, 0]) + j)] = lst_lst_ok[k]
+            lst_cpt[k] = 0
+            lst_lst_ok[k] = []
+        for k in range(length_t):
+            for l in range(nbr_trsh):
+                if stack[i, j, k] > 0.01*lst_trsh[l]*stckmx:
+                    for m in range(nbr_trsh):   #   stocke dans un dictionnaire
+                        if m >= l:      #   avec pour cle la position a une dimension
+                            lst_cpt[m] = lst_cpt[m] + 1     #   (i*len(j) + j)
+                            lst_lst_ok[m].append(k)
+                            #   une liste contenant les temps verifiant le critere
 
 os.chdir(path)
 for i in range(nbr_trsh):
@@ -219,7 +216,12 @@ dkr = 30
 strkr = 13.5
 dipkr = 15
 
-#cmap = mpl.colors.ListedColormap(['white'], ['blue'], ['green'], ['yellow'], ['orange'], ['red'])
+#cmap = mpl.colors.ListedColormap(['white'],
+#                                 ['blue'],
+#                                 ['green'],
+#                                 ['yellow'],
+#                                 ['orange'],
+#                                 ['red'])
 #bounds = [0, 1, 50, 75, 90, 95, 100]
 #nnmm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
@@ -324,25 +326,3 @@ for i in range(length_t):
                 + '_env_'
                 + hyp_bp + '_'
                 + azim + 'deg_stack3D_' + str(int(i*1000/samp_rate)) + '.png')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
