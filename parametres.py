@@ -565,26 +565,27 @@ while (not isinstance(param['bp_length_time'], float)
 # txt format file is for user in case he wants to check the choosen parameters
 # later
 
-hyp_int = param['hypo_interv']
+root_folder = param['root_folder']
+couronne = param['hypo_interv']
 frq_bnd = param['frq_band']
 cpnt = param['component']
-waves = param['selected_waves']
-azim = param['angle']
+selected_waves = param['selected_waves']
+angle = param['angle']
 
-path = (param['root_folder'] + '/'
+path = (root_folder + '/'
         + 'Kumamoto')
 
-path1 = (param['root_folder'] + '/'
-        + 'Kumamoto/'
-        + 'historique_parametres')
+path1 = (root_folder + '/'
+         + 'Kumamoto/'
+         + 'parameters_history')
 
-path2 = (param['root_folder'] + '/'
+path2 = (root_folder + '/'
          + 'Kumamoto/'
          + param['event'] + '/'
          + 'results/'
-         + 'vel_' + hyp_int + 'km_' + frq_bnd + 'Hz_' + cpnt + '_env_smooth_'
-                + waves + '/'
-         + azim + 'deg')
+         + 'vel_env' + frq_bnd + 'Hz_' + cpnt + 'smooth/'
+         + couronne + 'km_' + selected_waves + '_' angle + 'deg/'
+         + 'parameters')
 
 lst_pth = [path, path1, path2]
 
