@@ -26,6 +26,7 @@ def d2r(angle):
 # conversion geographical coordinated -> cartesian coordinates
 # vect := (R, lat, lon)
 def geo2cart(vect):
+    r = vect[0]
     rlat = d2r(vect[1])
     rlon = d2r(vect[2])
     xx = r*math.cos(rlat)*math.cos(rlon)
@@ -67,26 +68,29 @@ def rotation(u, theta, OM):
 
 # travel time matrix between one station and each subfault
 def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
-    x_cf, y_cf, z_cf = geo2cart(cen_fault[0], cen_fault[1], cen_fault[2])
+    x_cf, y_cf, z_cf = geo2cart(cen_fault)
     x_fault = np.arange(-length/2/pasx, length/2/pasx)
     #y_fault = np.arange(0, width/pasy)
     y_fault = np.arange(-width/2/pasy, width/2/pasy)
     grill_fault = np.zeros((len(x_fault), len(y_fault), 3))
     for a in x_fault:
         for b in y_fault:
-            grill_fault[np.where(x_fault==a), np.where(y_fault==b), 0]
-                    = x_cf + a*pasx*u_strike[0] + b*pasy*u_dip[0]
-            grill_fault[np.where(x_fault==a), np.where(y_fault==b), 1]
-                    = y_cf + a*pasx*u_strike[1] + b*pasy*u_dip[1]
-            grill_fault[np.where(x_fault==a), np.where(y_fault==b), 2]
-                    = z_cf + a*pasx*u_strike[2] + b*pasy*u_dip[2]
+            grill_fault[np.where(x_fault==a),
+                        np.where(y_fault==b),
+                        0] = x_cf + a*pasx*u_strike[0] + b*pasy*u_dip[0]
+            grill_fault[np.where(x_fault==a),
+                        np.where(y_fault==b),
+                        1] = y_cf + a*pasx*u_strike[1] + b*pasy*u_dip[1]
+            grill_fault[np.where(x_fault==a),
+                        np.where(y_fault==b),
+                        2] = z_cf + a*pasx*u_strike[2] + b*pasy*u_dip[2]
     return grill_fault
 
 #calcul de la matrice des tps de trajet pour une station
 def trav_time(station, fault, velocity):
-    x_sta, y_sta, z_sta = geo2cart(R_Earth + station[0]/1000,
-                                   station[1],
-                                   station[2])
+    x_sta, y_sta, z_sta = geo2cart([R_Earth + station[0]/1000,
+                                    station[1],
+                                    station[2]])
     mat_time = np.zeros((len(fault[:, 0, 0]), len(fault[0, :, 0])))
     for a in range(len(fault[:, 0, 0])):
         for b in range(len(fault[0, :, 0])):
@@ -121,6 +125,7 @@ with open('parametres_bin', 'rb') as my_fch:
 event = param['event']
 cpnt = param['component']
 frq_bnd = param['frq_band']
+hyp_bp = param['selected_waves']
 R_Earth = param['R_Earth']
 strike = param['strike']
 dip = param['dip']
@@ -141,6 +146,11 @@ path_data = (root_folder + '/'
              + event + '/'
              + 'vel_env/'
              + frq_bnd + 'Hz_' + cpnt + '_smooth')
+path_pick = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + 'results/'
+             + 'general')
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
@@ -151,28 +161,28 @@ path_rslt = (root_folder + '/'
 # - path_bpinv_brut
 # - path_bpinv_trace
 # - path_bpinv_smooth
-path_bpinv = (root_folder + '/'
-              + 'Kumamoto/'
-              + event + '/'
-              + 'vel_env_bpinv/'
-              + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
-                    + '_smooth_' + hyp_bp + '_' + azim + 'deg')
-path_bpinv_brut = (path_bpinv + '/'
-                   + 'brut')
-path_bpinv_trace = (path_bpinv + '/'
-                    + 'trace')
-path_bpinv_smooth = (path_bpinv + '/'
-                     + 'trace_smooth')
+#path_bpinv = (root_folder + '/'
+#              + 'Kumamoto/'
+#              + event + '/'
+#              + 'vel_env_bpinv/'
+#              + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
+#                    + '_smooth_' + hyp_bp + '_' + azim + 'deg')
+#path_bpinv_brut = (path_bpinv + '/'
+#                   + 'brut')
+#path_bpinv_trace = (path_bpinv + '/'
+#                    + 'trace')
+#path_bpinv_smooth = (path_bpinv + '/'
+#                     + 'trace_smooth')
 
 # in case they do not exist, the following directories are created:
 # - path_rslt
 # - path_bpinv_brut
 # - path_bpinv_trace
 # - path_bpinv_smooth
-for d in [path_rslt,
-          path_bpinv_brut,
-          path_bpinv_trace,
-          path_bpinv_smooth]:
+for d in [path_rslt]:#,
+#          path_bpinv_brut,
+#          path_bpinv_trace,
+#          path_bpinv_smooth]:
     if not os.path.isdir(d):
         try:
             os.makedirs(d)
@@ -183,17 +193,17 @@ for d in [path_rslt,
     else:
         print('{} is already existing'.format(d))
 
-os.chdir(path_rslt)
-with open(dossier + '_veldata', 'rb') as mon_fich:
+os.chdir(path_pick)
+with open(event + '_picking_delays', 'rb') as mon_fich:
     mon_depick = pickle.Unpickler(mon_fich)
     dict_vel = mon_depick.load()
 
-#if hyp_bp == 'P':
-#    vel_used = param['vP']
-#    dict_vel_used = dict_vel[0]
-#elif hyp_bp == 'S':
-vel_used = param['vS']
-dict_vel_used = dict_vel[1]
+if hyp_bp == 'P':
+    vel_used = param['vP']
+    dict_vel_used = dict_vel['delay_P']
+elif hyp_bp == 'S':
+    vel_used = param['vS']
+    dict_vel_used = dict_vel['delay_S']
 
 # pick all the envelopes from the directory path_data and sort them
 lst_sta = os.listdir(path_data)
@@ -297,7 +307,7 @@ for s in lst_sta:
                                             coord_grid,
                                             vel_used))
 
-length_t = int(length_time*samp_rate)
+length_t = int(bp_len_t*bp_samp_rate)
 stack = {}
 
 print('Back projection method applied to the envelopes',
@@ -320,11 +330,9 @@ for ista, s in enumerate(lst_sta):
     npf = np.vectorize(f)
     # initialise 3D np.array which will contain back projection value for one
     # station
-    bp1sta = np.zeros((len(coord_grid[:, 0, 0]),
-                       len(coord_grid[0, :, 0]),
-                       length_t))
+    bp1sta = []
     print('Processing of the station {}'.format(sta_name),
-            '({}/{})'.format(ista, len(lst_sta)),
+            '({}/{})'.format(ista + 1, len(lst_sta)),
             end = ' ')
     # loop over the time
     for it in range(length_t):
@@ -347,10 +355,12 @@ for ista, s in enumerate(lst_sta):
                   - (tstart - t_origin_rupt)
                   + dict_vel_used[sta_name]
                   - 5
-                  + it/samp_rate)
+                  + it/bp_samp_rate)
+        tshift = np.where(tshift > 0, tshift, 0)
+        tshift = np.where(tshift < t[-1], tshift, t[-1])
         # make a bigger np.array containing every time step of the back
         # projection of one station
-        bp1sta = np.append(bp1sta, npf(tshift), axis = 0)
+        bp1sta.append(npf(tshift))
     # store inside a dictionnary the back projection values of every station
     # at every time step on every subgrid
     stack[sta_name] = bp1sta
@@ -363,13 +373,9 @@ for ista, s in enumerate(lst_sta):
 # different selection of stations without running the current code (the most
 # time consuming) many times
 os.chdir(path_rslt)
-with open(event + '_vel_'
-          + couronne + 'km_'
-          + frq_bnd + 'Hz_'
-          + cpnt
-          + '_smooth_'
-          + hyp_bp + '_'
-          + azim + 'deg_stack2D', 'wb') as my_fch:
+with open(event + '_vel_env_' + frq_bnd + 'Hz_'
+          + cpnt + '_smooth' + hyp_bp + '_',
+          'wb') as my_fch:
     my_pck = pickle.Pickler(my_fch)
     my_pck.dump(stack)
 
@@ -377,56 +383,56 @@ with open(event + '_vel_'
 # bp inverse
 ################################
 
-stckmx = stack[:, :, :].max()
-thresh = 85 *0.01
+#stckmx = stack[:, :, :].max()
+#thresh = 85 *0.01
 
-for sta in lst_fch:# pour chaque station
-    os.chdir(path_data)
-    st = read(sta)
-    ista = lst_fch.index(sta)
-    station = {}
-    for i in range(len(stack[:, 0, 0])):
-        for j in range(len(stack[0, :, 0])):
-            for k in range(len(stack[0, 0, :])):# pour chaque element du cube de bp
-                tshift = (travt[ista][i, j]
-                          - (st[0].stats.starttime - t_origin_rupt)
-                          + dict_vel_used[st[0].stats.station]
-                          - 5
-                          + k/samp_rate)
-                station[tshift] = stack[i, j, k]
-    os.chdir(path_bpinv)
-    with open(st[0].stats.station, 'wb') as mfch:
-        mpck = pickle.Pickler(mfch)
-        mpck.dump(station)
+#for sta in lst_fch:# pour chaque station
+#    os.chdir(path_data)
+#    st = read(sta)
+#    ista = lst_fch.index(sta)
+#    station = {}
+#    for i in range(len(stack[:, 0, 0])):
+#        for j in range(len(stack[0, :, 0])):
+#            for k in range(len(stack[0, 0, :])):# pour chaque element du cube de bp
+#                tshift = (travt[ista][i, j]
+#                          - (st[0].stats.starttime - t_origin_rupt)
+#                          + dict_vel_used[st[0].stats.station]
+#                          - 5
+#                          + k/samp_rate)
+#                station[tshift] = stack[i, j, k]
+#    os.chdir(path_bpinv)
+#    with open(st[0].stats.station, 'wb') as mfch:
+#        mpck = pickle.Pickler(mfch)
+#        mpck.dump(station)
 
-lst_bpinv = os.listdir(path_bpinv)
+#lst_bpinv = os.listdir(path_bpinv)
 
-for sta in lst_fch:
-    os.chdir(path_data)
-    st = read(sta)
-    os.chdir(path_bpinv)
-    bpinv = np.zeros(st[0].stats.npts)
-    with open(sta[:6], 'rb') as mfch:
-        mdpk = pickle.Unpickler(mfch)
-        station = mdpk.load()
-    for key in station.keys():
-        bpinv[int(key*100)] = bpinv[int(key*100)] + station[key]
-        #print(bpinv[int(key*100)])
-    os.chdir(path_bpinvtr)
-    tr = Trace(bpinv, st[0].stats)
-    tr.write(sta[:6], format = 'SAC')
+#for sta in lst_fch:
+#    os.chdir(path_data)
+#    st = read(sta)
+#    os.chdir(path_bpinv)
+#    bpinv = np.zeros(st[0].stats.npts)
+#    with open(sta[:6], 'rb') as mfch:
+#        mdpk = pickle.Unpickler(mfch)
+#        station = mdpk.load()
+#    for key in station.keys():
+#        bpinv[int(key*100)] = bpinv[int(key*100)] + station[key]
+#        #print(bpinv[int(key*100)])
+#    os.chdir(path_bpinvtr)
+#    tr = Trace(bpinv, st[0].stats)
+#    tr.write(sta[:6], format = 'SAC')
 
-vect = np.linspace(0,
-                   st[0].stats.npts/st[0].stats.sampling_rate,
-                   st[0].stats.npts)
-sigma = 1./samp_rate
+#vect = np.linspace(0,
+#                   st[0].stats.npts/st[0].stats.sampling_rate,
+#                   st[0].stats.npts)
+#sigma = 1./samp_rate
 
-for sta in lst_fch:
-    os.chdir(path_bpinvtr)
-    st = read(sta[:6])
-    azm = st[0].stats.sac.az
-    trg = [math.exp(-(pow(a - 25, 2))/(2*pow(sigma, 2))) for a in vect]
-    tr = np.convolve(st[0].data, trg, mode = "same")
-    tr = Trace(np.asarray(tr), st[0].stats)
-    os.chdir(path_bpinvsm)
-    tr.write(sta[:6], format = 'SAC')
+#for sta in lst_fch:
+#    os.chdir(path_bpinvtr)
+#    st = read(sta[:6])
+#    azm = st[0].stats.sac.az
+#    trg = [math.exp(-(pow(a - 25, 2))/(2*pow(sigma, 2))) for a in vect]
+#    tr = np.convolve(st[0].data, trg, mode = "same")
+#    tr = Trace(np.asarray(tr), st[0].stats)
+#    os.chdir(path_bpinvsm)
+#    tr.write(sta[:6], format = 'SAC')
