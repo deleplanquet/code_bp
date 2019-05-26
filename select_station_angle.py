@@ -90,7 +90,7 @@ for s in lst_fch:
         #print('           ', 'ok')
         os.chdir(path_rslt)
         tr = Trace(st[0].data, st[0].stats)
-        tr.write(s[:6], format = 'SAC')
+        tr.write(s, format = 'SAC')
         print('   {:.2f} \u2208'.format(azm),
             '[{}, {}]\u222a[{}, {}]'.format(azim_min, azim_max,
                                             azim_min + 180, azim_max + 180),
