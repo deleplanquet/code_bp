@@ -107,7 +107,7 @@ for s in lst_fch:
         st = read(s)
         os.chdir(path_rslt_S)
         tr = Trace(st[0].data, st[0].stats)
-        tr.write(s[:6], format = 'SAC')
+        tr.write(s, format = 'SAC')
         print('which is higher than {}'.format(rSP),
                 '\n   --> station selected for back projection of S-waves')
     # for stations wilh 'high' P energy
@@ -115,7 +115,7 @@ for s in lst_fch:
         st = read(s)
         os.chdir(path_rslt_P)
         tr = Trace(st[0].data, st[0].stats)
-        tr.write(s[:6], format = 'SAC')
+        tr.write(s, format = 'SAC')
         print('which is lower than {:.2f}'.format(1./rsP),
                 '\n   --> station selected for back projection of P-waves')
     # for remaining stations
