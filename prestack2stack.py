@@ -2,6 +2,7 @@
 
 import os
 import pickle
+import numpy as np
 
 print('#####################################',
     '\n###   python3 prestack2stack.py   ###',
@@ -22,6 +23,12 @@ cpnt = param['component']
 couronne = param['hypo_interv']
 hyp_bp = param['selected_waves']
 angle = param['angle']
+l_grid = param['l_grid']
+w_grid = param['w_grid']
+l_grid_step = param['l_grid_step']
+w_grid_step = param['w_grid_step']
+bp_len_t = param['bp_length_time']
+bp_samp_rate = param['bp_samp_rate']
 
 # directories used in this script
 #
@@ -65,3 +72,17 @@ with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt
     mdpk = pickle.Unpickler(mfch)
     prestack = mdpk.load()
 
+lst_sta = os.listdir(path_sta)
+stack = np.zeros((int(bp_len_t*bp_samp_rate),
+                  int(l_grid/l_grid_step),
+                  int(w_grid/w_grid_step)))
+
+for s in lst_sta:
+    stack = stack + prestack[s[:6]]
+
+os.chdir(path_rslt)
+with open(event + '_vel_env_' + frq_bnd + 'Hz_'
+          + cpnt + '_smooth_' + couronne + 'km_'
+          + hyp_bp + '_' + angle + 'deg_stack', 'wb') as mfch:
+    mpck = pickle.Pickler(mfch)
+    mpck.dump(stack)
