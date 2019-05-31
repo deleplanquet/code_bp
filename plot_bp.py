@@ -38,7 +38,8 @@ def norm(vect):
     Norm = math.sqrt(vect[0]*vect[0] + vect[1]*vect[1] + vect[2]*vect[2])
     return [vect[0]/Norm, vect[1]/Norm, vect[2]/Norm]
 
-#rotation 3d d'angle theta et d'axe passant par l'origine porte par le vecteur (a, b, c) de norme 1, repere orthonormal direct
+#rotation 3d d'angle theta et d'axe passant par l'origine porte par le vecteur
+# (a, b, c) de norme 1, repere orthonormal direct
 def rotation(u, theta, OM):
     """ attention OM unitaire """
     a = norm(OM)[0]
@@ -95,7 +96,6 @@ w_grid_step = param['w_grid_step']
 # directories used in this script
 #
 #
-pa
 path_common = (root_folder + '/'
                + 'Kumamoto/'
                + event + '/'
@@ -135,10 +135,91 @@ length_t = int(bp_len_t*bp_samp_rate)
 os.chdir(path_data)
 stack = None
 with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-          + hyp_bp + '_' + couronne + 'km_' + azim + 'deg_stack',
+          + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_stack',
           'rb') as my_fch:
     my_dpck = pickle.Unpickler(my_fch)
     stack = my_dpck.load()
+
+stckmx = stack[:, :, :].max()
+for t in length_t:
+    fig, ax = plt.subplots(1, 1)
+    ax.set_xlabel('Along strike (km)')
+    ax.set_ylabel('Down dip (km)')
+    im = ax.imshow(list(zip(*stack[t, :, :]))/stckmx,
+                   cmap = 'jet',
+                   vmin = 0,
+                   vmax = 1,
+                   interpolation = 'none',
+                   origin = 'lower',
+                   extent = (-l_grid/2,
+                             l_grid/2,
+                             -w_grid/2,
+                             w_grid/2))
+
+    cs = ax.contour(np.arange(-len(stack[:, 0, 0])/2*pas_l,
+                              len(stack[:, 0, 0])/2*pas_l,
+                              pas_l),
+                    np.arange(-len(stack[0, :, 0])/2*pas_w,
+                              len(stack[0, :, 0])/2*pas_w,
+                              pas_w),
+                    (list(zip(*stack[:, :, i]))/stckmx).reshape(int(len(stack[0, :, 0])),
+                                                                int(len(stack[:, 0, 0]))),
+                    [0.8, 0.9],
+                    origin = 'lower',
+                    linestyle = '-',
+                    extent = (-l_fault/2, l_fault/2, -w_fault/2, w_fault/2),
+                    colors = 'white')
+
+    ax.set_xlim(-l_fault/2, l_fault/2)
+    ax.set_ylim(-w_fault/2, w_fault/2)
+
+    ax.scatter(0, 0, 500, marker = '*', color = 'white', linewidth = 0.2)
+    ax.scatter(0,
+               0,
+               300,
+               marker = '*',
+               color = 'red',
+               linewidth = 0.2)
+
+    supertxt = ax.text(l_fault/2 - 2,
+            -w_fault/2 + 4,
+            str((i - 5*samp_rate)/samp_rate) + ' s',
+            fontsize = 15,
+            color = 'white', #'black',
+            ha = 'right')
+
+    supertxt.set_path_effects([path_effects.Stroke(linewidth = 1,
+                                                   foreground = 'black'),
+                               path_effects.Normal()])
+
+    ax.set_title('N' + str(strike) + str(degree) + 'E' + '$\longrightarrow$',
+                 loc = 'right')
+    plt.gca().invert_yaxis()
+
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes('right', size = '3%', pad = 0.1)
+    cb = fig.colorbar(im, cax = cax, ticks = v1)
+    cb.ax.plot([0, 1], [0.80, 0.80], 'white')
+    cb.ax.plot([0, 1], [0.90, 0.90], 'white')
+
+    os.chdir(path_rslt_pdf)
+    fig.savefig(dossier
+                + '_vel_'
+                + couronne + 'km_'
+                + frq + 'Hz_'
+                + dt_type
+                + '_env_'
+                + hyp_bp + '_'
+                + azim + 'deg_stack3D_' + str(int(i*1000/samp_rate)) + '.pdf')
+    os.chdir(path_rslt_png)
+    fig.savefig(dossier
+                + '_vel_'
+                + couronne + 'km_'
+                + frq + 'Hz_'
+                + dt_type
+                + '_env_'
+                + hyp_bp + '_'
+                + azim + 'deg_stack3D_' + str(int(i*1000/samp_rate)) + '.png')
 
 #thresh_1 = 95
 #thresh_2 = 90
