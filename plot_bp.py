@@ -11,59 +11,6 @@ import math
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-#np.set_printoptions(threshold=np.nan)
-
-# conversion angle degre -> radian
-def d2r(angle):
-    return angle*math.pi/180
-
-# conversion coordonnees geographisques -> cartesien
-def geo2cart(r, lat, lon):
-    rlat = d2r(lat)
-    rlon = d2r(lon)
-    xx = r*math.cos(rlat)*math.cos(rlon)
-    yy = r*math.cos(rlat)*math.sin(rlon)
-    zz = r*math.sin(rlat)
-    return [xx, yy, zz]
-
-#nombre de ligne d'un fichier
-def file_length(fname):
-    with open(fname) as f:
-        for i, l in enumerate(f):
-            pass
-    return i + 1
-
-#normalisation
-def norm(vect):
-    Norm = math.sqrt(vect[0]*vect[0] + vect[1]*vect[1] + vect[2]*vect[2])
-    return [vect[0]/Norm, vect[1]/Norm, vect[2]/Norm]
-
-#rotation 3d d'angle theta et d'axe passant par l'origine porte par le vecteur
-# (a, b, c) de norme 1, repere orthonormal direct
-def rotation(u, theta, OM):
-    """ attention OM unitaire """
-    a = norm(OM)[0]
-    b = norm(OM)[1]
-    c = norm(OM)[2]
-    radian = d2r(theta)
-    #coefficients de la matrice de rotation
-    mat = array([[a*a + (1 - a*a)*math.cos(radian),
-                  a*b*(1 - math.cos(radian)) - c*math.sin(radian),
-                  a*c*(1 - math.cos(radian)) + b*math.sin(radian)],
-                 [a*b*(1 - math.cos(radian)) + c*math.sin(radian),
-                  b*b + (1 - b*b)*math.cos(radian),
-                  b*c*(1 - math.cos(radian)) - a*math.sin(radian)],
-                 [a*c*(1 - math.cos(radian)) - b*math.sin(radian),
-                  b*c*(1 - math.cos(radian)) + a*math.sin(radian),
-                  c*c + (1 - c*c)*math.cos(radian)]])
-    #rearrangement du vecteur auquel on applique la rotation
-    vect = array([[u[0]],
-                    [u[1]],
-                    [u[2]]])
-    #rotation du vecteur u de theta autour de OM
-    vect_rot = dot(mat, vect)
-    return (vect_rot[0][0], vect_rot[1][0], vect_rot[2][0])
-
 print('##############################',
     '\n###   python3 plot_bp.py   ###',
     '\n##############################')
@@ -94,8 +41,13 @@ l_grid_step = param['l_grid_step']
 w_grid_step = param['w_grid_step']
 
 # directories used in this script
-#
-#
+# path_common is root directory of the following used directories (defined to
+# prevent repetitions):
+# - path_data is the directory of the stack previously built
+# - path_pdf is the directory with the pictures done from the stack and
+#   recorded in pdf format
+# - path_png is the directory with the pictures done from the stack and
+#   recorded in png format
 path_common = (root_folder + '/'
                + 'Kumamoto/'
                + event + '/'
@@ -141,6 +93,13 @@ with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
     stack = my_dpck.load()
 
 stckmx = stack[:, :, :].max()
+print('Creation of the back projection images of the event {}'.format(event),
+        'with the following parameters:',
+        '\n   -      frequency band : {} Hz'.format(frq_bnd),
+        '\n   -           component : {}'.format(cpnt),
+        '\n   - hypocenter interval : {} km'.format(couronne),
+        '\n   -      selected waves : {}'.format(hyp_bp),
+        '\n   -   azimuth selection : {} deg'.format(azim))
 for t in range(length_t):
     fig, ax = plt.subplots(1, 1)
     ax.set_xlabel('Along strike (km)')
