@@ -100,10 +100,19 @@ print('Creation of the back projection images of the event {}'.format(event),
         '\n   - hypocenter interval : {} km'.format(couronne),
         '\n   -      selected waves : {}'.format(hyp_bp),
         '\n   -   azimuth selection : {} deg'.format(azim))
+# loop over the time, one back projection image is created for every time step
 for t in range(length_t):
+    # creation of figure
     fig, ax = plt.subplots(1, 1)
+    # name of axis
     ax.set_xlabel('Along strike (km)')
     ax.set_ylabel('Down dip (km)')
+    # main part of the picture which is the image of the stack at time t
+    # the following points have to be mentioned:
+    # - the stack is normalised (global maximum equal to 1)
+    # - the picture is centered on the hypocenter location
+    # - be careful of the orientation of the picture which is not the same as
+    #   the original stack
     im = ax.imshow(list(zip(*stack[t, :, :]))/stckmx,
                    cmap = 'jet',
                    vmin = 0,
@@ -114,7 +123,8 @@ for t in range(length_t):
                              l_grid/2,
                              -w_grid/2,
                              w_grid/2))
-
+    # second layer with contours of iso-values of the stack
+    # those iso-values can be defined from 0 to 1 because of the normalisation
     cs = ax.contour(np.arange(-len(stack[0, :, 0])/2*l_grid_step,
                               len(stack[0, :, 0])/2*l_grid_step,
                               l_grid_step),
@@ -128,17 +138,13 @@ for t in range(length_t):
                     linestyle = '-',
                     extent = (-l_grid/2, l_grid/2, -w_grid/2, w_grid/2),
                     colors = 'white')
-
+    # set the limits of the pictures to be able to see everything without
+    # having white strips on the edges
     ax.set_xlim(-l_grid/2, l_grid/2)
     ax.set_ylim(-w_grid/2, w_grid/2)
-
+    # red star with white border for the hypocenter
     ax.scatter(0, 0, 500, marker = '*', color = 'white', linewidth = 0.2)
-    ax.scatter(0,
-               0,
-               300,
-               marker = '*',
-               color = 'red',
-               linewidth = 0.2)
+    ax.scatter(0, 0, 300, marker = '*', color = 'red', linewidth = 0.2)
 
     supertxt = ax.text(l_grid/2 - 2,
             -w_grid/2 + 4,
