@@ -11,7 +11,7 @@ import math
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-np.set_printoptions(threshold=np.nan)
+#np.set_printoptions(threshold=np.nan)
 
 # conversion angle degre -> radian
 def d2r(angle):
@@ -141,7 +141,7 @@ with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
     stack = my_dpck.load()
 
 stckmx = stack[:, :, :].max()
-for t in length_t:
+for t in range(length_t):
     fig, ax = plt.subplots(1, 1)
     ax.set_xlabel('Along strike (km)')
     ax.set_ylabel('Down dip (km)')
@@ -156,22 +156,22 @@ for t in length_t:
                              -w_grid/2,
                              w_grid/2))
 
-    cs = ax.contour(np.arange(-len(stack[:, 0, 0])/2*pas_l,
-                              len(stack[:, 0, 0])/2*pas_l,
-                              pas_l),
-                    np.arange(-len(stack[0, :, 0])/2*pas_w,
-                              len(stack[0, :, 0])/2*pas_w,
-                              pas_w),
-                    (list(zip(*stack[:, :, i]))/stckmx).reshape(int(len(stack[0, :, 0])),
-                                                                int(len(stack[:, 0, 0]))),
+    cs = ax.contour(np.arange(-len(stack[0, :, 0])/2*l_grid_step,
+                              len(stack[0, :, 0])/2*l_grid_step,
+                              l_grid_step),
+                    np.arange(-len(stack[0, 0, :])/2*w_grid_step,
+                              len(stack[0, 0, :])/2*w_grid_step,
+                              w_grid_step),
+                    (list(zip(*stack[t, :, :]))/stckmx).reshape(int(len(stack[0, 0, :])),
+                                                                int(len(stack[0, :, 0]))),
                     [0.8, 0.9],
                     origin = 'lower',
                     linestyle = '-',
-                    extent = (-l_fault/2, l_fault/2, -w_fault/2, w_fault/2),
+                    extent = (-l_grid/2, l_grid/2, -w_grid/2, w_grid/2),
                     colors = 'white')
 
-    ax.set_xlim(-l_fault/2, l_fault/2)
-    ax.set_ylim(-w_fault/2, w_fault/2)
+    ax.set_xlim(-l_grid/2, l_grid/2)
+    ax.set_ylim(-w_grid/2, w_grid/2)
 
     ax.scatter(0, 0, 500, marker = '*', color = 'white', linewidth = 0.2)
     ax.scatter(0,
@@ -181,9 +181,9 @@ for t in length_t:
                color = 'red',
                linewidth = 0.2)
 
-    supertxt = ax.text(l_fault/2 - 2,
-            -w_fault/2 + 4,
-            str((i - 5*samp_rate)/samp_rate) + ' s',
+    supertxt = ax.text(l_grid/2 - 2,
+            -w_grid/2 + 4,
+            str((t - 5*bp_samp_rate)/bp_samp_rate) + ' s',
             fontsize = 15,
             color = 'white', #'black',
             ha = 'right')
@@ -196,30 +196,23 @@ for t in length_t:
                  loc = 'right')
     plt.gca().invert_yaxis()
 
+    v1 = [1, 0.8, 0.6, 0.4, 0.2, 0]#, 0.2, 0.4, 0.6, 0.8, 1]
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size = '3%', pad = 0.1)
     cb = fig.colorbar(im, cax = cax, ticks = v1)
     cb.ax.plot([0, 1], [0.80, 0.80], 'white')
     cb.ax.plot([0, 1], [0.90, 0.90], 'white')
 
-    os.chdir(path_rslt_pdf)
-    fig.savefig(dossier
-                + '_vel_'
-                + couronne + 'km_'
-                + frq + 'Hz_'
-                + dt_type
-                + '_env_'
-                + hyp_bp + '_'
-                + azim + 'deg_stack3D_' + str(int(i*1000/samp_rate)) + '.pdf')
-    os.chdir(path_rslt_png)
-    fig.savefig(dossier
-                + '_vel_'
-                + couronne + 'km_'
-                + frq + 'Hz_'
-                + dt_type
-                + '_env_'
-                + hyp_bp + '_'
-                + azim + 'deg_stack3D_' + str(int(i*1000/samp_rate)) + '.png')
+    os.chdir(path_pdf)
+    fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                + str(int(t*1000/bp_samp_rate)) + '.pdf')
+    os.chdir(path_png)
+    fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                + str(int(t*1000/bp_samp_rate)) + '.png')
+
+"""
 
 #thresh_1 = 95
 #thresh_2 = 90
@@ -407,3 +400,4 @@ for i in range(length_t):
                 + '_env_'
                 + hyp_bp + '_'
                 + azim + 'deg_stack3D_' + str(int(i*1000/samp_rate)) + '.png')
+"""
