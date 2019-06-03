@@ -146,11 +146,11 @@ path_data = (root_folder + '/'
              + event + '/'
              + 'vel_env/'
              + frq_bnd + 'Hz_' + cpnt + '_smooth')
-path_pick = (root_folder + '/'
-             + 'Kumamoto/'
-             + event + '/'
-             + 'results/'
-             + 'general')
+path_rslt_gnrl = (root_folder + '/'
+                  + 'Kumamoto/'
+                  + event + '/'
+                  + 'results/'
+                  + 'general')
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
@@ -194,7 +194,7 @@ for d in [path_rslt]:#,
         print('{} is already existing'.format(d))
 
 # load picking delay dictionnary
-os.chdir(path_pick)
+os.chdir(path_rslt_gnrl)
 with open(event + '_picking_delays', 'rb') as mon_fich:
     mon_depick = pickle.Unpickler(mon_fich)
     dict_vel = mon_depick.load()
@@ -310,6 +310,12 @@ for s in lst_sta:
                                             coord_grid,
                                             vel_used))
 
+# save the travel time dictionnary
+os.chdir(path_rslt_gnrl)
+with open(event + '_travel_time_dict', 'wb') as mfch:
+    mpck = pickle.Pickler(mfch)
+    mpck.dump(travt)
+
 length_t = int(bp_len_t*bp_samp_rate)
 stack = {}
 
@@ -378,9 +384,9 @@ for ista, s in enumerate(lst_sta):
 os.chdir(path_rslt)
 with open(event + '_vel_env_' + frq_bnd + 'Hz_'
           + cpnt + '_smooth_' + hyp_bp + '_prestack',
-          'wb') as my_fch:
-    my_pck = pickle.Pickler(my_fch)
-    my_pck.dump(stack)
+          'wb') as mfch:
+    mpck = pickle.Pickler(mfch)
+    mpck.dump(stack)
 
 ################################
 # bp inverse
