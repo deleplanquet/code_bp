@@ -123,6 +123,8 @@ for t in range(length_t):
                              l_grid/2,
                              -w_grid/2,
                              w_grid/2))
+    # iso-values
+    iso = [0.8, 0.9]
     # second layer with contours of iso-values of the stack
     # those iso-values can be defined from 0 to 1 because of the normalisation
     cs = ax.contour(np.arange(-len(stack[0, :, 0])/2*l_grid_step,
@@ -133,7 +135,7 @@ for t in range(length_t):
                               w_grid_step),
                     (list(zip(*stack[t, :, :]))/stckmx).reshape(int(len(stack[0, 0, :])),
                                                                 int(len(stack[0, :, 0]))),
-                    [0.8, 0.9],
+                    iso,
                     origin = 'lower',
                     linestyle = '-',
                     extent = (-l_grid/2, l_grid/2, -w_grid/2, w_grid/2),
@@ -145,29 +147,37 @@ for t in range(length_t):
     # red star with white border for the hypocenter
     ax.scatter(0, 0, 500, marker = '*', color = 'white', linewidth = 0.2)
     ax.scatter(0, 0, 300, marker = '*', color = 'red', linewidth = 0.2)
-
+    # show the time in relation to the rupture time
     supertxt = ax.text(l_grid/2 - 2,
-            -w_grid/2 + 4,
-            str((t - 5*bp_samp_rate)/bp_samp_rate) + ' s',
-            fontsize = 15,
-            color = 'white', #'black',
-            ha = 'right')
-
+                       - w_grid/2 + 4,
+                       str((t - 5*bp_samp_rate)/bp_samp_rate) + ' s',
+                       fontsize = 15,
+                       color = 'white', #'black',
+                       ha = 'right')
+    # background effect in black to be able to see the time no matter the color
+    # of the back projection picture at this position
     supertxt.set_path_effects([path_effects.Stroke(linewidth = 1,
                                                    foreground = 'black'),
                                path_effects.Normal()])
-
+    # use the setting of the title of the figure to show the orientation of
+    # the grid
     ax.set_title('N' + str(strike) + str(degree) + 'E' + '$\longrightarrow$',
                  loc = 'right')
+    # invert yaxis to have proper orientation
     plt.gca().invert_yaxis()
-
-    v1 = [1, 0.8, 0.6, 0.4, 0.2, 0]#, 0.2, 0.4, 0.6, 0.8, 1]
+    # vector of the ticks we want to show on colorbar
+    v1 = [1, 0.8, 0.6, 0.4, 0.2, 0]
+    # add new axis on the right for the colorbar
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size = '3%', pad = 0.1)
+    # put the colorbar at the new axis position with the corresponding vector
+    # of ticks
     cb = fig.colorbar(im, cax = cax, ticks = v1)
-    cb.ax.plot([0, 1], [0.80, 0.80], 'white')
-    cb.ax.plot([0, 1], [0.90, 0.90], 'white')
-
+    # add two white lines by hand to show the level of iso-values defined
+    # before
+    for i in iso:
+        cb.ax.plot([0, 1], [i, i], 'white')
+    # save the figures in both pdf and png format
     os.chdir(path_pdf)
     fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
@@ -176,6 +186,7 @@ for t in range(length_t):
     fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
                 + str(int(t*1000/bp_samp_rate)) + '.png')
+    print('Number of images already created: {} / {}'.format(t + 1, length_t))
 
 """
 
