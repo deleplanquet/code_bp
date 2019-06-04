@@ -73,6 +73,7 @@ with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt
     prestack = mdpk.load()
 
 lst_sta = os.listdir(path_sta)
+lst_sta = [a for a in lst_sta if '.sac' in a]
 stack = np.zeros((int(bp_len_t*bp_samp_rate),
                   int(l_grid/l_grid_step),
                   int(w_grid/w_grid_step)))
