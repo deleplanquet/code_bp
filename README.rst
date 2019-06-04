@@ -124,8 +124,7 @@ Tree view
         ├── vel_env_bpinv
         │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
         │       ├── brut
-        │       ├── trace
-        │       └── trace_smooth
+        │       └── smooth
         └── results
             ├── general
             └── vel_env_frq_band_component_smooth
@@ -409,12 +408,21 @@ dictionnary. The 4 dimensions are the followings:
         ├── vel_env
         │   └── frq_band_component_smooth       *INPUT*
         └── results
-            ├── general                         *INPUT*
+            ├── general                         *INPUT & OUTPUT*
             └── vel_env_frq_band_component_smooth
                 └── others                      *OUTPUT*
 
+The travel time matrix will also be stored to not calculate it again and again.
+
+Summation among stations
+------------------------
+
+``prestack2stack.py``
+
 Plotting back projection images
 -------------------------------
+
+``plot_bp.py``
 
 .. code-block:: python3
 
@@ -422,6 +430,11 @@ Plotting back projection images
 
 | from */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
 | to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq/pdf*
+
+Source extraction
+=================
+
+
 
 Secondary codes
 ===============
