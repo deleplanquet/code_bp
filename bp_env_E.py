@@ -371,10 +371,10 @@ for ista, s in enumerate(lst_sta):
         tshift = np.where(tshift < t[-1], tshift, 0)
         # make a bigger np.array containing every time step of the back
         # projection of one station
-        bp1sta.append(npf(tshift))
+        bp1sta.append(tshift)
     # store inside a dictionnary the back projection values of every station
     # at every time step on every subgrid
-    stack[sta_name] = bp1sta
+    stack[sta_name] = npf(bp1sta)
     print('done')
 
 # save the back projection 4D cube in the path_rslt directory (4D because 2
