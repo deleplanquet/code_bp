@@ -117,9 +117,9 @@ print('     recuperation position stations')
 # load them
 root_folder = os.getcwd()[:-6]
 os.chdir(root_folder + '/Kumamoto')
-with open('parametres_bin', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    param = my_dpck.load()
+with open('parametres_bin', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    param = mdpk.load()
 
 # all the parameters are not used in this script, only the following ones
 event = param['event']
@@ -195,9 +195,9 @@ for d in [path_rslt]:#,
 
 # load picking delay dictionnary
 os.chdir(path_rslt_gnrl)
-with open(event + '_picking_delays', 'rb') as mon_fich:
-    mon_depick = pickle.Unpickler(mon_fich)
-    dict_vel = mon_depick.load()
+with open(event + '_picking_delays', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    dict_vel = mdpk.load()
 
 # pick the correct sub dictionnary depending on the choice of the user through
 # the run of parametres.py
@@ -207,6 +207,8 @@ if hyp_bp == 'P':
 elif hyp_bp == 'S':
     vel_used = param['vS']
     dict_vel_used = dict_vel['delay_S']
+else:
+    print('Issue with selected waves')
 
 # pick all the envelopes from the directory path_data and sort them
 lst_sta = os.listdir(path_data)
@@ -214,9 +216,9 @@ lst_sta.sort()
 
 # load location of the studied earthquake
 os.chdir(root_folder + '/Kumamoto')
-with open('ref_seismes_bin', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    dict_seis = my_dpck.load()
+with open('ref_seismes_bin', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    dict_seis = mdpk.load()
 
 lat_hyp = dict_seis[event]['lat']
 lon_hyp = dict_seis[event]['lon']
@@ -328,16 +330,16 @@ for ista, s in enumerate(lst_sta):
     # few parameters are stored because they will be used more than once
     tstart = st[0].stats.starttime
     sta_name = st[0].stats.station
-    # the maximum of the nevelope is set to 1
+    # the maximum of the envelope is set to 1
     env_norm = norm1(st[0].data)
     # x-axis corresponding to the trace
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-    # interpolate the trace so we can assess a value enve between two bins
+    # interpolate the trace so we can assess a value even between two bins
     f = interpolate.interp1d(t, env_norm)
-    # vectorize the interpolated function to be able to aplly it over a
+    # vectorize the interpolated function to be able to apply it over a
     # np.array
     npf = np.vectorize(f)
-    # initialise 3D np.array which will contain back projection value for one
+    # initialise 3D np.array which will contain back projection values for one
     # station
     bp1sta = []
     print('Processing of the station {}'.format(sta_name),
@@ -366,7 +368,7 @@ for ista, s in enumerate(lst_sta):
                   - 5
                   + it/bp_samp_rate)
         tshift = np.where(tshift > 0, tshift, 0)
-        tshift = np.where(tshift < t[-1], tshift, t[-1])
+        tshift = np.where(tshift < t[-1], tshift, 0)
         # make a bigger np.array containing every time step of the back
         # projection of one station
         bp1sta.append(npf(tshift))
