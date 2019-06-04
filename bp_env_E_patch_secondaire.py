@@ -1,3 +1,5 @@
+#
+
 import numpy as np
 import pickle
 from pylab import *
@@ -176,46 +178,36 @@ def interv_uni(list_inter):
         list_inter_final.append([debut_inter_courant, pos_fin])
     return list_inter_final
 
+print('################################################',
+    '\n###   python3 bp_env_E_patch_secondaire.py   ###',
+    '\n################################################')
+
 #recuperation position stations
 print('     recuperation position stations')
 
-path_origin = os.getcwd()[:-6]                  #
-os.chdir(path_origin + '/Kumamoto')             #
-with open('parametres_bin', 'rb') as my_fch:    #
-    my_dpck = pickle.Unpickler(my_fch)          #
-    param = my_dpck.load()                      #   load parametres
+# open the file of the parameters given by the user through parametres.py and
+# load them
+root_folder = os.getcwd()[:-6]
+os.chdir(root_folder + '/Kumamoto')
+with open('parametres_bin', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    param = mdpk.load()
 
-dossier = param['dossier']
-path = path_origin + '/Kumamoto/' + dossier
-dt_type = param['composante']
-hyp_bp = param['ondes_select']
-couronne = param['couronne']
+# all the parameters are not used in this script, only the following ones
+event = param['event']
+frq_bnd = param['frq_band']
+cpnt = param['component']
+couronne = param['hypo_interv']
+hyp_bp = param['selected_waves']
 azim = param['angle']
-frq = param['band_freq']
 R_Earth = param['R_Earth']
-
-os.chdir(path + '/'
-         + dossier + '_results/'
-         + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz')
-with open(dossier + '_veldata', 'rb') as mon_fich:      #
-    mon_depick = pickle.Unpickler(mon_fich)             #
-    dict_vel = mon_depick.load()                        #   load station corrections
-
-if hyp_bp == 'P':
-    vel_used = param['vP']
-    dict_vel_used = dict_vel[0]
-elif hyp_bp == 'S':
-    vel_used = param['vS']
-    dict_vel_used = dict_vel[1]
-strike = param['strike']
-dip = param['dip']
-l_fault = param['l_fault']
-w_fault = param['w_fault']
-pas_l = param['pas_l']
-pas_w = param['pas_w']
-samp_rate = param['samp_rate']
-length_time = param['length_t']
-selected_patch = 'patch_85'
+l_grid = param['l_grid']
+w_grid = param['w_grid']
+l_grid_step = param['l_grid_step']
+w_grid_step = param['w_grid_step']
+bp_samp_rate = param['bp_samp_rate']
+bp_len_t = param['bp_length_time']
+#selected_patch = 'patch_85'
 l_smooth = param['smooth']
 
 ###########################
@@ -232,83 +224,99 @@ if past != '':
 if pastpast != '':
     pastpast = '_' + pastpast
 
-path = (path_origin
-        + '/Kumamoto/'
-        + dossier)
+# directories used in this script
+#
+#
+#
+path_trvt = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + 'results/'
+             + 'general')
+path_stck = (root_folder + '/'
+             + 'Kumamoto/'
+             + event + '/'
+             + 'results/'
+             + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
+             + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
+             + 'others')
+path_data_tr = (root_folder + '/'
+                + 'Kumamoto/'
+                + event + '/'
+                + 'vel_env_selection/'
+                + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
+                    + 'brut')
+path_rslt_mask = (root_folder + '/'
+                  + 'Kumamoto/'
+                  + event + '/'
+                  + 'vel_env_selection/'
+                  + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                        + couronne + 'km_' + hyp_bp + '_' azim + 'deg/'
+                  + 'mask')
+path_rslt_tr = (root_folder + '/'
+                + 'Kumamoto/'
+                + event + '/'
+                + 'vel_env_selection/'
+                + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
+                + 'modified')
 
-path_data = (path + '/'
-             + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz/'
-             + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz_'
-                    + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg')
+# in the case they do not exist, the following directories are created:
+# - path_rslt_mask
+# - path_rslt_tr
+for d in [path_rslt_mask,
+          path_rslt_tr]:
+    if not os.path.isdir(d):
+        try:
+            os.makedirs(d)
+        except OSError:
+            print('Creation of the directory {} failed'.format(d))
+        else:
+            print('Successfully created the directory {}'.format(d))
+    else:
+        print('{} is already existing'.format(d))
 
-path_data_1 = (path_data + pastpast)
+# load picking delay dictionnary
+os.chdir(path_trvt)
+with open(event + '_picking_delays', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    dict_vel = mdpk.load()
 
-if past == '':
-    path_retrait = (path_data + '_bpinv/'
-                + 'smoothed_traces')
+# pick the correct sub dictionnary depending on the choice of the user through
+# the run of parametres.py
+if hyp_bp =='P':
+    vel_used = param['vP']
+    dict_vel_used = dict_vel['delay_P']
+elif hyp_bp == 'S':
+    vel_used = param['vS']
+    dict_vel_used = dict_vel['delay_S']
 else:
-    path_retrait = (path_data + past + '_complementaire_bp_inv/'
-                    + 'smoothed_traces')
+    print('Issue with selected waves')
 
-path_data_2 = (path_data + past + '_' + selected_patch)
-path_data_3 = (path_data + past + '_' + selected_patch + '_complementaire')
+# pick all the envelopes from the directory path_data_tr and sort them
+lst_sta = os.listdir(path_data_tr)
+lst_sta.sort()
 
-path_bpinv = (path_data_3 + '_bp_inv/'
-              + 'releves')
+# load location of the studied earthquake
+os.chdir(root_folder + '/Kumamoto')
+with open('ref_seismes_bin', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    dict_seis = mdpk.load()
 
-path_bpinvtr = (path_data_3 + '_' + 'bp_inv/'
-                + 'traces')
+lat_hyp = dict_seis[dossier]['lat']
+lon_hyp = dict_seis[dossier]['lon']
+dep_hyp = dict_seis[dossier]['dep']
+hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
 
-path_bpinvsm = (path_data_3 + '_' + 'bp_inv/'
-                + 'smoothed_traces')
-
-pth_ptch = [path_data_2, path_data_3]
-
-path_results = (path + '/'
-                + dossier + '_results/'
-                + dossier + '_vel_' + couronne + 'km_' + frq + 'Hz')
-
-path_results_2 = (path_results + '/'
-                  + 'Traces_' + dossier + '_vel_' + couronne + 'km_'
-                        + frq + 'Hz_' + dt_type + '_env_smooth_' + hyp_bp + '_' + azim + 'deg')
-
-if os.path.isdir(path_data_2) == False:
-    os.makedirs(path_data_2)
-
-if os.path.isdir(path_data_3) == False:
-    os.makedirs(path_data_3)
-
-if os.path.isdir(path_results) == False:
-    os.makedirs(path_results)
-
-if os.path.isdir(path_results_2) == False:
-    os.makedirs(path_results_2)
-
-if os.path.isdir(path_bpinv) == False:
-    os.makedirs(path_bpinv)
-
-if os.path.isdir(path_bpinvtr) == False:
-    os.makedirs(path_bpinvtr)
-
-if os.path.isdir(path_bpinvsm) == False:
-    os.makedirs(path_bpinvsm)
-            
-lst_fch = []
-lst_fch = os.listdir(path_data_1)
-lst_fch.sort()
-
-os.chdir(path_origin + '/Kumamoto')
-with open('ref_seismes_bin', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    dict_seis = my_dpck.load()
-
-yea_seis = int(dict_seis[dossier]['nFnet'][0:4])
-mon_seis = int(dict_seis[dossier]['nFnet'][4:6])
-day_seis = int(dict_seis[dossier]['nFnet'][6:8])
-hou_seis = int(dict_seis[dossier]['nFnet'][8:10])
-min_seis = int(dict_seis[dossier]['nFnet'][10:12])
-sec_seis = int(dict_seis[dossier]['nFnet'][12:14])
-mse_seis = int(dict_seis[dossier]['nFnet'][14:16])
+# define the origin time of the rupture
+yea_seis = int(dict_seis[event]['nFnet'][0:4])
+mon_seis = int(dict_seis[event]['nFnet'][4:6])
+day_seis = int(dict_seis[event]['nFnet'][6:8])
+hou_seis = int(dict_seis[event]['nFnet'][8:10])
+min_seis = int(dict_seis[event]['nFnet'][10:12])
+sec_seis = int(dict_seis[event]['nFnet'][12:14])
+mse_seis = int(dict_seis[event]['nFnet'][14:16])
 
 t_origin_rupt = UTCDateTime(yea_seis,
                             mon_seis,
@@ -318,190 +326,79 @@ t_origin_rupt = UTCDateTime(yea_seis,
                             sec_seis,
                             mse_seis)
 
-lat_hyp = dict_seis[dossier]['lat']
-lon_hyp = dict_seis[dossier]['lon']
-dep_hyp = dict_seis[dossier]['dep']
-
-dir_cen_fault = [math.cos(d2r(lat_hyp))*math.cos(d2r(lon_hyp)),
-                 math.cos(d2r(lat_hyp))*math.sin(d2r(lon_hyp)),
-                 math.sin(d2r(lat_hyp))]
-
-vect_nord = rotation(dir_cen_fault,
-                     90,
-                     [math.sin(d2r(lon_hyp)), -math.cos(d2r(lon_hyp)), 0])
-
-vect_strike = rotation(vect_nord,
-                       - strike,
-                       dir_cen_fault)
-
-vect_perp_strike = rotation(vect_nord,
-                            - strike - 90,
-                            dir_cen_fault)
-
-vect_dip = rotation(vect_perp_strike,
-                    dip,
-                    vect_strike)
-
-coord_fault = fault([R_Earth - dep_hyp, lat_hyp, lon_hyp],
-                    l_fault,
-                    w_fault,
-                    norm(vect_strike),
-                    norm(vect_dip),
-                    pas_l,
-                    pas_w)
-
-tstart_ref = None
-
-os.chdir(path_data_1)
-for fichier in lst_fch:
-    st = read(fichier)
-    if tstart_ref == None or tstart_ref - st[0].stats.starttime > 0:
-        #   sonde toutes les stations
-        tstart_ref = st[0].stats.starttime
-        #   pour trouver celle qui detecte le plus tot
-        
-os.chdir(path_data_1)
-travt = []
-tmin = None
-dmin = None
-
-for fichier in lst_fch:
-    st = read(fichier)
-    travt.append(trav_time([st[0].stats.sac.stel, st[0].stats.sac.stla, st[0].stats.sac.stlo],
-                           coord_fault,
-                           vel_used))
-    if dmin == None or dmin > st[0].stats.sac.dist:
-        dmin = st[0].stats.sac.dist
-    if tmin == None or tmin > st[0].stats.sac.t0:
-        #   calcule les temps de trajet
-        tmin = st[0].stats.sac.t0
-        #   entre chaque station
-print(tmin) #   et chaque subfault
-
-#os.chdir(path)                                                  #
-#with open(dossier + '_' + past + selected_patch, 'rb') as my_fch:      #
-#    my_dpck = pickle.Unpickler(my_fch)                          #
-#    dict_ok = my_dpck.load()                                    #   load le patch
-    
-#print(dossier + '_' + past + selected_patch + ' loaded')
-#identified_patch = {}                                                                   #
-                                                                                        #
-#os.chdir(path_data_1)                                                                     #
-#for station in lst_fch:                                                                 #   pour chaque station
-#    list_inter = []                                                                     #
-#    st = read(station)                                                                  #
-#    ista = lst_fch.index(station)                                                       #
-#    for ip in dict_ok.keys():                                                           #   pour chaque subfault "eclairee"
-#        ix = int(int(ip)//len(coord_fault[0, :, 0]))                                    #
-#        iy = int(int(ip)%len(coord_fault[0, :, 0]))                                     #
-#        for it in dict_ok[ip]:                                                          #   pour chaque tps ou il y a eu "eclairage"
-#            tshift = (travt[ista][ix, iy]                                               #
-#                      - (st[0].stats.starttime - t_origin_rupt)                         #
-#                      + dict_vel_used[st[0].stats.station]                              #
-#                      - 5                                                               #
-#                      + it/samp_rate)                                                   #   on stocke l'interval temporel
-#            list_inter.append([tshift, tshift + 1.01/samp_rate])                        #   associe a la trace
-#    identified_patch[st[0].stats.station] = interv_uni(list_inter)                      #   fait l'union des intervales
-#                                                                                        #
-#for station in identified_patch.keys():                                                 #
-#    print(station, identified_patch[station][0][0], identified_patch[station][0][1])    #   affiche dans le terminal
+# load the travel time dictionnary
+os.chdir(path_trvt)
+with open(event + '_travel_time_dict', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    travt = mdpk.load()
 
 length_t = int(length_time*samp_rate)
-stack_0 = np.zeros((len(coord_fault[:, 0, 0]),
-                     len(coord_fault[0, :, 0]),
-                     length_t))
-stack_1 = np.zeros((len(coord_fault[:, 0, 0]),
-                     len(coord_fault[0, :, 0]),
-                     length_t))
-stack = [stack_0, stack_1]
-scission = ['', '_complementaire']
+stack = {}
 
-print(path_data_1)
-for station in lst_fch:
-    for scis in scission:
-        os.chdir(path_data_1)
-        st = read(station)
-        os.chdir(path_retrait)
-        st_r = read(st[0].stats.station)
-        st_r_max = (st_r[0].data).max()
-        tr = np.zeros(st[0].stats.npts)
-        cpt = 0
-        for i in range(len(tr)):
-            cpt = cpt + 1
-            time = cpt/st[0].stats.sampling_rate
-            if scis == scission[0]:
-                tr[i] = st[0].data[i]*st_r[0].data[i]
-            else:
-                tr[i] = st[0].data[i]*(st_r_max - st_r[0].data[i])
-            #if (time >= identified_patch[st[0].stats.station][0][0]                                                 #
-            #    and time <= identified_patch[st[0].stats.station][0][1]):                                           #
-                #tr[cpt] = 0.2*tr[cpt]                                                                              #
-                #tmp = math.pi/4*math.sin(math.pi*(time
-            #    tmp = math.sin(math.pi*(time
-            #                                - identified_patch[st[0].stats.station][0][0])
-            #                              /(identified_patch[st[0].stats.station][0][1]
-            #                                - identified_patch[st[0].stats.station][0][0]))
-            #    if scis == scission[0]:
-            #        tr[cpt] = tmp*tr[cpt]
-            #    else:
-            #        tr[cpt] = (1 - tmp)*tr[cpt]
-            #elif cpt < 5000:
-            #    if scis == scission[0]:
-            #        tr[cpt] = 0
-        tr[-1] = (st[0].data).max()
+print('Back projection method applied to the modified envelopes',
+        'from {}'.format(path_tr))
+for ista, s in enumerate(lst_sta):
+    # load the envelope
+    os.chdir(path_data_tr)
+    st = read(s)
+    # few parameters are stored because they will be used more than once
+    tstart = st[0].stats.starttime
+    sta_name = st[0].stats.station
+    # load the mask
+    os.chdir(path_rslt_mask)
+    msk = read(sta_name)
+    if:
+        tr = np.multiply(st[0].data, norm1(msk[0].data))
+    else:
+        tr = np.multiply(st[0].data, 1 - norm1(msk[0].data)
+    tr[-1] = (st[0].data).max()
+    os.chdir(path_rslt_tr)
+    tr = Trace(np.asarray(tr), st[0].stats)
+    tr.write(s + '_modified.sac', format = 'SAC')
+    st = read(s + '_modified.sac')
+    #st = read(station[:-4] + '_' + selected_patch + scis + '.sac')
+    #tstart = st[0].stats.starttime
+    # the maximum of the envelope is set to 1
+    env_norm = norm1(st[0].data)
+    # x-axis corresponding to the trace
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    # interpolate the trace so we can assess a value even between two bins
+    f = interpolate.interp1d(t, env_norm)
+    # vectorize the interpolated function to be able to apply it over a
+    # np.array
+    npf = np.vectorize(f)
+    # initialise 3D np.array which will contain back projection values for
+    # one station
+    bp1sta = []
+    print('Processing of the station {}'.format(sta_name),
+            '{} / {}'.format(ista + 1, len(lst_sta)),
+            end = ' ')
+    for it in range(length_t):
+        tshift = (travt[sta_name]
+                  - tstart - t_origin_rupt
+                  + dict_vel_used[sta_name]
+                  - 5
+                  + it/bp_samp_rate)
+        tshift = np.where(tshift > 0, tshift, 0)
+        tshift = np.where(tshift < t[-1], tshift, 0)
+        # make a bigger np.array containing every time step of the back
+        # projection of one station
+        bp1sta.append(npf(tshift))
+    stack[sta_name] = bp1sta
+    print('done')
 
-        os.chdir(pth_ptch[scission.index(scis)])                                                                    #   enregistre les traces modifiees
-        #st[0].stats.sac.user1 = identified_patch[st[0].stats.station][0][0]                                         #   
-        #st[0].stats.sac.user2 = identified_patch[st[0].stats.station][0][1]                                         #   trace modifiee =
-        tr_reg = Trace(np.asarray(tr), st[0].stats) #   trace originale
-        tr_reg.write(station[:-4] + '_' + selected_patch + scis + '.sac', format = 'SAC')
-        #   - partie contribuant au patch
-
-        st = read(station[:-4] + '_' + selected_patch + scis + '.sac')
-        tstart = st[0].stats.starttime
-        env_norm = norm1(st[0].data)
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        f = interpolate.interp1d(t, env_norm)
-        ista = lst_fch.index(station)
-        print('     ',
-                station,
-                st[0].stats.sampling_rate,
-                str(ista + 1),
-                '/',
-                len(lst_fch),
-                '     ',
-                scission.index(scis)) 
-        for ix in range(len(coord_fault[:, 0, 0])):
-            for iy in range(len(coord_fault[0, :, 0])):
-                for it in range(length_t):
-                    tshift = (travt[ista][ix, iy]
-                              - (st[0].stats.starttime - t_origin_rupt)
-                              + dict_vel_used[st[0].stats.station]
-                              - 5
-                              + it/samp_rate)
-                    if tshift > 0 and tshift < t[-1]:
-                        stack[scission.index(scis)][ix, iy, it] = (stack[scission.index(scis)][ix, iy, it]
-                                                                   + 1./len(lst_fch)*f(tshift))
-
-os.chdir(path_results)
-for scis in scission:
-    with open(dossier
-              + '_vel_'
-              + couronne + 'km_'
-              + frq + 'Hz_'
-              + dt_type
-              + '_env_smooth_'
-              + hyp_bp + '_'
-              + azim + 'deg_stack3D'
-              + past + '_'
-              + selected_patch + scis, 'wb') as my_fch:
-        my_pck = pickle.Pickler(my_fch)
-        my_pck.dump(stack[scission.index(scis)])
+os.chdir(path_stck)
+with open(event + '_vel_env_' + frq_bnd + 'Hz_'
+                + cpnt + '_smooth_' + hyp_bp + '_prestack',
+          'wb') as mfch:
+    mpck = pickle.Pickler(mfch)
+    mpck.dump(stack)
 
 ###############################
 # bp inverse
 ###############################
 
+'''
 stckmx = stack[0][:, :, :].max()
 thresh = int(selected_patch[-2:]) *0.01
 
@@ -554,3 +451,4 @@ for sta in lst_fch:
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpinvsm)
     tr.write(sta[:6], format = 'SAC')
+'''
