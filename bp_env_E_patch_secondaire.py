@@ -51,7 +51,7 @@ w_grid_step = param['w_grid_step']
 bp_samp_rate = param['bp_samp_rate']
 bp_len_t = param['bp_length_time']
 #selected_patch = 'patch_85'
-l_smooth = param['smooth']
+l_smooth = param['l_smooth']
 
 ###########################
 ###########################
@@ -88,22 +88,42 @@ path_data_tr = (root_folder + '/'
                 + event + '/'
                 + 'vel_env_selection/'
                 + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
-                    + 'brut')
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
 path_rslt_mask = (root_folder + '/'
                   + 'Kumamoto/'
                   + event + '/'
-                  + 'vel_env_selection/'
+                  + 'vel_env_bpinv/'
                   + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                        + couronne + 'km_' + hyp_bp + '_' azim + 'deg/'
-                  + 'mask')
+                        + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
+                  + 'smooth')
+
+lst_iter = os.listdir(path_stck)
+lst_iter = [a for a in lst_iter if '_it-' in a]
+lst_iter.sort()
+print('Here is a list of the iterations of back projection that has already',
+        'been done:')
+for f in lst_iter:
+    print(f)
+it_nb = None
+while not isinstance(it_nb, int):
+    try:
+        it_nb = int(input('Pick a number corresponding to the iteration you'
+                            + ' want to use as input (interger): '))
+    except ValueError:
+        print('No valid number, try again')
+it_nb = str(int(it_nb + 1))
+m_or_c = None
+while m_or_c != 'M' and m_or_c != 'C':
+    m_or_c = input('Choose if you want to apply the mask or its'
+                    + 'complementary (M or C): ')
+
 path_rslt_tr = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
-                + 'vel_env_selection/'
+                + 'vel_env_modified/'
                 + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                     + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
-                + 'modified')
+                + 'iteration-' + it_nb)
 
 # in the case they do not exist, the following directories are created:
 # - path_rslt_mask
@@ -120,66 +140,16 @@ for d in [path_rslt_mask,
     else:
         print('{} is already existing'.format(d))
 
-# load picking delay dictionnary
-os.chdir(path_trvt)
-with open(event + '_picking_delays', 'rb') as mfch:
-    mdpk = pickle.Unpickler(mfch)
-    dict_vel = mdpk.load()
-
-# pick the correct sub dictionnary depending on the choice of the user through
-# the run of parametres.py
-if hyp_bp =='P':
-    vel_used = param['vP']
-    dict_vel_used = dict_vel['delay_P']
-elif hyp_bp == 'S':
-    vel_used = param['vS']
-    dict_vel_used = dict_vel['delay_S']
-else:
-    print('Issue with selected waves')
-
 # pick all the envelopes from the directory path_data_tr and sort them
 lst_sta = os.listdir(path_data_tr)
+lst_sta = [a for a in lst_sta if '.sac' in a]
 lst_sta.sort()
 
-# load location of the studied earthquake
-os.chdir(root_folder + '/Kumamoto')
-with open('ref_seismes_bin', 'rb') as mfch:
-    mdpk = pickle.Unpickler(mfch)
-    dict_seis = mdpk.load()
-
-lat_hyp = dict_seis[dossier]['lat']
-lon_hyp = dict_seis[dossier]['lon']
-dep_hyp = dict_seis[dossier]['dep']
-hypo = [R_Earth - dep_hyp, lat_hyp, lon_hyp]
-
-# define the origin time of the rupture
-yea_seis = int(dict_seis[event]['nFnet'][0:4])
-mon_seis = int(dict_seis[event]['nFnet'][4:6])
-day_seis = int(dict_seis[event]['nFnet'][6:8])
-hou_seis = int(dict_seis[event]['nFnet'][8:10])
-min_seis = int(dict_seis[event]['nFnet'][10:12])
-sec_seis = int(dict_seis[event]['nFnet'][12:14])
-mse_seis = int(dict_seis[event]['nFnet'][14:16])
-
-t_origin_rupt = UTCDateTime(yea_seis,
-                            mon_seis,
-                            day_seis,
-                            hou_seis,
-                            min_seis,
-                            sec_seis,
-                            mse_seis)
-
-# load the travel time dictionnary
-os.chdir(path_trvt)
-with open(event + '_travel_time_dict', 'rb') as mfch:
-    mdpk = pickle.Unpickler(mfch)
-    travt = mdpk.load()
-
-length_t = int(length_time*samp_rate)
+length_t = int(bp_len_t*bp_samp_rate)
 prestack = {}
 
 print('Back projection method applied to the modified envelopes',
-        'from {}'.format(path_tr))
+        'from {}'.format(path_data_tr))
 for ista, s in enumerate(lst_sta):
     # load the envelope
     os.chdir(path_data_tr)
@@ -190,15 +160,17 @@ for ista, s in enumerate(lst_sta):
     # load the mask
     os.chdir(path_rslt_mask)
     msk = read(sta_name)
-    if:
+    if m_or_c == 'M':
         tr = np.multiply(st[0].data, norm1(msk[0].data))
+    elif m_or_c == 'C':
+        tr = np.multiply(st[0].data, 1 - np.asarray(norm1(msk[0].data)))
     else:
-        tr = np.multiply(st[0].data, 1 - norm1(msk[0].data)
+        print('Issue between mask and complementary')
     tr[-1] = (st[0].data).max()
     os.chdir(path_rslt_tr)
     tr = Trace(np.asarray(tr), st[0].stats)
-    tr.write(s + '_modified.sac', format = 'SAC')
-    st = read(s + '_modified.sac')
+    tr.write(sta_name + '_it-' + it_nb + '.sac', format = 'SAC')
+    st = read(sta_name + '_it-' + it_nb + '.sac')
     # the maximum of the envelope is set to 1
     env_norm = norm1(st[0].data)
     # x-axis corresponding to the trace
@@ -222,8 +194,8 @@ for ista, s in enumerate(lst_sta):
     print('done')
 
 os.chdir(path_stck)
-with open(event + '_vel_env_' + frq_bnd + 'Hz_'
-                + cpnt + '_smooth_' + hyp_bp + '_prestack',
-          'wb') as mfch:
+with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+            + couronne + 'km_'+ hyp_bp + '_' + azim + 'deg_'
+            + 'it-' + it_nb + '_prestack', 'wb') as mfch:
     mpck = pickle.Pickler(mfch)
     mpck.dump(prestack)
