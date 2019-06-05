@@ -123,8 +123,9 @@ Tree view
         │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
         ├── vel_env_bpinv
         │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
-        │       ├── brut
-        │       └── smooth
+        │       └── iteration-i
+        │           ├── brut
+        │           └── smooth
         ├── vel_env_modifed
         │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
         │       └── iteration-i
