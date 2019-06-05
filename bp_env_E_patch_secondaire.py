@@ -176,7 +176,7 @@ with open(event + '_travel_time_dict', 'rb') as mfch:
     travt = mdpk.load()
 
 length_t = int(length_time*samp_rate)
-stack = {}
+prestack = {}
 
 print('Back projection method applied to the modified envelopes',
         'from {}'.format(path_tr))
@@ -214,18 +214,11 @@ for ista, s in enumerate(lst_sta):
     print('Processing of the station {}'.format(sta_name),
             '{} / {}'.format(ista + 1, len(lst_sta)),
             end = ' ')
-    for it in range(length_t):
-        tshift = (travt[sta_name]
-                  - tstart - t_origin_rupt
-                  + dict_vel_used[sta_name]
-                  - 5
-                  + it/bp_samp_rate)
-        tshift = np.where(tshift > 0, tshift, 0)
-        tshift = np.where(tshift < t[-1], tshift, 0)
-        # make a bigger np.array containing every time step of the back
-        # projection of one station
-        bp1sta.append(npf(tshift))
-    stack[sta_name] = bp1sta
+    os.chdir(path_trvt)
+    with open(event + '_' + sta_name + '_absolute_delays', 'rb') as mfch:
+        mdpk = pickle.Unpickler(mfch)
+        bp1sta = mdpk.load()
+    prestack[sta_name] = npf(bp1sta)
     print('done')
 
 os.chdir(path_stck)
@@ -233,4 +226,4 @@ with open(event + '_vel_env_' + frq_bnd + 'Hz_'
                 + cpnt + '_smooth_' + hyp_bp + '_prestack',
           'wb') as mfch:
     mpck = pickle.Pickler(mfch)
-    mpck.dump(stack)
+    mpck.dump(prestack)
