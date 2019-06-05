@@ -412,7 +412,8 @@ dictionnary. The 4 dimensions are the followings:
             └── vel_env_frq_band_component_smooth
                 └── others                      *OUTPUT*
 
-The travel time matrix will also be stored to not calculate it again and again.
+The travel time matrix and absolute travel time cube will also be stored for
+faster further use.
 
 Summation among stations
 ------------------------
