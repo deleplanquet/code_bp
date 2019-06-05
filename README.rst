@@ -480,6 +480,16 @@ be smoothed.
                 └── hypo_interv_selected_waves_angle
                     └── others                                                  *INPUT*
 
+Iteration of back projection method
+-----------------------------------
+
+As explained in **Back projection**, the three steps are done here again by
+running the following codes:
+
+* ``bp_env_E_patch_secondaire.py``
+* ``prestack2stack.py``
+* ``plot_bp_patch_secondaire.py``
+
 Secondary codes
 ===============
 
