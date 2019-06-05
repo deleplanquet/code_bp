@@ -157,32 +157,10 @@ path_rslt = (root_folder + '/'
              + 'results/'
              + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
              + 'others')
-# to prevent repetition path_bpinv is created and used for the directories:
-# - path_bpinv_brut
-# - path_bpinv_trace
-# - path_bpinv_smooth
-#path_bpinv = (root_folder + '/'
-#              + 'Kumamoto/'
-#              + event + '/'
-#              + 'vel_env_bpinv/'
-#              + couronne + 'km_' + frq_bnd + 'Hz_' + cpnt
-#                    + '_smooth_' + hyp_bp + '_' + azim + 'deg')
-#path_bpinv_brut = (path_bpinv + '/'
-#                   + 'brut')
-#path_bpinv_trace = (path_bpinv + '/'
-#                    + 'trace')
-#path_bpinv_smooth = (path_bpinv + '/'
-#                     + 'trace_smooth')
 
 # in case they do not exist, the following directories are created:
 # - path_rslt
-# - path_bpinv_brut
-# - path_bpinv_trace
-# - path_bpinv_smooth
-for d in [path_rslt]:#,
-#          path_bpinv_brut,
-#          path_bpinv_trace,
-#          path_bpinv_smooth]:
+for d in [path_rslt]:
     if not os.path.isdir(d):
         try:
             os.makedirs(d)
@@ -389,61 +367,3 @@ with open(event + '_vel_env_' + frq_bnd + 'Hz_'
           'wb') as mfch:
     mpck = pickle.Pickler(mfch)
     mpck.dump(stack)
-
-################################
-# bp inverse
-################################
-
-#stckmx = stack[:, :, :].max()
-#thresh = 85 *0.01
-
-#for sta in lst_fch:# pour chaque station
-#    os.chdir(path_data)
-#    st = read(sta)
-#    ista = lst_fch.index(sta)
-#    station = {}
-#    for i in range(len(stack[:, 0, 0])):
-#        for j in range(len(stack[0, :, 0])):
-#            for k in range(len(stack[0, 0, :])):# pour chaque element du cube de bp
-#                tshift = (travt[ista][i, j]
-#                          - (st[0].stats.starttime - t_origin_rupt)
-#                          + dict_vel_used[st[0].stats.station]
-#                          - 5
-#                          + k/samp_rate)
-#                station[tshift] = stack[i, j, k]
-#    os.chdir(path_bpinv)
-#    with open(st[0].stats.station, 'wb') as mfch:
-#        mpck = pickle.Pickler(mfch)
-#        mpck.dump(station)
-
-#lst_bpinv = os.listdir(path_bpinv)
-
-#for sta in lst_fch:
-#    os.chdir(path_data)
-#    st = read(sta)
-#    os.chdir(path_bpinv)
-#    bpinv = np.zeros(st[0].stats.npts)
-#    with open(sta[:6], 'rb') as mfch:
-#        mdpk = pickle.Unpickler(mfch)
-#        station = mdpk.load()
-#    for key in station.keys():
-#        bpinv[int(key*100)] = bpinv[int(key*100)] + station[key]
-#        #print(bpinv[int(key*100)])
-#    os.chdir(path_bpinvtr)
-#    tr = Trace(bpinv, st[0].stats)
-#    tr.write(sta[:6], format = 'SAC')
-
-#vect = np.linspace(0,
-#                   st[0].stats.npts/st[0].stats.sampling_rate,
-#                   st[0].stats.npts)
-#sigma = 1./samp_rate
-
-#for sta in lst_fch:
-#    os.chdir(path_bpinvtr)
-#    st = read(sta[:6])
-#    azm = st[0].stats.sac.az
-#    trg = [math.exp(-(pow(a - 25, 2))/(2*pow(sigma, 2))) for a in vect]
-#    tr = np.convolve(st[0].data, trg, mode = "same")
-#    tr = Trace(np.asarray(tr), st[0].stats)
-#    os.chdir(path_bpinvsm)
-#    tr.write(sta[:6], format = 'SAC')
