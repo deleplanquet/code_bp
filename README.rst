@@ -437,14 +437,20 @@ are the ones remaining after distance, energy and azimuth selections.
 Plotting back projection images
 -------------------------------
 
-``plot_bp.py``
+``plot_bp.py`` is creating images from the 3D cube of back projection. There
+are as many images as time step in the back projection process. They reveal the
+coherent information among the network at the corresponding studied parameters.
 
-.. code-block:: python3
+::
 
-    python3 plot_bp_2d.py
-
-| from */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq*
-| to */Kumamoto/dossier/dossier_results/dossier_vel_couronne_bandfreq/pdf*
+    Kumamoto
+    └── event
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    ├── pdf             *OUTPUT*
+                    ├── png             *OUTPUT*
+                    └── others          *INPUT*
 
 Source extraction
 =================
