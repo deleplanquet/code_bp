@@ -297,7 +297,7 @@ with open(event + '_travel_time_dict', 'wb') as mfch:
     mpck.dump(travt)
 
 length_t = int(bp_len_t*bp_samp_rate)
-stack = {}
+prestack = {}
 
 print('Back projection method applied to the envelopes',
         'from {}'.format(path_data))
@@ -350,9 +350,15 @@ for ista, s in enumerate(lst_sta):
         # make a bigger np.array containing every time step of the back
         # projection of one station
         bp1sta.append(tshift)
+    # save the absolute delays for each station for each subgrid and each time
+    # it will be usefull for iterations
+    os.chdir(path_rslt)
+    with open(, 'wb') as mfch:
+        mpck = pickle.Pickler(mfch)
+        mpck.dump(bp1sta)
     # store inside a dictionnary the back projection values of every station
     # at every time step on every subgrid
-    stack[sta_name] = npf(bp1sta)
+    prestack[sta_name] = npf(bp1sta)
     print('done')
 
 # save the back projection 4D cube in the path_rslt directory (4D because 2
@@ -366,4 +372,4 @@ with open(event + '_vel_env_' + frq_bnd + 'Hz_'
           + cpnt + '_smooth_' + hyp_bp + '_prestack',
           'wb') as mfch:
     mpck = pickle.Pickler(mfch)
-    mpck.dump(stack)
+    mpck.dump(prestack)
