@@ -43,8 +43,8 @@ path_sta = (root_folder + '/'
             + 'Kumamoto/'
             + event + '/'
             + 'vel_env_selection/'
-            + frq_bnd + 'Hz_' + cpnt + '_smooth_' + couronne + 'km_'
-                + hyp_bp + '_' + angle + 'deg')
+            + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + angle + 'deg')
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
