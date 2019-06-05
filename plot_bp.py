@@ -84,7 +84,7 @@ os.chdir(path_data)
 stack = None
 with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
           + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-          + 'stack', 'rb') as mfch:
+          + 'it-0_stack', 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     stack = mdpk.load()
 
