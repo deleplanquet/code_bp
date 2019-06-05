@@ -125,13 +125,20 @@ Tree view
         │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
         │       ├── brut
         │       └── smooth
+        ├── vel_env_modifed
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
+        │       └── iteration-i
         └── results
             ├── general
             └── vel_env_frq_band_component_smooth
                 ├── hypo_interv_selected_waves_angle
                 │   ├── parameters
-                │   ├── pdf
-                │   ├── png
+                │   ├── brut
+                │   │   ├── pdf
+                │   │   └── png
+                │   ├── iteration-i
+                │   │   ├── pdf
+                │   │   └── png
                 │   └── others
                 └── others
 
