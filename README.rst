@@ -455,7 +455,30 @@ coherent information among the network at the corresponding studied parameters.
 Source extraction
 =================
 
+Creation of inverse traces
+--------------------------
 
+The run of ``bpinv_trace.py`` will read the back projection cube and assume
+every subgrid as a source with an intensity equal to the value of the cube at
+the corresponding time and position. Then traces will be created for each
+station as if all the back projection cube was radiating. Finally traces will
+be smoothed.
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env_selection
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
+        ├── vel_env_bpinv
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
+        │       ├── brut
+        │       └── smooth
+        └── results
+            ├── general
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    └── others          *INPUT*
 
 Secondary codes
 ===============
