@@ -1,3 +1,5 @@
+#
+
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -9,105 +11,200 @@ import math
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-np.set_printoptions(threshold=np.nan)
+print('###############################################',
+    '\n###   python3 plot_bp_patch_secondaire.py   ###',
+    '\n###############################################')
 
-#conversion angle degre -> radian
-def d2r(angle):
-    return angle*math.pi/180
+# open the file of the parameters given by the user through parametres.py and
+# load them
+root_folder = os.getcwd()[:-6]
+os.chdir(root_folder + '/Kumamoto')
+with open('parametres_bin', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    param = mdpk.load()
 
-#conversion coordonnees geographisques -> cartesien
-def geo2cart(r, lat, lon):
-    rlat = d2r(lat)
-    rlon = d2r(lon)
-    xx = r*math.cos(rlat)*math.cos(rlon)
-    yy = r*math.cos(rlat)*math.sin(rlon)
-    zz = r*math.sin(rlat)
-    return [xx, yy, zz]
-
-#nombre de ligne d'un fichier
-def file_length(fname):
-    with open(fname) as f:
-        for i, l in enumerate(f):
-            pass
-    return i + 1
-
-#normalisation
-def norm(vect):
-    Norm = math.sqrt(vect[0]*vect[0] + vect[1]*vect[1] + vect[2]*vect[2])
-    return [vect[0]/Norm, vect[1]/Norm, vect[2]/Norm]
-
-#rotation 3d d'angle theta et d'axe passant par l'origine porte par le vecteur (a, b, c) de norme 1, repere orthonormal direct
-def rotation(u, theta, OM):
-    """ attention OM unitaire """
-    a = norm(OM)[0]
-    b = norm(OM)[1]
-    c = norm(OM)[2]
-    radian = d2r(theta)
-    #coefficients de la matrice de rotation
-    mat = array([[a*a + (1 - a*a)*math.cos(radian),
-                  a*b*(1 - math.cos(radian)) - c*math.sin(radian),
-                  a*c*(1 - math.cos(radian)) + b*math.sin(radian)],
-                 [a*b*(1 - math.cos(radian)) + c*math.sin(radian),
-                  b*b + (1 - b*b)*math.cos(radian),
-                  b*c*(1 - math.cos(radian)) - a*math.sin(radian)],
-                 [a*c*(1 - math.cos(radian)) - b*math.sin(radian),
-                  b*c*(1 - math.cos(radian)) + a*math.sin(radian),
-                  c*c + (1 - c*c)*math.cos(radian)]])
-    #rearrangement du vecteur auquel on applique la rotation
-    vect = array([[u[0]],
-                    [u[1]],
-                    [u[2]]])
-    #rotation du vecteur u de theta autour de OM
-    vect_rot = dot(mat, vect)
-    return (vect_rot[0][0], vect_rot[1][0], vect_rot[2][0])
-
-
-path_origin = os.getcwd()[:-6]                  #
-os.chdir(path_origin + '/Kumamoto')             #
-with open('parametres_bin', 'rb') as my_fch:    #
-    my_dpck = pickle.Unpickler(my_fch)          #
-    param = my_dpck.load()                      #   load parametres
-
-dossier = param['dossier']          #
-dt_type = param['composante']       #
-frq = param['band_freq']            #
-couronne = param['couronne']        #
-length_time = param['length_t']     #
-samp_rate = param['samp_rate']      #
-hyp_bp = param['ondes_select']      #
-azim = param['angle']               #
-R_Earth = param['R_Earth']          #
-l_fault = param['l_fault']
-w_fault = param['w_fault']
+# all the parameters are not used in this script, only the following ones
+event = param['event']
+frq_bnd = param['frq_band']
+cpnt = param['component']
+couronne = param['hypo_interv']
+hyp_bp = param['selected_waves']
+azim = param['angle']
+bp_len_t = param['bp_length_time']
+bp_samp_rate = param['bp_samp_rate']
+R_Earth = param['R_Earth']
+l_grid = param['l_grid']
+w_grid = param['w_grid']
 degree = '\u00b0'                   #   parametres stockes
-selected_patch = 'patch_85'
-scission = ['', '_complementaire']
 strike = param['strike']
-pas_l = param['pas_l']
-pas_w = param['pas_w']
+l_grid_step = param['l_grid_step']
+w_grid_step = param['w_grid_step']
 
-################################
-################################
-past = ''
-#past = 'patch_85'
-################################
-################################
+# directories used in this script:
+#
+#
+#
+path_common = (root_folder + '/'
+               + 'Kumamoto/'
+               + event + '/'
+               + 'results/'
+               + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
+               + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
+path_data = (path_common + '/'
+             + 'others')
 
-if past != '':
-    past = '_' + past
+lst_iter = os.listdir(path_data)
+lst_iter = [a for a in lst_iter if '_it-' in a and '_stack' in a]
+lst_iter.sort()
+print('Here is a list of the iterations of back projection stack that has',
+        'already been done:')
+for f in lst_iter:
+    print(f)
+it_nb = None
+while not isinstance(it_nb, int):
+    try:
+        it_nb = int(input('Pick a number corresponding to the iteration you'
+                            + ' want to use as input (integer): '))
+    except ValueError:
+        print('No valid number, try again')
+it_nb = str(it_nb)
+m_or_c = None
+while m_or_c != 'M' and m_or_c != 'C':
+    m_or_c = input('Choose if you want to get the mask or its complementary'
+                    + ' (M or C): ')
 
-path = (path_origin                      #
-        + '/Kumamoto/'                   #
-        + dossier)                       #
-                                         #
-path_data = (path + '/'                  #
-             + dossier                   #
-             + '_results/'               #
-             + dossier                   #
-             + '_vel_'                   #
-             + couronne + 'km_'          #
-             + frq + 'Hz')               #
-                                         #
+path_pdf = (path_common + '/'
+            + 'iteration-' + it_nb + '/'
+            + 'pdf')
+path_png = (path_common + '/'
+            + 'iteration-' + it_nb + '/'
+            + 'png')
+
+# in case they do not exist, the following directories are created:
+# - path_pdf
+# - path_png
+for d in [path_pdf, path_png]:
+    if not os.path.isdir(d):
+        try:
+            os.makedirs(d)
+        except OSError:
+            print('Creation of the directory {} failed'.format(d))
+        else:
+            print('Successfully created the directory {}'.format(d))
+    else:
+        print('{} is already existing')
+
+# load the back projection stack to plot
+os.chdir(path_data)
+stack = None
+with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+            + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+            + 'it-' + it_nb + '_stack', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    stack = mdpk.load()
+
+# load the original back projection stack to get the maximum
+os.chdir(path_data)
+stack_orgn = None
+with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+            + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+            + 'stack', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    stack_orgn = mdpk.load()
+
+stckmx = stack_orgn[:, :, :].max()
+length_t = int(bp_len_t*bp_samp_rate)
+
+print('Creation of the back projection images of the event {}'.format(event),
+        'with the following parameters:',
+        '\n   -      frequency band : {} Hz'.format(frq_bnd),
+        '\n   -           component : {}'.format(cpnt),
+        '\n   - hypocenter_interval : {} km'.format(couronne),
+        '\n   -      selected_waves : {}'.format(hyp_bp),
+        '\n   -   azimuth selection : {} deg'.format(azim))
+print('This is the {} th iteration'.format(it_nb))
+# loop over the time, one back projection image is created for every time step
+for t in range(length_t):
+    # creation of figure
+    fig, ax = plt.subplots(1, 1)
+    # name of axis
+    ax.set_xlabel('Along strike (km)')
+    ax.set_ylabel('Down dip (km)')
+    # main part of the picture
+    im = ax.imshow(list(zip(*stack[t, :, :]))/stckmx,
+                   cmap = 'jet',
+                   vmin = 0,
+                   vmax = 1,
+                   interpolation = 'none',
+                   origin = 'lower',
+                   extent = (-l_grid/2,
+                             l_grid/2,
+                             -w_grid/2,
+                             w_grid/2))
+    # iso-values
+    iso = [0.8, 0.9]
+    # second layer of picture
+    cs = ax.contour(np.arange(-len(stack[0, :, 0])/2*l_grid_step,
+                              len(stack[0, :, 0])/2*l_grid_step,
+                              l_grid_step),
+                    np.arange(-len(stack[0, 0, :])/2*w_grid_step,
+                              len(stack[0, 0, :])/2*w_grid_step,
+                              w_grid_step),
+                    (list(zip(*stack[t, :, :]))/stckmx).reshape(int(len(stack[0, 0, :])),
+                                                                int(len(stack[0, :, 0]))),
+                    iso,
+                    origin = 'lower',
+                    linestyle = '-',
+                    extent = (-l_grid/2, l_grid/2, -w_grid/2, w_grid/2),
+                    colors = 'white')
+    # set the limits of the pictures to be able to see everything without
+    # having white strips on the edges
+    ax.set_xlim(-l_grid/2, l_grid/2)
+    ax.set_ylim(-w_grid/2, w_grid/2)
+    # red star with white border for the hypocenter
+    ax.scatter(0, 0, 500, marker = '*', color = 'white', linewidth = 0.2)
+    ax.scatter(0, 0, 300, marker = '*', color = 'red', linewidth = 0.2)
+    # show the time in relation to the rupture time
+    supertxt = ax.text(l_grid/2 - 2,
+                       - w_grid/2 + 4,
+                       str((t - 5*bp_samp_rate)/bp_samp_rate) + ' s',
+                       fontsize = 15,
+                       color = 'white',
+                       ha = 'right')
+    # background effect for the time
+    supertxt.set_path_effects([path_effects.Stroke(linewidth = 1,
+                                                   foreground = 'black'),
+                               path_effects.Normal()])
+    # use the setting of thetitle of the figure to show the orientation of the
+    # grid
+    ax.set_title('N' + str(strike) + str(degree) + 'E' + '$\longrightarrow$',
+                 loc = 'right')
+    # invert yaxis to have proper orientation
+    plt.gca().invert_yaxis()
+    # vector of the ticks we want to show on colorbar
+    v1 = [1, 0.8, 0.6, 0.4, 0.2, 0]
+    # add new axis on the right for the colorbar
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes('right', size = '3%', pad = 0.1)
+    # put the colorbar at the new axis position with the corresponding vector
+    # of ticks
+    cb = fig.colorbar(im, cax = cax, ticks = v1)
+    # add two white lines by hand to show the level of iso-values defined
+    # before
+    for i in iso:
+        cb.ax.plot([0, 1], [i, i], 'white')
+    # save the figures in both pdf and png format
+    os.chdir(path_pdf)
+    fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                + 'it-' + it_nb + '_' + str(int(t*1000/bp_samp_rate)) + '.pdf')
+    os.chdir(path_png)
+    fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                + 'it-' + it_nb + '_' + str(int(t*1000/bp_samp_rate)) + '.png')
+    print('Number of images already created: {} / {}'.format(t + 1, length_t))
+
+'''
 path_rslt_pdf = []
 path_rslt_png = []
 for scis in scission:
@@ -366,25 +463,4 @@ for scis in scission:
                     + past + '_'
                     + selected_patch + scis
                     + str(i*100) + '.png')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+'''
