@@ -44,11 +44,11 @@ path_sta = (root_folder + '/'
             + 'vel_env_selection/'
             + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
-path_trvt = (root_folder + '/'
-             + 'Kumamoto/'
-             + event + '/'
-             + 'results/'
-             + 'general')
+path_abs_trvt = (root_folder + '/'
+                + 'Kumamoto/'
+                + event + '/'
+                + 'results/'
+                + 'general')
 path_bpiv = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
@@ -74,19 +74,6 @@ for d in [path_bpiv_brut,
             print('Successfully created the directory {}'.format(d))
     else:
         print('{} is already existing'.format(d))
-
-# load picking delay dictionnary
-os.chdir(path_trvt)
-with open(event + '_picking_delays', 'rb') as mfch:
-    mdpk = pickle.Unpickler(mfch)
-    dict_vel = mdpk.load()
-
-if hyp_bp == 'P':
-    dict_vel_used = dict_vel['delay_P']
-elif hyp_bp == 'S':
-    dict_vel_used = dict_vel['delay_S']
-else:
-    print('Issue with selected waves')
 
 # load parameters of studied earthquake
 os.chdir(root_folder + '/Kumamoto')
@@ -121,6 +108,7 @@ with open(event + '_vel_env_' + frq_bnd + 'Hz_'
 
 # pick all the envelopes from the directory path_sta
 lst_sta = os.listdir(path_sta)
+lst_sta = [a for a in lst_sta if '.sac' in a]
 
 # gaussienne
 npts = 5001 # st[0].stats.npts
@@ -131,29 +119,26 @@ vect = np.linspace(0,
 sigma = 1./bp_samp_rate
 tr_gaus = [math.exp(- pow(a - 25, 2)/2/pow(sigma, 2)) for a in vect]
 
-# load the travel time dictionnary
-os.chdir(path_trvt)
-with open(event + '_travel_time_dict', 'rb') as mfch:
-    mdpk = pickle.Unpickler(mfch)
-    travt = mdpk.load()
-
 # creation of traces of inverse back projection
+print('Creation of the back projection inverse traces')
 for ista, s in enumerate(lst_sta):
     os.chdir(path_sta)
     st = read(s)
     sta_name = st[0].stats.station
     tstart = st[0].stats.starttime
+    print('Processing of the station {}'.format(sta_name),
+            '({} / {})'.format(ista + 1, len(lst_sta)),
+            end = ' ')
     # first step, inversion of the back projection stack
     station = {}
-    for it in range(len(stack[:, 0, 0])):
-        tshift = (travt[sta_name]
-                  - (tstart - t_origin_rupt)
-                  + dict_vel_used[sta_name]
-                  - 5
-                  + it/bp_samp_rate)
-        for x in range(len(tshift[:, 0])):
-            for y in range(len(tshift[0, :])):
-                station[tshift[x, y]] = stack[it, x, y]
+    os.chdir(path_abs_trvt)
+    with open(event + '_' + sta_name + '_absolute_delays', 'rb') as mfch:
+        mdpk = pickle.Unpickler(mfch)
+        bp1sta = mdpk.load()
+    for it in range(len(bp1sta)):
+        for x in range(len(bp1sta[0][:, 0])):
+            for y in range(len(bp1sta[0][0, :])):
+                station[bp1sta[it][x, y]] = stack[it, x, y]
     # second step, creation of the trace
     bpiv_tr = np.zeros(st[0].stats.npts)
     for k in station.keys():
@@ -166,3 +151,4 @@ for ista, s in enumerate(lst_sta):
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpiv_smth)
     tr.write(sta_name, format = 'SAC')
+    print('done')
