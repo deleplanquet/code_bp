@@ -84,6 +84,6 @@ for s in lst_sta:
 os.chdir(path_rslt)
 with open(event + '_vel_env_' + frq_bnd + 'Hz_'
           + cpnt + '_smooth_' + couronne + 'km_'
-          + hyp_bp + '_' + angle + 'deg_stack', 'wb') as mfch:
+          + hyp_bp + '_' + angle + 'deg_it-0_stack', 'wb') as mfch:
     mpck = pickle.Pickler(mfch)
     mpck.dump(stack)
