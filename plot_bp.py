@@ -57,8 +57,10 @@ path_common = (root_folder + '/'
 path_data = (path_common + '/'
              + 'others')
 path_pdf = (path_common + '/'
+            + 'brut/'
             + 'pdf')
 path_png = (path_common + '/'
+            + 'brut/'
             + 'png')
 
 # in case they do not exist, the following directories are created:
@@ -75,12 +77,6 @@ for d in [path_pdf, path_png]:
     else:
         print('{} is already existing'.format(d))
 
-# load location of the studied earthquake
-os.chdir(root_folder + '/Kumamoto')
-with open('ref_seismes_bin', 'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    dict_seis = my_dpck.load()
-
 length_t = int(bp_len_t*bp_samp_rate)
 
 # load the back projection stack to plot
@@ -88,9 +84,9 @@ os.chdir(path_data)
 stack = None
 with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
           + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_stack',
-          'rb') as my_fch:
-    my_dpck = pickle.Unpickler(my_fch)
-    stack = my_dpck.load()
+          'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    stack = mdpk.load()
 
 stckmx = stack[:, :, :].max()
 print('Creation of the back projection images of the event {}'.format(event),
@@ -159,8 +155,8 @@ for t in range(length_t):
     supertxt.set_path_effects([path_effects.Stroke(linewidth = 1,
                                                    foreground = 'black'),
                                path_effects.Normal()])
-    # use the setting of the title of the figure to show the orientation of
-    # the grid
+    # use the setting of the title of the figure to show the orientation of the
+    # grid
     ax.set_title('N' + str(strike) + str(degree) + 'E' + '$\longrightarrow$',
                  loc = 'right')
     # invert yaxis to have proper orientation
