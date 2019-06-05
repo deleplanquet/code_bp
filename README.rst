@@ -469,16 +469,16 @@ be smoothed.
     Kumamoto
     └── event
         ├── vel_env_selection
-        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle      *INPUT*
         ├── vel_env_bpinv
         │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle
-        │       ├── brut
-        │       └── smooth
+        │       ├── brut                                                        *OUTPUT*
+        │       └── smooth                                                      *OUTPUT*
         └── results
-            ├── general
+            ├── general                                                         *INPUT*
             └── vel_env_frq_band_component_smooth
                 └── hypo_interv_selected_waves_angle
-                    └── others          *INPUT*
+                    └── others                                                  *INPUT*
 
 Secondary codes
 ===============
