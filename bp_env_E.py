@@ -352,8 +352,8 @@ for ista, s in enumerate(lst_sta):
         bp1sta.append(tshift)
     # save the absolute delays for each station for each subgrid and each time
     # it will be usefull for iterations
-    os.chdir(path_rslt)
-    with open(, 'wb') as mfch:
+    os.chdir(path_rslt_gnrl)
+    with open(event + '_' + sta_name + '_absolute_delays', 'wb') as mfch:
         mpck = pickle.Pickler(mfch)
         mpck.dump(bp1sta)
     # store inside a dictionnary the back projection values of every station
