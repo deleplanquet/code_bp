@@ -83,8 +83,8 @@ length_t = int(bp_len_t*bp_samp_rate)
 os.chdir(path_data)
 stack = None
 with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-          + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_stack',
-          'rb') as mfch:
+          + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+          + 'stack', 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     stack = mdpk.load()
 
