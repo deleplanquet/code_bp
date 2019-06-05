@@ -55,9 +55,32 @@ path_bpiv = (root_folder + '/'
              + 'vel_env_bpinv/'
              + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
+
+lst_iter = os.listdir(path_bpiv)
+lst_iter = [a for a in lst_iter if 'iteration' in a]
+lst_iter.sort()
+print('Here is a list of the iterations of back projection that has already',
+        'been done:')
+for f in lst_iter:
+    print(f)
+it_nb = None
+while not isinstance(it_nb, int):
+    try:
+        it_nb = int(input('Pick a number corresponding to the iteration you'
+                            + ' want to use as input (interger): '))
+    except ValueError:
+        print('No valid number, try again')
+it_nb = str(it_nb)
+m_or_c = None
+while m_or_c != 'M' and m_or_c != 'C':
+    m_or_c = input('Choose if you want to apply the mask or its'
+                    + ' complementary (M or C): ')
+
 path_bpiv_brut = (path_bpiv + '/'
+                  + 'iteration-' + str(int(it_nb) + 1) + '/'
                   + 'brut')
 path_bpiv_smth = (path_bpiv + '/'
+                  + 'iteration-' + str(int(it_nb) + 1) + '/'
                   + 'smooth')
 
 # in case they do not exist, the following directories are created:
@@ -75,34 +98,11 @@ for d in [path_bpiv_brut,
     else:
         print('{} is already existing'.format(d))
 
-# load parameters of studied earthquake
-os.chdir(root_folder + '/Kumamoto')
-with open('ref_seismes_bin', 'rb') as mfch:
-    mdpk = pickle.Unpickler(mfch)
-    dict_seis = mdpk.load()
-
-# define the origin time of the rupture
-yea_seis = int(dict_seis[event]['nFnet'][0:4])
-mon_seis = int(dict_seis[event]['nFnet'][4:6])
-day_seis = int(dict_seis[event]['nFnet'][6:8])
-hou_seis = int(dict_seis[event]['nFnet'][8:10])
-min_seis = int(dict_seis[event]['nFnet'][10:12])
-sec_seis = int(dict_seis[event]['nFnet'][12:14])
-mse_seis = int(dict_seis[event]['nFnet'][14:16])
-
-t_origin_rupt = UTCDateTime(yea_seis,
-                            mon_seis,
-                            day_seis,
-                            hou_seis,
-                            min_seis,
-                            sec_seis,
-                            mse_seis)
-
 # load the stack from which inverse back projection traces will be created
 os.chdir(path_data)
 with open(event + '_vel_env_' + frq_bnd + 'Hz_'
           + cpnt + '_smooth_' + couronne + 'km_'
-          + hyp_bp + '_' + azim + 'deg_stack', 'rb') as mfch:
+          + hyp_bp + '_' + azim + 'deg_it-' + it_nb + '_stack', 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     stack = mdpk.load()
 
@@ -125,7 +125,6 @@ for ista, s in enumerate(lst_sta):
     os.chdir(path_sta)
     st = read(s)
     sta_name = st[0].stats.station
-    tstart = st[0].stats.starttime
     print('Processing of the station {}'.format(sta_name),
             '({} / {})'.format(ista + 1, len(lst_sta)),
             end = ' ')
@@ -145,10 +144,12 @@ for ista, s in enumerate(lst_sta):
         bpiv_tr[int(k*100)] += station[k]
     os.chdir(path_bpiv_brut)
     tr = Trace(bpiv_tr, st[0].stats)
-    tr.write(sta_name, format = 'SAC')
+    tr.write(sta_name + '_inv_it-' + str(int(it_nb) + 1) + '.sac',
+             format = 'SAC')
     # third step, smoothing of the trace
     tr = np.convolve(tr, tr_gaus, mode = 'same')
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpiv_smth)
-    tr.write(sta_name, format = 'SAC')
+    tr.write(sta_name + '_inv_smooth__it-' + str(int(it_nb) + 1) + '.sac',
+             format = 'SAC')
     print('done')
