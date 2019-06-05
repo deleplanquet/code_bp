@@ -418,7 +418,21 @@ faster further use.
 Summation among stations
 ------------------------
 
-``prestack2stack.py``
+``prestack2stack.py`` is reducing the dimension of the 4D cube to 3 dimensions
+by summing for the stations each subgrid at each time. The stations considered
+are the ones remaining after distance, energy and azimuth selections.
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env_selection
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle      *INPUT*
+        └── results
+            └── vel_env_frq_band_component_smooth
+                ├── hypo_interv_selected_waves_angle
+                │   └── others                                                  *OUTPUT*
+                └── others                                                      *INPUT*
 
 Plotting back projection images
 -------------------------------
