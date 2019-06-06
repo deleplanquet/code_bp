@@ -491,8 +491,8 @@ be smoothed.
 Iteration of back projection method
 -----------------------------------
 
-As explained in **Back projection**, the three steps are done here again by
-running the following codes:
+As explained in **Back projection** chapter, the three steps are done here
+again by running the following codes:
 
 * ``bp_env_E_patch_secondaire.py``
 * ``prestack2stack.py``
