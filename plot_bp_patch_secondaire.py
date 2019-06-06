@@ -60,24 +60,24 @@ print('Here is a list of the iterations of back projection stack that has',
         'already been done:')
 for f in lst_iter:
     print(f)
-it_nb = None
-while not isinstance(it_nb, int):
+it_nb_i = None
+while not isinstance(it_nb_i, int):
     try:
-        it_nb = int(input('Pick a number corresponding to the iteration you'
+        it_nb_i = int(input('Pick a number corresponding to the iteration you'
                             + ' want to use as input (integer): '))
     except ValueError:
         print('No valid number, try again')
-it_nb = str(it_nb)
+it_nb_i = str(it_nb_i)
 m_or_c = None
 while m_or_c != 'M' and m_or_c != 'C':
     m_or_c = input('Choose if you want to get the mask or its complementary'
                     + ' (M or C): ')
 
 path_pdf = (path_common + '/'
-            + 'iteration-' + it_nb + '/'
+            + 'iteration-' + it_nb_i + '/'
             + 'pdf')
 path_png = (path_common + '/'
-            + 'iteration-' + it_nb + '/'
+            + 'iteration-' + it_nb_i + '/'
             + 'png')
 
 # in case they do not exist, the following directories are created:
@@ -99,7 +99,7 @@ os.chdir(path_data)
 stack = None
 with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
             + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-            + 'it-' + it_nb + '_stack', 'rb') as mfch:
+            + 'it-' + it_nb_i + '_stack', 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     stack = mdpk.load()
 
@@ -122,7 +122,7 @@ print('Creation of the back projection images of the event {}'.format(event),
         '\n   - hypocenter_interval : {} km'.format(couronne),
         '\n   -      selected_waves : {}'.format(hyp_bp),
         '\n   -   azimuth selection : {} deg'.format(azim))
-print('This is the {} th iteration'.format(it_nb))
+print('This is the {} th iteration'.format(it_nb_i))
 # loop over the time, one back projection image is created for every time step
 for t in range(length_t):
     # creation of figure
@@ -197,11 +197,11 @@ for t in range(length_t):
     os.chdir(path_pdf)
     fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                + 'it-' + it_nb + '_' + str(int(t*1000/bp_samp_rate)) + '.pdf')
+                + 'it-' + it_nb_i + '_' + str(int(t*1000/bp_samp_rate)) + '.pdf')
     os.chdir(path_png)
     fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                + 'it-' + it_nb + '_' + str(int(t*1000/bp_samp_rate)) + '.png')
+                + 'it-' + it_nb_i + '_' + str(int(t*1000/bp_samp_rate)) + '.png')
     print('Number of images already created: {} / {}'.format(t + 1, length_t))
 
 '''
