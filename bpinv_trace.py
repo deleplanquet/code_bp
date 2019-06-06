@@ -63,24 +63,25 @@ print('Here is a list of the iterations of back projection that has already',
         'been done:')
 for f in lst_iter:
     print(f)
-it_nb = None
-while not isinstance(it_nb, int):
+it_nb_i = None
+while not isinstance(it_nb_i, int):
     try:
-        it_nb = int(input('Pick a number corresponding to the iteration you'
+        it_nb_i = int(input('Pick a number corresponding to the iteration you'
                             + ' want to use as input (interger): '))
     except ValueError:
         print('No valid number, try again')
-it_nb = str(it_nb)
+it_nb_o = str(it_nb_i + 1)
+it_nb_i = str(it_nb_i)
 m_or_c = None
 while m_or_c != 'M' and m_or_c != 'C':
     m_or_c = input('Choose if you want to apply the mask or its'
                     + ' complementary (M or C): ')
 
 path_bpiv_brut = (path_bpiv + '/'
-                  + 'iteration-' + str(int(it_nb) + 1) + '/'
+                  + 'iteration-' + it_nb_o + '/'
                   + 'brut')
 path_bpiv_smth = (path_bpiv + '/'
-                  + 'iteration-' + str(int(it_nb) + 1) + '/'
+                  + 'iteration-' + it_nb_o + '/'
                   + 'smooth')
 
 # in case they do not exist, the following directories are created:
@@ -102,7 +103,8 @@ for d in [path_bpiv_brut,
 os.chdir(path_data)
 with open(event + '_vel_env_' + frq_bnd + 'Hz_'
           + cpnt + '_smooth_' + couronne + 'km_'
-          + hyp_bp + '_' + azim + 'deg_it-' + it_nb + '_stack', 'rb') as mfch:
+          + hyp_bp + '_' + azim + 'deg_'
+          + 'it-' + it_nb_i + '_stack', 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     stack = mdpk.load()
 
@@ -144,12 +146,10 @@ for ista, s in enumerate(lst_sta):
         bpiv_tr[int(k*100)] += station[k]
     os.chdir(path_bpiv_brut)
     tr = Trace(bpiv_tr, st[0].stats)
-    tr.write(sta_name + '_inv_it-' + str(int(it_nb) + 1) + '.sac',
-             format = 'SAC')
+    tr.write(sta_name + '_inv_it-' + it_nb_o + '.sac', format = 'SAC')
     # third step, smoothing of the trace
     tr = np.convolve(tr, tr_gaus, mode = 'same')
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpiv_smth)
-    tr.write(sta_name + '_inv_smooth__it-' + str(int(it_nb) + 1) + '.sac',
-             format = 'SAC')
+    tr.write(sta_name + '_inv_smooth__it-' + it_nb_o + '.sac', format = 'SAC')
     print('done')
