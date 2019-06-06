@@ -151,5 +151,5 @@ for ista, s in enumerate(lst_sta):
     tr = np.convolve(tr, tr_gaus, mode = 'same')
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpiv_smth)
-    tr.write(sta_name + '_inv_smooth__it-' + it_nb_o + '.sac', format = 'SAC')
+    tr.write(sta_name + '_inv_smooth_it-' + it_nb_o + '.sac', format = 'SAC')
     print('done')
