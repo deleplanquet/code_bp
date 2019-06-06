@@ -83,19 +83,6 @@ path_stck = (root_folder + '/'
              + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
              + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
              + 'others')
-path_data_tr = (root_folder + '/'
-                + 'Kumamoto/'
-                + event + '/'
-                + 'vel_env_selection/'
-                + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
-path_rslt_mask = (root_folder + '/'
-                  + 'Kumamoto/'
-                  + event + '/'
-                  + 'vel_env_bpinv/'
-                  + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                        + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
-                  + 'smooth')
 
 lst_iter = os.listdir(path_stck)
 lst_iter = [a for a in lst_iter if '_it-' in a]
@@ -104,32 +91,46 @@ print('Here is a list of the iterations of back projection that has already',
         'been done:')
 for f in lst_iter:
     print(f)
-it_nb = None
-while not isinstance(it_nb, int):
+it_nb_i = None
+while not isinstance(it_nb_i, int):
     try:
-        it_nb = int(input('Pick a number corresponding to the iteration you'
+        it_nb_i = int(input('Pick a number corresponding to the iteration you'
                             + ' want to use as input (interger): '))
     except ValueError:
         print('No valid number, try again')
-it_nb = str(int(it_nb + 1))
+it_nb_o = str(it_nb_i + 1)
+it_nb_i = str(it_nb_i)
 m_or_c = None
 while m_or_c != 'M' and m_or_c != 'C':
     m_or_c = input('Choose if you want to apply the mask or its'
                     + 'complementary (M or C): ')
 
+path_data_tr = (root_folder + '/'
+                + 'Kumamoto/'
+                + event + '/'
+                + 'vel_env_modified/'
+                + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
+                + 'iteration-' + it_nb_i)
+path_data_mask = (root_folder + '/'
+                  + 'Kumamoto/'
+                  + event + '/'
+                  + 'vel_env_bpinv/'
+                  + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                        + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
+                  + 'iteration-' + it_nb_o + '/'
+                  + 'smooth')
 path_rslt_tr = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
                 + 'vel_env_modified/'
                 + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                     + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
-                + 'iteration-' + it_nb)
+                + 'iteration-' + it_nb_o)
 
 # in the case they do not exist, the following directories are created:
-# - path_rslt_mask
 # - path_rslt_tr
-for d in [path_rslt_mask,
-          path_rslt_tr]:
+for d in [path_rslt_tr]:
     if not os.path.isdir(d):
         try:
             os.makedirs(d)
@@ -155,10 +156,9 @@ for ista, s in enumerate(lst_sta):
     os.chdir(path_data_tr)
     st = read(s)
     # few parameters are stored because they will be used more than once
-    tstart = st[0].stats.starttime
     sta_name = st[0].stats.station
     # load the mask
-    os.chdir(path_rslt_mask)
+    os.chdir(path_data_mask)
     msk = read(sta_name)
     if m_or_c == 'M':
         tr = np.multiply(st[0].data, norm1(msk[0].data))
@@ -169,8 +169,8 @@ for ista, s in enumerate(lst_sta):
     tr[-1] = (st[0].data).max()
     os.chdir(path_rslt_tr)
     tr = Trace(np.asarray(tr), st[0].stats)
-    tr.write(sta_name + '_it-' + it_nb + '.sac', format = 'SAC')
-    st = read(sta_name + '_it-' + it_nb + '.sac')
+    tr.write(sta_name + '_it-' + it_nb_o + '.sac', format = 'SAC')
+    st = read(sta_name + '_it-' + it_nb_o + '.sac')
     # the maximum of the envelope is set to 1
     env_norm = norm1(st[0].data)
     # x-axis corresponding to the trace
@@ -196,6 +196,6 @@ for ista, s in enumerate(lst_sta):
 os.chdir(path_stck)
 with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
             + couronne + 'km_'+ hyp_bp + '_' + azim + 'deg_'
-            + 'it-' + it_nb + '_prestack', 'wb') as mfch:
+            + 'it-' + it_nb_o + '_prestack', 'wb') as mfch:
     mpck = pickle.Pickler(mfch)
     mpck.dump(prestack)
