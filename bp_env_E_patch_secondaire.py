@@ -159,7 +159,7 @@ for ista, s in enumerate(lst_sta):
     sta_name = st[0].stats.station
     # load the mask
     os.chdir(path_data_mask)
-    msk = read(sta_name)
+    msk = read(sta_name + '_inv_smooth_it-' + it_nb_o + '.sac')
     if m_or_c == 'M':
         tr = np.multiply(st[0].data, norm1(msk[0].data))
     elif m_or_c == 'C':
