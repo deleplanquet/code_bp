@@ -56,6 +56,16 @@ path_bpiv = (root_folder + '/'
              + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
 
+if not os.path.isdir(path_bpiv):
+    try:
+        os.makedirs(path_bpiv)
+    except OSError:
+        print('Creation of the directory {} failed'.format(path_bpiv))
+    else:
+        print('Successfully created the directory {}'.format(path_bpiv))
+else:
+    print('{} is already existing'.format(path_bpiv))
+
 lst_iter = os.listdir(path_bpiv)
 lst_iter = [a for a in lst_iter if 'iteration' in a]
 lst_iter.sort()
