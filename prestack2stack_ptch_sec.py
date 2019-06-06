@@ -54,14 +54,14 @@ print('Here is a list of the iterations of back projection prestack that has',
         'already been done:')
 for f in list_iter:
     print(f)
-it_nb = None
-while not isinstance(it_nb, int):
+it_nb_i = None
+while not isinstance(it_nb_i, int):
     try:
-        it_nb = int(input('Pick a number corresponding to the iteration you'
+        it_nb_i = int(input('Pick a number corresponding to the iteration you'
                             + ' want to use as input (interger): '))
     except ValueError:
         print('No valid number, try again')
-it_nb = str(it_nb)
+it_nb_i = str(it_nb_i)
 m_or_c = None
 while m_or_c != 'M' and m_or_c != 'C':
     m_or_c = input('Choose if you want to get the mask or its complementary'
@@ -71,7 +71,7 @@ while m_or_c != 'M' and m_or_c != 'C':
 os.chdir(path_data)
 with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
             + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
-            + 'it-' + it_nb + '_prestack', 'rb') as mfch:
+            + 'it-' + it_nb_i + '_prestack', 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     prestack = mdpk.load()
 
@@ -87,6 +87,6 @@ for s in lst_sta:
 os.chdir(path_data)
 with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
             + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
-            + 'it-' + it_nb + '_stack', 'wb') as mfch:
+            + 'it-' + it_nb_i + '_stack', 'wb') as mfch:
     mpck = pickle.Pickler(mfch)
     mpck.dump(stack)
