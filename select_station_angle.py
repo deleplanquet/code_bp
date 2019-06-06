@@ -41,24 +41,34 @@ path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'vel_env_selection/'
-             + frq_bnd + 'Hz_' + cpnt + '_smooth_' + couronne + 'km_' + hyp_bp)
+             + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp)
 path_rslt = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
              + 'vel_env_selection/'
-             + frq_bnd + 'Hz_' + cpnt + '_smooth_' + couronne + 'km_' + hyp_bp
-                + '_' + azim + 'deg')
+             + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
+path_rslt_mdf = (root_folder + '/'
+                 + 'Kumamoto/'
+                 + event + '/'
+                 + 'vel_env_modified/'
+                 + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
+                 + 'iteration-0')
 
-# create the directory path_rslt in case it does not exist
-if not os.path.isdir(path_rslt):
-    try:
-        os.makedirs(path_rslt)
-    except OSError:
-        print('Creation of the directory {} failed'.format(path_rslt))
+# create the directories path_rslt and path_rslt_mdf in case they do not exist
+for d in [path_rslt,
+          path_rslt_mdf]:
+    if not os.path.isdir(d):
+        try:
+            os.makedirs(d)
+        except OSError:
+            print('Creation of the directory {} failed'.format(d))
+        else:
+            print('Successfully created the directory {}'.format(d))
     else:
-        print('Successfully created the directory {}'.format(path_rslt))
-else:
-    print('{} is already existing'.format(path_rslt))
+        print('{} is already existing'.format(d))
 
 # load location of the studied earthquake
 with open('ref_seismes_bin', 'rb') as my_fch:
@@ -91,6 +101,8 @@ for s in lst_fch:
         os.chdir(path_rslt)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(s, format = 'SAC')
+        os.chdir(path_rslt_mdf)
+        tr.write(st[0].stats.station + '_it-0.sac', format = 'SAC')
         print('   {:.2f} \u2208'.format(azm),
             '[{}, {}]\u222a[{}, {}]'.format(azim_min, azim_max,
                                             azim_min + 180, azim_max + 180),
