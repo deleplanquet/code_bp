@@ -112,7 +112,8 @@ with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
     mdpk = pickle.Unpickler(mfch)
     stack_orgn = mdpk.load()
 
-stckmx = stack_orgn[:, :, :].max()
+stck_or_mx = stack_orgn[:, :, :].max()
+stck_mx = stack[:, :, :].max()
 length_t = int(bp_len_t*bp_samp_rate)
 
 print('Creation of the back projection images of the event {}'.format(event),
@@ -131,7 +132,7 @@ for t in range(length_t):
     ax.set_xlabel('Along strike (km)')
     ax.set_ylabel('Down dip (km)')
     # main part of the picture
-    im = ax.imshow(list(zip(*stack[t, :, :]))/stckmx,
+    im = ax.imshow(list(zip(*stack[t, :, :]))/stck_or_mx,
                    cmap = 'jet',
                    vmin = 0,
                    vmax = 1,
@@ -142,7 +143,7 @@ for t in range(length_t):
                              -w_grid/2,
                              w_grid/2))
     # iso-values
-    iso = [0.8, 0.9]
+    iso = [0.8*stck_mx/stck_or_mx, 0.9*stck_mx/stck_or_mx]
     # second layer of picture
     cs = ax.contour(np.arange(-len(stack[0, :, 0])/2*l_grid_step,
                               len(stack[0, :, 0])/2*l_grid_step,
@@ -150,7 +151,7 @@ for t in range(length_t):
                     np.arange(-len(stack[0, 0, :])/2*w_grid_step,
                               len(stack[0, 0, :])/2*w_grid_step,
                               w_grid_step),
-                    (list(zip(*stack[t, :, :]))/stckmx).reshape(int(len(stack[0, 0, :])),
+                    (list(zip(*stack[t, :, :]))/stck_or_mx).reshape(int(len(stack[0, 0, :])),
                                                                 int(len(stack[0, :, 0]))),
                     iso,
                     origin = 'lower',
