@@ -85,7 +85,7 @@ path_stck = (root_folder + '/'
              + 'others')
 
 lst_iter = os.listdir(path_stck)
-lst_iter = [a for a in lst_iter if '_it-' in a]
+lst_iter = [a for a in lst_iter if '_it-' in a and '_stack' in a]
 lst_iter.sort()
 print('Here is a list of the iterations of back projection that has already',
         'been done:')
