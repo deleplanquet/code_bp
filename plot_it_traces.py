@@ -41,6 +41,7 @@ path_rslt = (root_folder + '/'
              + 'results/'
              + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
              + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
+             + 'miscellaneous_plots/'
              + 'plots_modified_traces_iteration')
 
 # create the directory path_rslt in case it does not exist
