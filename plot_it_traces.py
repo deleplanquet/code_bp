@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-print('#############################',
-    '\n###   plot_it_traces.py   ###',
-    '\n#############################')
+print('#####################################',
+    '\n###   python3 plot_it_traces.py   ###',
+    '\n#####################################')
 
 # open the file of the parameters given by the user through parametres.py and
 # load them
@@ -43,7 +43,7 @@ path_rslt = (root_folder + '/'
              + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
              + 'plots_modified_traces_iteration')
 
-# create the directory path_rslt in cas it does not exist
+# create the directory path_rslt in case it does not exist
 if not os.path.isdir(path_rslt):
     try:
         os.makedirs(path_rslt)
