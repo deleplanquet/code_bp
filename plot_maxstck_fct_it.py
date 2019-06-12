@@ -100,7 +100,7 @@ for it in lst_it:
     # red star with white border for the hypocenter
     ax2.scatter(0, 0, 250, marker = '*', color = 'white', lw = 0.2, zorder = 0)
     ax2.scatter(0, 0, 150, marker = '*', color = 'red', lw = 0.2, zorder = 1)
-    ax2.scatter(np.where(stck == stck_mx)[1] - l_grid/2 + int(it[10:])/10,
+    ax2.scatter(np.where(stck == stck_mx)[1] - l_grid/2,
                 np.where(stck == stck_mx)[2] - w_grid/2,
                 s = 3,
                 color = 'black',
