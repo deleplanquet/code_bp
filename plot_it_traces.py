@@ -71,10 +71,13 @@ for s in lst_sta:
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Normalized envelope')
     ax.set_xlim([0, 30])
+    ax.set_ylim([0, 1.1])
     for it in lst_it:
         os.chdir(path_data_common + '/' + it)
         st = read(s[:6] + '_it-' + it[-1] + '.sac')
+        tr = st[0]
         t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        ax.plot(t, st[0].data, lw = 0.5, color = 'black')
+        ax.plot(t, tr.normalize(), lw = 0.5, color = 'black')
+        ax.fill_between(t, 0, st[0].data, color = 'black', alpha = 0.1)
     os.chdir(path_rslt)
     fig.savefig(s[:6] + '.pdf')
