@@ -40,8 +40,8 @@ path_rslt = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
                 + 'results/'
-                + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
+                + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
                 + 'miscellaneous_plots/'
                 + 'stations_fct_iterations')
 
@@ -58,6 +58,7 @@ else:
 
 lst_it = os.listdir(path_data)
 lst_it = [a for a in lst_it if 'iteration' in a]
+itx = np.linspace(0, len(lst_it) - 1, len(lst_it))
 
 lst_sta = os.listdir(path_data + '/iteration-0')
 lst_sta = [a for a in lst_sta if '.sac' in a]
@@ -66,15 +67,20 @@ for s in lst_sta:
     fig, ax = plt.subplots(1, 1)
     ax.set_xlabel('Number of iterations')
     ax.set_ylabel('')
-    #ax.set_xlim([])
-    #ax.set_ylim([])
+    ax.set_xlim([0, 1.1*len(lst_it)])
+    ax.set_ylim([0, 1.1])
+    tr_mx = np.zeros(len(lst_it))
+    integ = np.zeros(len(lst_it))
     for it in lst_it:
         os.chdir(path_data + '/' + it)
         st = read(s[:6] + '_it-' + it[10:] + '.sac')
         tr = st[0]
-        integ = np.trapz(tr, dx = st[0].stats.sampling_rate)
-        tr_mx = tr[:int(30/st[0].sampling_rate)].max()
-        ax.scatter(it, tr_mx, s = 10, color = 'red')
-        ax.scatter(it, integ, s = 10, color = 'blue')
+        tr_mx[int(it[10:])] = tr[:int(30*st[0].stats.sampling_rate)].max()
+        integ[int(it[10:])] = np.trapz(tr, dx = st[0].stats.sampling_rate)
+    tr_mx = [a/tr_mx.max() for a in tr_mx]
+    integ = [a/integ.max() for a in integ]
+    ax.scatter(itx, tr_mx, s = 10, color = 'red', label = 'maximum value')
+    ax.scatter(itx, integ, s = 10, color = 'blue', label = 'integration')
+    ax.legend(fontsize = 10, loc = 1)
     os.chdir(path_rslt)
     fig.savefig(s[:6] + '_max_and_integ_eveloution.pdf')
