@@ -45,7 +45,7 @@ path_rslt = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
                 + 'results/'
-                + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + 'smooth/'
+                + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
                 + couronne + 'km_' + hyp_bp + '_' +azim + 'deg/'
                 + 'miscellaneous_plots/'
                 + 'modif_plots_and_bpinv_traces_iteration')
@@ -89,7 +89,7 @@ for s in lst_sta:
         tr = st[0]
         tr.normalize()
         t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        ax[1].plt(t, tr, lw = 0.1, color = 'black')
+        ax[1].plot(t, tr, lw = 0.1, color = 'black')
         ax[1].fill_between(t, 0, tr, lw = 0, color = 'black', alpha = 0.1)
     os.chdir(path_rslt)
     fig.savefig(s[:6] + '.pdf')
