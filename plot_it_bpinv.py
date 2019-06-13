@@ -15,7 +15,7 @@ print('####################################',
 root_folder = os.getcwd()[:-6]
 os.chdir(root_folder + '/Kumamoto')
 with open('parametres_bin', 'rb') as mfch:
-    mdpk = pickler.Unpickler(mfch)
+    mdpk = pickle.Unpickler(mfch)
     param = mdpk.load()
 
 # all the parameters are not used in this script, only the following ones
@@ -58,7 +58,7 @@ else:
 lst_it = os.listdir(path_data_common)
 lst_it = [a for a in lst_it if 'iteration' in a]
 
-lst_sta = os.listdir(path_data_common + '/iteration-0')
+lst_sta = os.listdir(path_data_common + '/iteration-1/smooth')
 lst_sta = [a for a in lst_sta if '.sac' in a]
 
 for s in lst_sta:
@@ -74,6 +74,6 @@ for s in lst_sta:
         tr.normalize()
         t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
         ax.plot(t, tr, lw = 0.1, color = 'black')
-        ax.fill_betweent(t, 0, tr, lw = 0, color = 'black', alpha = 0.1)
+        ax.fill_between(t, 0, tr, lw = 0, color = 'black', alpha = 0.1)
     os.chdir(path_rslt)
     fig.savefig(s[:6] + '.pdf')
