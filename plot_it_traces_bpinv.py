@@ -76,20 +76,28 @@ for s in lst_sta:
     ax[1].set_xlim([0, 30])
     ax[0].set_ylim([0, 1.1])
     ax[1].set_ylim([0, 1.1])
+    os.chdir(path_tr_modf + '/iteration-0')
+    st = read(s[:6] + '_it-0.sac')
+    tr = st[0]
+    tr.normalize()
+    t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+    ax[0].plot(t, tr, lw = 0.1, color = 'black')
+    ax[0].fill_between(t, 0, tr, lw = 0, color = 'black', alpha = 0.1)
     for it in lst_it:
-        os.chdir(path_tr_modf + '/' + it)
-        st = read(s[:6] + '_it-' + it[10:] + '.sac')
-        tr = st[0]
-        tr.normalize()
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        ax[0].plot(t, tr, lw = 0.1, color = 'black')
-        ax[0].fill_between(t, 0, tr, lw = 0, color = 'black', alpha = 0.1)
-        os.chdir(path_tr_bpiv + '/' + it + '/smooth')
-        st = read(s[:6] + '_inv_smooth_it-' + it[10:] + '.sac')
-        tr = st[0]
-        tr.normalize()
-        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-        ax[1].plot(t, tr, lw = 0.1, color = 'black')
-        ax[1].fill_between(t, 0, tr, lw = 0, color = 'black', alpha = 0.1)
+        lst_pth = [path_tr_modf + '/' + it,
+                   path_tr_bpiv + '/' + it + '/smooth']
+        lst_sta_fil = [s[:6] + '_it-' + it[10:] + '.sac',
+                       s[:6] + '_inv_smooth_it-' + it[10:] + '.sac']
+        for axnb, (path, sta_file) in enumerate(zip(lst_pth, lst_sta_fil)):
+            os.chdir(path)
+            st = read(sta_file)
+            tr = st[0]
+            tr.normalize()
+            t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+            ax[axnb].plot(t, tr, lw = 0.1, color = 'black')
+            ax[axnb].fill_between(t, 0, tr,
+                                  lw = 0,
+                                  color = 'black',
+                                  alpha = 0.1)
     os.chdir(path_rslt)
     fig.savefig(s[:6] + '.pdf')
