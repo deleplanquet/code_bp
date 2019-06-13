@@ -501,6 +501,21 @@ again by running the following codes:
 Secondary codes
 ===============
 
+plot_it_traces.py
+-----------------
+
+plot_it_bpinv.py
+----------------
+
+plot_it_traces_bpinv.py
+-----------------------
+
+plot_station_fct_it.py
+----------------------
+
+plot_maxatck_fct_it.py
+----------------------
+
 python3 plot_traces.py
 ----------------------
 
