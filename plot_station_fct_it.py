@@ -83,4 +83,4 @@ for s in lst_sta:
     ax.scatter(itx, integ, s = 10, color = 'blue', label = 'integration')
     ax.legend(fontsize = 10, loc = 1)
     os.chdir(path_rslt)
-    fig.savefig(s[:6] + '_max_and_integ_eveloution.pdf')
+    fig.savefig(s[:6] + '_max_and_integ_evolution.pdf')
