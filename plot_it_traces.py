@@ -51,7 +51,7 @@ if not os.path.isdir(path_rslt):
     except OSError:
         print('Creation of the directory {} failed'.format(path_rslt))
     else:
-        print('Successfully crated the directory {}'.format(path_rslt))
+        print('Successfully created the directory {}'.format(path_rslt))
 else:
     print('{} is already existing'.format(path_rslt))
 
