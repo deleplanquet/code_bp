@@ -104,6 +104,8 @@ if m_or_c == 'M':
     path_data_tr = path_data_tr + '/iteration-' + it_nb_i
 elif m_or_c == 'C':
     path_data_tr = path_data_tr + '/iteration-0'
+else:
+    print('Issue with m_or_c')
 # however the used mask is always the one selected
 path_data_mask = (root_folder + '/'
                   + 'Kumamoto/'
@@ -120,7 +122,12 @@ path_rslt_tr = (root_folder + '/'
                 + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                     + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
                 + 'iteration-' + it_nb_o)
-if 
+if m_or_c == 'M':
+    path_rslt_tr = path_rslt_tr + '/iteration-' + it_nb_o
+elif m_or_c == 'C':
+    path_rslt_tr = path_rslt_tr + '/iteration-' + it_nb_i + '_patch_2'
+else:
+    print('Issue with m_or_c')
 
 # in the case they do not exist, the following directories are created:
 # - path_rslt_tr
@@ -163,8 +170,14 @@ for ista, s in enumerate(lst_sta):
     tr[-1] = (st[0].data).max()
     os.chdir(path_rslt_tr)
     tr = Trace(np.asarray(tr), st[0].stats)
-    tr.write(sta_name + '_it-' + it_nb_o + '.sac', format = 'SAC')
-    st = read(sta_name + '_it-' + it_nb_o + '.sac')
+    if m_or_c == 'M':
+        tr.write(sta_name + '_it-' + it_nb_o + '.sac', format = 'SAC')
+        st = read(sta_name + '_it-' + it_nb_o + '.sac')
+    elif: m_or_c == 'C':
+        tr.write(sta_name + '_it-' + it_nb_i + '_patch_2.sac', format = 'SAC')
+        st = read(sta_name + '_it-' + it_nb_i + '_patch_2.sac', format = 'SAC')
+    else:
+        print('Issue between mask and complementary')
     # the maximum of the envelope is set to 1
     env_norm = norm1(st[0].data)
     # x-axis corresponding to the trace
@@ -188,8 +201,15 @@ for ista, s in enumerate(lst_sta):
     print('done')
 
 os.chdir(path_stck)
-with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-            + couronne + 'km_'+ hyp_bp + '_' + azim + 'deg_'
-            + 'it-' + it_nb_o + '_prestack', 'wb') as mfch:
-    mpck = pickle.Pickler(mfch)
-    mpck.dump(prestack)
+if m_or_c == 'M':
+    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                + 'it-' + it_nb_o + '_prestack', 'wb') as mfch:
+        mpck = pickle.Pickler(mfch)
+        mpck.dump(prestack)
+elif: m_or_c == 'C':
+    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                + 'it-' + it_nb_i + '_patch_2_prestack', 'wb') as mfch:
+        mpck = pickle.Pickler(mfch)
+        mpck.dump(prestack)
