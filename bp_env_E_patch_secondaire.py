@@ -100,34 +100,33 @@ path_data_tr = (root_folder + '/'
                 + 'vel_env_modified/'
                 + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                     + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
-if m_or_c == 'M':
-    path_data_tr = path_data_tr + '/iteration-' + it_nb_i
-elif m_or_c == 'C':
-    path_data_tr = path_data_tr + '/iteration-0'
-else:
-    print('Issue with m_or_c')
-# however the used mask is always the one selected
 path_data_mask = (root_folder + '/'
                   + 'Kumamoto/'
                   + event + '/'
                   + 'vel_env_bpinv/'
                   + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                        + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
-                  + 'iteration-' + it_nb_o + '/'
-                  + 'smooth')
+                        + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
 path_rslt_tr = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
                 + 'vel_env_modified/'
                 + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
-                + 'iteration-' + it_nb_o)
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
 if m_or_c == 'M':
+    path_data_tr = path_data_tr + '/iteration-' + it_nb_i
+    path_data_mask = (path_data_mask + '/'
+                        + 'iteration-' + it_nb_o + '/'
+                        + 'smooth')
     path_rslt_tr = path_rslt_tr + '/iteration-' + it_nb_o
 elif m_or_c == 'C':
-    path_rslt_tr = path_rslt_tr + '/iteration-' + it_nb_o + '_patch_2'
+    path_data_tr = path_data_tr + '/iteration-0'
+    path_data_mask = (path_data_mask + '/'
+                        + 'iteration-' + it_nb_i + '/'
+                        + 'smooth')
+    path_rslt_tr = path_rslt_tr + '/iteration-' + it_nb_i + '_patch_2'
 else:
     print('Issue with m_or_c')
+# however the used mask is always the one selected
 
 # in the case they do not exist, the following directories are created:
 # - path_rslt_tr
@@ -160,10 +159,11 @@ for ista, s in enumerate(lst_sta):
     sta_name = st[0].stats.station
     # load the mask
     os.chdir(path_data_mask)
-    msk = read(sta_name + '_inv_smooth_it-' + it_nb_o + '.sac')
     if m_or_c == 'M':
+        msk = read(sta_name + '_inv_smooth_it-' + it_nb_o + '.sac')
         tr = np.multiply(st[0].data, norm1(msk[0].data))
     elif m_or_c == 'C':
+        msk = read(sta_name + '_inv_smooth_it-' + it_nb_i + '.sac')
         tr = np.multiply(st[0].data, 1 - np.asarray(norm1(msk[0].data)))
     else:
         print('Issue between mask and complementary')
@@ -174,8 +174,8 @@ for ista, s in enumerate(lst_sta):
         tr.write(sta_name + '_it-' + it_nb_o + '.sac', format = 'SAC')
         st = read(sta_name + '_it-' + it_nb_o + '.sac')
     elif m_or_c == 'C':
-        tr.write(sta_name + '_it-' + it_nb_o + '_patch_2.sac', format = 'SAC')
-        st = read(sta_name + '_it-' + it_nb_o + '_patch_2.sac', format = 'SAC')
+        tr.write(sta_name + '_it-' + it_nb_i + '_patch_2.sac', format = 'SAC')
+        st = read(sta_name + '_it-' + it_nb_i + '_patch_2.sac', format = 'SAC')
     else:
         print('Issue between mask and complementary')
     # the maximum of the envelope is set to 1
@@ -210,7 +210,7 @@ if m_or_c == 'M':
 elif m_or_c == 'C':
     with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                + 'it-' + it_nb_o + '_patch_2_prestack', 'wb') as mfch:
+                + 'it-' + it_nb_i + '_patch_2_prestack', 'wb') as mfch:
         mpck = pickle.Pickler(mfch)
         mpck.dump(prestack)
 else:
