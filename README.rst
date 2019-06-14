@@ -541,6 +541,28 @@ station.
 plot_it_traces_bpinv.py
 -----------------------
 
+``plot_it_traces_bpinv.py`` is representing on the same figure the results of
+both ``plot_it_traces.py`` and ``plot_it_bpinv.py``. That is, for each station,
+one figure with two subfigures:
+
+* top figure: evolution of the energy traces with the iterations
+* bottom figure: evolution of the inverse back projection smoothed traces with
+  the iterations
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env_modifiedv
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
+        ├── vel_env_bpinv
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    └── miscellaneous_plots
+                        └── modif_plots_and_bpinv_traces_iteration          *OUTPUT*
+
 plot_station_fct_it.py
 ----------------------
 
