@@ -553,7 +553,7 @@ one figure with two subfigures:
 
     Kumamoto
     └── event
-        ├── vel_env_modifiedv
+        ├── vel_env_modified
         │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
         ├── vel_env_bpinv
         │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
@@ -566,7 +566,23 @@ one figure with two subfigures:
 plot_station_fct_it.py
 ----------------------
 
-plot_maxatck_fct_it.py
+``plot_station_fct_it.py`` is representing the evolution of the maximum value
+of the energy traces and its integral with the iterations. There is one figure
+per station.
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env_modified
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    └── miscellaneous_plots
+                        └── stations_fct_iterations                         *OUTPUT*
+
+plot_maxstck_fct_it.py
 ----------------------
 
 python3 plot_traces.py
