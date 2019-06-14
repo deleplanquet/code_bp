@@ -53,20 +53,6 @@ bp_len_t = param['bp_length_time']
 #selected_patch = 'patch_85'
 l_smooth = param['l_smooth']
 
-###########################
-###########################
-past = ''
-#past = 'patch_85' # ce qui va avant slected_patch
-pastpast = '' # a garder vide pour modifier a chaque fois la trace originelle
-#pastpast = 'patch_85' # le dossier des fichiers utilises
-###########################
-###########################
-
-if past != '':
-    past = '_' + past
-if pastpast != '':
-    pastpast = '_' + pastpast
-
 # directories used in this script
 #
 #
