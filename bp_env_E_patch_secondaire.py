@@ -213,3 +213,5 @@ elif: m_or_c == 'C':
                 + 'it-' + it_nb_o + '_patch_2_prestack', 'wb') as mfch:
         mpck = pickle.Pickler(mfch)
         mpck.dump(prestack)
+else:
+    print('Issue between mask and complementary')
