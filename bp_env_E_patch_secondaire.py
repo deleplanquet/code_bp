@@ -125,7 +125,7 @@ path_rslt_tr = (root_folder + '/'
 if m_or_c == 'M':
     path_rslt_tr = path_rslt_tr + '/iteration-' + it_nb_o
 elif m_or_c == 'C':
-    path_rslt_tr = path_rslt_tr + '/iteration-' + it_nb_i + '_patch_2'
+    path_rslt_tr = path_rslt_tr + '/iteration-' + it_nb_o + '_patch_2'
 else:
     print('Issue with m_or_c')
 
@@ -174,8 +174,8 @@ for ista, s in enumerate(lst_sta):
         tr.write(sta_name + '_it-' + it_nb_o + '.sac', format = 'SAC')
         st = read(sta_name + '_it-' + it_nb_o + '.sac')
     elif: m_or_c == 'C':
-        tr.write(sta_name + '_it-' + it_nb_i + '_patch_2.sac', format = 'SAC')
-        st = read(sta_name + '_it-' + it_nb_i + '_patch_2.sac', format = 'SAC')
+        tr.write(sta_name + '_it-' + it_nb_o + '_patch_2.sac', format = 'SAC')
+        st = read(sta_name + '_it-' + it_nb_o + '_patch_2.sac', format = 'SAC')
     else:
         print('Issue between mask and complementary')
     # the maximum of the envelope is set to 1
@@ -210,6 +210,6 @@ if m_or_c == 'M':
 elif: m_or_c == 'C':
     with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                + 'it-' + it_nb_i + '_patch_2_prestack', 'wb') as mfch:
+                + 'it-' + it_nb_o + '_patch_2_prestack', 'wb') as mfch:
         mpck = pickle.Pickler(mfch)
         mpck.dump(prestack)
