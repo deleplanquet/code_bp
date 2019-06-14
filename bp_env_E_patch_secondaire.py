@@ -173,7 +173,7 @@ for ista, s in enumerate(lst_sta):
     if m_or_c == 'M':
         tr.write(sta_name + '_it-' + it_nb_o + '.sac', format = 'SAC')
         st = read(sta_name + '_it-' + it_nb_o + '.sac')
-    elif: m_or_c == 'C':
+    elif m_or_c == 'C':
         tr.write(sta_name + '_it-' + it_nb_o + '_patch_2.sac', format = 'SAC')
         st = read(sta_name + '_it-' + it_nb_o + '_patch_2.sac', format = 'SAC')
     else:
