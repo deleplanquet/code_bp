@@ -585,6 +585,20 @@ per station.
 plot_maxstck_fct_it.py
 ----------------------
 
+``plot_maxstck_fct_it.py`` is representing the evolution of the position of the
+maximum of the stack among iterations. Does not show any indication if the
+time of the global maximum is changing.
+
+::
+
+    Kumamoto
+    └── event
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    ├── others                  *INPUT*
+                    └── miscellaneous_plots     *OUTPUT*
+
 python3 plot_traces.py
 ----------------------
 
