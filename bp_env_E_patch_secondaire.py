@@ -91,13 +91,20 @@ while m_or_c != 'M' and m_or_c != 'C':
     m_or_c = input('Choose if you want to apply the mask or its'
                     + 'complementary (M or C): ')
 
+# in the case the complementary is choosen, intead of using the last iteration
+# modified traces, the original traces are used
+# we remove the selected patch to the original stack
 path_data_tr = (root_folder + '/'
                 + 'Kumamoto/'
                 + event + '/'
                 + 'vel_env_modified/'
                 + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
-                + 'iteration-' + it_nb_i)
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
+if m_or_c == 'M':
+    path_data_tr = path_data_tr + '/iteration-' + it_nb_i
+elif m_or_c == 'C':
+    path_data_tr = path_data_tr + '/iteration-0'
+# however the used mask is always the one selected
 path_data_mask = (root_folder + '/'
                   + 'Kumamoto/'
                   + event + '/'
@@ -113,6 +120,7 @@ path_rslt_tr = (root_folder + '/'
                 + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                     + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
                 + 'iteration-' + it_nb_o)
+if 
 
 # in the case they do not exist, the following directories are created:
 # - path_rslt_tr
