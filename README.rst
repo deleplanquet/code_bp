@@ -504,8 +504,39 @@ Secondary codes
 plot_it_traces.py
 -----------------
 
+``plot_it_traces`` is representing on one figure the evolution of the energy
+traces with the iterations. There is one figure per station.
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env_modified
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    └── miscellaneous_plots
+                        └── plots_modified_traces_iteration                 *OUTPUT*
+
 plot_it_bpinv.py
 ----------------
+
+``plot_it_bpinv.py`` is representing on one figure the evolution of the inverse
+back projection smoothed traces with the iterations. There is one figure per
+station.
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env_bpinv
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    └── miscellaneous_plots
+                        └── bpinv_traces_iteration                          *OUTPUT*
 
 plot_it_traces_bpinv.py
 -----------------------
