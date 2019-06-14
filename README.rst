@@ -140,6 +140,11 @@ Tree view
                 │   ├── iteration-i
                 │   │   ├── pdf
                 │   │   └── png
+                │   ├── miscellaneous_plots
+                │   │   ├── plots_modified_traces_iteration
+                │   │   ├── bpinv_traces_iteration
+                │   │   ├── modif_plots_and_bpinv_traces_iteration
+                │   │   └── stations_fct_iterations
                 │   └── others
                 └── others
 
