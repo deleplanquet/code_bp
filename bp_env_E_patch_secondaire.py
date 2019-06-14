@@ -207,7 +207,7 @@ if m_or_c == 'M':
                 + 'it-' + it_nb_o + '_prestack', 'wb') as mfch:
         mpck = pickle.Pickler(mfch)
         mpck.dump(prestack)
-elif: m_or_c == 'C':
+elif m_or_c == 'C':
     with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
                 + 'it-' + it_nb_o + '_patch_2_prestack', 'wb') as mfch:
