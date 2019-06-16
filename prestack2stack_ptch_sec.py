@@ -69,11 +69,20 @@ while m_or_c != 'M' and m_or_c != 'C':
 
 # load the 4D back projection cube
 os.chdir(path_data)
-with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-            + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
-            + 'it-' + it_nb_i + '_prestack', 'rb') as mfch:
-    mdpk = pickle.Unpickler(mfch)
-    prestack = mdpk.load()
+if m_or_c == 'M':
+    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
+                + 'it-' + it_nb_i + '_prestack', 'rb') as mfch:
+        mdpk = pickle.Unpickler(mfch)
+        prestack = mdpk.load()
+elif m_or_c == 'C':
+    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
+                + 'it-' + it_nb_i + '_patch_2_prestack', 'rb') as mfch:
+        mdpk = pickle.Unpickler(mfch)
+        prestack = mdpk.load()
+else:
+    print('Issue between mask and complementary')
 
 lst_sta = os.listdir(path_sta)
 lst_sta = [a for a in lst_sta if '.sac' in a]
@@ -85,8 +94,15 @@ for s in lst_sta:
     stack = stack + prestack[s[:6]]
 
 os.chdir(path_data)
-with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-            + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
-            + 'it-' + it_nb_i + '_stack', 'wb') as mfch:
-    mpck = pickle.Pickler(mfch)
-    mpck.dump(stack)
+if m_or_c == 'M':
+    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
+                + 'it-' + it_nb_i + '_stack', 'wb') as mfch:
+        mpck = pickle.Pickler(mfch)
+        mpck.dump(stack)
+elif m_or_c == 'C':
+    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
+                + 'it-' + it_nb_i + '_patch_2_stack', 'wb') as mfch:
+        mpck = pickle.Pickler(mfch)
+        mpck.dump(stack)

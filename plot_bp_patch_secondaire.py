@@ -73,12 +73,20 @@ while m_or_c != 'M' and m_or_c != 'C':
     m_or_c = input('Choose if you want to get the mask or its complementary'
                     + ' (M or C): ')
 
-path_pdf = (path_common + '/'
-            + 'iteration-' + it_nb_i + '/'
-            + 'pdf')
-path_png = (path_common + '/'
-            + 'iteration-' + it_nb_i + '/'
-            + 'png')
+if m_or_c == 'M':
+    path_pdf = (path_common + '/'
+                + 'iteration-' + it_nb_i + '/'
+                + 'pdf')
+    path_png = (path_common + '/'
+                + 'iteration-' + it_nb_i + '/'
+                + 'png')
+elif m_or_c == 'C':
+    path_pdf = (path_common + '/'
+                + 'iteration-' + it_nb_i + '_patch_2/'
+                + 'pdf')
+    path_png = (path_common + '/'
+                + 'iteration-' + it_nb_i + '_patch_2/'
+                + 'png')
 
 # in case they do not exist, the following directories are created:
 # - path_pdf
@@ -96,16 +104,21 @@ for d in [path_pdf, path_png]:
 
 # load the back projection stack to plot
 os.chdir(path_data)
-stack = None
-with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-            + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-            + 'it-' + it_nb_i + '_stack', 'rb') as mfch:
-    mdpk = pickle.Unpickler(mfch)
-    stack = mdpk.load()
+if m_or_c == 'M':
+    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                + 'it-' + it_nb_i + '_stack', 'rb') as mfch:
+        mdpk = pickle.Unpickler(mfch)
+        stack = mdpk.load()
+elif m_or_c == 'C':
+    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                + 'it-' + it_nb_i + '_patch_2_stack', 'rb') as mfch:
+        mdpk = pickle.Unpickler(mfch)
+        stack = mdpk.load()
 
 # load the original back projection stack to get the maximum
 os.chdir(path_data)
-stack_orgn = None
 with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
             + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
             + 'it-0_stack', 'rb') as mfch:
@@ -195,12 +208,26 @@ for t in range(length_t):
     for i in iso:
         cb.ax.plot([0, 1], [i, i], 'white')
     # save the figures in both pdf and png format
-    os.chdir(path_pdf)
-    fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                + 'it-' + it_nb_i + '_' + str(int(t*1000/bp_samp_rate)) + '.pdf')
-    os.chdir(path_png)
-    fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                + 'it-' + it_nb_i + '_' + str(int(t*1000/bp_samp_rate)) + '.png')
+    if m_or_c == 'M':
+        os.chdir(path_pdf)
+        fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                    + 'it-' + it_nb_i + '_'
+                    + str(int(t*1000/bp_samp_rate)) + '.pdf')
+        os.chdir(path_png)
+        fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                    + 'it-' + it_nb_i + '_'
+                    + str(int(t*1000/bp_samp_rate)) + '.png')
+    elif m_or_c == 'C':
+        os.chdir(path_pdf)
+        fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                    + 'it-' + it_nb_i + '_patch_2_'
+                    + str(int(t*1000/bp_samp_rate)) + '.pdf')
+        os.chdir(path_png)
+        fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                    + 'it-' + it_nb_i + '_patch_2_'
+                    + str(int(t*1000/bp_samp_rate)) + '.png')
     print('Number of images already created: {} / {}'.format(t + 1, length_t))

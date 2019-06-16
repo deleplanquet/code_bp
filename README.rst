@@ -140,6 +140,11 @@ Tree view
                 │   ├── iteration-i
                 │   │   ├── pdf
                 │   │   └── png
+                │   ├── miscellaneous_plots
+                │   │   ├── plots_modified_traces_iteration
+                │   │   ├── bpinv_traces_iteration
+                │   │   ├── modif_plots_and_bpinv_traces_iteration
+                │   │   └── stations_fct_iterations
                 │   └── others
                 └── others
 
@@ -504,17 +509,100 @@ Secondary codes
 plot_it_traces.py
 -----------------
 
+``plot_it_traces`` is representing on one figure the evolution of the energy
+traces with the iterations. There is one figure per station.
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env_modified
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    └── miscellaneous_plots
+                        └── plots_modified_traces_iteration                 *OUTPUT*
+
 plot_it_bpinv.py
 ----------------
+
+``plot_it_bpinv.py`` is representing on one figure the evolution of the inverse
+back projection smoothed traces with the iterations. There is one figure per
+station.
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env_bpinv
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    └── miscellaneous_plots
+                        └── bpinv_traces_iteration                          *OUTPUT*
 
 plot_it_traces_bpinv.py
 -----------------------
 
+``plot_it_traces_bpinv.py`` is representing on the same figure the results of
+both ``plot_it_traces.py`` and ``plot_it_bpinv.py``. That is, for each station,
+one figure with two subfigures:
+
+* top figure: evolution of the energy traces with the iterations
+* bottom figure: evolution of the inverse back projection smoothed traces with
+  the iterations
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env_modified
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
+        ├── vel_env_bpinv
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    └── miscellaneous_plots
+                        └── modif_plots_and_bpinv_traces_iteration          *OUTPUT*
+
 plot_station_fct_it.py
 ----------------------
 
-plot_maxatck_fct_it.py
+``plot_station_fct_it.py`` is representing the evolution of the maximum value
+of the energy traces and its integral with the iterations. There is one figure
+per station.
+
+::
+
+    Kumamoto
+    └── event
+        ├── vel_env_modified
+        │   └── frq_band_component_smooth_hypo_interv_selected_waves_angle  *INPUT*
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    └── miscellaneous_plots
+                        └── stations_fct_iterations                         *OUTPUT*
+
+plot_maxstck_fct_it.py
 ----------------------
+
+``plot_maxstck_fct_it.py`` is representing the evolution of the position of the
+maximum of the stack among iterations. Does not show any indication if the
+time of the global maximum is changing.
+
+::
+
+    Kumamoto
+    └── event
+        └── results
+            └── vel_env_frq_band_component_smooth
+                └── hypo_interv_selected_waves_angle
+                    ├── others                  *INPUT*
+                    └── miscellaneous_plots     *OUTPUT*
 
 python3 plot_traces.py
 ----------------------

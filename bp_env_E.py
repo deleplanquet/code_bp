@@ -1,4 +1,5 @@
-#
+# build a 4D prestack (that is preparation of the back projection stack without
+# summing up among the stations)
 
 import numpy as np
 import pickle
@@ -86,7 +87,8 @@ def fault(cen_fault, length, width, u_strike, u_dip, pasx, pasy):
                         2] = z_cf + a*pasx*u_strike[2] + b*pasy*u_dip[2]
     return grill_fault
 
-#calcul de la matrice des tps de trajet pour une station
+# calculation of the travel time matrix for one station, that is the travel
+# time between each subgrid and the considered station
 def trav_time(station, fault, velocity):
     x_sta, y_sta, z_sta = geo2cart([R_Earth + station[0]/1000,
                                     station[1],
@@ -99,19 +101,13 @@ def trav_time(station, fault, velocity):
                                     + pow(z_sta - fault[a, b, 2], 2))/velocity
     return mat_time
 
-#normalisation avec max = 1
+# normalization with max = 1
 def norm1(vect):
     return [a/vect.max() for a in vect]
 
 print('###############################',
     '\n###   python3 bp_env_E.py   ###',
     '\n###############################')
-
-print('Ne pas oublier de changer la valeur de thresh si on souhaite autre',
-        'chose qu\'un threshold a 85 %')
-
-#recuperation position stations
-print('     recuperation position stations')
 
 # open the file of the parameters given by the user through parametres.py and
 # load them
@@ -138,9 +134,11 @@ bp_len_t = param['bp_length_time']
 l_smooth = param['l_smooth']
 
 # directories used in this script
-#
-#
-#
+# - path_data is the directory of the envelopes used to build the prestack
+# - path_rslt_gnrl is the directory of the station delays dictionnary and all
+#   the subgrids absolute delays (before applying the np function to have
+#   energy over the grid)
+# - path_rslt is the directory where the 4D prestack will be saved
 path_data = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
@@ -314,9 +312,6 @@ for ista, s in enumerate(lst_sta):
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
     # interpolate the trace so we can assess a value even between two bins
     f = interpolate.interp1d(t, env_norm)
-    # vectorize the interpolated function to be able to apply it over a
-    # np.array
-    npf = np.vectorize(f)
     # initialise 3D np.array which will contain back projection values for one
     # station
     bp1sta = []
@@ -358,7 +353,7 @@ for ista, s in enumerate(lst_sta):
         mpck.dump(bp1sta)
     # store inside a dictionnary the back projection values of every station
     # at every time step on every subgrid
-    prestack[sta_name] = npf(bp1sta)
+    prestack[sta_name] = f(bp1sta)
     print('done')
 
 # save the back projection 4D cube in the path_rslt directory (4D because 2
