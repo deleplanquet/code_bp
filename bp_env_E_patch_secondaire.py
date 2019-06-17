@@ -62,6 +62,52 @@ path_trvt = (root_folder + '/'
              + event + '/'
              + 'results/'
              + 'general')
+
+path_tr = (root_folder + '/'
+            + 'Kumamoto/'
+            + event + '/'
+            + 'vel_env_modified/'
+            + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
+
+lst_mdf_env = os.listdir(path_tr)
+lst_mdf_env = [a for a in lst_mdf_env if 'iteration' in a]
+lst_mdf_env.sort()
+print('Here is a list of the modified envelopes that has already been built: ')
+for f in lst_mdf_env:
+    print(f)
+mdf_env_name_i = None
+while mdf_env_name_i not in lst_mdf_env:
+    mdf_env_name_i = input('Name of the modified envelope you want to use to'
+                            + ' create the next prestack (copy/paste from the'
+                            + ' above list): ')
+path_data_tr = path_tr + '/' + mdf_env_name_i
+
+path_data_mask = (root_folder + '/'
+                  + 'Kumamoto/'
+                  + event + '/'
+                  + 'vel_env_bpinv/'
+                  + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                        + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
+lst_msk = os.listdir(path_data_mask)
+lst_msk = [a for a in lst_msk if 'iteration' in a]
+lst_msk.sort()
+print('Here is a list of the inverse back projection traces that have already',
+        'been done: ')
+for f in lst_msk:
+    print(f)
+msk_name = None
+while msk_name not in lst_msk:
+    msk_name = input('Name of the mask you want to use to create the next'
+                        + ' prestack (copy/paste from the above list): ')
+path_data_mask = path_data_mask + '/' + msk_name + '/smooth'
+
+mdf_env_name_o = None
+while mdf_env_name_o in lst_mdf_env or mdf_env_name_o == None:
+    mdf_env_name_o = input('Name of the modified envelope this code will'
+                            + ' create (input: {}): '.format(mdf_env_name_i))
+path_rslt_tr = path_tr + '/' + mdf_env_name_o
+
 path_stck = (root_folder + '/'
              + 'Kumamoto/'
              + event + '/'
@@ -69,7 +115,6 @@ path_stck = (root_folder + '/'
              + 'vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth/'
              + couronne + 'km_' + hyp_bp + '_' + azim + 'deg/'
              + 'others')
-
 lst_iter = os.listdir(path_stck)
 lst_iter = [a for a in lst_iter if '_it-' in a and '_stack' in a]
 lst_iter.sort()
@@ -77,53 +122,15 @@ print('Here is a list of the iterations of back projection that has already',
         'been done:')
 for f in lst_iter:
     print(f)
-it_nb_i = None
-while not isinstance(it_nb_i, int):
-    try:
-        it_nb_i = int(input('Pick a number corresponding to the iteration you'
-                            + ' want to use as input (interger): '))
-    except ValueError:
-        print('No valid number, try again')
-it_nb_o = str(it_nb_i + 1)
-it_nb_i = str(it_nb_i)
+stck_name_o = None
+while stck_name_o in lst_iter or stck_name_o == None:
+    stck_name_o = input('Name of the stack that will be create with the'
+                        + ' current code: ')
+
 m_or_c = None
 while m_or_c != 'M' and m_or_c != 'C':
     m_or_c = input('Choose if you want to apply the mask or its'
                     + 'complementary (M or C): ')
-
-path_data_tr = (root_folder + '/'
-                + 'Kumamoto/'
-                + event + '/'
-                + 'vel_env_modified/'
-                + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
-path_data_mask = (root_folder + '/'
-                  + 'Kumamoto/'
-                  + event + '/'
-                  + 'vel_env_bpinv/'
-                  + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                        + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
-path_rslt_tr = (root_folder + '/'
-                + 'Kumamoto/'
-                + event + '/'
-                + 'vel_env_modified/'
-                + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
-if m_or_c == 'M':
-    path_data_tr = path_data_tr + '/iteration-' + it_nb_i
-    path_data_mask = (path_data_mask + '/'
-                        + 'iteration-' + it_nb_o + '/'
-                        + 'smooth')
-    path_rslt_tr = path_rslt_tr + '/iteration-' + it_nb_o
-elif m_or_c == 'C':
-    path_data_tr = path_data_tr + '/iteration-0'
-    path_data_mask = (path_data_mask + '/'
-                        + 'iteration-' + it_nb_i + '/'
-                        + 'smooth')
-    path_rslt_tr = path_rslt_tr + '/iteration-' + it_nb_i + '_patch_2'
-else:
-    print('Issue with m_or_c')
-# however the used mask is always the one selected
 
 # in the case they do not exist, the following directories are created:
 # - path_rslt_tr
@@ -143,6 +150,13 @@ lst_sta = os.listdir(path_data_tr)
 lst_sta = [a for a in lst_sta if '.sac' in a]
 lst_sta.sort()
 
+print(path_data_mask)
+lst_msk = os.listdir(path_data_mask)
+lst_msk = [a for a in lst_msk if '.sac' in a]
+lst_msk.sort()
+
+print(len(lst_sta), len(lst_msk))
+
 length_t = int(bp_len_t*bp_samp_rate)
 prestack = {}
 
@@ -156,25 +170,19 @@ for ista, s in enumerate(lst_sta):
     sta_name = st[0].stats.station
     # load the mask
     os.chdir(path_data_mask)
+    msk = read(lst_msk[ista])
+    print(sta_name, msk[0].stats.station)
     if m_or_c == 'M':
-        msk = read(sta_name + '_inv_smooth_it-' + it_nb_o + '.sac')
         tr = np.multiply(st[0].data, norm1(msk[0].data))
     elif m_or_c == 'C':
-        msk = read(sta_name + '_inv_smooth_it-' + it_nb_i + '.sac')
         tr = np.multiply(st[0].data, 1 - np.asarray(norm1(msk[0].data)))
     else:
         print('Issue between mask and complementary')
     tr[-1] = (st[0].data).max()
     os.chdir(path_rslt_tr)
     tr = Trace(np.asarray(tr), st[0].stats)
-    if m_or_c == 'M':
-        tr.write(sta_name + '_it-' + it_nb_o + '.sac', format = 'SAC')
-        st = read(sta_name + '_it-' + it_nb_o + '.sac')
-    elif m_or_c == 'C':
-        tr.write(sta_name + '_it-' + it_nb_i + '_patch_2.sac', format = 'SAC')
-        st = read(sta_name + '_it-' + it_nb_i + '_patch_2.sac', format = 'SAC')
-    else:
-        print('Issue between mask and complementary')
+    tr.write(sta_name + '.sac', format = 'SAC')
+    st = read(sta_name + '.sac')
     # the maximum of the envelope is set to 1
     env_norm = norm1(st[0].data)
     # x-axis corresponding to the trace
@@ -195,17 +203,6 @@ for ista, s in enumerate(lst_sta):
     print('done')
 
 os.chdir(path_stck)
-if m_or_c == 'M':
-    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                + 'it-' + it_nb_o + '_prestack', 'wb') as mfch:
-        mpck = pickle.Pickler(mfch)
-        mpck.dump(prestack)
-elif m_or_c == 'C':
-    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                + 'it-' + it_nb_i + '_patch_2_prestack', 'wb') as mfch:
-        mpck = pickle.Pickler(mfch)
-        mpck.dump(prestack)
-else:
-    print('Issue between mask and complementary')
+with open(stck_name_o, 'wb') as mfch:
+    mpck = pickle.Pickler(mfch)
+    mpck.dump(prestack)

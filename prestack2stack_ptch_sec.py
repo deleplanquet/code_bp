@@ -54,35 +54,16 @@ print('Here is a list of the iterations of back projection prestack that has',
         'already been done:')
 for f in list_iter:
     print(f)
-it_nb_i = None
-while not isinstance(it_nb_i, int):
-    try:
-        it_nb_i = int(input('Pick a number corresponding to the iteration you'
-                            + ' want to use as input (interger): '))
-    except ValueError:
-        print('No valid number, try again')
-it_nb_i = str(it_nb_i)
-m_or_c = None
-while m_or_c != 'M' and m_or_c != 'C':
-    m_or_c = input('Choose if you want to get the mask or its complementary'
-                    + ' (M or C): ')
+stck_name = None
+while stck_name not in list_iter:
+    stck_name = input('Pick a prestack you want to build into stack from the'
+                        + ' above list (cpy/paste): ')
 
 # load the 4D back projection cube
 os.chdir(path_data)
-if m_or_c == 'M':
-    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
-                + 'it-' + it_nb_i + '_prestack', 'rb') as mfch:
-        mdpk = pickle.Unpickler(mfch)
-        prestack = mdpk.load()
-elif m_or_c == 'C':
-    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
-                + 'it-' + it_nb_i + '_patch_2_prestack', 'rb') as mfch:
-        mdpk = pickle.Unpickler(mfch)
-        prestack = mdpk.load()
-else:
-    print('Issue between mask and complementary')
+with open(stck_name, 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    prestack = mdpk.load()
 
 lst_sta = os.listdir(path_sta)
 lst_sta = [a for a in lst_sta if '.sac' in a]
@@ -94,15 +75,6 @@ for s in lst_sta:
     stack = stack + prestack[s[:6]]
 
 os.chdir(path_data)
-if m_or_c == 'M':
-    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
-                + 'it-' + it_nb_i + '_stack', 'wb') as mfch:
-        mpck = pickle.Pickler(mfch)
-        mpck.dump(stack)
-elif m_or_c == 'C':
-    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                + couronne + 'km_' + hyp_bp + '_' + angle + 'deg_'
-                + 'it-' + it_nb_i + '_patch_2_stack', 'wb') as mfch:
-        mpck = pickle.Pickler(mfch)
-        mpck.dump(stack)
+with open(stck_name[:-8] + 'stack', 'wb') as mfch:
+    mpck = pickle.Pickler(mfch)
+    mpck.dump(stack)

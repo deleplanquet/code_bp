@@ -66,33 +66,34 @@ if not os.path.isdir(path_bpiv):
 else:
     print('{} is already existing'.format(path_bpiv))
 
-lst_iter = os.listdir(path_bpiv)
-lst_iter = [a for a in lst_iter if 'iteration' in a]
+lst_iter = os.listdir(path_data)
+lst_iter = [a for a in lst_iter if '_stack' in a]
 lst_iter.sort()
 print('Here is a list of the iterations of back projection that has already',
         'been done:')
 for f in lst_iter:
     print(f)
-it_nb_i = None
-while not isinstance(it_nb_i, int):
-    try:
-        it_nb_i = int(input('Pick a number corresponding to the iteration you'
-                            + ' want to use as input (interger): '))
-    except ValueError:
-        print('No valid number, try again')
-it_nb_o = str(it_nb_i + 1)
-it_nb_i = str(it_nb_i)
-m_or_c = None
-while m_or_c != 'M' and m_or_c != 'C':
-    m_or_c = input('Choose if you want to apply the mask or its'
-                    + ' complementary (M or C): ')
+stck_name = None
+while stck_name not in lst_iter:
+    stck_name = input('Pick a stack you want to use as input for the inverse'
+                        + ' back projection traces (cpoy/paste): ')
 
+lst_bpiv = os.listdir(path_bpiv)
+lst_bpiv = [a for a in lst_bpiv if 'iteration' in a]
+lst_bpiv.sort()
+print('Here is a list of the inverse back projection traces that have already'
+        + ' been done:')
+for f in lst_bpiv:
+    print(f)
+bpiv_name = None
+while bpiv_name in lst_bpiv or bpiv_name == None:
+    bpiv_name = input('Define a name for the inverse back projection traces: ')
 path_bpiv_brut = (path_bpiv + '/'
-                  + 'iteration-' + it_nb_o + '/'
-                  + 'brut')
+                    + bpiv_name + '/'
+                    + 'brut')
 path_bpiv_smth = (path_bpiv + '/'
-                  + 'iteration-' + it_nb_o + '/'
-                  + 'smooth')
+                    + bpiv_name + '/'
+                    + 'smooth')
 
 # in case they do not exist, the following directories are created:
 # - path_bpiv_brut
@@ -111,10 +112,7 @@ for d in [path_bpiv_brut,
 
 # load the stack from which inverse back projection traces will be created
 os.chdir(path_data)
-with open(event + '_vel_env_' + frq_bnd + 'Hz_'
-          + cpnt + '_smooth_' + couronne + 'km_'
-          + hyp_bp + '_' + azim + 'deg_'
-          + 'it-' + it_nb_i + '_stack', 'rb') as mfch:
+with open(stck_name, 'rb') as mfch:
     mdpk = pickle.Unpickler(mfch)
     stack = mdpk.load()
 
@@ -156,10 +154,10 @@ for ista, s in enumerate(lst_sta):
         bpiv_tr[int(k*100)] += station[k]
     os.chdir(path_bpiv_brut)
     tr = Trace(bpiv_tr, st[0].stats)
-    tr.write(sta_name + '_inv_it-' + it_nb_o + '.sac', format = 'SAC')
+    tr.write(sta_name + '_inv.sac', format = 'SAC')
     # third step, smoothing of the trace
     tr = np.convolve(tr, tr_gaus, mode = 'same')
     tr = Trace(np.asarray(tr), st[0].stats)
     os.chdir(path_bpiv_smth)
-    tr.write(sta_name + '_inv_smooth_it-' + it_nb_o + '.sac', format = 'SAC')
+    tr.write(sta_name + '_inv_smooth.sac', format = 'SAC')
     print('done')

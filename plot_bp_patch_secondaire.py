@@ -60,33 +60,27 @@ print('Here is a list of the iterations of back projection stack that has',
         'already been done:')
 for f in lst_iter:
     print(f)
-it_nb_i = None
-while not isinstance(it_nb_i, int):
-    try:
-        it_nb_i = int(input('Pick a number corresponding to the iteration you'
-                            + ' want to use as input (integer): '))
-    except ValueError:
-        print('No valid number, try again')
-it_nb_i = str(it_nb_i)
-m_or_c = None
-while m_or_c != 'M' and m_or_c != 'C':
-    m_or_c = input('Choose if you want to get the mask or its complementary'
-                    + ' (M or C): ')
+stck_name = None
+while stck_name not in lst_iter:
+    stck_name = input('Pick a stack you want to plot from the above list'
+                        + ' (copy/paste): ')
 
-if m_or_c == 'M':
-    path_pdf = (path_common + '/'
-                + 'iteration-' + it_nb_i + '/'
-                + 'pdf')
-    path_png = (path_common + '/'
-                + 'iteration-' + it_nb_i + '/'
-                + 'png')
-elif m_or_c == 'C':
-    path_pdf = (path_common + '/'
-                + 'iteration-' + it_nb_i + '_patch_2/'
-                + 'pdf')
-    path_png = (path_common + '/'
-                + 'iteration-' + it_nb_i + '_patch_2/'
-                + 'png')
+lst_out = os.listdir(path_common)
+lst_out = [a for a in lst_out if 'iteration' in a]
+lst_out.sort()
+print('Here is a list of figures that have already been done:')
+for f in lst_out:
+    print(f)
+out_name = None
+while out_name in lst_out or out_name == None:
+    out_name = input('Write the name of the folder where the figures will be'
+                        + ' stored: ')
+path_pdf = (path_common + '/'
+            + out_name + '/'
+            + 'pdf')
+path_png = (path_common + '/'
+            + out_name + '/'
+            + 'png')
 
 # in case they do not exist, the following directories are created:
 # - path_pdf
@@ -104,18 +98,9 @@ for d in [path_pdf, path_png]:
 
 # load the back projection stack to plot
 os.chdir(path_data)
-if m_or_c == 'M':
-    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                + 'it-' + it_nb_i + '_stack', 'rb') as mfch:
-        mdpk = pickle.Unpickler(mfch)
-        stack = mdpk.load()
-elif m_or_c == 'C':
-    with open(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                + 'it-' + it_nb_i + '_patch_2_stack', 'rb') as mfch:
-        mdpk = pickle.Unpickler(mfch)
-        stack = mdpk.load()
+with open(stck_name, 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    stack = mdpk.load()
 
 # load the original back projection stack to get the maximum
 os.chdir(path_data)
@@ -136,7 +121,6 @@ print('Creation of the back projection images of the event {}'.format(event),
         '\n   - hypocenter_interval : {} km'.format(couronne),
         '\n   -      selected_waves : {}'.format(hyp_bp),
         '\n   -   azimuth selection : {} deg'.format(azim))
-print('This is the {} th iteration'.format(it_nb_i))
 # loop over the time, one back projection image is created for every time step
 for t in range(length_t):
     # creation of figure
@@ -208,28 +192,13 @@ for t in range(length_t):
     for i in iso:
         cb.ax.plot([0, 1], [i, i], 'white')
     # save the figures in both pdf and png format
-    if m_or_c == 'M':
-        os.chdir(path_pdf)
-        fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                    + 'it-' + it_nb_i + '_'
-                    + str(int(t*1000/bp_samp_rate)) + '.pdf')
-        os.chdir(path_png)
-        fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                    + 'it-' + it_nb_i + '_'
-                    + str(int(t*1000/bp_samp_rate)) + '.png')
-        plt.close()
-    elif m_or_c == 'C':
-        os.chdir(path_pdf)
-        fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                    + 'it-' + it_nb_i + '_patch_2_'
-                    + str(int(t*1000/bp_samp_rate)) + '.pdf')
-        os.chdir(path_png)
-        fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
-                    + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
-                    + 'it-' + it_nb_i + '_patch_2_'
-                    + str(int(t*1000/bp_samp_rate)) + '.png')
-        plt.close()
+    os.chdir(path_pdf)
+    fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                + str(int(t*1000/bp_samp_rate)) + '.pdf')
+    os.chdir(path_png)
+    fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
+                + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
+                + str(int(t*1000/bp_samp_rate)) + '.png')
+    plt.close()
     print('Number of images already created: {} / {}'.format(t + 1, length_t))
