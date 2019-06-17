@@ -171,7 +171,6 @@ for ista, s in enumerate(lst_sta):
     # load the mask
     os.chdir(path_data_mask)
     msk = read(lst_msk[ista])
-    print(sta_name, msk[0].stats.station)
     if m_or_c == 'M':
         tr = np.multiply(st[0].data, norm1(msk[0].data))
     elif m_or_c == 'C':
