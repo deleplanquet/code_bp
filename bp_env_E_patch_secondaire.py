@@ -181,9 +181,6 @@ for ista, s in enumerate(lst_sta):
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
     # interpolate the trace so we can assess a value even between two bins
     f = interpolate.interp1d(t, env_norm)
-    # vectorize the interpolated function to be able to apply it over a
-    # np.array
-    npf = np.vectorize(f)
     # initialise 3D np.array which will contain back projection values for
     # one station
     bp1sta = []
@@ -194,7 +191,7 @@ for ista, s in enumerate(lst_sta):
     with open(event + '_' + sta_name + '_absolute_delays', 'rb') as mfch:
         mdpk = pickle.Unpickler(mfch)
         bp1sta = mdpk.load()
-    prestack[sta_name] = npf(bp1sta)
+    prestack[sta_name] = f(bp1sta)
     print('done')
 
 os.chdir(path_stck)
