@@ -175,7 +175,6 @@ for t in range(length_t):
         cb.ax.plot([0, 1], [i, i], 'white')
     # save the figures in both pdf and png format
     os.chdir(path_pdf)
-    '''
     fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
                 + str(int(t*1000/bp_samp_rate)) + '.pdf')
@@ -183,9 +182,7 @@ for t in range(length_t):
     fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
                 + str(int(t*1000/bp_samp_rate)) + '.png')
-    '''
     plt.close()
-    #fig.clf()
     print('Number of images already created: {} / {}'.format(t + 1, length_t))
 
 """
