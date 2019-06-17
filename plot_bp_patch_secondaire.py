@@ -219,6 +219,7 @@ for t in range(length_t):
                     + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
                     + 'it-' + it_nb_i + '_'
                     + str(int(t*1000/bp_samp_rate)) + '.png')
+        plt.close()
     elif m_or_c == 'C':
         os.chdir(path_pdf)
         fig.savefig(event + '_vel_env_' + frq_bnd + 'Hz_' + cpnt + '_smooth_'
@@ -230,4 +231,5 @@ for t in range(length_t):
                     + couronne + 'km_' + hyp_bp + '_' + azim + 'deg_'
                     + 'it-' + it_nb_i + '_patch_2_'
                     + str(int(t*1000/bp_samp_rate)) + '.png')
+        plt.close()
     print('Number of images already created: {} / {}'.format(t + 1, length_t))
