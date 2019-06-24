@@ -71,7 +71,7 @@ path_tr = (root_folder + '/'
                 + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
 
 lst_mdf_env = os.listdir(path_tr)
-lst_mdf_env = [a for a in lst_mdf_env if 'iteration' in a]
+lst_mdf_env = [a for a in lst_mdf_env if 'it' in a]
 lst_mdf_env.sort()
 print('Here is a list of the modified envelopes that has already been built: ')
 for f in lst_mdf_env:
@@ -90,7 +90,7 @@ path_data_mask = (root_folder + '/'
                   + frq_bnd + 'Hz_' + cpnt + '_smooth_'
                         + couronne + 'km_' + hyp_bp + '_' + azim + 'deg')
 lst_msk = os.listdir(path_data_mask)
-lst_msk = [a for a in lst_msk if 'iteration' in a]
+lst_msk = [a for a in lst_msk if 'it' in a]
 lst_msk.sort()
 print('Here is a list of the inverse back projection traces that have already',
         'been done: ')
