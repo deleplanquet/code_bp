@@ -62,9 +62,10 @@ else:
     print('{} is already existing'.format(path_rslt))
 
 lst_it = os.listdir(path_tr_bpiv)
-lst_it = [a for a in lst_it if 'iteration' in a]
+lst_it = [a for a in lst_it if 'it-' in a if 'ptch' not in a]
+#lst_it = [a for a in lst_it if 'it-' in a if 'ptch' in a]
 
-lst_sta = os.listdir(path_tr_bpiv + '/iteration-1/smooth')
+lst_sta = os.listdir(path_tr_bpiv + '/it-1/smooth')
 lst_sta = [a for a in lst_sta if '.sac' in a]
 
 for s in lst_sta:
@@ -86,8 +87,8 @@ for s in lst_sta:
     for it in lst_it:
         lst_pth = [path_tr_modf + '/' + it,
                    path_tr_bpiv + '/' + it + '/smooth']
-        lst_sta_fil = [s[:6] + '_it-' + it[10:] + '.sac',
-                       s[:6] + '_inv_smooth_it-' + it[10:] + '.sac']
+        lst_sta_fil = [s[:6] + '.sac',
+                       s[:6] + '_inv_smooth.sac']
         for axnb, (path, sta_file) in enumerate(zip(lst_pth, lst_sta_fil)):
             os.chdir(path)
             st = read(sta_file)
