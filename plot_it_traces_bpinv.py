@@ -5,6 +5,7 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+from cycler import cycler
 
 print('###########################################',
     '\n###   python3 plot_it_traces_bpinv.py   ###',
@@ -64,6 +65,7 @@ else:
 lst_it = os.listdir(path_tr_bpiv)
 lst_it = [a for a in lst_it if 'it-' in a if 'ptch' not in a]
 #lst_it = [a for a in lst_it if 'it-' in a if 'ptch' in a]
+lst_it.sort()
 
 lst_sta = os.listdir(path_tr_bpiv + '/it-1/smooth')
 lst_sta = [a for a in lst_sta if '.sac' in a]
@@ -82,8 +84,12 @@ for s in lst_sta:
     tr = st[0]
     tr.normalize()
     t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-    ax[0].plot(t, tr, lw = 0.1, color = 'black')
+    ax[0].plot(t, tr, lw = 0.3, color = 'black', label = 'it-0')
     ax[0].fill_between(t, 0, tr, lw = 0, color = 'black', alpha = 0.1)
+    ax[0].set_prop_cycle(cycler('color',
+                                ['b', 'c', 'yellowgreen', 'y', 'r']))
+    ax[1].set_prop_cycle(cycler('color',
+                                ['b', 'c', 'yellowgreen', 'y', 'r']))
     for it in lst_it:
         lst_pth = [path_tr_modf + '/' + it,
                    path_tr_bpiv + '/' + it + '/smooth']
@@ -95,10 +101,12 @@ for s in lst_sta:
             tr = st[0]
             tr.normalize()
             t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
-            ax[axnb].plot(t, tr, lw = 0.1, color = 'black')
+            ax[axnb].plot(t, tr, lw = 0.3, label = it)
             ax[axnb].fill_between(t, 0, tr,
                                   lw = 0,
                                   color = 'black',
                                   alpha = 0.1)
+    ax[0].legend(fontsize = 10, loc = 1)
+    ax[1].legend(fontsize = 10, loc = 1)
     os.chdir(path_rslt)
     fig.savefig(s[:6] + '.pdf')
