@@ -79,7 +79,7 @@ while stck_name not in lst_iter:
                         + ' back projection traces (cpoy/paste): ')
 
 lst_bpiv = os.listdir(path_bpiv)
-lst_bpiv = [a for a in lst_bpiv if 'iteration' in a]
+lst_bpiv = [a for a in lst_bpiv if 'it' in a]
 lst_bpiv.sort()
 print('Here is a list of the inverse back projection traces that have already'
         + ' been done:')
