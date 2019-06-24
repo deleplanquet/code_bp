@@ -96,7 +96,7 @@ for fichier in lst_fch:
             #bruit blanc distribution normale
             nois = np.random.normal(0, 0.5, st[0].stats.npts)
             tr = [math.exp(-(pow(a - dst1/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2)
-                  + 0.7*math.exp(-(pow(a - dst2/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2)
+                  + 0.836660027*math.exp(-(pow(a - dst2/vS, 2))/(2*pow(sigma, 2)))*factor/pow(dst, 2)
                   + 0.1*b for a, b in zip(vect, nois)]
             tstart = stz[0].stats.starttime + stz[0].stats.sac.a - 5
             tend = tstart + 50
