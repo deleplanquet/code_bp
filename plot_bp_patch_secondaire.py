@@ -66,7 +66,7 @@ while stck_name not in lst_iter:
                         + ' (copy/paste): ')
 
 lst_out = os.listdir(path_common)
-lst_out = [a for a in lst_out if 'iteration' in a]
+lst_out = [a for a in lst_out if 'it' in a]
 lst_out.sort()
 print('Here is a list of figures that have already been done:')
 for f in lst_out:
