@@ -116,7 +116,7 @@ for s in lst_fch:
         os.chdir(path_rslt_P)
         tr = Trace(st[0].data, st[0].stats)
         tr.write(s, format = 'SAC')
-        print('which is lower than {:.2f}'.format(1./rsP),
+        print('which is lower than {:.2f}'.format(1./rSP),
                 '\n   --> station selected for back projection of P-waves')
     # for remaining stations
     else:
