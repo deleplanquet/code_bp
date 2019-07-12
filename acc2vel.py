@@ -101,7 +101,7 @@ for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
         # fft
         t = np.arange(tr.stats.npts)/tr.stats.sampling_rate
         freq = (np.arange(1, tr.stats.npts + 1)
-                /tr.stats.sampling_rate/tr.stats.npts)
+                *tr.stats.sampling_rate/tr.stats.npts)
         tf = np.fft.fft(tr)
         # from acc to vel in Fourier space
         tf_vel = tf*(-1j)/2/math.pi/freq
