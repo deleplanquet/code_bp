@@ -64,7 +64,7 @@ list_files = [a for a in list_files if 'ps.gz' not in a]
 # change format of those files into SAC format and save them in path_sac
 for s in list_files:
     os.chdir(path_kik)
-    tr = read(s)[0]
+    tr = read(s, apply_calib = True)[0]
     tr.stats.sac = tr.stats.knet
     os.chdir(path_sac)
     tr.write(s[:6] + s[16:] + '.sac', format='SAC')
@@ -78,7 +78,7 @@ list_files = [a for a in list_files if 'ps.gz' not in a]
 # change format of those files into SAC format and save them in path_sac
 for s in list_files:
     os.chdir(path_knt)
-    tr = read(s)[0]
+    tr = read(s, apply_calib = True)[0]
     tr.stats.sac = tr.stats.knet
     os.chdir(path_sac)
     tr.write(s[:6] + s[16:] + '.sac', format='SAC')
