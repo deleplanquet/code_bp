@@ -98,17 +98,10 @@ for sx, sy, sz in zip(lst_fch_x, lst_fch_y, lst_fch_z):
         # using especially "stz"
         st[0].stats.sac.t0 = stz[0].stats.sac.t0 - stz[0].stats.sac.a + 5
         st[0].stats.sac.a = 5
-        # fft
-        t = np.arange(tr.stats.npts)/tr.stats.sampling_rate
-        freq = (np.arange(1, tr.stats.npts + 1)
-                *tr.stats.sampling_rate/tr.stats.npts)
-        tf = np.fft.fft(tr)
-        # from acc to vel in Fourier space
-        tf_vel = tf*(-1j)/2/math.pi/freq
-        # ifft
-        tr_vel = np.fft.ifft(tf_vel)
+        # integrate
+        tr_vel = tr.integrate()
         # save to SAC format
-        tr_vel = Trace(tr_vel, tr.stats)
+        tr_vel = Trace(np.asarray(tr_vel), tr.stats)
         tr_vel.write(st[0].stats.station + '_'
                      + st[0].stats.channel[:2]
                      + '_vel.sac',
