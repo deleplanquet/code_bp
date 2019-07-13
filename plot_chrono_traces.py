@@ -1,29 +1,263 @@
+#
+
 from obspy import read
 import os
 from obspy.signal.util import smooth
 import matplotlib.pyplot as plt
 import numpy as np
+import pickle
 
-path_origin = os.getcwd()[:-6]
+print('#################################',
+    '\n###   plot_chrono_traces.py   ###',
+    '\n#################################')
 
-#dossier = '20160401000001'
-dossier = '20160415173900'
+# open the file of the parameters given by the user through parametres.py and
+# load them
+root_folder = os.getcwd()[:-6]
+os.chdir(root_folder + '/Kumamoto')
+with open('parametres_bin', 'rb') as mfch:
+    mdpk = pickle.Unpickler(mfch)
+    param = mdpk.load()
 
+# all the parameters are not used in this script, only the following ones
+event = param['event']
+frq_bnd = param['frq_band']
+
+# directories used in this script
+#
+#
+path_acc = (root_folder + '/'
+            + 'Kumamoto/'
+            + event + '/'
+            + 'acc/'
+            + 'inf100km_copy')
+path_vel = (root_folder + '/'
+            + 'Kumamoto/'
+            + event + '/'
+            + 'vel/'
+            + 'brut')
+path_vel_flt = (root_folder + '/'
+                + 'Kumamoto/'
+                + event + '/'
+                + 'vel/'
+                + frq_bnd + 'Hz')
+path_hori_env = (root_folder + '/'
+                    + 'Kumamoto/'
+                    + event + '/'
+                    + 'vel_env/'
+                    + frq_bnd + 'Hz_hori')
+path_hori_env_smt = (root_folder + '/'
+                        + 'Kumamoto/'
+                        + event + '/'
+                        + 'vel_env/'
+                        + frq_bnd + 'Hz_hori_smooth')
+path_3cpn_env = (root_folder + '/'
+                    + 'Kumamoto/'
+                    + event + '/'
+                    + 'vel_env/'
+                    + frq_bnd + 'Hz_3cpn')
+path_3cpn_env_smt = (root_folder + '/'
+                        + 'Kumamoto/'
+                        + event + '/'
+                        + 'vel_env/'
+                        + frq_bnd + 'Hz_3cpn_smooth')
+path_vert_env = (root_folder + '/'
+                    + 'Kumamoto/'
+                    + event + '/'
+                    + 'vel_env/'
+                    + frq_bnd + 'Hz_vert')
+path_vert_env_smt = (root_folder + '/'
+                        + 'Kumamoto/'
+                        + event + '/'
+                        + 'vel_env/'
+                        + frq_bnd + 'Hz_vert_smooth')
+path_rslt = (root_folder + '/'
+                + 'Kumamoto/'
+                + event + '/'
+                + 'results/'
+                + 'miscellaneous_plots')
+'''
 path = path_origin + '/Kumamoto/' + dossier
 
 path_data_1 = path + '/' + dossier + '_sac_inf100km'
 path_data_2 = path + '/' + dossier + '_vel_0-100km'
-path_data_3 = path + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier + '_vel_0-100km_2.0-8.0Hz'
-path_data_4 = path + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier + '_vel_0-100km_2.0-8.0Hz_hori_env'
+path_data_3 = path + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier
+                    + '_vel_0-100km_2.0-8.0Hz'
+path_data_4 = path + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier
+                    + '_vel_0-100km_2.0-8.0Hz_hori_env'
 
 #path_data_1 = path + '/' + dossier + '_sac_inf100km_picks-save'
 #path_data_int = path + '/' + 'noise_03'
 #path_data_2 = path_data_int + '/' + dossier + '_vel_0-100km'
-#path_data_3 = path_data_int + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier + '_vel_0-100km_2.0-8.0Hz'
-#path_data_4 = path_data_int + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/' + dossier + '_vel_0-100km_2.0-8.0Hz_hori_env'
+#path_data_3 = path_data_int + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/'
+                    + dossier + '_vel_0-100km_2.0-8.0Hz'
+#path_data_4 = path_data_int + '/' + dossier + '_vel_0-100km_2.0-8.0Hz/'
+                    + dossier + '_vel_0-100km_2.0-8.0Hz_hori_env'
+'''
+# create the directory path_rslt in case it does not exist
+if not os.path.isdir(path_rslt):
+    try:
+        os.makedirs(path_rslt)
+    except OSError:
+        print('Creation of the directory {} failed'.format(path_rslt))
+    else:
+        print('Successfully created the directory {}'.format(path_rslt))
+else:
+    print('{} is already existing'.format(path_rslt))
 
-fig, ax = plt.subplots(6, 1)
+lst_sta_acc = os.listdir(path_acc)
+lst_sta_vel = os.listdir(path_vel)
+lst_sta_vel_flt = os.listdir(path_vel_flt)
+lst_sta_hori_env = os.listdir(path_hori_env)
+lst_sta_hori_env_smt = os.listdir(path_hori_env_smt)
+lst_sta_3cpn_env = os.listdir(path_3cpn_env)
+lst_sta_3cpn_env_smt = os.listdir(path_3cpn_env_smt)
+lst_sta_vert_env = os.listdir(path_vert_env)
+lst_sta_vert_env_smt = os.listdir(path_vert_env_smt)
+lst_sta = os.listdir(path_hori_env_smt)
+lst_sta = [a for a in lst_sta if '.sac' in a]
 
+cpn_lst1 = ['EW', 'NS', 'UD']
+cpn_lst2 = ['hori', '3cpn', 'vert']
+
+nlin, ncol = 5, 3
+for s in lst_sta:
+    # creation fig and ax
+    fig, ax = plt.subplots(nlin, ncol,
+                            figsize = (13, 10),
+                            constrained_layout = True)
+    # first line, acceleration
+    lst_acc = [a for a in lst_sta_acc if s[:6] in a]
+    lst_acc.sort()
+    os.chdir(path_acc)
+    mn, mx = 0, 0
+    stE, stN, stU = read(lst_acc[0]), read(lst_acc[1]), read(lst_acc[2])
+    PP = stU[0].stats.sac.a
+    for i, acc in enumerate([stE, stN, stU]):
+        acc.detrend(type = 'constant')
+        t = np.arange(acc[0].stats.npts)/acc[0].stats.sampling_rate
+        t = [a - PP + 5 for a in t]
+        ax[0, i].plot(t, acc[0].data,
+                        color = 'black',
+                        lw = 0.5,
+                        label = cpn_lst1[i])
+        mn = min([mn, acc[0].data.min()])
+        mx = max([mx, acc[0].data.max()])
+    for i in range(ncol):
+        ax[0, i].set_ylim([1.1*mn, 1.1*mx])
+    ax[0, 0].text(4, 0.6*mx, 'P',
+                    color = 'blue')
+    ax[0, 0].text(acc[0].stats.sac.t0 - PP + 4, 0.6*mx, 'S',
+                    color = 'red')
+    print(s, mx, mn, (mx - mn)/2)
+    # second line, velocity
+    lst_vel = [a for a in lst_sta_vel if s[:6] in a]
+    lst_vel.sort()
+    os.chdir(path_vel)
+    mn, mx = 0, 0
+    for i, vel in enumerate(lst_vel):
+        st = read(vel)
+        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+        ax[1, i].plot(t, st[0].data,
+                        color = 'black',
+                        lw = 0.5,
+                        label = cpn_lst1[i])
+        mn = min([mn, st[0].data.min()])
+        mx = max([mx, st[0].data.max()])
+    for i in range(ncol):
+        ax[1, i].set_ylim([1.1*mn, 1.1*mx])
+    # third line, filtered velocity
+    lst_vel_flt = [a for a in lst_sta_vel_flt if s[:6] in a]
+    lst_vel_flt.sort()
+    os.chdir(path_vel_flt)
+    mn, mx = 0, 0
+    for i, vel_flt in enumerate(lst_vel_flt):
+        st = read(vel_flt)
+        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+        ax[2, i].plot(t, st[0].data,
+                        color = 'black',
+                        lw = 0.5,
+                        label = cpn_lst1[i])
+        mn = min([mn, st[0].data.min()])
+        mx = max([mx, st[0].data.max()])
+    for i in range(ncol):
+        ax[2, i].set_ylim([1.1*mn, 1.1*mx])
+    # fourth line, envelopes
+    lst_env_cpn = ([a for a in lst_sta_hori_env if s[:6] in a]
+                    + [a for a in lst_sta_3cpn_env if s[:6] in a]
+                    + [a for a in lst_sta_vert_env if s[:6] in a])
+    mn, mx = 0, 0
+    for i, (pth, env_cpn) in enumerate(zip([path_hori_env,
+                                            path_3cpn_env,
+                                            path_vert_env],
+                                           lst_env_cpn)):
+        os.chdir(pth)
+        st = read(env_cpn)
+        t = np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+        ax[3, i].plot(t, st[0].data,
+                        color = 'black',
+                        lw = 0.5,
+                        label = cpn_lst2[i])
+        mn = min([mn, st[0].data.min()])
+        mx = max([mx, st[0].data.max()])
+    for i in range(ncol):
+        ax[3, i].set_ylim([mn, 1.1*mx])
+    # fifth line, smoothed envelopes
+    lst_env_cpn_smt = ([a for a in lst_sta_hori_env_smt if s[:6] in a]
+                        + [a for a in lst_sta_3cpn_env_smt if s[:6] in a]
+                        + [a for a in lst_sta_vert_env_smt if s[:6] in a])
+    mn, mx = 0, 0
+    for i, (pth, env_cpn_smt) in enumerate(zip([path_hori_env_smt,
+                                                path_3cpn_env_smt,
+                                                path_vert_env_smt],
+                                               lst_env_cpn_smt)):
+        os.chdir(pth)
+        st = read(env_cpn_smt)
+        t= np.arange(st[0].stats.npts)/st[0].stats.sampling_rate
+        ax[4, i].plot(t, st[0].data,
+                        color = 'black',
+                        lw = 0.5,
+                        label = cpn_lst2[i])
+        mn = min([mn, st[0].data.min()])
+        mx = max([mx, st[0].data.max()])
+    for i in range(ncol):
+        ax[4, i].set_ylim([mn, 1.1*mx])
+    # P and S waves lines
+    Pwav, Swav = st[0].stats.sac.a, st[0].stats.sac.t0
+    for i in range(nlin):
+        for j in range(ncol):
+            ax[i, j].axvline(Pwav, color = 'blue', lw = 1)
+            ax[i, j].axvline(Swav, color = 'red', lw = 1)
+    # set xlim 0 to 30 and hide axes
+    for i in range(ncol):
+        ax[0, i].set_xlim([-5 + st[0].stats.sac.a, 25 + st[0].stats.sac.a])
+    for i in range(nlin - 1):
+        for j in range(ncol):
+            ax[i + 1, j].set_xlim([0, 30])
+            ax[i, j].xaxis.set_visible(False)
+    for i in range(nlin):
+        for j in range(ncol - 1):
+            ax[i, j + 1].yaxis.set_visible(False)
+    # scientific notations
+    for i in range(nlin):
+        for j in range(ncol):
+            ax[i, j].ticklabel_format(style = 'scientific',
+                                        axis = 'y',
+                                        scilimits = (0, 2))
+            ax[i, j].legend(fontsize = 10, loc = 1)
+    # ax titles
+    for i, tit in enumerate(['Acceleration\n($m.s^{-2}$)',
+                             'Velocity\n($m.s^{-1}$)',
+                             'Filtered velocity\n($m.s^{-1}$)',
+                             'Envelopes\n($m^{2}.s^{2}$)',
+                             'Smoothed envelopes\n($m^{2}.s^{2}$)']):
+        ax[i, 0].set_ylabel(tit, fontsize = 10)
+    ax[nlin - 1, int(ncol/2)].set_xlabel('Time (s)', fontsize = 10)
+
+    os.chdir(path_rslt)
+    fig.savefig(event + '_' + s[:6] + '.pdf')
+
+'''
 os.chdir(path_data_1)
 st1 = read('KMM0181604151739.NS.sac')
 #st1 = read('KMM006.NS.sac')
@@ -219,3 +453,4 @@ os.chdir(path_data_4)
 
 #os.chdir(path)
 #fig2.savefig(dossier + '_comparaison_SP.pdf')
+'''
