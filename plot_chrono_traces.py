@@ -118,7 +118,9 @@ lst_sta = os.listdir(path_hori_env_smt)
 lst_sta = [a for a in lst_sta if '.sac' in a]
 
 cpn_lst1 = ['EW', 'NS', 'UD']
-cpn_lst2 = ['hori', '3cpn', 'vert']
+cpn_lst2 = ['EW + NS\nhorizontal',
+            'EW + NS + UD\n3-dimension',
+            'UD\nvertical']
 
 nlin, ncol = 5, 3
 for s in lst_sta:
