@@ -232,7 +232,8 @@ for s in lst_sta:
             ax[i, j].axvline(Swav, color = 'red', lw = 1)
     # set xlim 0 to 30 and hide axes
     for i in range(ncol):
-        ax[0, i].set_xlim([-5 + st[0].stats.sac.a, 25 + st[0].stats.sac.a])
+        ax[0, i].set_xlim([-5 + st[0].stats.sac.a,
+                            -5 + 30 + st[0].stats.sac.a])
     for i in range(nlin - 1):
         for j in range(ncol):
             ax[i + 1, j].set_xlim([0, 30])
